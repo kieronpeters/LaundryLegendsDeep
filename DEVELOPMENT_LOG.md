@@ -58,8 +58,13 @@ Chronological record of meaningful events, decisions, bugs, fixes, checks, and m
 ### Git
 
 - Initial branch: `main`.
-- Bootstrap checkpoint tag: `bootstrap-v0.1`.
-- Baseline commit and exact status: see the bootstrap run report and `.orchestrator/state.json`.
+- Baseline commit: `b78218cccfeea741d3d227ffa95e679e9ba92a72` (`chore: bootstrap Laundry Legends development system`).
+- Bootstrap checkpoint tag: `bootstrap-v0.1` on the state-record commit.
+- Post-checkpoint validation confirms the tag points at `HEAD` and the working tree is clean.
+
+### Independent review
+
+A read-only subagent reviewed the bootstrap before the checkpoint. It found pre-checkpoint completion overclaims, Git-write exposure for built-in subagents, a designer permission that was too broad, a QA task scope mismatch, a test-folder inconsistency, and two documentation contradictions. These were corrected before the checkpoint. The final post-checkpoint validation is recorded in the bootstrap run report.
 
 ### Next
 

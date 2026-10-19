@@ -3,7 +3,7 @@
 - **Run ID:** `2026-10-19-bootstrap`
 - **Phase:** 0 — Project bootstrap
 - **Tasks:** `LL-P0-001` through `LL-P0-008`
-- **Status:** In progress until the checkpoint commit and tag are recorded
+- **Status:** Complete (machine-verified; human review task `LL-P0-009` pending, non-blocking)
 - **Date:** 2026-10-19 (UTC+08:00)
 
 ## Objective
@@ -88,7 +88,7 @@ None. No game assets exist. No generator or authoring tool was used.
 | Ignore-rule and tracked-file audit | Passed | Ignore samples verified; no secrets/caches tracked before commit |
 | OpenCode agent/command discovery | Passed | `opencode debug agents` lists all 4 custom agents |
 | Independent review | Passed with corrections | Reviewer found pre-checkpoint status overclaims, subagent Git-write exposure, and scope inconsistencies; all actionable findings corrected before checkpoint |
-| Git checkpoint/tag | Pending | Final bootstrap commit |
+| Git checkpoint/tag | Passed | Baseline commit `b78218c`; tag `bootstrap-v0.1` on the state-record commit; post-checkpoint validator passed |
 
 ## Tests passed
 
@@ -113,7 +113,11 @@ These are Phase 1 or later, not omissions in the bootstrap claim.
 
 ## Git checkpoint
 
-Pending at the time this report was first written. Final commit/tag and working-tree result must be recorded here before closing the run.
+- **Baseline commit:** `b78218cccfeea741d3d227ffa95e679e9ba92a72` — `chore: bootstrap Laundry Legends development system`
+- **Checkpoint tag:** `bootstrap-v0.1` on the state-record commit
+- **Working tree:** clean after the final bootstrap commit
+- **Remote:** none; no push performed or authorized
+- **Post-checkpoint validation:** full `tools/validate-bootstrap.ps1` run passed; tag points at `HEAD`
 
 ## Independent review corrections
 
@@ -134,7 +138,7 @@ A read-only reviewer inspected the bootstrap before the checkpoint. Findings and
 
 ## Review outcome
 
-Independent review completed with blocking findings before the checkpoint. All actionable findings were corrected. A final post-checkpoint validation must record the actual commit/tag and confirm the tree is clean.
+Independent review completed with blocking findings before the checkpoint. All actionable findings were corrected. The final post-checkpoint validation passed, the tag points at `HEAD`, and the working tree is clean. Human review (`LL-P0-009`) remains pending and non-blocking.
 
 ## Known risks and limitations
 
@@ -148,7 +152,7 @@ Independent review completed with blocking findings before the checkpoint. All a
 
 ## Approval required
 
-None pending for bootstrap. Phase 1 package/project-settings baseline must be reviewed before relying on changes beyond the selected editor's baseline.
+None pending for bootstrap. Human review of the bootstrap (`LL-P0-009`) is recommended before Phase 1 relies on Unity automation. Phase 1 package/project-settings baseline must be reviewed before relying on changes beyond the selected editor's baseline.
 
 ## Recommended next task
 

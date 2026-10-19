@@ -1,8 +1,8 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-19
-**Current milestone:** M0 — Bootstrap
-**Current phase:** Phase 0 — Project bootstrap, **complete (machine-verified; human review recommended)**
+**Last updated:** 2026-10-19 20:28 (UTC+08:00)
+**Current milestone:** M0 — Bootstrap, **complete**
+**Current phase:** Phase 0 — Project bootstrap, **complete (machine-verified; human review task pending, non-blocking)**
 **Next phase:** Phase 1 — Unity foundation, **ready**
 **Active task:** none
 **Next recommended task:** `LL-P1-001` — Create and validate the Unity 6.0 LTS project at the repository root
@@ -17,7 +17,7 @@
 | Input | Legacy Input Manager | Decision recorded |
 | Primary model | `opencode/deepseek-v4.1-flash-free` | Verified in model catalog |
 | OpenCode | CLI `2.0.28`, server `2.0.32` | Verified |
-| Git | `2.55.0.windows.3`, branch `main` | Repository initialized |
+| Git | `2.55.0.windows.3`, branch `main` | Repository initialized; bootstrap checkpoint recorded |
 | Git LFS | `3.7.1` | Available; not configured for asset patterns yet |
 | .NET SDK | `10.0.401` | Verified |
 | Python | `3.15.0`, no graphics/audio packages | Verified |
@@ -67,16 +67,18 @@ The workspace was empty before bootstrap. No user work was overwritten.
 
 ## 6. Approval status
 
-- Pending approvals: none.
+- Pending approvals: none for routine Phase 1 preparation.
+- Human review task: `LL-P0-009` (review the bootstrap and confirm Phase 1 start). Non-blocking for preparation, but required before relying on unverified Unity automation.
 - Standing approvals: none beyond routine in-repository work.
 - Required before Phase 1 continues past project creation: review of the generated Unity package manifest and project settings if they introduce anything beyond the baseline built-in configuration.
 
 ## 7. Git state
 
 - Branch: `main`
-- Bootstrap checkpoint tag: `bootstrap-v0.1` (created after validation)
-- Baseline commit: recorded in `.orchestrator/state.json` and the bootstrap run report.
-- Working tree: clean after bootstrap commit.
+- Bootstrap checkpoint tag: `bootstrap-v0.1`
+- Baseline commit: `b78218cccfeea741d3d227ffa95e679e9ba92a72` (`chore: bootstrap Laundry Legends development system`)
+- State-record commit: the documentation commit tagged `bootstrap-v0.1`
+- Working tree: clean after the final bootstrap commit
 - Remote: none. No push performed or authorized.
 
 ## 8. Run budget defaults
@@ -94,12 +96,12 @@ See `.orchestrator/budgets.json`.
 
 **Run:** `2026-10-19-bootstrap`
 **Report:** `.orchestrator/reports/2026-10-19-bootstrap.md`
-**Result:** Phase 0 bootstrap complete. Structural validation passed; Unity/gameplay checks were not run because no Unity project exists.
-**Human verification pending:** review of the bootstrap docs, command behavior, and the decision to begin Phase 1.
+**Result:** Phase 0 bootstrap complete. Structural validation passed; an independent read-only review found pre-checkpoint status overclaims and permission/scope issues, which were corrected before the checkpoint. Unity/gameplay checks were not run because no Unity project exists.
+**Human verification pending:** review of the bootstrap docs, command behavior, and the decision to begin Phase 1 (`LL-P0-009`, non-blocking).
 
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then start `LL-P1-001`. Do not replay bootstrap file creation.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then start `LL-P1-001`. Do not replay bootstrap file creation or checkpoint work. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 

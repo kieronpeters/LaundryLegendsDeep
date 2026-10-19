@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "phase": 0,
   "name": "Project bootstrap",
-  "status": "in_progress",
-  "updatedAt": "2026-10-19T19:45:00+08:00",
+  "status": "complete",
+  "updatedAt": "2026-10-19T20:28:00+08:00",
   "tasks": [
     {
       "id": "LL-P0-001",
@@ -193,7 +193,7 @@
     {
       "id": "LL-P0-008",
       "title": "Validate bootstrap and create initial Git checkpoint",
-      "status": "in_progress",
+      "status": "complete",
       "priority": 8,
       "owner": "build",
       "dependsOn": ["LL-P0-004", "LL-P0-005", "LL-P0-006", "LL-P0-007"],
@@ -203,21 +203,21 @@
       "checks": [
         {
           "name": "Bootstrap validator",
-          "status": "pending",
-          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\tools\\validate-bootstrap.ps1",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\tools\\validate-bootstrap.ps1 -PreCheckpoint",
+          "evidence": "Passed 2026-10-19 before checkpoint; full post-checkpoint validation runs after tag creation"
         },
         {
           "name": "Git checkpoint",
-          "status": "pending",
-          "command": "git status; git commit; git tag bootstrap-v0.1",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "git commit; git tag bootstrap-v0.1",
+          "evidence": "Baseline commit b78218cccfeea741d3d227ffa95e679e9ba92a72; annotated tag bootstrap-v0.1 created at the state-record commit"
         }
       ],
-      "result": null,
+      "result": "Bootstrap commit and tag created; state/docs updated with the baseline commit.",
       "retryCount": 0,
       "startedAt": "2026-10-19T19:45:00+08:00",
-      "completedAt": null
+      "completedAt": "2026-10-19T20:28:00+08:00"
     },
     {
       "id": "LL-P0-009",
@@ -237,7 +237,7 @@
           "evidence": "Non-blocking for Phase 1 preparation; required before relying on unverified Unity automation"
         }
       ],
-      "result": null,
+      "result": "Pending human review; non-blocking for Phase 1 preparation.",
       "retryCount": 0,
       "startedAt": null,
       "completedAt": null
