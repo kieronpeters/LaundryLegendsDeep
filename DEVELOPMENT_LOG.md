@@ -149,3 +149,26 @@ An early `-createProject` attempt passed an unquoted path containing spaces. Uni
 ### Next
 
 `LL-P1-003` — create the `Assets/LaundryLegends` folder structure and runtime/editor/test assembly definitions.
+
+## 2026-10-19 — LL-P1-003 folder structure and assemblies
+
+**Phase:** 1 — Unity foundation
+**Task:** `LL-P1-003`
+**Status:** Complete
+
+### Created
+
+- 33 directories under `Assets/LaundryLegends`: Art (characters/environment/props/materials/textures), Audio (ambience/music/SFX/UI), Prefabs (gameplay/environment/UI), Scenes, Scripts (Core/Player/Interaction/Laundry/Customers/Economy/Arcade/UI/Save), Settings, ScriptableObjects, UI, Editor, Tests (EditMode/PlayMode).
+- Runtime assembly: `Scripts/LaundryLegends.Runtime.asmdef` with no references.
+- Editor assembly: `Editor/LaundryLegends.Editor.asmdef`, editor-only, references runtime.
+- Test assemblies: EditMode and PlayMode, both referencing runtime, `UnityEngine.TestRunner`, `UnityEditor.TestRunner`, and `nunit.framework.dll`, gated by `UNITY_INCLUDE_TESTS`.
+- `Scripts/Core/RuntimeAssemblyInfo.cs` marker type.
+
+### Checks and evidence
+
+- `TestResults/unity-asmdefs.log` — Unity import exit `0`; `LaundryLegends.Runtime.dll` built; no compiler errors.
+- Unity reported that the editor and test assemblies “will not be compiled” because they have no scripts. This is expected at this stage.
+
+### Next
+
+`LL-P1-004` — create the Bootstrap, MainMenu, and Laundromat scenes and register them in build settings.

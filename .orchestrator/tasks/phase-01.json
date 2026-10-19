@@ -121,7 +121,7 @@
     {
       "id": "LL-P1-003",
       "title": "Create folder structure and assembly definitions",
-      "status": "ready",
+      "status": "complete",
       "priority": 3,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P1-002"],
@@ -137,20 +137,43 @@
       "checks": [
         {
           "name": "Assembly compile",
-          "status": "pending",
-          "command": "Unity batch-mode compile",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "Unity.exe -batchmode -quit -nographics -projectPath <root> -logFile TestResults/unity-asmdefs.log",
+          "evidence": "Exit code 0; LaundryLegends.Runtime.dll built. Editor/EditMode/PlayMode assemblies are declared but not compiled until they contain scripts (expected warning; LL-P1-008 adds tests)."
+        },
+        {
+          "name": "Assembly reference audit",
+          "status": "passed",
+          "command": "Inspect asmdef JSON",
+          "evidence": "Runtime has no references; Editor references runtime; both test assemblies reference LaundryLegends.Runtime, UnityEngine.TestRunner, UnityEditor.TestRunner, and nunit.framework.dll."
+        },
+        {
+          "name": "Folder structure",
+          "status": "passed",
+          "command": "Get-ChildItem Assets/LaundryLegends -Recurse -Directory",
+          "evidence": "33 directories covering Scripts features, Scenes, Prefabs, Art, Audio, Settings, ScriptableObjects, UI, Editor, and Tests."
         }
       ],
-      "result": null,
+      "result": {
+        "status": "success",
+        "summary": "Created the Assets/LaundryLegends feature folder tree and four assembly definitions. The runtime assembly compiled to LaundryLegends.Runtime.dll with exit code 0. Test and editor assemblies are correctly configured but intentionally empty until their first scripts/tests.",
+        "evidence": [
+          "TestResults/unity-asmdefs.log",
+          "Assets/LaundryLegends/Scripts/LaundryLegends.Runtime.asmdef",
+          "Assets/LaundryLegends/Editor/LaundryLegends.Editor.asmdef",
+          "Assets/LaundryLegends/Tests/EditMode/LaundryLegends.Tests.EditMode.asmdef",
+          "Assets/LaundryLegends/Tests/PlayMode/LaundryLegends.Tests.PlayMode.asmdef"
+        ],
+        "notes": "Unity emitted 'will not be compiled because it has no scripts' for the editor and test assemblies. This is expected at this stage and is not a compile error."
+      },
       "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "startedAt": "2026-10-19T21:15:00+08:00",
+      "completedAt": "2026-10-19T21:24:00+08:00"
     },
     {
       "id": "LL-P1-004",
       "title": "Create scenes and build settings",
-      "status": "planned",
+      "status": "ready",
       "priority": 4,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P1-003"],
