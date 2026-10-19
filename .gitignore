@@ -1,0 +1,104 @@
+# ---------------------------------------------------------------------------
+# Laundry Legends — repository ignore rules
+# Keep source, documentation, Unity project settings, and asset metadata.
+# Ignore generated caches, builds, local tool state, and credentials.
+# ---------------------------------------------------------------------------
+
+# Unity generated / local-only directories
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/*
+![Bb]uilds/.gitkeep
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+*.apk
+*.aab
+*.unitypackage
+
+# Unity / IDE generated files
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.unityproj
+*.booproj
+*.svd
+*.opendb
+*.VC.db
+*.VC.opendb
+.vs/
+.idea/
+.vscode/
+ExportedObj/
+sysinfo.txt
+crashlytics-build.properties
+
+# Unity crash / log artifacts
+*.stacktrace
+*.log
+Logs/
+Builds/*.log
+
+# Test and profiling output (keep directory marker)
+TestResults/*
+!TestResults/.gitkeep
+Profiler/
+MemoryCaptures/
+
+# Local orchestration state and approval cache
+.orchestrator/worktrees/
+.orchestrator/*.local
+.orchestrator/**/*.local
+.orchestrator/reports/*.private.md
+.orchestrator/approvals.local.json
+.orchestrator/tmp/
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+secrets/
+*.secret
+*.secrets
+credentials.json
+auth.json
+*.pem
+*.key
+
+# Tool / package caches that must not be committed
+.npm/
+node_modules/
+.pnpm-store/
+.cache/
+.pytest_cache/
+__pycache__/
+*.pyc
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+
+# Local recordings and captures (large binaries)
+Captures/
+Screenshots/
+Recordings/

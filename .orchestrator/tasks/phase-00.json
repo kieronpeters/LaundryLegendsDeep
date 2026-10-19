@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "phase": 0,
+  "name": "Project bootstrap",
+  "status": "in_progress",
+  "updatedAt": "2026-10-19T19:45:00+08:00",
+  "tasks": [
+    {
+      "id": "LL-P0-001",
+      "title": "Verify workspace and preserve existing user data",
+      "status": "complete",
+      "priority": 1,
+      "owner": "build",
+      "dependsOn": [],
+      "objective": "Confirm the project root exists, is the intended directory, and is empty before creating files.",
+      "scope": ["Read-only inspection of the project root"],
+      "acceptance": ["Project root confirmed", "Existing contents identified", "No user data overwritten"],
+      "checks": [
+        {
+          "name": "Workspace listing",
+          "status": "passed",
+          "command": "Get-Location; Get-ChildItem -Force",
+          "evidence": "Root confirmed; no files or subdirectories present before bootstrap"
+        }
+      ],
+      "result": "Empty workspace confirmed.",
+      "retryCount": 0,
+      "startedAt": "2026-10-19T19:20:00+08:00",
+      "completedAt": "2026-10-19T19:21:00+08:00"
+    },
+    {
+      "id": "LL-P0-002",
+      "title": "Verify OpenCode, model, agent, and tool capabilities",
+      "status": "complete",
+      "priority": 2,
+      "owner": "build",
+      "dependsOn": ["LL-P0-001"],
+      "objective": "Record verified OpenCode version, model/provider, subagent support, tools, MCP/plugins, and permission model without exposing secrets.",
+      "scope": ["Read-only OpenCode CLI/API/config inspection"],
+      "acceptance": ["Version recorded", "Model verified", "Subagent/tool capabilities recorded", "No secrets exposed"],
+      "checks": [
+        {
+          "name": "OpenCode CLI/API",
+          "status": "passed",
+          "command": "opencode --version; opencode api get /api/info",
+          "evidence": "CLI 2.0.28; server 2.0.32; no MCP/plugins configured"
+        },
+        {
+          "name": "Model catalog",
+          "status": "passed",
+          "command": "opencode models tool / tools.opencode.models",
+          "evidence": "opencode/deepseek-v4.1-flash-free active and free"
+        }
+      ],
+      "result": "Capabilities verified; custom subagent files created for future sessions.",
+      "retryCount": 0,
+      "startedAt": "2026-10-19T19:21:00+08:00",
+      "completedAt": "2026-10-19T19:22:00+08:00"
+    },
+    {
+      "id": "LL-P0-003",
+      "title": "Verify Git, Unity, and toolchain availability",
+      "status": "complete",
+      "priority": 3,
+      "owner": "build",
+      "dependsOn": ["LL-P0-001"],
+      "objective": "Verify Git, Unity editors, Windows module, .NET, Node, Python, asset tools, and licensing evidence.",
+      "scope": ["Read-only toolchain inspection"],
+      "acceptance": ["Versions recorded", "Missing tools documented", "Unity version selected", "License limitation documented"],
+      "checks": [
+        {
+          "name": "Tool inventory",
+          "status": "passed",
+          "command": "Get-Command; git --version; dotnet --info; node --version; python --version",
+          "evidence": "Versions recorded in PROJECT_STATE.md"
+        },
+        {
+          "name": "Unity installation",
+          "status": "passed",
+          "command": "Inspect C:\\Program Files\\Unity\\Hub\\Editor",
+          "evidence": "6000.0.64f1 selected; Windows standalone module present"
+        },
+        {
+          "name": "Unity batch license",
+          "status": "not_run",
+          "command": "Not run during bootstrap",
+          "evidence": "Entitlement file present; actual batch launch deferred to LL-P1-001"
+        }
+      ],
+      "result": "Toolchain verified with documented gaps.",
+      "retryCount": 0,
+      "startedAt": "2026-10-19T19:22:00+08:00",
+      "completedAt": "2026-10-19T19:24:00+08:00"
+    },
+    {
+      "id": "LL-P0-004",
+      "title": "Initialize Git and Unity-aware ignore rules",
+      "status": "complete",
+      "priority": 4,
+      "owner": "build",
+      "dependsOn": ["LL-P0-001"],
+      "objective": "Create a local Git repository on main with safe ignore rules for Unity and project-local artifacts.",
+      "scope": [".git", ".gitignore"],
+      "acceptance": ["Repository initialized on main", "Ignore rules cover Unity caches/builds/secrets", "No destructive Git operations"],
+      "checks": [
+        {
+          "name": "Git initialization",
+          "status": "passed",
+          "command": "git init -b main",
+          "evidence": "Repository initialized; core.autocrlf=false set locally"
+        },
+        {
+          "name": "Ignore audit",
+          "status": "passed",
+          "command": "tools/validate-bootstrap.ps1 -PreCheckpoint; git check-ignore samples",
+          "evidence": "Validator passed 2026-10-19; Library, Temp, Logs, Builds, TestResults, .env, and worktrees ignored; Assets/Packages/ProjectSettings trackable"
+        }
+      ],
+      "result": "Repository and ignore rules verified.",
+      "retryCount": 0,
+      "startedAt": "2026-10-19T19:24:00+08:00",
+      "completedAt": "2026-10-19T19:26:00+08:00"
+    },
+    {
+      "id": "LL-P0-005",
+      "title": "Create required documentation and full roadmap",
+      "status": "complete",
+      "priority": 5,
+      "owner": "build",
+      "dependsOn": ["LL-P0-002", "LL-P0-003"],
+      "objective": "Create PROJECT_STATE, MASTER_CONTEXT, GAME_DESIGN, ARCHITECTURE, DEVELOPMENT_LOG, ROADMAP, ASSET_INVENTORY, AGENT_GUIDE, TESTING_GUIDE, and YOUTUBE_LOG.",
+      "scope": ["Root Markdown documentation"],
+      "acceptance": ["All required docs exist", "Roadmap covers Phases 0-16 with all required fields", "Confirmed and proposed design separated", "No fabricated status"],
+      "checks": [
+        {
+          "name": "Documentation presence",
+          "status": "passed",
+          "command": "tools/validate-bootstrap.ps1 -PreCheckpoint",
+          "evidence": "Required paths and Phase 0-16 roadmap headings verified 2026-10-19"
+        }
+      ],
+      "result": "Documentation created and structurally verified.",
+      "retryCount": 0,
+      "startedAt": "2026-10-19T19:26:00+08:00",
+      "completedAt": "2026-10-19T19:38:00+08:00"
+    },
+    {
+      "id": "LL-P0-006",
+      "title": "Create orchestration state, tasks, budgets, and recovery",
+      "status": "complete",
+      "priority": 6,
+      "owner": "build",
+      "dependsOn": ["LL-P0-005"],
+      "objective": "Create persistent machine-readable state, phase tasks, budgets, decision records, reports, and recovery instructions.",
+      "scope": [".orchestrator/**"],
+      "acceptance": ["state.json and task JSON parse", "Budgets configured", "Recovery procedure documented", "Phase 0/1 task queues exist"],
+      "checks": [
+        {
+          "name": "JSON parse and consistency",
+          "status": "passed",
+          "command": "tools/validate-bootstrap.ps1 -PreCheckpoint",
+          "evidence": "5 JSON documents parsed; 18 tasks checked; IDs and dependencies valid on 2026-10-19"
+        }
+      ],
+      "result": "Orchestration files created and structurally verified.",
+      "retryCount": 0,
+      "startedAt": "2026-10-19T19:38:00+08:00",
+      "completedAt": "2026-10-19T19:42:00+08:00"
+    },
+    {
+      "id": "LL-P0-007",
+      "title": "Configure project-local OpenCode agents, commands, model, and guardrails",
+      "status": "complete",
+      "priority": 7,
+      "owner": "build",
+      "dependsOn": ["LL-P0-002", "LL-P0-006"],
+      "objective": "Select the verified model, configure permissions, create specialist subagents, and expose the reusable commands.",
+      "scope": [".opencode/**", "AGENTS.md", ".orchestrator/GUARDRAILS.md"],
+      "acceptance": ["Project config parses", "Agent and command files exist", "Safe permission rules configured", "Command names documented"],
+      "checks": [
+        {
+          "name": "Config/agent/command validation",
+          "status": "passed",
+          "command": "tools/validate-bootstrap.ps1 -PreCheckpoint; opencode debug agents",
+          "evidence": "Project config parsed; 10 commands and 4 subagents verified; OpenCode lists all custom agents; Git-write denies present for subagents"
+        }
+      ],
+      "result": "Configuration created and verified.",
+      "retryCount": 0,
+      "startedAt": "2026-10-19T19:42:00+08:00",
+      "completedAt": "2026-10-19T19:45:00+08:00"
+    },
+    {
+      "id": "LL-P0-008",
+      "title": "Validate bootstrap and create initial Git checkpoint",
+      "status": "in_progress",
+      "priority": 8,
+      "owner": "build",
+      "dependsOn": ["LL-P0-004", "LL-P0-005", "LL-P0-006", "LL-P0-007"],
+      "objective": "Run structural validation, audit Git, commit the bootstrap, and tag the checkpoint.",
+      "scope": ["tools/**", ".orchestrator/**", "Git checkpoint/tag"],
+      "acceptance": ["Validator passes", "Git tree is clean after checkpoint", "Tag bootstrap-v0.1 exists", "Commit hash recorded"],
+      "checks": [
+        {
+          "name": "Bootstrap validator",
+          "status": "pending",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\tools\\validate-bootstrap.ps1",
+          "evidence": "Pending"
+        },
+        {
+          "name": "Git checkpoint",
+          "status": "pending",
+          "command": "git status; git commit; git tag bootstrap-v0.1",
+          "evidence": "Pending"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": "2026-10-19T19:45:00+08:00",
+      "completedAt": null
+    },
+    {
+      "id": "LL-P0-009",
+      "title": "Human review of bootstrap and Phase 1 start decision",
+      "status": "pending",
+      "priority": 9,
+      "owner": "human",
+      "dependsOn": ["LL-P0-008"],
+      "objective": "Review the bootstrap foundation, command behavior, and decision to begin Unity implementation.",
+      "scope": ["Human review"],
+      "acceptance": ["Human has reviewed the bootstrap report", "Phase 1 may start", "Any requested corrections recorded"],
+      "checks": [
+        {
+          "name": "Human review",
+          "status": "pending",
+          "command": "Human review",
+          "evidence": "Non-blocking for Phase 1 preparation; required before relying on unverified Unity automation"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
+    }
+  ]
+}

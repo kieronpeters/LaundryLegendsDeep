@@ -1,0 +1,374 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode/deepseek-v4.1-flash-free",
+  "default_agent": "build",
+  "permissions": [
+    {
+      "action": "external_directory",
+      "resource": "*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git status*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git diff*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git log*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git show*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git add*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git commit*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git branch*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git tag*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git rev-parse*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git check-ignore*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git ls-files*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git worktree list*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git worktree add*",
+      "effect": "allow"
+    },
+    {
+      "action": "edit",
+      "resource": "Packages/**",
+      "effect": "ask"
+    },
+    {
+      "action": "edit",
+      "resource": "ProjectSettings/**",
+      "effect": "ask"
+    },
+    {
+      "action": "read",
+      "resource": "*.env",
+      "effect": "ask"
+    },
+    {
+      "action": "read",
+      "resource": "*.env.*",
+      "effect": "ask"
+    },
+    {
+      "action": "read",
+      "resource": "*.env.example",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git push*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git reset --hard*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git clean*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git restore*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git checkout --*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git branch -D*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git branch -d*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git rebase*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git filter-branch*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git gc*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git prune*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git reflog expire*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git update-ref*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "rm *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "del *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "Remove-Item*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "rmdir*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "rd *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "Format-Volume*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "Clear-Disk*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "Initialize-Disk*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "winget *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "choco *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "scoop *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "npm install*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "npm i *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "npm uninstall*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "pip install*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "pip3 install*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "python -m pip install*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "dotnet add package*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "dotnet remove package*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "dotnet tool install*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "dotnet workload install*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "Set-ExecutionPolicy*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "gh *",
+      "effect": "deny"
+    }
+  ],
+  "agents": {
+    "general": {
+      "permissions": [
+        {
+          "action": "shell",
+          "resource": "git add*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git commit*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git tag*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git branch*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "explore": {
+      "permissions": [
+        {
+          "action": "shell",
+          "resource": "git add*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git commit*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git tag*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git branch*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "plan": {
+      "permissions": [
+        {
+          "action": "shell",
+          "resource": "git add*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git commit*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git tag*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git branch*",
+          "effect": "deny"
+        }
+      ]
+    }
+  },
+  "watcher": {
+    "ignore": [
+      "Library/**",
+      "Temp/**",
+      "Logs/**",
+      "Builds/**",
+      "TestResults/**",
+      ".orchestrator/worktrees/**"
+    ]
+  },
+  "worktree": {
+    "directory": ".orchestrator/worktrees"
+  }
+}

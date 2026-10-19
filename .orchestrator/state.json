@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "name": "Laundry Legends",
+    "root": "C:/Users/Asus/Desktop/AI Coding Test/LaundryLegends",
+    "type": "3D PC business simulation",
+    "engine": "Unity 6.0 LTS",
+    "engineVersion": "6000.0.64f1",
+    "renderPipeline": "Built-In Render Pipeline",
+    "targetPlatform": "Windows 64-bit"
+  },
+  "updatedAt": "2026-10-19T19:45:00+08:00",
+  "currentMilestone": {
+    "id": "M0",
+    "name": "Bootstrap",
+    "status": "complete"
+  },
+  "currentPhase": {
+    "number": 0,
+    "name": "Project bootstrap",
+    "status": "in_progress",
+    "file": ".orchestrator/tasks/phase-00.json"
+  },
+  "nextPhase": {
+    "number": 1,
+    "name": "Unity foundation",
+    "status": "ready",
+    "file": ".orchestrator/tasks/phase-01.json"
+  },
+  "activeTask": null,
+  "lastCompletedTask": "LL-P0-007",
+  "nextTask": "LL-P1-001",
+  "taskCounts": {
+    "complete": 7,
+    "ready": 1,
+    "inProgress": 1,
+    "failed": 0,
+    "blocked": 0,
+    "pendingApproval": 0
+  },
+  "phaseStatuses": {
+    "0": "in_progress",
+    "1": "ready",
+    "2": "planned",
+    "3": "planned",
+    "4": "planned",
+    "5": "planned",
+    "6": "planned",
+    "7": "planned",
+    "8": "planned",
+    "9": "planned",
+    "10": "planned",
+    "11": "planned",
+    "12": "planned",
+    "13": "planned",
+    "14": "planned",
+    "15": "planned",
+    "16": "planned"
+  },
+  "git": {
+    "branch": "main",
+    "checkpointTag": "bootstrap-v0.1",
+    "baselineCommit": null,
+    "remote": null,
+    "workingTree": "uncommitted_bootstrap",
+    "lastCheckpointAt": null
+  },
+  "environment": {
+    "opencodeCli": "2.0.28",
+    "opencodeServer": "2.0.32",
+    "primaryModel": "opencode/deepseek-v4.1-flash-free",
+    "globalConfigModel": "ollama/qwen3.5:4b",
+    "git": "2.55.0.windows.3",
+    "gitLfs": "3.7.1",
+    "unityHub": "43.5.0",
+    "unityEditorsInstalled": [
+      "6000.0.0f1",
+      "6000.0.64f1",
+      "6000.5.7f1"
+    ],
+    "unitySelected": "6000.0.64f1",
+    "windowsStandaloneModule": "installed for 6000.0.64f1",
+    "unityBatchLicense": "unverified",
+    "dotnetSdk": "10.0.401",
+    "node": "24.21.0",
+    "npm": "11.19.0",
+    "python": "3.15.0",
+    "missingTools": [
+      "Blender",
+      "FFmpeg",
+      "ImageMagick",
+      "GitHub CLI"
+    ],
+    "missingPythonPackages": [
+      "PIL",
+      "numpy",
+      "scipy",
+      "soundfile",
+      "trimesh"
+    ],
+    "assetGenerationToolsVerified": [],
+    "subagentsAvailable": [
+      "explore",
+      "general"
+    ],
+    "customAgentsConfigured": [
+      "ll-unity-dev",
+      "ll-designer",
+      "ll-reviewer",
+      "ll-qa"
+    ],
+    "mcpServers": [],
+    "plugins": []
+  },
+  "approvals": {
+    "pending": [],
+    "standing": [],
+    "policy": "Required for destructive operations, installs, dependency changes, broad project settings, major architecture changes, external publishing, and unclear/consequential actions."
+  },
+  "blockers": [],
+  "risks": [
+    "Unity batch-mode licensing and project creation are unverified.",
+    "No Unity project, tests, scenes, or gameplay exist yet.",
+    "No dedicated image, 3D, audio, or voice-generation tool is verified.",
+    "Asset production may require licensed external sources and approval.",
+    "Scene/prefab merge conflicts are a high-risk collaboration surface.",
+    "Global OpenCode configuration uses a local Ollama default; this project overrides it with the verified free DeepSeek model.",
+    "Free-model spend telemetry is not reliable; limits are conservative and process-based."
+  ],
+  "technicalDebt": [
+    "No Unity test harness yet.",
+    "No Git LFS patterns configured for future large assets.",
+    "Economy values are untuned proposals.",
+    "First-person perspective is provisional."
+  ],
+  "assets": {
+    "created": 0,
+    "integrated": 0,
+    "verified": 0,
+    "inventory": "ASSET_INVENTORY.md"
+  },
+  "lastRun": {
+    "id": "2026-10-19-bootstrap",
+    "report": ".orchestrator/reports/2026-10-19-bootstrap.md",
+    "status": "in_progress",
+    "startedAt": "2026-10-19T19:20:00+08:00",
+    "completedAt": null,
+    "checks": {
+      "workspace_empty": "passed",
+      "environment_inventory": "passed",
+      "git_initialized": "passed",
+      "documentation_created": "passed",
+      "orchestration_created": "passed",
+      "opencode_config_created": "passed",
+      "bootstrap_validator": "pending",
+      "git_checkpoint": "pending",
+      "unity_batch_launch": "not_run",
+      "unity_compile": "not_run",
+      "unity_tests": "not_run",
+      "playtest": "not_run",
+      "build": "not_run"
+    },
+    "filesChanged": [
+      "bootstrap documentation and configuration"
+    ]
+  },
+  "recovery": {
+    "procedure": ".orchestrator/recovery/RESUME.md",
+    "resumeTask": "LL-P1-001",
+    "doNotReplay": [
+      "LL-P0-001",
+      "LL-P0-002",
+      "LL-P0-003",
+      "LL-P0-004",
+      "LL-P0-005",
+      "LL-P0-006",
+      "LL-P0-007"
+    ]
+  }
+}

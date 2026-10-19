@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-19T19:30:00+08:00",
+  "policy": {
+    "freeModelOnly": true,
+    "paidModelRequiresApproval": true,
+    "estimatedApiSpendUsdPerRun": 0,
+    "spendTelemetry": "unavailable",
+    "note": "OpenCode stats exposes tokens/sessions but not reliable per-run billing. Conservative call/time/file limits are enforced instead. If a paid model is selected, stop and request an approved spend budget."
+  },
+  "limits": {
+    "maxModelCallsPerTask": 25,
+    "maxRepairAttemptsPerCheck": 3,
+    "maxWallClockMinutesPerRun": 120,
+    "maxQueuedTasksPerRun": 8,
+    "maxFilesChangedPerTask": 30,
+    "maxConcurrentSubagents": 2,
+    "maxBuildMinutesPerRun": 30
+  },
+  "escalation": {
+    "onApprovalGate": "Stop, record the exact action and options, and request human approval.",
+    "onBlocker": "Record the blocker, preserve the tree, and produce a resumable report.",
+    "onValidationFailure": "Attempt up to 3 root-cause repairs, then mark blocked.",
+    "onBudgetExhaustion": "Stop starting new tasks, save state, and report remaining work.",
+    "onInterruption": "Inspect Git and partial output before resuming; never blindly replay."
+  }
+}
