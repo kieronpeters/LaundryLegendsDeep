@@ -88,7 +88,7 @@ None. No game assets exist. No generator or authoring tool was used.
 | Ignore-rule and tracked-file audit | Passed | Ignore samples verified; no secrets/caches tracked before commit |
 | OpenCode agent/command discovery | Passed | `opencode debug agents` lists all 4 custom agents |
 | Independent review | Passed with corrections | Reviewer found pre-checkpoint status overclaims, subagent Git-write exposure, and scope inconsistencies; all actionable findings corrected before checkpoint |
-| Git checkpoint/tag | Passed | Baseline commit `b78218c`; tag `bootstrap-v0.1` on the state-record commit; post-checkpoint validator passed |
+| Git checkpoint/tag | Passed | Baseline commit `b78218c`; tag `bootstrap-v0.1` on checkpoint commit `da130dd`; post-checkpoint validator passed (exit 0, log `TestResults/bootstrap-validation-2026-10-19.log`) |
 
 ## Tests passed
 
@@ -117,7 +117,7 @@ These are Phase 1 or later, not omissions in the bootstrap claim.
 - **Checkpoint tag:** `bootstrap-v0.1` on the state-record commit
 - **Working tree:** clean after the final bootstrap commit
 - **Remote:** none; no push performed or authorized
-- **Post-checkpoint validation:** full `tools/validate-bootstrap.ps1` run passed; tag points at `HEAD`
+- **Post-checkpoint validation:** full `tools/validate-bootstrap.ps1` run passed with exit code 0 at 2026-10-19 20:34 (UTC+08:00); log: `TestResults/bootstrap-validation-2026-10-19.log`; tag points at checkpoint commit `da130dd`
 
 ## Independent review corrections
 
@@ -135,10 +135,12 @@ A read-only reviewer inspected the bootstrap before the checkpoint. Findings and
 - Malformed roadmap criterion and contradictory `Esc` behavior: corrected.
 - `.gitignore` unignored key-like files under `Assets/`: removed.
 - Machine state used undocumented status strings: normalized.
+- Second review: QA agent still had broad `*.md` edit access. Narrowed to `TESTING_GUIDE.md` and `.orchestrator/reports/**`; `.orchestrator/**` otherwise denied.
+- Second review: full validator evidence was not logged. Final run saved to `TestResults/bootstrap-validation-2026-10-19.log` with exit code 0.
 
 ## Review outcome
 
-Independent review completed with blocking findings before the checkpoint. All actionable findings were corrected. The final post-checkpoint validation passed, the tag points at `HEAD`, and the working tree is clean. Human review (`LL-P0-009`) remains pending and non-blocking.
+Independent review completed with blocking findings before the checkpoint. All actionable findings were corrected. A second focused review found two remaining issues: the QA agent still had broad Markdown edit access, and the full validator evidence had not been logged. Both were corrected. The final post-checkpoint validation passed with exit code 0, the tag is reachable from `HEAD`, and the working tree is clean. Human review (`LL-P0-009`) remains pending and non-blocking.
 
 ## Known risks and limitations
 

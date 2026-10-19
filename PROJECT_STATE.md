@@ -1,6 +1,6 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-19 20:28 (UTC+08:00)
+**Last updated:** 2026-10-19 20:35 (UTC+08:00)
 **Current milestone:** M0 — Bootstrap, **complete**
 **Current phase:** Phase 0 — Project bootstrap, **complete (machine-verified; human review task pending, non-blocking)**
 **Next phase:** Phase 1 — Unity foundation, **ready**
@@ -77,7 +77,8 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Branch: `main`
 - Bootstrap checkpoint tag: `bootstrap-v0.1`
 - Baseline commit: `b78218cccfeea741d3d227ffa95e679e9ba92a72` (`chore: bootstrap Laundry Legends development system`)
-- State-record commit: the documentation commit tagged `bootstrap-v0.1`
+- Checkpoint commit: `da130ddad18b633fb9bad82a3df5107168c91dd0` (`docs: record bootstrap checkpoint and completion state`)
+- Final documentation correction commit follows the checkpoint; the tag remains reachable from `HEAD`
 - Working tree: clean after the final bootstrap commit
 - Remote: none. No push performed or authorized.
 
@@ -96,7 +97,7 @@ See `.orchestrator/budgets.json`.
 
 **Run:** `2026-10-19-bootstrap`
 **Report:** `.orchestrator/reports/2026-10-19-bootstrap.md`
-**Result:** Phase 0 bootstrap complete. Structural validation passed; an independent read-only review found pre-checkpoint status overclaims and permission/scope issues, which were corrected before the checkpoint. Unity/gameplay checks were not run because no Unity project exists.
+**Result:** Phase 0 bootstrap complete. Structural validation passed with exit code 0 (log: `TestResults/bootstrap-validation-2026-10-19.log`); two independent read-only reviews found pre-checkpoint status overclaims, permission/scope issues, and evidence gaps, which were corrected. Unity/gameplay checks were not run because no Unity project exists.
 **Human verification pending:** review of the bootstrap docs, command behavior, and the decision to begin Phase 1 (`LL-P0-009`, non-blocking).
 
 ## 10. Recovery pointer

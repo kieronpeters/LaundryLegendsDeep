@@ -25,7 +25,13 @@ permissions:
     resource: "ProjectSettings/**"
     effect: deny
   - action: edit
-    resource: "*.md"
+    resource: "TESTING_GUIDE.md"
+    effect: allow
+  - action: edit
+    resource: ".orchestrator/**"
+    effect: deny
+  - action: edit
+    resource: ".orchestrator/reports/**"
     effect: allow
   - action: shell
     resource: "git add*"

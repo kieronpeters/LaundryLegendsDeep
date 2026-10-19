@@ -9,7 +9,7 @@
     "renderPipeline": "Built-In Render Pipeline",
     "targetPlatform": "Windows 64-bit"
   },
-  "updatedAt": "2026-10-19T20:28:00+08:00",
+  "updatedAt": "2026-10-19T20:35:00+08:00",
   "currentMilestone": {
     "id": "M0",
     "name": "Bootstrap",
@@ -63,6 +63,7 @@
   "git": {
     "branch": "main",
     "checkpointTag": "bootstrap-v0.1",
+    "checkpointCommit": "da130ddad18b633fb9bad82a3df5107168c91dd0",
     "baselineCommit": "b78218cccfeea741d3d227ffa95e679e9ba92a72",
     "remote": null,
     "workingTree": "clean",
@@ -156,6 +157,8 @@
       "orchestration_created": "passed",
       "opencode_config_created": "passed",
       "bootstrap_validator": "passed",
+      "bootstrap_validator_log": "TestResults/bootstrap-validation-2026-10-19.log",
+      "bootstrap_validator_exit_code": 0,
       "git_checkpoint": "passed",
       "unity_batch_launch": "not_run",
       "unity_compile": "not_run",

@@ -204,8 +204,8 @@
         {
           "name": "Bootstrap validator",
           "status": "passed",
-          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\tools\\validate-bootstrap.ps1 -PreCheckpoint",
-          "evidence": "Passed 2026-10-19 before checkpoint; full post-checkpoint validation runs after tag creation"
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\tools\\validate-bootstrap.ps1",
+          "evidence": "Pre-checkpoint and full post-checkpoint runs passed 2026-10-19; final exit code 0; log TestResults/bootstrap-validation-2026-10-19.log (20:33 UTC+08:00)"
         },
         {
           "name": "Git checkpoint",

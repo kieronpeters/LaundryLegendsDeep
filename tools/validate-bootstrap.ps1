@@ -343,8 +343,12 @@ else {
         }
         else {
             $headCommit = (git -C $root rev-parse HEAD 2>$null)
-            if ($headCommit -ne $tagCommit) {
-                Add-Error "Tag bootstrap-v0.1 does not point at HEAD ($headCommit)."
+            if ($state.git.checkpointCommit -and $tagCommit -ne $state.git.checkpointCommit) {
+                Add-Error "Tag bootstrap-v0.1 does not point at state.git.checkpointCommit ($($state.git.checkpointCommit))."
+            }
+            git -C $root merge-base --is-ancestor $tagCommit $headCommit 2>$null
+            if ($LASTEXITCODE -ne 0) {
+                Add-Error "Tag bootstrap-v0.1 is not reachable from HEAD ($headCommit)."
             }
         }
         if ($state.lastRun.status -ne 'complete') {

@@ -60,7 +60,7 @@ Chronological record of meaningful events, decisions, bugs, fixes, checks, and m
 - Initial branch: `main`.
 - Baseline commit: `b78218cccfeea741d3d227ffa95e679e9ba92a72` (`chore: bootstrap Laundry Legends development system`).
 - Bootstrap checkpoint tag: `bootstrap-v0.1` on the state-record commit.
-- Post-checkpoint validation confirms the tag points at `HEAD` and the working tree is clean.
+- Post-checkpoint validation passed with exit code 0 at 2026-10-19 20:34 (UTC+08:00); log: `TestResults/bootstrap-validation-2026-10-19.log`. The tag is reachable from `HEAD` and the working tree is clean after the documentation correction commit.
 
 ### Independent review
 
