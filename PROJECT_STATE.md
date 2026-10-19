@@ -81,7 +81,7 @@ The workspace was empty before bootstrap. No user work was overwritten. Project 
 - Bootstrap checkpoint tag: `bootstrap-v0.1` (`da130ddad18b633fb9bad82a3df5107168c91dd0`)
 - Baseline commit: `b78218cccfeea741d3d227ffa95e679e9ba92a72` (`chore: bootstrap Laundry Legends development system`)
 - Bootstrap close-out commit: `ab511d7d945307d55308f0e880f695ddecece7fc`
-- Unity project commit: the task-scoped commit containing `Packages/`, `ProjectSettings/`, this report, and the state updates. The exact hash is recorded in the follow-up state update and `git log`.
+- Unity project commit: `e244ba434ace223ff064df52b6a683615d9fb503` (`feat(unity): create and validate Unity 6.0 LTS project`).
 - Remote: none. No push performed or authorized.
 - Note: `Library/`, `Logs/`, `UserSettings/`, and `TestResults/` are ignored and not committed.
 
