@@ -177,6 +177,14 @@ Customer patience is presentation/economy input, never a permanent soft-lock.
 - UI receives read-only snapshots/events and emits intents (button presses) to the relevant service.
 - Save data is built from services, not discovered by scanning the scene at save time.
 
+### Runtime state lifetime
+
+- The `Bootstrap` scene contains one `GameSession` GameObject with `GameSession` and `BootstrapController`.
+- `GameSession.Awake` creates exactly one `GameState` and calls `DontDestroyOnLoad`; duplicate sessions destroy themselves.
+- `GameState` lives until the application quits. Scene transitions replace presentation and gameplay objects, not the session.
+- `GameSession.Instance` is a service handle only. Money, day/time, and progression remain instance fields inside `GameState`, not static globals.
+- `BootstrapController` verifies that `GameState` exists and then routes to `MainMenu`; later flow uses `SceneRouter` rather than scattered scene-name strings.
+
 ## 8. Static configuration
 
 Planned ScriptableObject types:

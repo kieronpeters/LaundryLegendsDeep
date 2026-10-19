@@ -224,12 +224,12 @@
     {
       "id": "LL-P1-005",
       "title": "Implement minimal GameState and scene routing",
-      "status": "ready",
+      "status": "in_progress",
       "priority": 5,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P1-004"],
       "objective": "Implement a simple persistent GameState foundation and route from Bootstrap to MainMenu/Laundromat.",
-      "scope": ["Assets/LaundryLegends/Scripts/Core/**", "Assets/LaundryLegends/Scenes/**"],
+      "scope": ["Assets/LaundryLegends/Scripts/Core/**", "Assets/LaundryLegends/Scenes/**", "Assets/LaundryLegends/Editor/SceneSetupTool.cs", "Assets/LaundryLegends/Tests/PlayMode/**"],
       "mustNotTouch": ["Packages/**", "ProjectSettings/**"],
       "acceptance": [
         "Bootstrap initializes services without errors",

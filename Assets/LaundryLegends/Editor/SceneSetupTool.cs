@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using LaundryLegends.Core;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -41,6 +42,7 @@ namespace LaundryLegends.Editor
             }
 
             RegisterScenesInBuildSettings();
+            ConfigureFoundationScenes();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[SceneSetup] Foundation scenes are ready.");
@@ -68,6 +70,16 @@ namespace LaundryLegends.Editor
                     {
                         failures.Add($"{scenePath}: {missingCount} missing script(s) on '{root.name}'.");
                     }
+                }
+
+                if (sceneName == "Bootstrap")
+                {
+                    RequireComponent<GameSession>(scene, scenePath, failures);
+                    RequireComponent<BootstrapController>(scene, scenePath, failures);
+                }
+                else if (sceneName == "MainMenu")
+                {
+                    RequireComponent<MainMenuController>(scene, scenePath, failures);
                 }
 
                 Debug.Log($"[SceneSetup] Opened scene without load errors: {scenePath}");
@@ -106,6 +118,81 @@ namespace LaundryLegends.Editor
             }
 
             Debug.Log("[SceneSetup] Validation passed: three scenes present, Bootstrap at index 0, no missing scripts.");
+        }
+
+        private static void ConfigureFoundationScenes()
+        {
+            ConfigureBootstrapScene();
+            ConfigureMainMenuScene();
+        }
+
+        private static void ConfigureBootstrapScene()
+        {
+            Scene scene = EditorSceneManager.OpenScene(GetScenePath("Bootstrap"), OpenSceneMode.Single);
+            GameObject bootstrapObject = FindOrCreateRoot(scene, "Bootstrap");
+
+            if (bootstrapObject.GetComponent<GameSession>() == null)
+            {
+                bootstrapObject.AddComponent<GameSession>();
+            }
+
+            if (bootstrapObject.GetComponent<BootstrapController>() == null)
+            {
+                bootstrapObject.AddComponent<BootstrapController>();
+            }
+
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            Debug.Log("[SceneSetup] Configured Bootstrap scene.");
+        }
+
+        private static void ConfigureMainMenuScene()
+        {
+            Scene scene = EditorSceneManager.OpenScene(GetScenePath("MainMenu"), OpenSceneMode.Single);
+            GameObject menuObject = FindOrCreateRoot(scene, "MainMenu");
+
+            if (menuObject.GetComponent<MainMenuController>() == null)
+            {
+                menuObject.AddComponent<MainMenuController>();
+            }
+
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            Debug.Log("[SceneSetup] Configured MainMenu scene.");
+        }
+
+        private static GameObject FindOrCreateRoot(Scene scene, string objectName)
+        {
+            foreach (GameObject root in scene.GetRootGameObjects())
+            {
+                if (root.name == objectName)
+                {
+                    return root;
+                }
+            }
+
+            return new GameObject(objectName);
+        }
+
+        private static void RequireComponent<T>(Scene scene, string scenePath, List<string> failures) where T : Component
+        {
+            if (!HasComponentInScene<T>(scene))
+            {
+                failures.Add($"{scenePath}: missing required component {typeof(T).Name}.");
+            }
+        }
+
+        private static bool HasComponentInScene<T>(Scene scene) where T : Component
+        {
+            foreach (GameObject root in scene.GetRootGameObjects())
+            {
+                if (root.GetComponentInChildren<T>(true) != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static void EnsureScenesFolderExists()

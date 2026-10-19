@@ -28,15 +28,15 @@
     "status": "planned",
     "file": ".orchestrator/tasks/phase-02.json"
   },
-  "activeTask": null,
+  "activeTask": "LL-P1-005",
   "lastCompletedTask": "LL-P1-004",
   "nextTask": "LL-P1-005",
   "taskCounts": {
     "complete": 12,
-    "ready": 1,
+    "ready": 0,
     "planned": 4,
     "pending": 1,
-    "inProgress": 0,
+    "inProgress": 1,
     "failed": 0,
     "blocked": 0,
     "pendingApproval": 0
