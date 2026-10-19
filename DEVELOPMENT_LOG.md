@@ -172,3 +172,37 @@ An early `-createProject` attempt passed an unquoted path containing spaces. Uni
 ### Next
 
 `LL-P1-004` — create the Bootstrap, MainMenu, and Laundromat scenes and register them in build settings.
+
+## 2026-10-19 — LL-P1-004 foundation scenes
+
+**Phase:** 1 — Unity foundation
+**Task:** `LL-P1-004`
+**Status:** Complete
+
+### Created
+
+- `Assets/LaundryLegends/Scenes/Bootstrap.unity`
+- `Assets/LaundryLegends/Scenes/MainMenu.unity`
+- `Assets/LaundryLegends/Scenes/Laundromat.unity`
+- `Assets/LaundryLegends/Editor/SceneSetupTool.cs` — idempotent scene creation and validation tool with menu items and batch-callable methods.
+
+### Build settings
+
+- Index 0: Bootstrap
+- Index 1: MainMenu
+- Index 2: Laundromat
+- All enabled.
+
+### Checks and evidence
+
+- `TestResults/unity-scenes-create.log` — exit `0`; three scenes created.
+- `TestResults/unity-scenes-validate.log` — exit `0`; every scene opened; no missing scripts; build order verified.
+- Only `ProjectSettings/EditorBuildSettings.asset` changed among project settings.
+
+### Notes
+
+The scenes are intentionally empty shells. Camera, player, UI, greybox, and lighting arrive in later Phase 1 tasks.
+
+### Next
+
+`LL-P1-005` — implement the minimal `GameState` foundation and scene routing.

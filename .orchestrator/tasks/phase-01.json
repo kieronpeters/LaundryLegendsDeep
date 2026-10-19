@@ -173,12 +173,12 @@
     {
       "id": "LL-P1-004",
       "title": "Create scenes and build settings",
-      "status": "ready",
+      "status": "complete",
       "priority": 4,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P1-003"],
       "objective": "Create Bootstrap, MainMenu, and Laundromat scenes and register them in build settings with Bootstrap first.",
-      "scope": ["Assets/LaundryLegends/Scenes/**", "ProjectSettings/EditorBuildSettings.asset"],
+      "scope": ["Assets/LaundryLegends/Scenes/**", "Assets/LaundryLegends/Editor/SceneSetupTool.cs", "ProjectSettings/EditorBuildSettings.asset"],
       "mustNotTouch": ["Packages/**"],
       "acceptance": [
         "Scenes open without missing scripts",
@@ -188,21 +188,43 @@
       ],
       "checks": [
         {
+          "name": "Scene creation",
+          "status": "passed",
+          "command": "Unity.exe -batchmode -quit -nographics -executeMethod LaundryLegends.Editor.SceneSetupTool.CreateFoundationScenes -logFile TestResults/unity-scenes-create.log",
+          "evidence": "Exit code 0; Bootstrap.unity, MainMenu.unity, and Laundromat.unity created."
+        },
+        {
           "name": "Scene load smoke test",
-          "status": "pending",
-          "command": "Unity batch-mode scene validation",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "Unity.exe -batchmode -quit -nographics -executeMethod LaundryLegends.Editor.SceneSetupTool.ValidateFoundationScenes -logFile TestResults/unity-scenes-validate.log",
+          "evidence": "Exit code 0; all three scenes opened without load errors; no missing scripts."
+        },
+        {
+          "name": "Build settings audit",
+          "status": "passed",
+          "command": "Inspect ProjectSettings/EditorBuildSettings.asset",
+          "evidence": "Three enabled scenes in order: Bootstrap (index 0), MainMenu (1), Laundromat (2)."
         }
       ],
-      "result": null,
+      "result": {
+        "status": "success",
+        "summary": "Created the three foundation scenes and registered them in build settings with Bootstrap first. Added a reproducible editor tool for scene setup and validation. All scenes open with no missing scripts.",
+        "evidence": [
+          "TestResults/unity-scenes-create.log",
+          "TestResults/unity-scenes-validate.log",
+          "ProjectSettings/EditorBuildSettings.asset",
+          "Assets/LaundryLegends/Editor/SceneSetupTool.cs"
+        ],
+        "notes": "Scenes are intentionally empty shells; player, camera, UI, and greybox content arrive in LL-P1-005 through LL-P1-007. The editor assembly now compiles because it contains SceneSetupTool."
+      },
       "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "startedAt": "2026-10-19T21:25:00+08:00",
+      "completedAt": "2026-10-19T21:37:00+08:00"
     },
     {
       "id": "LL-P1-005",
       "title": "Implement minimal GameState and scene routing",
-      "status": "planned",
+      "status": "ready",
       "priority": 5,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P1-004"],

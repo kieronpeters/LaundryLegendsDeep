@@ -5,7 +5,7 @@
 **Current phase:** Phase 1 — Unity foundation, **in progress**
 **Next phase:** Phase 2 — Physical laundromat, planned
 **Active task:** none
-**Next recommended task:** `LL-P1-004` — Create the Bootstrap, MainMenu, and Laundromat scenes and build settings
+**Next recommended task:** `LL-P1-005` — Implement the minimal `GameState` foundation and scene routing
 
 ## 1. Verified configuration
 
@@ -30,8 +30,8 @@
 
 ## 2. Existing project content
 
-- **Scenes:** none.
-- **Scripts:** one marker type (`Scripts/Core/RuntimeAssemblyInfo.cs`); no gameplay logic.
+- **Scenes:** `Bootstrap.unity`, `MainMenu.unity`, and `Laundromat.unity` exist as empty shells; all three are registered in build settings with Bootstrap at index 0.
+- **Scripts:** one runtime marker type (`Scripts/Core/RuntimeAssemblyInfo.cs`) and one editor tool (`Editor/SceneSetupTool.cs`); no gameplay logic.
 - **Assemblies:** `LaundryLegends.Runtime`, `LaundryLegends.Editor`, `LaundryLegends.Tests.EditMode`, `LaundryLegends.Tests.PlayMode`; the runtime assembly compiled successfully.
 - **Folders:** full `Assets/LaundryLegends` feature tree (33 directories) for art, audio, prefabs, scenes, scripts, settings, ScriptableObjects, UI, editor, and tests.
 - **Prefabs:** none.
@@ -53,13 +53,14 @@ The workspace was empty before bootstrap. No user work was overwritten. Project 
 - Unity 6.0 LTS project created at the repository root with `6000.0.64f1`, Built-In Render Pipeline, and a minimal built-in package baseline plus UGUI/TextMeshPro and Unity Test Framework.
 - Unity batch-mode launch and compile smoke check both exited `0` on 2026-10-19; logs under `TestResults/` (local-only).
 - Baseline package manifest and project settings reviewed and approved by the human: Linear color space, `LaundryLegends` / `Laundry Legends` naming, Medium quality, windowed 1920×1080 resizable, and removal of the unused `com.unity.multiplayer.center` package. Unity reopened cleanly and persisted the values.
-- `Assets/LaundryLegends` folder structure and four assembly definitions created. The runtime assembly compiled to `LaundryLegends.Runtime.dll`; editor/test assemblies are declared but empty until their first scripts/tests.
+- `Assets/LaundryLegends` folder structure and four assembly definitions created. The runtime assembly compiled to `LaundryLegends.Runtime.dll`; the editor assembly now compiles with `SceneSetupTool`; test assemblies are declared but empty until their first tests.
+- Foundation scenes created and validated: `Bootstrap`, `MainMenu`, and `Laundromat`. All open with no missing scripts; build settings contain all three with Bootstrap first.
 - No gameplay features, scenes, assets, or builds exist.
 
 ## 4. Incomplete and unverified
 
-- Scenes, gameplay scripts, prefabs, scriptable objects, and tests.
-- Editor and test assemblies have no scripts yet, so Unity does not compile them.
+- Gameplay content in scenes (camera, player, UI, greybox, lighting), gameplay scripts, prefabs, scriptable objects, and tests.
+- Test assemblies have no tests yet, so Unity does not compile them.
 - Any gameplay feature.
 - Any asset integration.
 - Any Unity test run or player build.
@@ -105,21 +106,22 @@ See `.orchestrator/budgets.json`.
 
 ## 9. Last successful development run
 
-**Run:** `2026-10-19-ll-p1-003`
-**Report:** `.orchestrator/reports/2026-10-19-ll-p1-003.md`
-**Result:** `LL-P1-003` complete. Created 33 feature directories under `Assets/LaundryLegends` and four assembly definitions. Unity imported the project with exit `0` and compiled `LaundryLegends.Runtime.dll`; no compiler errors. The editor and test assemblies are declared but intentionally empty, so Unity reports they will not compile until scripts/tests are added. No tests, scenes, playtest, or build were run.
+**Run:** `2026-10-19-ll-p1-004`
+**Report:** `.orchestrator/reports/2026-10-19-ll-p1-004.md`
+**Result:** `LL-P1-004` complete. Created empty `Bootstrap`, `MainMenu`, and `Laundromat` scenes through a reproducible editor tool and registered all three in build settings with Bootstrap first. Batch-mode validation opened every scene with no missing scripts (exit `0`). The editor assembly now compiles. No tests, playtest, or build were run.
 **Human verification pending:** manual cleanup of the stray Desktop log only.
 
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then continue with `LL-P1-004`. Do not replay `LL-P0-*` or `LL-P1-001` through `LL-P1-003`. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then continue with `LL-P1-005`. Do not replay `LL-P0-*` or `LL-P1-001` through `LL-P1-004`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 
 - Unity Personal licensing requires periodic online refresh; batch automation can fail with exit `198` for reasons unrelated to the project.
 - Project settings were edited as serialized YAML before an editor settings API existed; Unity re-serialized and preserved them, but future changes should use an editor script or the Unity UI.
 - Linear color space and Medium quality are now active; the greybox lighting must be authored and checked in Linear space.
-- The editor and test assemblies have no scripts yet, so their references are configuration-verified but not compilation-verified until `LL-P1-008`.
+- The scenes are empty shells; entering play mode shows no camera or light until `LL-P1-006`/`LL-P1-007`.
+- Test assemblies have no tests yet, so their references are configuration-verified but not compilation-verified until `LL-P1-008`.
 - The stray `C:\Users\Asus\Desktop\AI` log remains pending manual deletion.
 - The global OpenCode config points at a local Ollama model; the project config overrides it with DeepSeek. Confirm the provider remains available in future sessions.
 - No test harness exists yet; compile success is not gameplay verification.

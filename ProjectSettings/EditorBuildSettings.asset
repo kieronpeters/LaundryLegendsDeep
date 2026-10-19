@@ -4,6 +4,15 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/LaundryLegends/Scenes/Bootstrap.unity
+    guid: daa383387b7f892418a934b28e0a3c57
+  - enabled: 1
+    path: Assets/LaundryLegends/Scenes/MainMenu.unity
+    guid: cd15ae06b072fd14fbd432d9c71cc0d9
+  - enabled: 1
+    path: Assets/LaundryLegends/Scenes/Laundromat.unity
+    guid: 313cdef334223834b9d34ff0826d6e84
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
