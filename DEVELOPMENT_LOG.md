@@ -206,3 +206,64 @@ The scenes are intentionally empty shells. Camera, player, UI, greybox, and ligh
 ### Next
 
 `LL-P1-005` — implement the minimal `GameState` foundation and scene routing.
+
+## 2026-10-19 - LL-P1-005 GameState and routing
+
+**Phase:** 1 - Unity foundation
+**Task:** LL-P1-005
+**Status:** Complete (PlayMode routing test passed)
+
+### Implemented
+
+- GameState: instance-based money, day/time, and progression flags. Money has no public mutator; EconomyService will be the single writer later.
+- GameSession: one persistent session created in Bootstrap, marked DontDestroyOnLoad, duplicate-safe. Instance is a service handle, not gameplay state.
+- SceneRouter: single owner of foundation scene names and transitions.
+- BootstrapController: verifies GameState, then routes to MainMenu.
+- MainMenuController: routes to Laundromat; temporary Return-key trigger.
+- SceneSetupTool extended to add and validate the scene components.
+- ARCHITECTURE.md documents runtime state lifetime.
+
+### Checks and evidence
+
+- TestResults/unity-session-setup.log - exit 0; session components added.
+- TestResults/unity-session-validate.log - exit 0; components present, no missing scripts.
+- TestResults/playmode.xml - BootstrapRoutesThroughMainMenuToLaundromat passed.
+- TestResults/playmode.log - no error/exception lines.
+
+### Next
+
+LL-P1-006 - first-person player controller and camera.
+
+## 2026-10-19 - LL-P1-006 first-person player
+
+**Phase:** 1 - Unity foundation
+**Task:** LL-P1-006
+**Status:** Complete (automated checks; manual cursor/feel check unrun)
+
+### Implemented
+
+- FirstPersonController: CharacterController movement, gravity, mouse look, clamped pitch; legacy Input Manager only.
+- PauseController: Esc toggles pause, releases/locks the cursor, and sets Time.timeScale 0/1. OnGUI overlay is a placeholder.
+- PlayerInteractor: 3 m camera raycast, CurrentTarget/CurrentPrompt, E interaction.
+- IInteractable + SimpleInteractable placeholder contract.
+- Player.prefab with CharacterController, camera, AudioListener, and all player components.
+- PlayerSetupTool creates the prefab and adds the player, temporary floor, and directional light to Laundromat.
+- PlayerControllerTests covers movement/look, pause/resume, and interaction.
+
+### Checks and evidence
+
+- TestResults/unity-player-setup.log - exit 0; prefab and scene content created.
+- TestResults/unity-player-validate.log - exit 0; required components present; no Input System package.
+- TestResults/playmode.xml - 4/4 PlayMode tests passed.
+- TestResults/playmode.log - no error/exception lines.
+- Initial interaction test failed due to one-frame physics sync; fixed with Physics.SyncTransforms plus a two-frame wait. Retry passed.
+
+### Not performed
+
+- Manual cursor lock/release and movement-feel check.
+- Manual pause overlay button check.
+- Player build.
+
+### Next
+
+LL-P1-007 - greybox laundromat environment and lighting.

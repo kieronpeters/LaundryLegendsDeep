@@ -219,12 +219,12 @@
       },
       "retryCount": 0,
       "startedAt": "2026-10-19T21:25:00+08:00",
-      "completedAt": "2026-10-19T21:37:00+08:00"
+      "completedAt": "2026-10-19T21:29:00+08:00"
     },
     {
       "id": "LL-P1-005",
       "title": "Implement minimal GameState and scene routing",
-      "status": "in_progress",
+      "status": "complete",
       "priority": 5,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P1-004"],
@@ -240,25 +240,45 @@
       "checks": [
         {
           "name": "PlayMode scene-flow test",
-          "status": "pending",
-          "command": "Unity PlayMode test",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "Unity.exe -batchmode -projectPath <root> -runTests -testPlatform PlayMode -testResults TestResults/playmode.xml -logFile TestResults/playmode.log",
+          "evidence": "Exit code 0; BootstrapRoutesThroughMainMenuToLaundromat passed."
+        },
+        {
+          "name": "Scene component validation",
+          "status": "passed",
+          "command": "Unity.exe -batchmode -quit -nographics -executeMethod LaundryLegends.Editor.SceneSetupTool.ValidateFoundationScenes -logFile TestResults/unity-session-validate.log",
+          "evidence": "Exit code 0; Bootstrap contains GameSession + BootstrapController; MainMenu contains MainMenuController; no missing scripts."
         }
       ],
-      "result": null,
+      "result": {
+        "status": "success",
+        "summary": "Implemented instance-based GameState, a persistent GameSession created by Bootstrap, and a single SceneRouter. Bootstrap routes to MainMenu and MainMenu routes to Laundromat. A PlayMode test verifies the full route and session persistence.",
+        "evidence": [
+          "TestResults/playmode.xml",
+          "TestResults/playmode.log",
+          "TestResults/unity-session-validate.log",
+          "Assets/LaundryLegends/Scripts/Core/GameState.cs",
+          "Assets/LaundryLegends/Scripts/Core/GameSession.cs",
+          "Assets/LaundryLegends/Scripts/Core/SceneRouter.cs",
+          "Assets/LaundryLegends/Scripts/Core/BootstrapController.cs",
+          "Assets/LaundryLegends/Scripts/Core/MainMenuController.cs"
+        ],
+        "notes": "GameState has no public money mutator; EconomyService will be the single writer later. GameSession.Instance is a service handle only. ARCHITECTURE documents the lifetime."
+      },
       "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "startedAt": "2026-10-19T21:30:00+08:00",
+      "completedAt": "2026-10-19T21:36:00+08:00"
     },
     {
       "id": "LL-P1-006",
       "title": "Implement first-person movement, camera, and interaction stub",
-      "status": "planned",
+      "status": "complete",
       "priority": 6,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P1-005"],
       "objective": "Add first-person character movement, mouse look, cursor lock/release, and a raycast interaction stub using the legacy Input Manager.",
-      "scope": ["Assets/LaundryLegends/Scripts/Player/**", "Assets/LaundryLegends/Scripts/Interaction/**", "Assets/LaundryLegends/Prefabs/Gameplay/**"],
+      "scope": ["Assets/LaundryLegends/Scripts/Player/**", "Assets/LaundryLegends/Scripts/Interaction/**", "Assets/LaundryLegends/Prefabs/Gameplay/**", "Assets/LaundryLegends/Editor/PlayerSetupTool.cs", "Assets/LaundryLegends/Scenes/Laundromat.unity", "Assets/LaundryLegends/Tests/PlayMode/**"],
       "mustNotTouch": ["Packages/**", "ProjectSettings/InputManager.asset unless explicitly approved"],
       "acceptance": [
         "Player moves and looks smoothly",
@@ -268,27 +288,47 @@
       ],
       "checks": [
         {
-          "name": "PlayMode movement smoke test",
-          "status": "pending",
-          "command": "Unity PlayMode test",
-          "evidence": "Pending"
+          "name": "PlayMode player tests",
+          "status": "passed",
+          "command": "Unity.exe -batchmode -projectPath <root> -runTests -testPlatform PlayMode -testResults TestResults/playmode.xml -logFile TestResults/playmode.log",
+          "evidence": "Exit code 0; 4/4 PlayMode tests passed, including PlayerMovesAndLooks, PauseStopsTimeAndResumeRestoresIt, and InteractionRaycastFindsTargetInRange."
+        },
+        {
+          "name": "Player prefab and scene validation",
+          "status": "passed",
+          "command": "Unity.exe -batchmode -quit -nographics -executeMethod LaundryLegends.Editor.PlayerSetupTool.ValidatePlayerSetup -logFile TestResults/unity-player-validate.log",
+          "evidence": "Exit code 0; Player prefab, camera, CharacterController, pause, interaction, floor, and light present; no Input System package."
         },
         {
           "name": "Manual movement check",
-          "status": "pending",
+          "status": "not_run",
           "command": "Human playtest",
-          "evidence": "Pending"
+          "evidence": "Unrun. Cursor lock/release and subjective movement feel require a human playtest; batch tests skip cursor APIs."
         }
       ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "result": {
+        "status": "success",
+        "summary": "Implemented a CharacterController-based first-person player with mouse look, a minimal Esc pause overlay, cursor lock/release, and a camera-raycast interaction stub. Created the Player prefab and placed it in Laundromat with a temporary floor and directional light. Automated movement, look, pause, and interaction tests pass.",
+        "evidence": [
+          "TestResults/playmode.xml",
+          "TestResults/playmode.log",
+          "TestResults/unity-player-setup.log",
+          "TestResults/unity-player-validate.log",
+          "Assets/LaundryLegends/Prefabs/Gameplay/Player.prefab",
+          "Assets/LaundryLegends/Scripts/Player/FirstPersonController.cs",
+          "Assets/LaundryLegends/Scripts/Player/PauseController.cs",
+          "Assets/LaundryLegends/Scripts/Interaction/PlayerInteractor.cs"
+        ],
+        "notes": "Manual cursor/feel check remains unrun. The temporary floor and light are placeholders for LL-P1-007. No Input System package was added."
+      },
+      "retryCount": 1,
+      "startedAt": "2026-10-19T21:36:00+08:00",
+      "completedAt": "2026-10-19T21:37:00+08:00"
     },
     {
       "id": "LL-P1-007",
       "title": "Build greybox laundromat environment and lighting",
-      "status": "planned",
+      "status": "ready",
       "priority": 7,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P1-004"],
