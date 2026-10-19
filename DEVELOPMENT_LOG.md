@@ -69,3 +69,53 @@ A read-only subagent reviewed the bootstrap before the checkpoint. It found pre-
 ### Next
 
 `LL-P1-001` — create and validate the Unity 6.0 LTS project at the repository root, preserving bootstrap files, then verify the editor log before relying on batch-mode automation.
+
+## 2026-10-19 — LL-P1-001 Unity project creation
+
+**Phase:** 1 — Unity foundation
+**Task:** `LL-P1-001`
+**Status:** Complete (license refreshed by the human; batch launch and compile verified)
+
+### What happened
+
+- Initial batch probe failed with exit `198`: the Unity Personal offline license validity window had expired (`LicenseGroupOfflineValidityPeriodIsExpired`, token cache empty).
+- Unity Hub was launched; the human signed in and refreshed the license.
+- The license probe retry exited `0` and resolved entitlements.
+- Unity project created at the repository root with `6000.0.64f1`; all bootstrap files remained intact.
+- Added only the pre-approved baseline packages `com.unity.ugui` 2.0.0 (includes TextMeshPro in Unity 6) and `com.unity.test-framework` 1.6.0. Both resolved from the editor's local built-in packages; no remote download.
+- Compile smoke check exited `0` with no compiler errors.
+
+### Verified baseline
+
+- `ProjectSettings/ProjectVersion.txt`: `6000.0.64f1 (5360b7cd7953)`.
+- Built-In Render Pipeline: `m_CustomRenderPipeline: {fileID: 0}`; no URP/HDRP package.
+- Legacy Input Manager: `activeInputHandler: 0`.
+- 35 direct package dependencies; 38 resolved packages, all `builtin`.
+- `Assets/` exists but is empty.
+
+### Deviations deferred for approval
+
+- Gamma color space (planned: Linear).
+- Ultra quality default (planned: one modest preset).
+- Full-screen mode (planned: windowed).
+- `DefaultCompany` company name and `LaundryLegends` product name.
+- Unused `com.unity.multiplayer.center` editor-default package.
+
+### Checks and evidence
+
+- `TestResults/unity-create.log` — exit `0`.
+- `TestResults/unity-compile-smoke.log` — exit `0`, no errors.
+- `TestResults/unity-license-probe-2026-10-19.log` — evidence of the expired-license failure before refresh.
+- `git status` — only `Packages/` and `ProjectSettings/` added plus intended state/doc edits; bootstrap intact.
+
+### Incident
+
+An early `-createProject` attempt passed an unquoted path containing spaces. Unity truncated the project path and wrote a 995-byte log to `C:\Users\Asus\Desktop\AI`. No repository files were affected. The stray file is outside the repository; deletion was blocked by project permissions and requires cleanup approval.
+
+### Not performed
+
+- Unity tests, scene validation, playtest, and player build.
+
+### Next
+
+`LL-P1-002` — review and approve the baseline manifest and project settings.

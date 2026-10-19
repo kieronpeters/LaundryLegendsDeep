@@ -2,13 +2,13 @@
   "schemaVersion": 1,
   "phase": 1,
   "name": "Unity foundation",
-  "status": "ready",
-  "updatedAt": "2026-10-19T19:45:00+08:00",
+  "status": "in_progress",
+  "updatedAt": "2026-10-19T20:59:00+08:00",
   "tasks": [
     {
       "id": "LL-P1-001",
       "title": "Create and validate the Unity 6.0 LTS project",
-      "status": "ready",
+      "status": "complete",
       "priority": 1,
       "owner": "build",
       "dependsOn": ["LL-P0-008"],
@@ -35,32 +35,41 @@
       "checks": [
         {
           "name": "Project existence",
-          "status": "pending",
+          "status": "passed",
           "command": "Test-Path Assets, Packages, ProjectSettings",
-          "evidence": "Pending"
+          "evidence": "Assets/ (empty), Packages/, ProjectSettings/ exist at repository root"
         },
         {
           "name": "Unity batch launch",
-          "status": "pending",
+          "status": "passed",
           "command": "Unity.exe -batchmode -quit -nographics -projectPath <root> -logFile TestResults/unity-create.log",
-          "evidence": "Pending"
+          "evidence": "Exit code 0. TestResults/unity-create.log"
         },
         {
           "name": "Compile smoke check",
-          "status": "pending",
-          "command": "Unity batch-mode compile",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "Unity.exe -batchmode -quit -nographics -projectPath <root> -logFile TestResults/unity-compile-smoke.log",
+          "evidence": "Exit code 0; no error CS/Exception/Shader error matches. TestResults/unity-compile-smoke.log"
         }
       ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "result": {
+        "status": "success",
+        "summary": "Unity project created at the repository root with editor 6000.0.64f1, Built-In Render Pipeline, and a minimal built-in package baseline plus UGUI/TextMeshPro and Unity Test Framework. Batch launch and compile smoke check both exited 0.",
+        "evidence": [
+          "TestResults/unity-create.log",
+          "TestResults/unity-compile-smoke.log",
+          "TestResults/unity-license-probe-2026-10-19.log"
+        ],
+        "notes": "The first batch launch failed with exit 198 because the Unity Personal offline license validity period had expired. The human refreshed the license through Unity Hub; the retry succeeded. An unquoted project path caused a stray log file at C:\\Users\\Asus\\Desktop\\AI; deletion is blocked by project permissions and requires cleanup approval."
+      },
+      "retryCount": 1,
+      "startedAt": "2026-10-19T20:40:00+08:00",
+      "completedAt": "2026-10-19T20:59:00+08:00"
     },
     {
       "id": "LL-P1-002",
       "title": "Review and approve baseline package manifest and project settings",
-      "status": "planned",
+      "status": "ready",
       "priority": 2,
       "owner": "build",
       "dependsOn": ["LL-P1-001"],

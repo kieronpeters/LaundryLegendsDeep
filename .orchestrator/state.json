@@ -9,32 +9,32 @@
     "renderPipeline": "Built-In Render Pipeline",
     "targetPlatform": "Windows 64-bit"
   },
-  "updatedAt": "2026-10-19T20:35:00+08:00",
+  "updatedAt": "2026-10-19T21:00:00+08:00",
   "currentMilestone": {
-    "id": "M0",
-    "name": "Bootstrap",
-    "status": "complete"
+    "id": "M1",
+    "name": "Playable laundry",
+    "status": "in_progress"
   },
   "currentPhase": {
-    "number": 0,
-    "name": "Project bootstrap",
-    "status": "complete",
-    "file": ".orchestrator/tasks/phase-00.json",
-    "completionNote": "Machine-verified bootstrap complete; human review task LL-P0-009 remains pending and non-blocking."
-  },
-  "nextPhase": {
     "number": 1,
     "name": "Unity foundation",
-    "status": "ready",
-    "file": ".orchestrator/tasks/phase-01.json"
+    "status": "in_progress",
+    "file": ".orchestrator/tasks/phase-01.json",
+    "completionNote": "LL-P1-001 complete. Baseline package/settings approval (LL-P1-002) is the next gate."
+  },
+  "nextPhase": {
+    "number": 2,
+    "name": "Physical laundromat",
+    "status": "planned",
+    "file": ".orchestrator/tasks/phase-02.json"
   },
   "activeTask": null,
-  "lastCompletedTask": "LL-P0-008",
-  "nextTask": "LL-P1-001",
+  "lastCompletedTask": "LL-P1-001",
+  "nextTask": "LL-P1-002",
   "taskCounts": {
-    "complete": 8,
+    "complete": 9,
     "ready": 1,
-    "planned": 8,
+    "planned": 7,
     "pending": 1,
     "inProgress": 0,
     "failed": 0,
@@ -43,7 +43,7 @@
   },
   "phaseStatuses": {
     "0": "complete",
-    "1": "ready",
+    "1": "in_progress",
     "2": "planned",
     "3": "planned",
     "4": "planned",
@@ -84,7 +84,7 @@
     ],
     "unitySelected": "6000.0.64f1",
     "windowsStandaloneModule": "installed for 6000.0.64f1",
-    "unityBatchLicense": "unverified",
+    "unityBatchLicense": "verified 2026-10-19: batch launch exit 0 after Unity Hub license refresh",
     "dotnetSdk": "10.0.401",
     "node": "24.21.0",
     "npm": "11.19.0",
@@ -117,14 +117,17 @@
     "plugins": []
   },
   "approvals": {
-    "pending": [],
+    "pending": [
+      "LL-P1-002: review the baseline package manifest and project settings before changes beyond the installed editor baseline.",
+      "Cleanup: remove the stray file C:\\Users\\Asus\\Desktop\\AI created by an unquoted Unity -logFile path; project permissions blocked deletion."
+    ],
     "standing": [],
     "policy": "Required for destructive operations, installs, dependency changes, broad project settings, major architecture changes, external publishing, and unclear/consequential actions."
   },
   "blockers": [],
   "risks": [
-    "Unity batch-mode licensing and project creation are unverified.",
-    "No Unity project, tests, scenes, or gameplay exist yet.",
+    "Unity Personal offline license validity expires periodically; it required a Unity Hub refresh on 2026-10-19 and may block batch automation again.",
+    "Unity project exists, but no tests, scenes, prefabs, or gameplay exist yet.",
     "No dedicated image, 3D, audio, or voice-generation tool is verified.",
     "Asset production may require licensed external sources and approval.",
     "Scene/prefab merge conflicts are a high-risk collaboration surface.",
@@ -144,35 +147,35 @@
     "inventory": "ASSET_INVENTORY.md"
   },
   "lastRun": {
-    "id": "2026-10-19-bootstrap",
-    "report": ".orchestrator/reports/2026-10-19-bootstrap.md",
+    "id": "2026-10-19-ll-p1-001",
+    "report": ".orchestrator/reports/2026-10-19-ll-p1-001.md",
     "status": "complete",
-    "startedAt": "2026-10-19T19:20:00+08:00",
-    "completedAt": "2026-10-19T20:28:00+08:00",
+    "startedAt": "2026-10-19T20:40:00+08:00",
+    "completedAt": "2026-10-19T20:59:00+08:00",
     "checks": {
-      "workspace_empty": "passed",
-      "environment_inventory": "passed",
-      "git_initialized": "passed",
-      "documentation_created": "passed",
-      "orchestration_created": "passed",
-      "opencode_config_created": "passed",
-      "bootstrap_validator": "passed",
-      "bootstrap_validator_log": "TestResults/bootstrap-validation-2026-10-19.log",
-      "bootstrap_validator_exit_code": 0,
-      "git_checkpoint": "passed",
-      "unity_batch_launch": "not_run",
-      "unity_compile": "not_run",
+      "unity_license": "passed_after_human_refresh",
+      "unity_project_created": "passed",
+      "unity_batch_launch": "passed",
+      "unity_compile": "passed",
       "unity_tests": "not_run",
+      "scene_validation": "not_run",
       "playtest": "not_run",
       "build": "not_run"
     },
     "filesChanged": [
-      "46 bootstrap files (documentation, configuration, orchestration, tooling)"
+      "Packages/manifest.json",
+      "Packages/packages-lock.json",
+      "ProjectSettings/ (21 generated baseline files)",
+      ".orchestrator/state.json",
+      ".orchestrator/tasks/phase-01.json",
+      ".orchestrator/reports/2026-10-19-ll-p1-001.md",
+      "PROJECT_STATE.md",
+      "DEVELOPMENT_LOG.md"
     ]
   },
   "recovery": {
     "procedure": ".orchestrator/recovery/RESUME.md",
-    "resumeTask": "LL-P1-001",
+    "resumeTask": "LL-P1-002",
     "doNotReplay": [
       "LL-P0-001",
       "LL-P0-002",
@@ -181,7 +184,8 @@
       "LL-P0-005",
       "LL-P0-006",
       "LL-P0-007",
-      "LL-P0-008"
+      "LL-P0-008",
+      "LL-P1-001"
     ]
   }
 }
