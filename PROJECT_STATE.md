@@ -5,7 +5,7 @@
 **Current phase:** Phase 1 — Unity foundation, **in progress**
 **Next phase:** Phase 2 — Physical laundromat, planned
 **Active task:** none
-**Next recommended task:** `LL-P1-002` — Review and approve the baseline package manifest and project settings
+**Next recommended task:** `LL-P1-003` — Create the folder structure and assembly definitions
 
 ## 1. Verified configuration
 
@@ -15,6 +15,9 @@
 | Render pipeline | Built-In Render Pipeline | Verified: no custom SRP asset, no URP/HDRP package |
 | Platform | Windows 64-bit | Windows standalone module installed |
 | Input | Legacy Input Manager (`activeInputHandler: 0`) | Verified in generated settings |
+| Color space | Linear | Approved and persisted 2026-10-19 |
+| Quality / display | Medium preset; windowed 1920×1080, resizable | Approved and persisted 2026-10-19 |
+| Company / product | `LaundryLegends` / `Laundry Legends` | Approved and persisted 2026-10-19 |
 | Primary model | `opencode/deepseek-v4.1-flash-free` | Verified in model catalog |
 | OpenCode | CLI `2.0.28`, server `2.0.32` | Verified |
 | Git | `2.55.0.windows.3`, branch `main` | Repository initialized; bootstrap checkpoint recorded |
@@ -47,12 +50,12 @@ The workspace was empty before bootstrap. No user work was overwritten. Project 
 - Environment/tool inventory recorded without secrets.
 - Unity 6.0 LTS project created at the repository root with `6000.0.64f1`, Built-In Render Pipeline, and a minimal built-in package baseline plus UGUI/TextMeshPro and Unity Test Framework.
 - Unity batch-mode launch and compile smoke check both exited `0` on 2026-10-19; logs under `TestResults/` (local-only).
+- Baseline package manifest and project settings reviewed and approved by the human: Linear color space, `LaundryLegends` / `Laundry Legends` naming, Medium quality, windowed 1920×1080 resizable, and removal of the unused `com.unity.multiplayer.center` package. Unity reopened cleanly and persisted the values.
 - No gameplay features, scenes, assets, or builds exist.
 
 ## 4. Incomplete and unverified
 
 - Scenes, scripts, prefabs, scriptable objects, assemblies, and tests.
-- Baseline project-settings approval and tuning (color space, naming, quality, display mode).
 - Any gameplay feature.
 - Any asset integration.
 - Any Unity test run or player build.
@@ -70,8 +73,8 @@ The workspace was empty before bootstrap. No user work was overwritten. Project 
 ## 6. Approval status
 
 - Pending approvals:
-  - `LL-P1-002`: review the baseline manifest and project settings before tuning. Specific items: Gamma→Linear color space, company/product naming, quality preset, full-screen→windowed mode, and whether to remove the unused `com.unity.multiplayer.center` package.
-  - Cleanup: delete the stray file `C:\Users\Asus\Desktop\AI` (995-byte Unity log created by an unquoted command). Project permissions blocked deletion.
+  - Cleanup: delete the stray file `C:\Users\Asus\Desktop\AI` (995-byte Unity log created by an unquoted command). Project permissions blocked deletion; manual removal is required.
+- `LL-P1-002` baseline approval was granted in-session on 2026-10-19 and has been applied.
 - Human review task: `LL-P0-009` (review the bootstrap) remains pending and non-blocking.
 - Standing approvals: none beyond routine in-repository work.
 
@@ -98,20 +101,21 @@ See `.orchestrator/budgets.json`.
 
 ## 9. Last successful development run
 
-**Run:** `2026-10-19-ll-p1-001`
-**Report:** `.orchestrator/reports/2026-10-19-ll-p1-001.md`
-**Result:** `LL-P1-001` complete. Unity project created at the repository root with `6000.0.64f1`, Built-In RP, 35 direct package dependencies (all built-in/editor-bundled), and 38 resolved packages. Batch launch and compile smoke check both exited `0`. The first launch failed with exit `198` because the Unity Personal offline license had expired; the human refreshed it through Unity Hub and the retry passed. No tests, scenes, playtest, or build were run.
-**Human verification pending:** baseline manifest/settings approval (`LL-P1-002`) and cleanup of a stray Desktop log file.
+**Run:** `2026-10-19-ll-p1-002`
+**Report:** `.orchestrator/reports/2026-10-19-ll-p1-002.md`
+**Result:** `LL-P1-002` complete. Baseline manifest and settings reviewed and approved by the human. Applied Linear color space, `LaundryLegends` / `Laundry Legends` naming, Medium quality, windowed 1920×1080 resizable display, and removed the unused `com.unity.multiplayer.center` package. Unity reopened with exit `0`, resolved 37 built-in packages, persisted the settings, and produced no compile errors. No tests, scenes, playtest, or build were run.
+**Human verification pending:** manual cleanup of the stray Desktop log only.
 
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then continue with `LL-P1-002`. Do not replay `LL-P0-*` or `LL-P1-001` project creation. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then continue with `LL-P1-003`. Do not replay `LL-P0-*`, `LL-P1-001`, or `LL-P1-002`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 
 - Unity Personal licensing requires periodic online refresh; batch automation can fail with exit `198` for reasons unrelated to the project.
-- Generated project settings are first-open defaults: Gamma color space, Ultra quality, full-screen, and `DefaultCompany`; these conflict with the planned architecture until approved and changed.
-- The unused `com.unity.multiplayer.center` editor package is present from the empty-project default.
+- Project settings were edited as serialized YAML before an editor settings API existed; Unity re-serialized and preserved them, but future changes should use an editor script or the Unity UI.
+- Linear color space and Medium quality are now active; the greybox lighting must be authored and checked in Linear space.
+- The stray `C:\Users\Asus\Desktop\AI` log remains pending manual deletion.
 - The global OpenCode config points at a local Ollama model; the project config overrides it with DeepSeek. Confirm the provider remains available in future sessions.
 - No test harness exists yet; compile success is not gameplay verification.
 - The design contains proposed economy numbers that have never been tuned.

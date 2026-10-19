@@ -29,12 +29,12 @@
     "file": ".orchestrator/tasks/phase-02.json"
   },
   "activeTask": null,
-  "lastCompletedTask": "LL-P1-001",
-  "nextTask": "LL-P1-002",
+  "lastCompletedTask": "LL-P1-002",
+  "nextTask": "LL-P1-003",
   "taskCounts": {
-    "complete": 9,
+    "complete": 10,
     "ready": 1,
-    "planned": 7,
+    "planned": 6,
     "pending": 1,
     "inProgress": 0,
     "failed": 0,
@@ -119,7 +119,6 @@
   },
   "approvals": {
     "pending": [
-      "LL-P1-002: review the baseline package manifest and project settings before changes beyond the installed editor baseline.",
       "Cleanup: remove the stray file C:\\Users\\Asus\\Desktop\\AI created by an unquoted Unity -logFile path; project permissions blocked deletion."
     ],
     "standing": [],
@@ -130,6 +129,7 @@
     "Unity Personal offline license validity expires periodically; it required a Unity Hub refresh on 2026-10-19 and may block batch automation again.",
     "Unity project exists, but no tests, scenes, prefabs, or gameplay exist yet.",
     "No dedicated image, 3D, audio, or voice-generation tool is verified.",
+    "The project now uses Linear color space; future lit materials and lighting must be authored and checked for that space.",
     "Asset production may require licensed external sources and approval.",
     "Scene/prefab merge conflicts are a high-risk collaboration surface.",
     "Global OpenCode configuration uses a local Ollama default; this project overrides it with the verified free DeepSeek model.",
@@ -139,7 +139,8 @@
     "No Unity test harness yet.",
     "No Git LFS patterns configured for future large assets.",
     "Economy values are untuned proposals.",
-    "First-person perspective is provisional."
+    "First-person perspective is provisional.",
+    "Project settings were edited as serialized YAML before an editor settings API existed; re-verified by batch reopen."
   ],
   "assets": {
     "created": 0,
@@ -148,15 +149,16 @@
     "inventory": "ASSET_INVENTORY.md"
   },
   "lastRun": {
-    "id": "2026-10-19-ll-p1-001",
-    "report": ".orchestrator/reports/2026-10-19-ll-p1-001.md",
+    "id": "2026-10-19-ll-p1-002",
+    "report": ".orchestrator/reports/2026-10-19-ll-p1-002.md",
     "status": "complete",
-    "startedAt": "2026-10-19T20:40:00+08:00",
-    "completedAt": "2026-10-19T20:59:00+08:00",
+    "startedAt": "2026-10-19T21:06:00+08:00",
+    "completedAt": "2026-10-19T21:14:00+08:00",
     "checks": {
-      "unity_license": "passed_after_human_refresh",
-      "unity_project_created": "passed",
-      "unity_batch_launch": "passed",
+      "manifest_review": "passed",
+      "settings_review": "passed",
+      "human_approval": "passed",
+      "unity_reopen": "passed",
       "unity_compile": "passed",
       "unity_tests": "not_run",
       "scene_validation": "not_run",
@@ -166,17 +168,18 @@
     "filesChanged": [
       "Packages/manifest.json",
       "Packages/packages-lock.json",
-      "ProjectSettings/ (21 generated baseline files)",
+      "ProjectSettings/ProjectSettings.asset",
+      "ProjectSettings/QualitySettings.asset",
       ".orchestrator/state.json",
       ".orchestrator/tasks/phase-01.json",
-      ".orchestrator/reports/2026-10-19-ll-p1-001.md",
+      ".orchestrator/reports/2026-10-19-ll-p1-002.md",
       "PROJECT_STATE.md",
       "DEVELOPMENT_LOG.md"
     ]
   },
   "recovery": {
     "procedure": ".orchestrator/recovery/RESUME.md",
-    "resumeTask": "LL-P1-002",
+    "resumeTask": "LL-P1-003",
     "doNotReplay": [
       "LL-P0-001",
       "LL-P0-002",
@@ -186,7 +189,8 @@
       "LL-P0-006",
       "LL-P0-007",
       "LL-P0-008",
-      "LL-P1-001"
+      "LL-P1-001",
+      "LL-P1-002"
     ]
   }
 }

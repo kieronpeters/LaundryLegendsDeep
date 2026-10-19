@@ -119,3 +119,33 @@ An early `-createProject` attempt passed an unquoted path containing spaces. Uni
 ### Next
 
 `LL-P1-002` — review and approve the baseline manifest and project settings.
+
+## 2026-10-19 — LL-P1-002 baseline approval
+
+**Phase:** 1 — Unity foundation
+**Task:** `LL-P1-002`
+**Status:** Complete (human approved all recommendations)
+
+### Approved and applied
+
+- Color space: Gamma → **Linear**.
+- Company/product: `DefaultCompany` / `LaundryLegends` → **`LaundryLegends` / `Laundry Legends`**.
+- Quality: Ultra (index 5) → **Medium (index 2)**.
+- Display: full-screen window → **windowed 1920×1080, resizable**; `defaultIsNativeResolution` set to `0` so the window size applies.
+- Removed the unused `com.unity.multiplayer.center` editor-default package.
+- Kept Built-In Render Pipeline and Legacy Input Manager.
+
+### Checks and evidence
+
+- `TestResults/unity-baseline-verify.log` — Unity reopen exit `0`; lock file updated; 37 packages; no compile/exception matches.
+- Re-read settings confirmed all approved values persisted.
+- `Packages/manifest.json` now has 34 direct dependencies; no URP/HDRP or third-party runtime package.
+
+### Notes
+
+- Settings were changed by editing serialized YAML while Unity was closed, then verified by a batch reopen. Future project-settings changes should use an editor script or the Unity UI.
+- The stray Desktop log could not be deleted because the shell policy hard-denies delete commands; manual cleanup remains.
+
+### Next
+
+`LL-P1-003` — create the `Assets/LaundryLegends` folder structure and runtime/editor/test assembly definitions.
