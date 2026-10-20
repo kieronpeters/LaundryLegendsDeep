@@ -69,7 +69,7 @@ Use for interaction, machine cycles, order flow, customer flow, and scene smoke 
 | Suite | Tests | Coverage |
 |---|---:|---|
 | EditMode | 10 | `GameState` money/flags/day rules, build-settings order, and the failure-reporting probe |
-| PlayMode | 8 | scene routing, player movement/look, pause, interaction, greybox traversal, wall containment, secret door, scale, and lighting |
+| PlayMode | 9 | scene routing, player movement/look, pause, interaction, greybox traversal, storefront enter/leave, wall containment, secret door, scale, and lighting |
 
 Counts are a snapshot; use the XML `test-run` totals as the authoritative result.
 
@@ -155,6 +155,34 @@ $greybox = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
   "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.GreyboxSetupTool.ValidateGreyboxRoom -logFile `"TestResults\unity-greybox-validate.log`""
 $greybox.ExitCode
 ```
+
+### Phase 2 facade validation and capture
+
+The Phase 2 facade is additive to `GreyboxRoom.prefab`. Validate it after any room or entrance change:
+
+```powershell
+$phase2 = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.Phase2SetupTool.ValidateEntranceEnvelope -logFile `"TestResults\phase2-validate.log`""
+$phase2.ExitCode
+```
+
+If `GreyboxSetupTool.BuildGreyboxRoom` is rerun, it rebuilds the prefab from scratch; rerun `Phase2SetupTool.BuildEntranceEnvelope` afterward:
+
+```powershell
+$buildFacade = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.Phase2SetupTool.BuildEntranceEnvelope -logFile `"TestResults\phase2-build.log`""
+$buildFacade.ExitCode
+```
+
+Capture the entrance and storefront for visual review **without** `-nographics`. The ImageConversion path needs a graphics device; a `-nographics` capture crashed with exit `-1073741819` during Phase 2.
+
+```powershell
+$capture = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -projectPath `"$project`" -executeMethod LaundryLegends.Editor.Phase2SetupTool.CaptureEntranceEnvelope -logFile `"TestResults\phase2-capture.log`""
+$capture.ExitCode
+```
+
+Expected files: `TestResults/phase2-entrance.png` and `TestResults/phase2-storefront.png`. Record whether a human or only the agent inspected them; these captures are not a substitute for the Phase 2 human walkthrough.
 
 ### Reproducible batch test sequence
 

@@ -408,3 +408,43 @@ Resume LL-P1-009 with the human check. If it passes, close Phase 1 and start Pha
 ### Next
 
 `LL-P2-002` - add the entrance door, storefront windows, and threshold, then run compile, validation, EditMode/PlayMode, and capture the facade.
+
+## 2026-10-20 - LL-P2-002 storefront entrance and windows
+
+**Phase:** 2 - Physical laundromat
+**Task:** LL-P2-002
+**Status:** Complete (automated checks and agent-inspected captures; human facade review pending)
+
+### Implemented
+
+- Added `Phase2SetupTool` as an additive, idempotent facade builder, validator, and capture command.
+- Split the solid south wall into two window openings with piers, sills, headers, metal frames, mullions, and transparent glass.
+- Added entrance jambs, a header, open glass door leaves, and a 0.05 m threshold around the existing 4 m opening.
+- Added a minimal exterior ground strip and backdrop so the doorway and windows do not open onto empty space.
+- Added `Grey_Glass` (transparent) and `Grey_Sky` (emissive) placeholder materials.
+- Added a PlayMode test that walks the player into the room through the storefront and back out.
+
+### Checks and evidence
+
+- `TestResults/phase2-compile.log` - exit 0; no compiler errors.
+- `TestResults/phase2-build.log` - exit 0; facade built into the room prefab.
+- `TestResults/phase2-validate.log` - exit 0; doorway clear, window glass colliders hit, threshold low, secret door still closed.
+- `TestResults/phase2-greybox-validate.log` and `TestResults/phase2-player-validate.log` - exit 0.
+- `TestResults/phase2-editmode.xml` - 10/10 passed.
+- `TestResults/phase2-playmode.xml` - 9/9 passed, including the new entrance enter/leave test.
+- `TestResults/phase2-entrance.png` and `TestResults/phase2-storefront.png` - captured and inspected by the agent.
+
+### Repairs
+
+- The first entrance validation ray began inside the player capsule and hit the player. The ray now starts inside the doorway past the spawn capsule.
+- A `-nographics` capture crashed with `0xC0000005`. The capture succeeded without `-nographics`; the testing guide now marks graphics as required.
+
+### Not performed
+
+- Human Phase 2 facade/layout review; deferred to `LL-P2-006`.
+- Player build and performance measurement.
+- No package, project-setting, or runtime-script change.
+
+### Next
+
+`LL-P2-003` - add the waiting area, storage shelving, utility alcove, and placeholder signage.

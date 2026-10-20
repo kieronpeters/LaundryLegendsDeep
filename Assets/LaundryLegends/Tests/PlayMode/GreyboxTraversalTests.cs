@@ -92,6 +92,49 @@ namespace LaundryLegends.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator PlayerCanEnterAndLeaveThroughTheEntrance()
+        {
+            FirstPersonController player = Object.FindFirstObjectByType<FirstPersonController>();
+            Assert.IsNotNull(player, "Laundromat should contain a player.");
+
+            // Start outside the room, facing the storefront, and walk in.
+            player.transform.position = new Vector3(0f, 0.1f, -7.2f);
+            player.transform.rotation = Quaternion.identity;
+            yield return null;
+
+            float elapsed = 0f;
+            while (elapsed < 1.4f)
+            {
+                player.Move(Vector2.up);
+                yield return null;
+                elapsed += Time.deltaTime;
+            }
+
+            Assert.Greater(player.transform.position.z, -5.5f,
+                "Player should be able to enter through the storefront entrance.");
+            Assert.Greater(player.transform.position.y, -0.5f,
+                "Player should not fall through the exterior ground while entering.");
+
+            // Turn around and walk back out.
+            player.transform.position = new Vector3(0f, 0.1f, -4.5f);
+            player.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+            yield return null;
+
+            elapsed = 0f;
+            while (elapsed < 1.4f)
+            {
+                player.Move(Vector2.up);
+                yield return null;
+                elapsed += Time.deltaTime;
+            }
+
+            Assert.Less(player.transform.position.z, -6.0f,
+                "Player should be able to leave through the storefront entrance.");
+            Assert.Greater(player.transform.position.y, -0.5f,
+                "Player should not fall through the exterior ground while leaving.");
+        }
+
+        [UnityTest]
         public IEnumerator SecretDoorIsPresentAndClosed()
         {
             yield return null;

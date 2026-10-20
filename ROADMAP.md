@@ -188,9 +188,9 @@ Root documentation, `.opencode/`, `.orchestrator/`, `tools/`, `ArtSource/`, `Bui
 
 | ID | Task | Status |
 |---|---|---|
-| LL-P2-001 | Audit the greybox layout and define circulation/clearance constraints | In progress |
-| LL-P2-002 | Add entrance door, storefront windows, and threshold | Planned |
-| LL-P2-003 | Add waiting area, storage shelving, utility alcove, and signage | Planned |
+| LL-P2-001 | Audit the greybox layout and define circulation/clearance constraints | Complete |
+| LL-P2-002 | Add entrance door, storefront windows, and threshold | Complete |
+| LL-P2-003 | Add waiting area, storage shelving, utility alcove, and signage | Ready |
 | LL-P2-004 | Conceal the secret door behind a shelf/service panel | Planned |
 | LL-P2-005 | Add collision, navigation, and camera-clearance validation | Planned |
 | LL-P2-006 | Verify Phase 2 acceptance and record evidence | Planned |

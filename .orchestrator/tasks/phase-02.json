@@ -3,7 +3,7 @@
   "phase": 2,
   "name": "Physical laundromat",
   "status": "in_progress",
-  "updatedAt": "2026-10-20T10:14:00+08:00",
+  "updatedAt": "2026-10-20T10:32:00+08:00",
   "tasks": [
     {
       "id": "LL-P2-001",
@@ -72,7 +72,7 @@
     {
       "id": "LL-P2-002",
       "title": "Add entrance door, storefront windows, and threshold",
-      "status": "ready",
+      "status": "complete",
       "priority": 2,
       "owner": "build",
       "dependsOn": ["LL-P2-001"],
@@ -86,7 +86,9 @@
         "TestResults/**",
         ".orchestrator/**",
         "PROJECT_STATE.md",
-        "DEVELOPMENT_LOG.md"
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md",
+        "ASSET_INVENTORY.md"
       ],
       "mustNotTouch": [
         "Packages/**",
@@ -104,32 +106,52 @@
       "checks": [
         {
           "name": "Scene compile and validation",
-          "status": "pending",
-          "command": "Unity batch compile and GreyboxSetupTool.ValidateGreyboxRoom",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "Unity batch compile; Phase2SetupTool.ValidateEntranceEnvelope; GreyboxSetupTool.ValidateGreyboxRoom; PlayerSetupTool.ValidatePlayerSetup",
+          "evidence": "All exit 0. TestResults/phase2-compile.log, phase2-validate.log, phase2-greybox-validate.log, phase2-player-validate.log. Doorway clear, window glass colliders hit, threshold <=0.05 m, secret door collider still enabled."
         },
         {
           "name": "EditMode and PlayMode suites",
-          "status": "pending",
+          "status": "passed",
           "command": "Unity -runTests EditMode; Unity -runTests PlayMode",
-          "evidence": "Pending"
+          "evidence": "EditMode 10/10 passed; PlayMode 9/9 passed after adding an entrance enter/leave traversal test. TestResults/phase2-editmode.xml, phase2-playmode.xml."
         },
         {
           "name": "Entrance capture review",
-          "status": "pending",
-          "command": "Capture Laundromat entrance preview and inspect it",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "Phase2SetupTool.CaptureEntranceEnvelope without -nographics; inspect TestResults/phase2-entrance.png and phase2-storefront.png",
+          "evidence": "Exit 0; both captures inspected. Open glass door leaves, metal frame, flat threshold, two framed windows, and exterior backdrop are visible. Capture under -nographics crashed; rerun without it succeeded."
         }
       ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "result": {
+        "status": "success",
+        "summary": "Added a scoped storefront envelope to the existing greybox: south-wall window openings, frames and glass; an entrance frame with open glass leaves and a 0.05 m threshold; and a minimal exterior ground/backdrop. Existing room, counter, machines, folding table, lighting, and secret door were preserved.",
+        "evidence": [
+          "Assets/LaundryLegends/Editor/Phase2SetupTool.cs",
+          "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
+          "Assets/LaundryLegends/Art/Materials/Grey_Glass.mat",
+          "Assets/LaundryLegends/Art/Materials/Grey_Sky.mat",
+          "Assets/LaundryLegends/Tests/PlayMode/GreyboxTraversalTests.cs",
+          "TestResults/phase2-compile.log",
+          "TestResults/phase2-build.log",
+          "TestResults/phase2-validate.log",
+          "TestResults/phase2-greybox-validate.log",
+          "TestResults/phase2-player-validate.log",
+          "TestResults/phase2-editmode.xml",
+          "TestResults/phase2-playmode.xml",
+          "TestResults/phase2-entrance.png",
+          "TestResults/phase2-storefront.png"
+        ],
+        "notes": "The tool is idempotent and additive; Laundromat scene geometry did not need a serialized diff because the prefab instance updated automatically. Rendering captures require graphics; do not use -nographics for CaptureEntranceEnvelope. Human facade review remains part of LL-P2-006."
+      },
+      "retryCount": 1,
+      "startedAt": "2026-10-20T10:24:00+08:00",
+      "completedAt": "2026-10-20T10:32:00+08:00"
     },
     {
       "id": "LL-P2-003",
       "title": "Add waiting area, storage shelving, utility alcove, and signage",
-      "status": "planned",
+      "status": "ready",
       "priority": 3,
       "owner": "build",
       "dependsOn": ["LL-P2-002"],

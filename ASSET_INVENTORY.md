@@ -1,7 +1,7 @@
 # Laundry Legends — Asset Inventory
 
-**Last updated:** 2026-10-19
-**Status:** No game assets have been created, imported, generated, or integrated. This is the Phase 0 baseline.
+**Last updated:** 2026-10-20
+**Status:** Procedural and primitive placeholder assets exist in the Unity project. No production art, models, textures, animations, or audio have been created or imported. No external asset licenses are involved yet.
 
 ## 1. Status definitions
 
@@ -22,7 +22,10 @@ A prompt, brief, or idea is **not** an asset. Do not mark anything imported or i
 
 | Asset ID | File | Category | Purpose | Source / method | Location | License / restrictions | Dependencies | Integration | Verification | Placeholder? |
 |---|---|---|---|---|---|---|---|---|---|---|
-| — | — | — | No assets yet | — | — | — | — | — | — | — |
+| SCN-FOUNDATION-001 | `Bootstrap.unity`, `MainMenu.unity`, `Laundromat.unity` | Scenes | Boot flow, main menu, and playable laundromat | Generated in-repo by `SceneSetupTool` | `Assets/LaundryLegends/Scenes/` | Original project asset; no external license | Runtime scripts, room/player prefabs | Registered in build settings; Bootstrap at index 0 | Build-settings EditMode test, PlayMode routing test, owner-reported Phase 1 walkthrough | Yes |
+| ENV-ROOM-001 | `GreyboxRoom.prefab` | Environment | Walkable room shell, counter, machines, storefront, exterior backdrop, and secret-door foreshadowing | Generated in-repo by `GreyboxSetupTool` and `Phase2SetupTool` using Unity primitives | `Assets/LaundryLegends/Prefabs/Environment/` | Original procedural placeholder; no external license | Unity primitives, Standard shader, nine greybox materials | Placed in `Laundromat.unity` | Phase 1 validation + owner-reported walkthrough; Phase 2 facade validation and agent-inspected captures; Phase 2 human review pending | Yes |
+| GAMEPLAY-PLAYER-001 | `Player.prefab` | Player | First-person movement, camera, pause, and interaction raycast | Generated in-repo by `PlayerSetupTool` | `Assets/LaundryLegends/Prefabs/Gameplay/` | Original procedural placeholder; no external license | CharacterController, camera, runtime player scripts | Placed in `Laundromat.unity` | Automated validation/tests and owner-reported Phase 1 movement/camera check | Yes |
+| MAT-GREYBOX-001 | `Grey_Floor.mat`, `Grey_Wall.mat`, `Grey_Washer.mat`, `Grey_Dryer.mat`, `Grey_Counter.mat`, `Grey_Metal.mat`, `Grey_Secret.mat`, `Grey_Glass.mat`, `Grey_Sky.mat` | Materials | Flat placeholder surfaces for the room, machines, glazing, and exterior backdrop | Unity Standard materials created in-repo | `Assets/LaundryLegends/Art/Materials/` | Original procedural placeholder; no external license | Built-In Render Pipeline Standard shader | Assigned in room/player prefabs | Integrated; seen in Phase 2 agent captures; no final material art review | Yes |
 
 ## 3. Planned categories
 
@@ -73,3 +76,4 @@ A prompt, brief, or idea is **not** an asset. Do not mark anything imported or i
 | Date | Change | Evidence |
 |---|---|---|
 | 2026-10-19 | Inventory initialized; no assets exist | Phase 0 bootstrap |
+| 2026-10-20 | Registered the procedural placeholder scenes, room and player prefabs, and nine-material greybox set; added the Phase 2 storefront materials | `TestResults/phase1-*.log`, `TestResults/phase2-*.log`, `TestResults/phase2-entrance.png`, `TestResults/phase2-storefront.png` |
