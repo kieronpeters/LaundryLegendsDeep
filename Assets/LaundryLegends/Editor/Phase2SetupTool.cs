@@ -276,6 +276,225 @@ namespace LaundryLegends.Editor
             Debug.Log("[Phase2] Captured waiting, machine-signage, and utility previews under TestResults/.");
         }
 
+        [MenuItem("Laundry Legends/Phase 2/Build Secret Door Concealment")]
+        public static void BuildSecretConcealment()
+        {
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(RoomPrefabPath) == null)
+            {
+                throw new InvalidOperationException($"Missing room prefab: {RoomPrefabPath}");
+            }
+
+            Material metal = RequireMaterial("Grey_Metal");
+            Material counter = RequireMaterial("Grey_Counter");
+            Material sign = RequireMaterial("Grey_Sign");
+
+            GameObject contents = PrefabUtility.LoadPrefabContents(RoomPrefabPath);
+            try
+            {
+                Transform root = contents.transform;
+                RemoveChild(root, "SecretAccess");
+                BuildSecretAccess(root, metal, counter, sign);
+                PrefabUtility.SaveAsPrefabAsset(contents, RoomPrefabPath);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(contents);
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("[Phase2] Secret-door concealment built into the greybox room prefab.");
+        }
+
+        [MenuItem("Laundry Legends/Phase 2/Validate Secret Door Concealment")]
+        public static void ValidateSecretConcealment()
+        {
+            var failures = new List<string>();
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(RoomPrefabPath);
+            if (prefab == null)
+            {
+                failures.Add($"Missing room prefab: {RoomPrefabPath}");
+            }
+            else
+            {
+                ValidateSecretAccessStructure(prefab.transform, failures);
+            }
+
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(LaundromatScenePath) == null)
+            {
+                failures.Add($"Missing scene: {LaundromatScenePath}");
+            }
+            else
+            {
+                Scene scene = EditorSceneManager.OpenScene(LaundromatScenePath, OpenSceneMode.Single);
+                GameObject room = FindRoot(scene, "GreyboxRoom");
+                if (room == null)
+                {
+                    failures.Add("Laundromat has no GreyboxRoom instance.");
+                }
+                else
+                {
+                    Physics.SyncTransforms();
+                    ValidateSecretAccessScene(room, failures);
+                }
+            }
+
+            if (failures.Count > 0)
+            {
+                foreach (string failure in failures)
+                {
+                    Debug.LogError($"[Phase2] {failure}");
+                }
+
+                throw new InvalidOperationException($"Secret-door concealment validation failed with {failures.Count} issue(s).");
+            }
+
+            Debug.Log("[Phase2] Secret-door concealment validation passed: cover, foreshadowing marker, collider containment, and closed door are valid.");
+        }
+
+        [MenuItem("Laundry Legends/Phase 2/Capture Secret Door Approach")]
+        public static void CaptureSecretApproach()
+        {
+            EditorSceneManager.OpenScene(LaundromatScenePath, OpenSceneMode.Single);
+
+            // Approach from the public aisle: the cover should read as ordinary service storage.
+            CaptureView("phase2-secret-approach.png", new Vector3(3.0f, 1.7f, 3.0f), new Vector3(7.8f, 1.1f, 3.0f));
+            // Close three-quarter view: visible frame edge, casters, and service marker foreshadow the access.
+            CaptureView("phase2-secret-close.png", new Vector3(4.8f, 1.75f, 1.1f), new Vector3(7.8f, 1.3f, 3.0f));
+
+            Debug.Log("[Phase2] Captured secret-door approach and close previews under TestResults/.");
+        }
+
+        private static void BuildSecretAccess(Transform root, Material metal, Material counter, Material sign)
+        {
+            Transform group = CreateGroup(root, "SecretAccess");
+
+            // A shallow service panel bridges the door frame; the supply shelf in front hides
+            // its center while leaving the outer frame and handle side readable from close up.
+            CreateBox("SecretAccess_ServicePanel", group, new Vector3(7.70f, 1.04f, 3f), new Vector3(0.05f, 1.92f, 1.35f), metal);
+
+            Transform shelf = CreateGroup(group, "SecretAccess_Shelf");
+            shelf.localPosition = new Vector3(7.52f, 0f, 3f);
+            CreateBox("SecretAccess_Shelf_SideA", shelf, new Vector3(0f, 1f, -0.62f), new Vector3(0.34f, 1.8f, 0.06f), metal);
+            CreateBox("SecretAccess_Shelf_SideB", shelf, new Vector3(0f, 1f, 0.62f), new Vector3(0.34f, 1.8f, 0.06f), metal);
+
+            float[] shelfHeights = { 0.55f, 1f, 1.45f, 1.85f };
+            for (int i = 0; i < shelfHeights.Length; i++)
+            {
+                CreateBox($"SecretAccess_Shelf_Board_{i + 1}", shelf, new Vector3(0f, shelfHeights[i], 0f), new Vector3(0.32f, 0.04f, 1.22f), counter);
+            }
+
+            CreateCylinder("SecretAccess_Caster_FL", shelf, new Vector3(-0.10f, 0.05f, 0.52f), new Vector3(0.10f, 0.05f, 0.10f), metal);
+            CreateCylinder("SecretAccess_Caster_FR", shelf, new Vector3(0.10f, 0.05f, 0.52f), new Vector3(0.10f, 0.05f, 0.10f), metal);
+            CreateCylinder("SecretAccess_Caster_BL", shelf, new Vector3(-0.10f, 0.05f, -0.52f), new Vector3(0.10f, 0.05f, 0.10f), metal);
+            CreateCylinder("SecretAccess_Caster_BR", shelf, new Vector3(0.10f, 0.05f, -0.52f), new Vector3(0.10f, 0.05f, 0.10f), metal);
+
+            CreateBox("SecretAccess_SupplyBin", shelf, new Vector3(0f, 0.75f, 0.18f), new Vector3(0.26f, 0.26f, 0.34f), sign);
+
+            // A small, mundane service marker above the cover is the deliberate foreshadowing clue.
+            CreateSign(group, "SecretAccess_Marker", new Vector3(7.87f, 2.47f, 3f), new Vector3(0.9f, 0.18f, 0.04f), sign,
+                "SERVICE", 0.06f, 90f);
+        }
+
+        private static void ValidateSecretAccessStructure(Transform root, List<string> failures)
+        {
+            RequireChild(root, "SecretAccess", failures);
+            RequireChild(root, "SecretAccess/SecretAccess_ServicePanel", failures);
+            RequireChild(root, "SecretAccess/SecretAccess_Shelf", failures);
+            RequireChild(root, "SecretAccess/SecretAccess_Marker", failures);
+            RequireCollider(root, "SecretAccess/SecretAccess_ServicePanel", failures);
+            RequireCollider(root, "SecretAccess/SecretAccess_Shelf", failures);
+
+            Transform door = root.Find("SecretDoor_Foreshadowed");
+            Transform shelf = root.Find("SecretAccess/SecretAccess_Shelf");
+            if (door == null || shelf == null)
+            {
+                return;
+            }
+
+            Bounds doorBounds = GetBounds(door.gameObject);
+            Bounds shelfBounds = GetBounds(shelf.gameObject);
+            if (shelfBounds.min.x >= doorBounds.min.x)
+            {
+                failures.Add("Secret-access cover must sit in front of the door on the room side.");
+            }
+
+            if (shelfBounds.max.y >= doorBounds.max.y - 0.05f)
+            {
+                failures.Add("Secret-access cover should leave the top of the door frame visible.");
+            }
+
+            if (shelfBounds.min.z > doorBounds.min.z + 0.05f || shelfBounds.max.z < doorBounds.max.z - 0.05f)
+            {
+                failures.Add("Secret-access cover should span the door width.");
+            }
+
+            RequireSignText(root, "SecretAccess/SecretAccess_Marker", "SERVICE", failures);
+        }
+
+        private static void ValidateSecretAccessScene(GameObject room, List<string> failures)
+        {
+            Transform door = room.transform.Find("SecretDoor_Foreshadowed");
+            if (door == null)
+            {
+                failures.Add("SecretDoor_Foreshadowed is missing from the Laundromat scene.");
+                return;
+            }
+
+            Collider doorCollider = door.GetComponent<Collider>();
+            if (doorCollider == null || !doorCollider.enabled)
+            {
+                failures.Add("SecretDoor_Foreshadowed collider must remain enabled.");
+            }
+
+            Transform cover = room.transform.Find("SecretAccess");
+            Transform shelf = room.transform.Find("SecretAccess/SecretAccess_Shelf");
+            if (cover == null || shelf == null)
+            {
+                failures.Add("SecretAccess cover is missing from the Laundromat scene.");
+                return;
+            }
+
+            Bounds doorBounds = GetBounds(door.gameObject);
+            Bounds shelfBounds = GetBounds(shelf.gameObject);
+            if (shelfBounds.min.x >= doorBounds.min.x)
+            {
+                failures.Add("Secret-access cover must sit in front of the door on the room side.");
+            }
+
+            if (shelfBounds.max.y >= doorBounds.max.y - 0.05f)
+            {
+                failures.Add("Secret-access cover should leave the top of the door frame visible.");
+            }
+
+            if (shelfBounds.min.z > doorBounds.min.z + 0.05f || shelfBounds.max.z < doorBounds.max.z - 0.05f)
+            {
+                failures.Add("Secret-access cover should span the door width.");
+            }
+
+            // The first thing between the public aisle and the door must be the cover, not the door.
+            if (!Physics.Raycast(new Vector3(6f, 1.2f, 3f), Vector3.right, out RaycastHit hit, 3f))
+            {
+                failures.Add("No collider blocks the path from the public aisle to the secret door.");
+            }
+            else if (!hit.collider.transform.IsChildOf(cover))
+            {
+                failures.Add($"The secret door is exposed to the aisle; first hit is {hit.collider.gameObject.name}.");
+            }
+
+            // Side rays must still terminate on the frame or wall rather than an open passage.
+            CheckRay(failures, "secret-access left edge", new Vector3(6f, 1.2f, 2.3f), Vector3.right, 3f);
+            CheckRay(failures, "secret-access right edge", new Vector3(6f, 1.2f, 3.7f), Vector3.right, 3f);
+        }
+
+        private static void CheckRay(List<string> failures, string label, Vector3 origin, Vector3 direction, float distance)
+        {
+            if (!Physics.Raycast(origin, direction, out RaycastHit hit, distance))
+            {
+                failures.Add($"{label}: expected a collider within {distance:0.0} m.");
+            }
+        }
+
         private static void BuildSouthWalls(Transform root, Material wall)
         {
             // Left segment: x -8..-2, window opening at x -6.2..-3.8, y 0.9..2.4.

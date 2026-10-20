@@ -69,7 +69,7 @@ Use for interaction, machine cycles, order flow, customer flow, and scene smoke 
 | Suite | Tests | Coverage |
 |---|---:|---|
 | EditMode | 10 | `GameState` money/flags/day rules, build-settings order, and the failure-reporting probe |
-| PlayMode | 10 | scene routing, player movement/look, pause, interaction, greybox traversal, storefront enter/leave, public-zone presence/central-lane clearance, wall containment, secret door, scale, and lighting |
+| PlayMode | 11 | scene routing, player movement/look, pause, interaction, greybox traversal, storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, wall containment, secret door, scale, and lighting |
 
 Counts are a snapshot; use the XML `test-run` totals as the authoritative result.
 
@@ -209,6 +209,32 @@ $captureZones.ExitCode
 ```
 
 Expected files: `TestResults/phase2-waiting.png`, `TestResults/phase2-machine-signage.png`, and `TestResults/phase2-utility.png`. Agent inspection is recorded in the task report; human review remains part of `LL-P2-006`.
+
+### Phase 2 secret-door concealment
+
+The secret access has an additive service-panel and rolling-shelf cover. After changing the east-wall access or its cover, run:
+
+```powershell
+$buildSecret = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.Phase2SetupTool.BuildSecretConcealment -logFile `"TestResults\phase2-p4-build.log`""
+$buildSecret.ExitCode
+
+$validateSecret = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.Phase2SetupTool.ValidateSecretConcealment -logFile `"TestResults\phase2-p4-validate.log`""
+$validateSecret.ExitCode
+```
+
+`BuildSecretConcealment` is idempotent and only replaces the `SecretAccess` root. `ValidateSecretConcealment` checks the service panel, shelf, marker, colliders, door closure, and that the first collider between the public aisle and the door is the cover.
+
+Capture the approach and a three-quarter detail **without** `-nographics`:
+
+```powershell
+$captureSecret = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -projectPath `"$project`" -executeMethod LaundryLegends.Editor.Phase2SetupTool.CaptureSecretApproach -logFile `"TestResults\phase2-p4-capture.log`""
+$captureSecret.ExitCode
+```
+
+Expected files: `TestResults/phase2-secret-approach.png` and `TestResults/phase2-secret-close.png`. Record agent versus human inspection; human subtlety review remains part of `LL-P2-006`.
 
 ### Reproducible batch test sequence
 

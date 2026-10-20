@@ -489,3 +489,44 @@ Resume LL-P1-009 with the human check. If it passes, close Phase 1 and start Pha
 ### Next
 
 `LL-P2-004` - conceal the secret door behind a shelf/service panel.
+
+## 2026-10-20 - LL-P2-004 secret-door concealment
+
+**Phase:** 2 - Physical laundromat
+**Task:** LL-P2-004
+**Status:** Complete (automated checks and agent-inspected captures; human subtlety review pending)
+
+### Implemented
+
+- Added a shallow `SecretAccess_ServicePanel` across the east-wall secret door.
+- Added a rolling `SecretAccess_Shelf` in front: four boards, two side panels, four casters, and a supply bin.
+- Left the top of the dark door and the outer frame edges readable so the access is foreshadowed rather than fully hidden.
+- Added a `SERVICE` marker above the cover using the built-in `LegacyRuntime.ttf`.
+- Added `BuildSecretConcealment`, `ValidateSecretConcealment`, and `CaptureSecretApproach` to `Phase2SetupTool`.
+- Added a PlayMode test for cover placement, door-width coverage, visible top edge, marker text, and aisle-to-door occlusion.
+- No new material, package, or project-setting change.
+
+### Checks and evidence
+
+- `TestResults/phase2-p4-compile.log` - exit 0; no compiler errors.
+- `TestResults/phase2-p4-build.log` - exit 0; concealment built into the room prefab.
+- `TestResults/phase2-p4-validate.log` - exit 0; cover, marker, colliders, clearance, and closed door valid.
+- `TestResults/phase2-p4-entrance-validate.log`, `phase2-p4-public-validate.log`, `phase2-p4-greybox-validate.log`, and `phase2-p4-player-validate.log` - exit 0.
+- `TestResults/phase2-p4-editmode.xml` - 10/10 passed.
+- `TestResults/phase2-p4-playmode.xml` - 11/11 passed, including `SecretDoorIsConcealedButForeshadowed`.
+- `TestResults/phase2-secret-approach.png` and `phase2-secret-close.png` - captured and inspected by the agent.
+
+### Repairs
+
+- The initial validation measured the whole `SecretAccess` root, including the marker above the door, and would have failed the visible-top-edge check. Validation now measures the shelf body only.
+- The first close capture cropped the marker and door edge; the final three-quarter view includes both.
+
+### Not performed
+
+- Human Phase 2 concealment/subtlety review; deferred to `LL-P2-006`.
+- Player build and performance measurement.
+- No secret-room reveal or interaction logic.
+
+### Next
+
+`LL-P2-005` - add Phase 2 collision, navigation, and camera-clearance validation.

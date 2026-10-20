@@ -202,6 +202,61 @@ namespace LaundryLegends.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator SecretDoorIsConcealedButForeshadowed()
+        {
+            yield return null;
+
+            GameObject cover = GameObject.Find("SecretAccess");
+            Assert.IsNotNull(cover, "The secret access should have a service cover.");
+
+            GameObject door = GameObject.Find("SecretDoor_Foreshadowed");
+            Transform shelf = cover.transform.Find("SecretAccess_Shelf");
+            Transform panel = cover.transform.Find("SecretAccess_ServicePanel");
+            Transform marker = cover.transform.Find("SecretAccess_Marker");
+            Assert.IsNotNull(door, "Secret door should exist.");
+            Assert.IsNotNull(shelf, "Secret access should have a supply shelf.");
+            Assert.IsNotNull(panel, "Secret access should have a service panel.");
+            Assert.IsNotNull(marker, "Secret access should have a foreshadowing marker.");
+
+            Assert.IsNotNull(shelf.GetComponentInChildren<Collider>(true), "Shelf should block the access.");
+            Assert.IsNotNull(panel.GetComponentInChildren<Collider>(true), "Service panel should block the access.");
+
+            Bounds doorBounds = GetBounds(door);
+            Bounds shelfBounds = GetBounds(shelf.gameObject);
+            Assert.Less(shelfBounds.min.x, doorBounds.min.x, "Shelf should sit in front of the door.");
+            Assert.LessOrEqual(shelfBounds.min.z, doorBounds.min.z + 0.05f,
+                "Shelf should cover the left side of the door.");
+            Assert.GreaterOrEqual(shelfBounds.max.z, doorBounds.max.z - 0.05f,
+                "Shelf should cover the right side of the door.");
+            Assert.Less(shelfBounds.max.y, doorBounds.max.y - 0.05f,
+                "Shelf should leave the top of the door readable.");
+
+            TextMesh markerText = marker.GetComponentInChildren<TextMesh>(true);
+            Assert.IsNotNull(markerText, "Service marker should use readable text.");
+            StringAssert.Contains("SERVICE", markerText.text);
+
+            Assert.IsTrue(
+                Physics.Raycast(new Vector3(6f, 1.2f, 3f), Vector3.right, out RaycastHit hit, 3f),
+                "The aisle-to-door path should hit the concealment.");
+            Assert.IsTrue(hit.collider.transform.IsChildOf(cover.transform),
+                "The first thing between the aisle and door should be the cover, not the door.");
+        }
+
+        private static Bounds GetBounds(GameObject target)
+        {
+            Renderer[] renderers = target.GetComponentsInChildren<Renderer>(true);
+            Assert.IsNotEmpty(renderers, $"{target.name} should have renderers.");
+
+            Bounds bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++)
+            {
+                bounds.Encapsulate(renderers[i].bounds);
+            }
+
+            return bounds;
+        }
+
+        [UnityTest]
         public IEnumerator RoomHasPointAndDirectionalLighting()
         {
             yield return null;

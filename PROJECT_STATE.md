@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-20 11:45 (UTC+08:00)
+**Last updated:** 2026-10-20 15:50 (UTC+08:00)
 **Current milestone:** M1 — Playable laundry, **in progress**
 **Current phase:** Phase 2 — Physical laundromat, **in progress**
 **Next phase:** Phase 3 — Laundry interaction foundation, planned
-**Active task:** None — `LL-P2-003` is complete; `LL-P2-004` is ready
-**Next recommended task:** `LL-P2-004` — Conceal the secret door behind a shelf/service panel
+**Active task:** None — `LL-P2-004` is complete; `LL-P2-005` is ready
+**Next recommended task:** `LL-P2-005` — Add collision, navigation, and camera-clearance validation
 
 ## 1. Verified configuration
 
@@ -33,9 +33,9 @@
 - **Scenes:** `Bootstrap.unity`, `MainMenu.unity`, and `Laundromat.unity`. All are registered in build settings with Bootstrap at index 0. Bootstrap contains `GameSession` + `BootstrapController`; MainMenu contains `MainMenuController`; Laundromat contains a greybox room prefab, the Player prefab instance, and a directional light.
 - **Scripts:** runtime `GameState`, `GameSession`, `SceneRouter`, `BootstrapController`, `MainMenuController`, `FirstPersonController`, `PauseController`, `PlayerInteractor`, `IInteractable`, `SimpleInteractable`, and an assembly marker. Editor tools: `SceneSetupTool`, `PlayerSetupTool`, `GreyboxSetupTool`, `Phase2SetupTool`.
 - **Assemblies:** `LaundryLegends.Runtime`, `LaundryLegends.Editor`, `LaundryLegends.Tests.EditMode`, `LaundryLegends.Tests.PlayMode`. Runtime, editor, and PlayMode test assemblies compile.
-- **Prefabs:** `Prefabs/Gameplay/Player.prefab` with CharacterController, first-person controller, pause controller, interaction raycast, child camera, and AudioListener. `Prefabs/Environment/GreyboxRoom.prefab` with room shell, counter, folding table, eight-machine wall, secret door, ceiling point lights, a south storefront: window openings/frames/glass, an entrance frame with open glass leaves and threshold, a minimal exterior ground/backdrop, a south-east waiting area, west-wall storage shelving, and a north-west utility alcove with placeholder signage.
+- **Prefabs:** `Prefabs/Gameplay/Player.prefab` with CharacterController, first-person controller, pause controller, interaction raycast, child camera, and AudioListener. `Prefabs/Environment/GreyboxRoom.prefab` with room shell, counter, folding table, eight-machine wall, secret door, ceiling point lights, a south storefront (window openings/frames/glass, entrance frame with open glass leaves and threshold, and a minimal exterior ground/backdrop), a south-east waiting area, west-wall storage shelving, a north-west utility alcove with placeholder signage, and a service-panel/rolling-shelf cover in front of the secret door.
 - **Materials:** eleven flat Standard greybox materials under `Art/Materials`, including transparent `Grey_Glass`, emissive `Grey_Sky`, `Grey_Chair`, and `Grey_Sign`; no textures.
-- **Tests:** 10 EditMode tests covering `GameState`, build-settings order, and failure reporting; 10 PlayMode tests covering scene routing, player movement/look/pause/interaction, greybox traversal, storefront enter/leave, public-zone presence/clearance, wall containment, secret-door closure, scale dimensions, and lighting presence. Test assemblies are isolated from runtime.
+- **Tests:** 10 EditMode tests covering `GameState`, build-settings order, and failure reporting; 11 PlayMode tests covering scene routing, player movement/look/pause/interaction, greybox traversal, storefront enter/leave, public-zone presence/clearance, secret-door concealment, wall containment, secret-door closure, scale dimensions, and lighting presence. Test assemblies are isolated from runtime.
 - **Folders:** full `Assets/LaundryLegends` feature tree for art, audio, prefabs, scenes, scripts, settings, ScriptableObjects, UI, editor, and tests.
 - **Textures/models/audio:** none; placeholder primitives only.
 - **Unity project files:** `Packages/manifest.json` (34 direct dependencies), `Packages/packages-lock.json` (37 resolved built-in packages), and generated files under `ProjectSettings/`.
@@ -64,8 +64,9 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Greybox preview captures inspected by the agent: `TestResults/greybox-entrance.png` and `TestResults/greybox-secret.png` (local-only).
 - Phase 2 storefront: south wall split into two window openings with frames and transparent glass; entrance jambs/header, open glass door leaves, 0.05 m threshold, and a minimal exterior ground strip and backdrop. Validation passed and the agent inspected `TestResults/phase2-entrance.png` and `TestResults/phase2-storefront.png`.
 - Phase 2 public zones: two south-east waiting chairs with a side table and planter; two shallow west-wall shelving units with bins; a north-west utility alcove with a half-height divider, cabinet/sink, mop bucket, and staff-only sign; and storefront, counter, machine-wall, and window signage. Public-zone validation passed; the agent inspected `TestResults/phase2-waiting.png`, `phase2-machine-signage.png`, and `phase2-utility.png`.
+- Phase 2 secret access: a shallow service panel and rolling supply shelf cover the east-wall door while leaving the top of the dark door, outer frame edges, casters, and a `SERVICE` marker readable. Concealment validation passed; the agent inspected `TestResults/phase2-secret-approach.png` and `phase2-secret-close.png`.
 - EditMode suite: 10/10 tests passed on 2026-10-20, including an opt-in deliberate-failure probe that correctly exits `2` and records `result="Failed"`.
-- PlayMode suite: 10/10 tests passed on 2026-10-20; the added tests cover storefront enter/leave and public-zone presence/central-lane clearance. Earlier 8- and 9-test runs are preserved in their task evidence.
+- PlayMode suite: 11/11 tests passed on 2026-10-20; the added tests cover storefront enter/leave, public-zone presence/central-lane clearance, and secret-door concealment. Earlier 8-, 9-, and 10-test runs are preserved in their task evidence.
 - Batch commands, evidence paths, failure-probe steps, and test-assembly isolation documented in `TESTING_GUIDE.md`.
 - The project owner completed all six Phase 1 Game-view checks on 2026-10-20: movement/speed, camera/comfort, pause/cursor release, room layout, secret door, and lighting/readability. Recorded as owner-reported human verification in `.orchestrator/reports/2026-10-20-ll-p1-009-human-verification.md`.
 - Phase 1 is complete. Automated results and screenshots are preserved unchanged; the human confirmation is a separate addendum.
@@ -73,8 +74,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 
 ## 4. Incomplete and unverified
 
-- Phase 2 physical environment: secret-door concealment. The entrance/windows, waiting area, storage, utility alcove, and signage are implemented and automated-tested; human Phase 2 review is pending.
-- Navigation/camera-clearance validation for the expanded layout.
+- Phase 2 verification: collision/navigation/camera-clearance validation and the human layout, readability, and secret-subtlety review. The physical environment itself is implemented and automated-tested.
 - Production art, audio, UI, animations, and models.
 - Save system, economy, customers, laundry machines, orders, secret room, and arcade.
 - Player build and performance validation.
@@ -82,7 +82,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 
 ## 5. Blockers and dependencies
 
-- **No current hard blocker.** Phase 1 is complete. Phase 2 is in progress; the storefront, public zones, and signage are complete, and secret-door concealment is ready.
+- **No current hard blocker.** Phase 1 is complete. Phase 2 is in progress; the physical environment is complete and verification/validation is ready.
 - Unity batch-mode licensing was resolved on 2026-10-19 by a Unity Hub refresh; it can expire again.
 - Unity Personal offline licensing expires periodically. If batch mode fails with exit `198`, refresh the license in Unity Hub before retrying; do not treat it as a project defect.
 - Package additions and project-wide settings changes are treated as approval gates. Phase 1 uses only the installed editor baseline plus UGUI/TextMeshPro and Test Framework.
@@ -112,6 +112,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Phase 1 closeout and Phase 2 task-plan commit: `1902ce0879d7cf91ecf67c4317c605c33c39ba61`.
 - Phase 2 storefront facade commit: `b92186b`.
 - Phase 2 public-zone commit: `89a9ad4`.
+- Phase 2 secret-door concealment commit: recorded in `git log`.
 - Remote: none. No push performed or authorized.
 - Note: `Library/`, `Logs/`, `UserSettings/`, and `TestResults/` are ignored and not committed.
 - One untracked Unity-generated file exists: `ProjectSettings/PackageManagerSettings.asset`. It is preserved but not committed; it contains package-manager UI/default registry state, not a package addition. Review before deciding whether to version it.
@@ -146,29 +147,33 @@ See `.orchestrator/budgets.json`.
 **Report:** `.orchestrator/reports/2026-10-20-ll-p2-002.md`
 **Result:** Added the storefront facade to `GreyboxRoom.prefab`: two south windows with frames and glass, entrance frame and open glass leaves, a 0.05 m threshold, and a minimal exterior ground/backdrop. Compile, entrance validation, greybox validation, and player validation exited `0`; EditMode passed 10/10; PlayMode passed 9/9 including the new entrance enter/leave test. The agent inspected both facade captures.
 
-**Latest run:** `2026-10-20-ll-p2-003` - **complete**
+**Previous run:** `2026-10-20-ll-p2-003` - **complete**
 **Report:** `.orchestrator/reports/2026-10-20-ll-p2-003.md`
 **Result:** Added the south-east waiting area, west-wall storage shelving, north-west utility alcove, and placeholder storefront/counter/machine/window signage. Public-zone, entrance, greybox, and player validation exited `0`; EditMode passed 10/10; PlayMode passed 10/10 including public-zone presence and central-lane clearance. The agent inspected all three public-zone captures. Human layout review remains part of `LL-P2-006`.
 
+**Latest run:** `2026-10-20-ll-p2-004` - **complete**
+**Report:** `.orchestrator/reports/2026-10-20-ll-p2-004.md`
+**Result:** Added a shallow east-wall service panel and rolling supply shelf that conceals the secret door while leaving its top edge, outer frame, casters, and a `SERVICE` marker readable. Concealment, entrance, public-zone, greybox, and player validation exited `0`; EditMode passed 10/10; PlayMode passed 11/11 including secret-door concealment. The agent inspected both secret-access captures. Human subtlety review remains part of `LL-P2-006`.
+
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then resume `LL-P2-004` (secret-door concealment). Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, or `LL-P2-003`. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then resume `LL-P2-005` (collision, navigation, and camera-clearance validation). Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, or `LL-P2-004`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 
-- Phase 2 needs scoped scene/prefab work; preserve the existing GreyboxRoom layout and validate traversal after each change. The storefront facade, waiting area, storage, utility alcove, and signage are complete; secret-door concealment remains.
+- Phase 2 needs scoped scene/prefab work; preserve the existing GreyboxRoom layout and validate traversal after each change. The physical environment is complete; collision/navigation/camera-clearance validation and human review remain.
 - `ProjectSettings/PackageManagerSettings.asset` is untracked and Unity-generated. It was preserved but not committed; review before versioning.
 - Unity Personal licensing requires periodic online refresh; batch automation can fail with exit `198` for reasons unrelated to the project.
 - Project settings were edited as serialized YAML before an editor settings API existed; Unity re-serialized and preserved them, but future changes should use an editor script or the Unity UI.
 - Linear color space and Medium quality are active. Greybox lighting was checked by the project owner in the Game view on 2026-10-20 and reported acceptable; no measured performance data exists.
 - The greybox room, props, machines, and secret door are static placeholder primitives; no interaction or machine behavior exists.
 - The storefront glazing and open door leaves are static placeholders; there is no door interaction or animation. Phase 2 rendering captures require a graphics-capable batch run because `-nographics` crashed during capture.
-- The secret door is visual foreshadowing only; secret-room access is not implemented.
+- The secret door is visually foreshadowed and now concealed by a service panel/shelf; secret-room access and reveal logic are not implemented.
 - Four real-time point lights are unoptimized; performance has not been measured.
 - The pause overlay uses IMGUI as a placeholder; real UI arrives later.
 - Cursor lock/release and movement feel were confirmed by the project owner on 2026-10-20; batch tests still skip cursor APIs, so this remains owner-reported rather than independently reproduced.
 - `GameSession.Instance` is a static service handle; consumers should prefer explicit references where practical.
-- Test coverage is 10 EditMode and 10 PlayMode tests; it does not yet cover machine cycles, orders, economy transactions, save/load, or UI.
+- Test coverage is 10 EditMode and 11 PlayMode tests; it does not yet cover machine cycles, orders, economy transactions, save/load, or UI.
 - `FailureReportingTests` fails when `LL_FAIL_PROBE` is left set; unset it after probing.
 - The stray `C:\Users\Asus\Desktop\AI` log remains pending manual deletion.
 - The global OpenCode config points at a local Ollama model; the project config overrides it with DeepSeek. Confirm the provider remains available in future sessions.
