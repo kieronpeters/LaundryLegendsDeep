@@ -257,6 +257,82 @@ namespace LaundryLegends.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator PublicNavigationAndCameraClearanceAreValid()
+        {
+            yield return null;
+
+            GameObject room = GameObject.Find("GreyboxRoom");
+            Assert.IsNotNull(room, "Laundromat should contain the greybox room.");
+
+            AssertPathClear("entrance-to-counter", new Vector3(0f, 1.1f, -4.1f), new Vector3(-2.7f, 1.1f, -2.4f));
+            AssertPathClear("central aisle", new Vector3(0f, 1.1f, -3.8f), new Vector3(0f, 1.1f, 3.8f));
+            AssertPathClear("machine aisle", new Vector3(0f, 1.1f, 3.8f), new Vector3(5.8f, 1.1f, 3.8f));
+            AssertPathClear("east circulation", new Vector3(6.4f, 1.1f, 3.8f), new Vector3(6.7f, 1.1f, -3.6f));
+            AssertPathClear("waiting-to-central", new Vector3(6.7f, 1.1f, -3.6f), new Vector3(0f, 1.1f, -3.6f));
+            AssertPathClear("central-to-entrance", new Vector3(0f, 1.1f, -3.6f), new Vector3(0f, 1.1f, -4.1f));
+            AssertPathClear("counter-to-entrance", new Vector3(-2.7f, 1.1f, -2.4f), new Vector3(0f, 1.1f, -4.1f));
+
+            string[] critical =
+            {
+                "Counter",
+                "FoldingTable",
+                "Machine_1",
+                "WaitingArea/Waiting_Chair_1",
+                "WaitingArea/Waiting_Chair_2",
+                "WaitingArea/Waiting_SideTable",
+                "StorageWest/Storage_Shelf_1",
+                "StorageWest/Storage_Shelf_2",
+                "UtilityAlcove/Utility_Divider",
+                "UtilityAlcove/Utility_Cabinet",
+                "SecretAccess/SecretAccess_ServicePanel",
+                "SecretAccess/SecretAccess_Shelf"
+            };
+
+            foreach (string path in critical)
+            {
+                Transform target = room.transform.Find(path);
+                Assert.IsNotNull(target, $"Critical object is missing: {path}.");
+                Assert.IsNotNull(target.GetComponentInChildren<Collider>(true), $"Critical object has no collider: {path}.");
+            }
+
+            foreach (Renderer renderer in room.GetComponentsInChildren<Renderer>(true))
+            {
+                Assert.IsNotNull(renderer.sharedMaterial, $"Renderer has no material: {renderer.gameObject.name}.");
+            }
+
+            Vector3[] samples =
+            {
+                new Vector3(0f, 0f, -3.8f),
+                new Vector3(0f, 0f, 0f),
+                new Vector3(0f, 0f, 3.6f),
+                new Vector3(-2.6f, 0f, -2.3f),
+                new Vector3(2f, 0f, -3.6f),
+                new Vector3(5.8f, 0f, 3.6f),
+                new Vector3(6.4f, 0f, -3.6f),
+                new Vector3(4.5f, 0f, 3.6f)
+            };
+
+            float[] eyeHeights = { 1.5f, 1.7f };
+            foreach (Vector3 sample in samples)
+            {
+                foreach (float eyeHeight in eyeHeights)
+                {
+                    Vector3 eye = new Vector3(sample.x, eyeHeight, sample.z);
+                    Assert.IsFalse(Physics.CheckSphere(eye, 0.2f, ~0, QueryTriggerInteraction.Ignore),
+                        $"Camera clearance is blocked at ({sample.x:0.0}, {eyeHeight:0.0}, {sample.z:0.0}).");
+                }
+            }
+        }
+
+        private static void AssertPathClear(string label, Vector3 start, Vector3 end)
+        {
+            if (Physics.Linecast(start, end, out RaycastHit hit))
+            {
+                Assert.Fail($"{label} is blocked by {hit.collider.gameObject.name} at {hit.distance:0.00} m.");
+            }
+        }
+
+        [UnityTest]
         public IEnumerator RoomHasPointAndDirectionalLighting()
         {
             yield return null;

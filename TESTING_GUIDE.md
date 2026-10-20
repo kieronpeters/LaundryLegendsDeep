@@ -69,7 +69,7 @@ Use for interaction, machine cycles, order flow, customer flow, and scene smoke 
 | Suite | Tests | Coverage |
 |---|---:|---|
 | EditMode | 10 | `GameState` money/flags/day rules, build-settings order, and the failure-reporting probe |
-| PlayMode | 11 | scene routing, player movement/look, pause, interaction, greybox traversal, storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, wall containment, secret door, scale, and lighting |
+| PlayMode | 12 | scene routing, player movement/look, pause, interaction, greybox traversal, storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, public navigation/camera clearance, wall containment, secret door, scale, and lighting |
 
 Counts are a snapshot; use the XML `test-run` totals as the authoritative result.
 
@@ -235,6 +235,18 @@ $captureSecret.ExitCode
 ```
 
 Expected files: `TestResults/phase2-secret-approach.png` and `TestResults/phase2-secret-close.png`. Record agent versus human inspection; human subtlety review remains part of `LL-P2-006`.
+
+### Phase 2 navigation and camera clearance
+
+Run the public-route and camera-clearance validation after any prop, wall, entrance, or circulation change:
+
+```powershell
+$navigate = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.Phase2SetupTool.ValidatePublicNavigation -logFile `"TestResults\phase2-p5-navigation-validate.log`""
+$navigate.ExitCode
+```
+
+It checks seven public routes (entrance-to-counter, central aisle, machine aisle, east circulation, waiting-to-central, central-to-entrance, and counter-to-entrance), critical prop colliders, non-null renderer materials, missing `MonoBehaviour` references, and camera spheres at 1.5 m and 1.7 m at representative waypoints. A blocked route reports the first collider and distance. The same routes and camera samples are covered by `PublicNavigationAndCameraClearanceAreValid` in the PlayMode suite.
 
 ### Reproducible batch test sequence
 

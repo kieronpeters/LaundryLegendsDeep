@@ -297,7 +297,7 @@
     {
       "id": "LL-P2-005",
       "title": "Add Phase 2 collision, navigation, and camera-clearance validation",
-      "status": "ready",
+      "status": "complete",
       "priority": 5,
       "owner": "ll-qa",
       "dependsOn": ["LL-P2-002", "LL-P2-003", "LL-P2-004"],
@@ -308,7 +308,9 @@
         "TestResults/**",
         ".orchestrator/**",
         "PROJECT_STATE.md",
-        "DEVELOPMENT_LOG.md"
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md",
+        "ROADMAP.md"
       ],
       "mustNotTouch": [
         "Packages/**",
@@ -325,20 +327,37 @@
       "checks": [
         {
           "name": "Validation suite",
-          "status": "pending",
-          "command": "Unity batch EditMode/PlayMode tests plus scene validation",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "Phase2SetupTool.ValidatePublicNavigation; entrance/public-zone/secret/greybox/player validation; EditMode and PlayMode suites",
+          "evidence": "All validation methods exited 0. EditMode 10/10 passed; PlayMode 12/12 passed, including PublicNavigationAndCameraClearanceAreValid. Evidence: TestResults/phase2-p5-navigation-validate.log, phase2-p5-entrance-validate.log, phase2-p5-public-validate.log, phase2-p5-secret-validate.log, phase2-p5-greybox-validate.log, phase2-p5-player-validate.log, phase2-p5-editmode.xml, phase2-p5-playmode.xml."
         }
       ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "result": {
+        "status": "success",
+        "summary": "Added editor and PlayMode validation for seven public routes, critical-prop colliders, renderer materials, missing references, and 1.5 m/1.7 m camera clearance. The first route set exposed a folding-table crossing and an open-door-leaf obstruction; the routes were corrected and all checks pass.",
+        "evidence": [
+          "Assets/LaundryLegends/Editor/Phase2SetupTool.cs",
+          "Assets/LaundryLegends/Tests/PlayMode/GreyboxTraversalTests.cs",
+          "TestResults/phase2-p5-compile.log",
+          "TestResults/phase2-p5-navigation-validate.log",
+          "TestResults/phase2-p5-entrance-validate.log",
+          "TestResults/phase2-p5-public-validate.log",
+          "TestResults/phase2-p5-secret-validate.log",
+          "TestResults/phase2-p5-greybox-validate.log",
+          "TestResults/phase2-p5-player-validate.log",
+          "TestResults/phase2-p5-editmode.xml",
+          "TestResults/phase2-p5-playmode.xml"
+        ],
+        "notes": "No prefab, material, package, project-setting, runtime-script, or asset change. Routes are fixed representative paths, not a NavMesh. Human walkthrough and subtlety review remain in LL-P2-006."
+      },
+      "retryCount": 2,
+      "startedAt": "2026-10-20T15:54:00+08:00",
+      "completedAt": "2026-10-20T16:02:00+08:00"
     },
     {
       "id": "LL-P2-006",
       "title": "Verify Phase 2 acceptance and record evidence",
-      "status": "planned",
+      "status": "ready",
       "priority": 6,
       "owner": "build",
       "dependsOn": ["LL-P2-005"],

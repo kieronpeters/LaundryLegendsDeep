@@ -365,6 +365,142 @@ namespace LaundryLegends.Editor
             Debug.Log("[Phase2] Captured secret-door approach and close previews under TestResults/.");
         }
 
+        [MenuItem("Laundry Legends/Phase 2/Validate Public Navigation")]
+        public static void ValidatePublicNavigation()
+        {
+            var failures = new List<string>();
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(LaundromatScenePath) == null)
+            {
+                failures.Add($"Missing scene: {LaundromatScenePath}");
+            }
+            else
+            {
+                Scene scene = EditorSceneManager.OpenScene(LaundromatScenePath, OpenSceneMode.Single);
+                GameObject room = FindRoot(scene, "GreyboxRoom");
+                if (room == null)
+                {
+                    failures.Add("Laundromat has no GreyboxRoom instance.");
+                }
+                else
+                {
+                    Physics.SyncTransforms();
+                    ValidateNavigationRoutes(failures);
+                    ValidateCriticalColliders(room, failures);
+                    ValidateCameraClearance(failures);
+                }
+            }
+
+            if (failures.Count > 0)
+            {
+                foreach (string failure in failures)
+                {
+                    Debug.LogError($"[Phase2] {failure}");
+                }
+
+                throw new InvalidOperationException($"Public-navigation validation failed with {failures.Count} issue(s).");
+            }
+
+            Debug.Log("[Phase2] Public-navigation validation passed: routes, critical colliders, materials, and camera clearance are valid.");
+        }
+
+        private static void ValidateNavigationRoutes(List<string> failures)
+        {
+            (string Label, Vector3 Start, Vector3 End)[] routes =
+            {
+                ("entrance-to-counter", new Vector3(0f, 1.1f, -4.1f), new Vector3(-2.7f, 1.1f, -2.4f)),
+                ("central aisle", new Vector3(0f, 1.1f, -3.8f), new Vector3(0f, 1.1f, 3.8f)),
+                ("machine aisle", new Vector3(0f, 1.1f, 3.8f), new Vector3(5.8f, 1.1f, 3.8f)),
+                ("east circulation", new Vector3(6.4f, 1.1f, 3.8f), new Vector3(6.7f, 1.1f, -3.6f)),
+                ("waiting-to-central", new Vector3(6.7f, 1.1f, -3.6f), new Vector3(0f, 1.1f, -3.6f)),
+                ("central-to-entrance", new Vector3(0f, 1.1f, -3.6f), new Vector3(0f, 1.1f, -4.1f)),
+                ("counter-to-entrance", new Vector3(-2.7f, 1.1f, -2.4f), new Vector3(0f, 1.1f, -4.1f))
+            };
+
+            foreach (var route in routes)
+            {
+                if (Physics.Linecast(route.Start, route.End, out RaycastHit hit))
+                {
+                    failures.Add($"{route.Label} is blocked by {hit.collider.gameObject.name} at {hit.distance:0.00} m.");
+                }
+            }
+        }
+
+        private static void ValidateCriticalColliders(GameObject room, List<string> failures)
+        {
+            string[] critical =
+            {
+                "Counter",
+                "FoldingTable",
+                "Machine_1",
+                "WaitingArea/Waiting_Chair_1",
+                "WaitingArea/Waiting_Chair_2",
+                "WaitingArea/Waiting_SideTable",
+                "StorageWest/Storage_Shelf_1",
+                "StorageWest/Storage_Shelf_2",
+                "UtilityAlcove/Utility_Divider",
+                "UtilityAlcove/Utility_Cabinet",
+                "SecretAccess/SecretAccess_ServicePanel",
+                "SecretAccess/SecretAccess_Shelf"
+            };
+
+            foreach (string path in critical)
+            {
+                Transform target = room.transform.Find(path);
+                if (target == null)
+                {
+                    failures.Add($"Critical object is missing: {path}.");
+                }
+                else if (target.GetComponentInChildren<Collider>(true) == null)
+                {
+                    failures.Add($"Critical object has no collider: {path}.");
+                }
+            }
+
+            foreach (Renderer renderer in room.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer.sharedMaterial == null)
+                {
+                    failures.Add($"Renderer has no material: {renderer.gameObject.name}.");
+                }
+            }
+
+            foreach (MonoBehaviour behaviour in room.GetComponentsInChildren<MonoBehaviour>(true))
+            {
+                if (behaviour == null)
+                {
+                    failures.Add("Room contains a missing MonoBehaviour reference.");
+                }
+            }
+        }
+
+        private static void ValidateCameraClearance(List<string> failures)
+        {
+            Vector3[] samples =
+            {
+                new Vector3(0f, 0f, -3.8f),
+                new Vector3(0f, 0f, 0f),
+                new Vector3(0f, 0f, 3.6f),
+                new Vector3(-2.6f, 0f, -2.3f),
+                new Vector3(2f, 0f, -3.6f),
+                new Vector3(5.8f, 0f, 3.6f),
+                new Vector3(6.4f, 0f, -3.6f),
+                new Vector3(4.5f, 0f, 3.6f)
+            };
+
+            float[] eyeHeights = { 1.5f, 1.7f };
+            foreach (Vector3 sample in samples)
+            {
+                foreach (float eyeHeight in eyeHeights)
+                {
+                    Vector3 eye = new Vector3(sample.x, eyeHeight, sample.z);
+                    if (Physics.CheckSphere(eye, 0.2f, ~0, QueryTriggerInteraction.Ignore))
+                    {
+                        failures.Add($"Camera clearance is blocked at ({sample.x:0.0}, {eyeHeight:0.0}, {sample.z:0.0}).");
+                    }
+                }
+            }
+        }
+
         private static void BuildSecretAccess(Transform root, Material metal, Material counter, Material sign)
         {
             Transform group = CreateGroup(root, "SecretAccess");

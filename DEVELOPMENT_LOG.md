@@ -530,3 +530,40 @@ Resume LL-P1-009 with the human check. If it passes, close Phase 1 and start Pha
 ### Next
 
 `LL-P2-005` - add Phase 2 collision, navigation, and camera-clearance validation.
+
+## 2026-10-20 - LL-P2-005 public navigation and camera clearance
+
+**Phase:** 2 - Physical laundromat
+**Task:** LL-P2-005
+**Status:** Complete (automated checks; human walkthrough pending)
+
+### Implemented
+
+- Added `Phase2SetupTool.ValidatePublicNavigation` with seven public-route linecasts, critical-prop collider checks, material/missing-reference checks, and 1.5 m/1.7 m camera-sphere clearance samples.
+- Added `PublicNavigationAndCameraClearanceAreValid` to the PlayMode suite with the same route and camera checks.
+- Added route diagnostics that report the blocking collider and distance.
+- No prefab, package, project-setting, or runtime-script change.
+
+### Checks and evidence
+
+- `TestResults/phase2-p5-compile.log` - exit 0; no compiler errors.
+- `TestResults/phase2-p5-navigation-validate.log` - exit 0; routes, colliders, materials, and camera clearance valid.
+- `TestResults/phase2-p5-entrance-validate.log`, `phase2-p5-public-validate.log`, `phase2-p5-secret-validate.log`, `phase2-p5-greybox-validate.log`, and `phase2-p5-player-validate.log` - exit 0.
+- `TestResults/phase2-p5-editmode.xml` - 10/10 passed.
+- `TestResults/phase2-p5-playmode.xml` - 12/12 passed, including `PublicNavigationAndCameraClearanceAreValid`.
+- Log scan found no compiler errors, exceptions, missing references, shader errors, or aborts.
+
+### Repairs
+
+- The first route set crossed `FoldingTableTop` on the east side and `Entrance_Door_Right` on the waiting-to-entrance leg. Routes now use the 6.4-6.7 m east lane and a z = -3.6 m cross-room lane.
+- Camera sample `(2.0, -3.9)` hit the open right door leaf; it moved to `(2.0, -3.6)`.
+
+### Not performed
+
+- Human Phase 2 walkthrough and subtlety review; deferred to `LL-P2-006`.
+- Player build and performance measurement.
+- No runtime navigation, NavMesh, or collision change.
+
+### Next
+
+`LL-P2-006` - run the complete Phase 2 verification, capture the layout, and obtain human review.
