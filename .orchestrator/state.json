@@ -9,7 +9,7 @@
     "renderPipeline": "Built-In Render Pipeline",
     "targetPlatform": "Windows 64-bit"
   },
-  "updatedAt": "2026-10-20T19:03:00+08:00",
+  "updatedAt": "2026-10-20T19:10:00+08:00",
   "currentMilestone": {
     "id": "M1",
     "name": "Playable laundry",
@@ -66,9 +66,9 @@
     "checkpointCommit": "da130ddad18b633fb9bad82a3df5107168c91dd0",
     "baselineCommit": "b78218cccfeea741d3d227ffa95e679e9ba92a72",
     "remote": null,
-    "workingTree": "clean after the LL-P2-006 closure commit; the untracked ProjectSettings/PackageManagerSettings.asset is preserved but not committed",
+    "workingTree": "clean after the LL-P2-006 closure commit (bf52d9b); the untracked ProjectSettings/PackageManagerSettings.asset is preserved but not committed",
     "unityProjectCommit": "e244ba434ace223ff064df52b6a683615d9fb503",
-    "lastCheckpointAt": "2026-10-20T19:03:00+08:00"
+    "lastCheckpointAt": "2026-10-20T19:10:00+08:00"
   },
   "environment": {
     "opencodeCli": "2.0.28",

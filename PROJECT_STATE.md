@@ -1,6 +1,6 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-20 19:03 (UTC+08:00)
+**Last updated:** 2026-10-20 19:10 (UTC+08:00)
 **Current milestone:** M1 - Playable laundry, **in progress**
 **Current phase:** Phase 2 - Physical laundromat, **complete**
 **Next phase:** Phase 3 - Laundry interaction foundation, planned; task plan not yet authored
@@ -118,7 +118,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Phase 2 secret-door concealment commit: `2ef6b27`.
 - Phase 2 navigation/camera-validation commit: `56501e1`.
 - Phase 2 acceptance-evidence checkpoint: `92c3dd8`.
-- Phase 2 closure/owner-verification commit: recorded after this update.
+- Phase 2 closure/owner-verification commit: `bf52d9b`.
 - Remote: none. No push performed or authorized.
 - Note: `Library/`, `Logs/`, `UserSettings/`, and `TestResults/` are ignored and not committed.
 - One untracked Unity-generated file exists: `ProjectSettings/PackageManagerSettings.asset`. It is preserved but not committed; it contains package-manager UI/default registry state, not a package addition. Review before deciding whether to version it.
