@@ -66,9 +66,9 @@
     "checkpointCommit": "da130ddad18b633fb9bad82a3df5107168c91dd0",
     "baselineCommit": "b78218cccfeea741d3d227ffa95e679e9ba92a72",
     "remote": null,
-    "workingTree": "LL-P2-006 automated acceptance evidence is complete and awaiting human review; scoped report/state/doc changes are uncommitted, and the preserved untracked ProjectSettings/PackageManagerSettings.asset is not committed",
+    "workingTree": "clean after the LL-P2-006 automated-evidence checkpoint (92c3dd8); the task is paused at the owner-review gate, and the untracked ProjectSettings/PackageManagerSettings.asset is preserved but not committed",
     "unityProjectCommit": "e244ba434ace223ff064df52b6a683615d9fb503",
-    "lastCheckpointAt": "2026-10-20T16:08:00+08:00"
+    "lastCheckpointAt": "2026-10-20T18:47:00+08:00"
   },
   "environment": {
     "opencodeCli": "2.0.28",

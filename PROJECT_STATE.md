@@ -115,6 +115,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Phase 2 public-zone commit: `89a9ad4`.
 - Phase 2 secret-door concealment commit: `2ef6b27`.
 - Phase 2 navigation/camera-validation commit: `56501e1`.
+- Phase 2 acceptance-evidence checkpoint: `92c3dd8`; `LL-P2-006` remains in progress pending owner review.
 - Remote: none. No push performed or authorized.
 - Note: `Library/`, `Logs/`, `UserSettings/`, and `TestResults/` are ignored and not committed.
 - One untracked Unity-generated file exists: `ProjectSettings/PackageManagerSettings.asset`. It is preserved but not committed; it contains package-manager UI/default registry state, not a package addition. Review before deciding whether to version it.
