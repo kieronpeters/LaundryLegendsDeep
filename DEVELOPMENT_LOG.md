@@ -372,3 +372,39 @@ The roadmap requires a human to verify movement feel, camera, cursor release, an
 ### Next
 
 Resume LL-P1-009 with the human check. If it passes, close Phase 1 and start Phase 2; if it fails, fix the scoped issue and rerun the affected checks.
+## 2026-10-20 - Phase 1 close and Phase 2 layout audit
+
+**Phase:** 1 complete; Phase 2 in progress
+**Tasks:** LL-P1-009 closeout, LL-P2-001
+**Status:** Phase 1 complete with owner-reported human verification; LL-P2-001 complete
+
+### Human verification
+
+- The project owner confirmed all six Phase 1 Game-view checks on 2026-10-20: movement/speed, camera/comfort, pause/cursor release, room layout, the closed east-wall secret door, and lighting/readability.
+- Recorded as owner-reported evidence in `.orchestrator/reports/2026-10-20-ll-p1-009-human-verification.md` and appended as a clearly separated addendum to the automated report.
+- The agent did not independently observe the Unity session, capture new screenshots, or rerun tests for this confirmation.
+
+### Phase 1 closeout
+
+- All Phase 1 acceptance criteria now have automated evidence plus the human verification.
+- Original automated results, report, and `TestResults/greybox-*.png` captures were preserved.
+- Phase 1 marked complete in the task file, roadmap, project state, and orchestration state.
+- Phase 2 task plan created from the roadmap: layout audit, entrance/windows, waiting/storage/signage, secret-door concealment, collision/path validation, and phase verification.
+
+### LL-P2-001 audit
+
+- Parsed the actual `GreyboxRoom.prefab` and `Laundromat.unity` serialization rather than assuming the generator output.
+- Confirmed a 16 x 12 m room, 3.2 m ceiling, 4 x 2.4 m south opening, player spawn at `(0, 0.1, -4.5)`, counter, folding table, eight-machine wall, four point lights, and the exposed east-wall secret door.
+- Mapped circulation and clearances. Recorded that entrance door/windows, waiting area, storage, utility alcove, signage, and secret-door concealment are missing or partial.
+- No `Assets/`, `Packages/`, or `ProjectSettings/` change was made. No compile or test rerun was needed.
+- Report: `.orchestrator/reports/2026-10-20-phase-2-layout-audit.md`.
+
+### Not performed
+
+- No new Unity playtest or capture for the audit.
+- No player build.
+- Human Phase 2 layout verification remains deferred to LL-P2-006.
+
+### Next
+
+`LL-P2-002` - add the entrance door, storefront windows, and threshold, then run compile, validation, EditMode/PlayMode, and capture the facade.

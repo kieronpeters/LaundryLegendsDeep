@@ -1,0 +1,314 @@
+{
+  "schemaVersion": 1,
+  "phase": 2,
+  "name": "Physical laundromat",
+  "status": "in_progress",
+  "updatedAt": "2026-10-20T10:14:00+08:00",
+  "tasks": [
+    {
+      "id": "LL-P2-001",
+      "title": "Audit the greybox layout and define circulation/clearance constraints",
+      "status": "complete",
+      "priority": 1,
+      "owner": "build",
+      "dependsOn": ["LL-P1-009"],
+      "objective": "Inspect the existing Laundromat scene and greybox prefab, measure the actual public space, inventory what Phase 2 already has, and record the gaps, clearances, and constraints that the remaining physical-environment tasks must respect.",
+      "scope": [
+        ".orchestrator/reports/2026-10-20-phase-2-layout-audit.md",
+        ".orchestrator/state.json",
+        ".orchestrator/tasks/phase-02.json",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Scenes/**",
+        "Assets/LaundryLegends/Prefabs/**",
+        "Assets/LaundryLegends/Scripts/**",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "Actual room dimensions, zones, entrances, and existing props are recorded from the scene/prefab",
+        "Player and customer circulation paths are mapped with minimum clearances",
+        "Existing collision and camera-clearance risks are identified",
+        "Phase 2 deliverables are classified as present, partial, or missing",
+        "No scene, prefab, script, package, or project-setting file is changed"
+      ],
+      "checks": [
+        {
+          "name": "Prefab and scene inspection",
+          "status": "passed",
+          "command": "Read Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab and Assets/LaundryLegends/Scenes/Laundromat.unity",
+          "evidence": "Actual dimensions, prop positions, player spawn, colliders, lighting, and secret-door placement extracted from serialized YAML and recorded in .orchestrator/reports/2026-10-20-phase-2-layout-audit.md."
+        },
+        {
+          "name": "Existing validation evidence",
+          "status": "passed",
+          "command": "Review TestResults/phase1-greybox.log and TestResults/greybox-entrance.png",
+          "evidence": "Phase 1 greybox validation passed; existing captures reviewed. No new capture was needed for a read-only audit."
+        },
+        {
+          "name": "Scope audit",
+          "status": "passed",
+          "command": "git diff --stat and git status --short",
+          "evidence": "No Assets/Packages/ProjectSettings changes. Only documentation, task, report, and state files changed. Pre-existing untracked PackageManagerSettings.asset left untouched."
+        }
+      ],
+      "result": {
+        "status": "success",
+        "summary": "Audited the actual greybox layout and recorded dimensions, zones, circulation routes, clearances, Phase 2 gaps, constraints, and a proposed placement plan. Identified entrance/window envelope work as the smallest safe next task.",
+        "evidence": [
+          ".orchestrator/reports/2026-10-20-phase-2-layout-audit.md",
+          "TestResults/phase1-greybox.log",
+          "TestResults/greybox-entrance.png",
+          "TestResults/greybox-secret.png"
+        ],
+        "notes": "Read-only audit. No scene, prefab, script, package, or project-setting file was changed. No compile or test rerun was required. Human layout acceptance remains deferred to LL-P2-006."
+      },
+      "retryCount": 0,
+      "startedAt": "2026-10-20T10:14:00+08:00",
+      "completedAt": "2026-10-20T10:23:00+08:00"
+    },
+    {
+      "id": "LL-P2-002",
+      "title": "Add entrance door, storefront windows, and threshold",
+      "status": "ready",
+      "priority": 2,
+      "owner": "build",
+      "dependsOn": ["LL-P2-001"],
+      "objective": "Give the laundromat a readable street entrance and storefront glazing while preserving the existing south-wall opening, player spawn, and traversal.",
+      "scope": [
+        "Assets/LaundryLegends/Editor/Phase2SetupTool.cs",
+        "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
+        "Assets/LaundryLegends/Art/Materials/**",
+        "Assets/LaundryLegends/Scenes/Laundromat.unity",
+        "Assets/LaundryLegends/Tests/PlayMode/**",
+        "TestResults/**",
+        ".orchestrator/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md"
+      ],
+      "mustNotTouch": [
+        "Packages/**",
+        "ProjectSettings/**",
+        "Assets/LaundryLegends/Scripts/**",
+        "Existing player prefab"
+      ],
+      "acceptance": [
+        "Entrance has a visible frame, door, threshold, and storefront windows",
+        "Player can still enter and leave through the doorway without collision traps",
+        "Facade blocks cannot be walked through or seen through incorrectly",
+        "Existing secret door, machine wall, counter, and folding table remain intact",
+        "Compile, EditMode, PlayMode, and greybox validation pass"
+      ],
+      "checks": [
+        {
+          "name": "Scene compile and validation",
+          "status": "pending",
+          "command": "Unity batch compile and GreyboxSetupTool.ValidateGreyboxRoom",
+          "evidence": "Pending"
+        },
+        {
+          "name": "EditMode and PlayMode suites",
+          "status": "pending",
+          "command": "Unity -runTests EditMode; Unity -runTests PlayMode",
+          "evidence": "Pending"
+        },
+        {
+          "name": "Entrance capture review",
+          "status": "pending",
+          "command": "Capture Laundromat entrance preview and inspect it",
+          "evidence": "Pending"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
+    },
+    {
+      "id": "LL-P2-003",
+      "title": "Add waiting area, storage shelving, utility alcove, and signage",
+      "status": "planned",
+      "priority": 3,
+      "owner": "build",
+      "dependsOn": ["LL-P2-002"],
+      "objective": "Furnish the public room with a customer waiting area, storage/shelving, a utility alcove, and readable placeholder signage that supports circulation and laundromat identity.",
+      "scope": [
+        "Assets/LaundryLegends/Prefabs/Environment/**",
+        "Assets/LaundryLegends/Art/Materials/**",
+        "Assets/LaundryLegends/Scenes/Laundromat.unity",
+        "Assets/LaundryLegends/Tests/PlayMode/**",
+        "TestResults/**",
+        ".orchestrator/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md"
+      ],
+      "mustNotTouch": [
+        "Packages/**",
+        "ProjectSettings/**",
+        "Assets/LaundryLegends/Scripts/**",
+        "Secret door collider/state"
+      ],
+      "acceptance": [
+        "Waiting chairs and a clear customer waiting zone are present",
+        "Shelving/storage is present without blocking the public path",
+        "Utility alcove reads as staff-only and does not expose the secret room",
+        "Signage is readable and consistent in scale",
+        "Critical paths, colliders, and camera clearance remain valid"
+      ],
+      "checks": [
+        {
+          "name": "Layout and collision validation",
+          "status": "pending",
+          "command": "Greybox validation plus PlayMode traversal/clearance tests",
+          "evidence": "Pending"
+        },
+        {
+          "name": "Visual capture review",
+          "status": "pending",
+          "command": "Capture entrance, waiting area, machine wall, and secret-door views",
+          "evidence": "Pending"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
+    },
+    {
+      "id": "LL-P2-004",
+      "title": "Conceal the secret door behind a shelf/service panel",
+      "status": "planned",
+      "priority": 4,
+      "owner": "build",
+      "dependsOn": ["LL-P2-003"],
+      "objective": "Make the east-wall secret access discoverable but not obvious by adding a shelf or service-panel cover while keeping the door closed and non-traversable.",
+      "scope": [
+        "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
+        "Assets/LaundryLegends/Art/Materials/**",
+        "Assets/LaundryLegends/Tests/PlayMode/**",
+        "TestResults/**",
+        ".orchestrator/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md"
+      ],
+      "mustNotTouch": [
+        "Packages/**",
+        "ProjectSettings/**",
+        "Assets/LaundryLegends/Scripts/**",
+        "Secret-room gameplay or reveal logic"
+      ],
+      "acceptance": [
+        "Secret door remains closed and collision-blocked",
+        "Shelf/panel conceals enough of the door to avoid spoiling the reveal",
+        "Evidence of the access remains visible enough to foreshadow it",
+        "No new gap allows the player to enter the hidden room",
+        "Automated traversal and secret-door tests pass"
+      ],
+      "checks": [
+        {
+          "name": "Secret-door containment",
+          "status": "pending",
+          "command": "Greybox validation and PlayMode secret-door test",
+          "evidence": "Pending"
+        },
+        {
+          "name": "Sightline capture",
+          "status": "pending",
+          "command": "Capture east-wall approach and inspect concealment",
+          "evidence": "Pending"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
+    },
+    {
+      "id": "LL-P2-005",
+      "title": "Add Phase 2 collision, navigation, and camera-clearance validation",
+      "status": "planned",
+      "priority": 5,
+      "owner": "ll-qa",
+      "dependsOn": ["LL-P2-002", "LL-P2-003", "LL-P2-004"],
+      "objective": "Extend automated validation to cover the public circulation route, customer path from entrance to counter, critical colliders, and camera clearance.",
+      "scope": [
+        "Assets/LaundryLegends/Editor/**",
+        "Assets/LaundryLegends/Tests/**",
+        "TestResults/**",
+        ".orchestrator/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md"
+      ],
+      "mustNotTouch": [
+        "Packages/**",
+        "ProjectSettings/**",
+        "Runtime gameplay behavior outside validation hooks"
+      ],
+      "acceptance": [
+        "Automated path checks cover entrance-to-counter and public-room circulation",
+        "Critical props have colliders and no missing references",
+        "Camera clearance is checked at representative eye heights",
+        "Tests fail clearly when a path or collider is removed",
+        "Evidence is stored under TestResults/"
+      ],
+      "checks": [
+        {
+          "name": "Validation suite",
+          "status": "pending",
+          "command": "Unity batch EditMode/PlayMode tests plus scene validation",
+          "evidence": "Pending"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
+    },
+    {
+      "id": "LL-P2-006",
+      "title": "Verify Phase 2 acceptance and record evidence",
+      "status": "planned",
+      "priority": 6,
+      "owner": "build",
+      "dependsOn": ["LL-P2-005"],
+      "objective": "Run the complete Phase 2 verification, capture the physical layout, record acceptance evidence, and obtain the required human review of layout, sightlines, and secret-room subtlety.",
+      "scope": [
+        "TestResults/**",
+        ".orchestrator/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "ROADMAP.md"
+      ],
+      "mustNotTouch": ["Unrelated scenes/prefabs"],
+      "acceptance": [
+        "Player traverses the public laundromat without leaving geometry or getting stuck",
+        "Entrance-to-counter customer path is clear",
+        "Secret access is foreshadowed but not obviously open",
+        "Lighting and interaction visibility are readable",
+        "No missing references or colliders on critical paths",
+        "Human verifies layout, readability, and secret-room subtlety",
+        "Git checkpoint and phase report are recorded"
+      ],
+      "checks": [
+        {
+          "name": "Automated Phase 2 verification",
+          "status": "pending",
+          "command": "Structural validation, compile, scene validation, EditMode and PlayMode tests, log scan",
+          "evidence": "Pending"
+        },
+        {
+          "name": "Human layout verification",
+          "status": "pending",
+          "command": "Human walkthrough of the Game view",
+          "evidence": "Pending"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
+    }
+  ]
+}

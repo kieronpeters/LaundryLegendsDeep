@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-20 09:21 (UTC+08:00)
+**Last updated:** 2026-10-20 10:14 (UTC+08:00)
 **Current milestone:** M1 — Playable laundry, **in progress**
-**Current phase:** Phase 1 — Unity foundation, **in progress**
-**Next phase:** Phase 2 — Physical laundromat, planned
-**Active task:** none
-**Next recommended task:** `LL-P1-009` — Verify Phase 1 acceptance and record evidence (blocked on the human movement/camera/greybox check)
+**Current phase:** Phase 2 — Physical laundromat, **in progress**
+**Next phase:** Phase 3 — Laundry interaction foundation, planned
+**Active task:** `LL-P2-001` — Audit the greybox layout and define circulation/clearance constraints
+**Next recommended task:** `LL-P2-001` — Audit the greybox layout and define circulation/clearance constraints
 
 ## 1. Verified configuration
 
@@ -65,13 +65,14 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - EditMode suite: 10/10 tests passed on 2026-10-20, including an opt-in deliberate-failure probe that correctly exits `2` and records `result="Failed"`.
 - PlayMode suite: 8/8 tests passed on 2026-10-20, repeated for stability after fixing a frame-rate-dependent movement assertion.
 - Batch commands, evidence paths, failure-probe steps, and test-assembly isolation documented in `TESTING_GUIDE.md`.
+- The project owner completed all six Phase 1 Game-view checks on 2026-10-20: movement/speed, camera/comfort, pause/cursor release, room layout, secret door, and lighting/readability. Recorded as owner-reported human verification in `.orchestrator/reports/2026-10-20-ll-p1-009-human-verification.md`.
+- Phase 1 is complete. Automated results and screenshots are preserved unchanged; the human confirmation is a separate addendum.
 - No production assets, save system, economy, customers, machine behavior, UI, or player build exists yet.
 
 ## 4. Incomplete and unverified
 
-- Human visual check of greybox scale, readability, and lighting comfort.
-- Manual cursor-lock/release and subjective movement-feel check.
-- Phase 1 acceptance remains blocked on that human check; automated evidence is recorded in `.orchestrator/reports/2026-10-20-ll-p1-009.md`.
+- Phase 2 physical environment: entrance door/windows, waiting area, storage/shelving, utility alcove, signage, and secret-door concealment.
+- Navigation/camera-clearance validation for the expanded layout.
 - Production art, audio, UI, animations, and models.
 - Save system, economy, customers, laundry machines, orders, secret room, and arcade.
 - Player build and performance validation.
@@ -79,14 +80,15 @@ The workspace was empty before bootstrap. No user work was overwritten.
 
 ## 5. Blockers and dependencies
 
-- **No current hard blocker.** Unity batch-mode licensing was resolved on 2026-10-19 by a Unity Hub refresh.
+- **No current hard blocker.** Phase 1 is complete. Phase 2 is in planning/audit.
+- Unity batch-mode licensing was resolved on 2026-10-19 by a Unity Hub refresh; it can expire again.
 - Unity Personal offline licensing expires periodically. If batch mode fails with exit `198`, refresh the license in Unity Hub before retrying; do not treat it as a project defect.
 - Package additions and project-wide settings changes are treated as approval gates. Phase 1 uses only the installed editor baseline plus UGUI/TextMeshPro and Test Framework.
 - No image, 3D, or audio generation tool is verified. Placeholder and procedural assets are the default.
 
 ## 6. Approval status
 
-- The human granted a standing, full access approval on 2026-10-19 for execution requests. Routine in-repository work continues without prompts.
+- The human granted a standing, full access approval on 2026-10-19 for execution requests and reiterated it on 2026-10-20. Routine in-repository work continues without prompts. Destructive Git/filesystem actions, package changes, broad project-settings changes, and external publishing still require explicit approval.
 - Cleanup pending: `C:\Users\Asus\Desktop\AI` (995-byte Unity log created by an unquoted command). The shell policy hard-denies delete commands; manual removal is required.
 - Human review task `LL-P0-009` remains pending and non-blocking.
 
@@ -103,9 +105,12 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - GameState/routing commit: `6e02469a891198072299c9f17980383bf6764fc5`
 - Player/movement commit: `e263d1d18cd70e50ffc55e3a2f19b5c7152ae8f7`
 - Greybox environment commit: `13ceed9bb7c72d3519f50acbb5d6fe45c7bed6ac`
-- Test scaffolding commit: recorded in the task-scoped commit and `git log`.
+- Test scaffolding commit: `69baa1b68868e95c127c80465ac78160a2c44e10`
+- Phase 1 verification/blocker record: `38b63e645d85f63febda5351f62e0c0d213950df`
+- Phase 1 closeout and Phase 2 task-plan commit: recorded in `git log`.
 - Remote: none. No push performed or authorized.
 - Note: `Library/`, `Logs/`, `UserSettings/`, and `TestResults/` are ignored and not committed.
+- One untracked Unity-generated file exists: `ProjectSettings/PackageManagerSettings.asset`. It is preserved but not committed; it contains package-manager UI/default registry state, not a package addition. Review before deciding whether to version it.
 
 ## 8. Run budget defaults
 
@@ -124,25 +129,31 @@ See `.orchestrator/budgets.json`.
 **Report:** `.orchestrator/reports/2026-10-20-ll-p1-008.md`
 **Result:** `LL-P1-008` complete. Added the first EditMode suite (10 tests) for `GameState`, build-settings order, and failure reporting; hardened the PlayMode movement test against uncapped batch frame rates; and documented runnable `Start-Process` compile/test commands, exit-code expectations, failure-probe evidence, and test isolation in `TESTING_GUIDE.md`. EditMode passed 10/10, the deliberate failure probe exited `2` with `result="Failed"`, and PlayMode passed 8/8 twice. No human playtest or player build was performed.
 
-**Phase 1 verification run:** `2026-10-20-ll-p1-009` - **blocked**
+**Phase 1 verification run:** `2026-10-20-ll-p1-009` - **complete**
 **Report:** `.orchestrator/reports/2026-10-20-ll-p1-009.md`
-**Result:** Automated Phase 1 verification passed: structural validation, compile, foundation scene/player/greybox validation, 10/10 EditMode tests, 8/8 PlayMode tests, and package/pipeline checks. Phase 1 is not complete because the required human check of movement feel, camera, cursor release, and greybox readability has not been performed.
+**Human verification:** `.orchestrator/reports/2026-10-20-ll-p1-009-human-verification.md`
+**Result:** Automated Phase 1 verification passed: structural validation, compile, foundation scene/player/greybox validation, 10/10 EditMode tests, 8/8 PlayMode tests, and package/pipeline checks. The project owner then confirmed all six human Game-view checks on 2026-10-20. Phase 1 is complete.
+
+**Latest run:** `2026-10-20-ll-p2-001` - **complete**
+**Report:** `.orchestrator/reports/2026-10-20-phase-2-layout-audit.md`
+**Result:** Read-only audit of the actual greybox layout. Recorded dimensions, zones, circulation, clearances, Phase 2 gaps, constraints, and a placement plan. No scene, prefab, script, package, or project-setting change was made. `LL-P2-002` entrance/window envelope is the next eligible task.
 
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then resume `LL-P1-009` by performing the human checklist in `.orchestrator/reports/2026-10-20-ll-p1-009.md`. Do not replay `LL-P0-*` or `LL-P1-001` through `LL-P1-008`. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then resume `LL-P2-001` (Phase 2 layout audit). Do not replay `LL-P0-*` or `LL-P1-*`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 
-- **Phase 1 blocker:** the human movement/camera/cursor/greybox check has not been performed. Automated evidence is complete; do not mark Phase 1 complete without the human record.
+- Phase 2 needs scoped scene/prefab work; preserve the existing GreyboxRoom layout and validate traversal after each change. `LL-P2-002` is scoped to the south facade, not a room-wide rebuild.
+- `ProjectSettings/PackageManagerSettings.asset` is untracked and Unity-generated. It was preserved but not committed; review before versioning.
 - Unity Personal licensing requires periodic online refresh; batch automation can fail with exit `198` for reasons unrelated to the project.
 - Project settings were edited as serialized YAML before an editor settings API existed; Unity re-serialized and preserved them, but future changes should use an editor script or the Unity UI.
-- Linear color space and Medium quality are active; greybox lighting was tuned from captured images but has not been checked by a human in the Game view.
+- Linear color space and Medium quality are active. Greybox lighting was checked by the project owner in the Game view on 2026-10-20 and reported acceptable; no measured performance data exists.
 - The greybox room, props, machines, and secret door are static placeholder primitives; no interaction or machine behavior exists.
 - The secret door is visual foreshadowing only; secret-room access is not implemented.
 - Four real-time point lights are unoptimized; performance has not been measured.
 - The pause overlay uses IMGUI as a placeholder; real UI arrives later.
-- Cursor lock/release and movement feel were not manually verified; batch tests skip cursor APIs.
+- Cursor lock/release and movement feel were confirmed by the project owner on 2026-10-20; batch tests still skip cursor APIs, so this remains owner-reported rather than independently reproduced.
 - `GameSession.Instance` is a static service handle; consumers should prefer explicit references where practical.
 - Test coverage is 10 EditMode and 8 PlayMode tests; it does not yet cover machine cycles, orders, economy transactions, save/load, or UI.
 - `FailureReportingTests` fails when `LL_FAIL_PROBE` is left set; unset it after probing.

@@ -1,8 +1,8 @@
 # Laundry Legends — Development Roadmap
 
 **Last updated:** 2026-10-20
-**Current phase:** 1 — in progress (blocked on human verification)
-**Next phase:** 2 — planned
+**Current phase:** 2 — in progress
+**Next phase:** 3 — planned
 **Authority:** This roadmap defines sequence, dependencies, deliverables, and acceptance. Update it when a genuine dependency requires a change; record the reason in a decision record.
 
 ## 0. Status legend
@@ -102,7 +102,7 @@ Root documentation, `.opencode/`, `.orchestrator/`, `tools/`, `ArtSource/`, `Bui
 
 ## Phase 1 — Unity foundation
 
-**Status:** In progress (blocked on human verification)
+**Status:** Complete (human verification recorded 2026-10-20)
 **Objective:** Create a validated Unity 6.0 LTS project with Built-In RP, project structure, scene flow, player movement/camera, greybox environment, and baseline tests.
 **Depends on:** Phase 0.
 
@@ -130,7 +130,7 @@ Root documentation, `.opencode/`, `.orchestrator/`, `tools/`, `ArtSource/`, `Bui
 | LL-P1-006 | Implement first-person movement, mouse look, and interaction raycast stub | Complete |
 | LL-P1-007 | Build greybox room, lighting, and placeholder props | Complete |
 | LL-P1-008 | Add EditMode/PlayMode smoke tests and batch-mode validation commands | Complete |
-| LL-P1-009 | Verify compile, scene load, movement/camera, and record evidence | Blocked (human check) |
+| LL-P1-009 | Verify compile, scene load, movement/camera, and record evidence | Complete |
 
 ### Acceptance criteria
 
@@ -171,7 +171,7 @@ Root documentation, `.opencode/`, `.orchestrator/`, `tools/`, `ArtSource/`, `Bui
 
 ## Phase 2 — Physical laundromat
 
-**Status:** Planned
+**Status:** In progress
 **Objective:** Build the physical laundry space: room, entrance, windows, counter, waiting area, furniture, storage, and concealed back-room access.
 **Depends on:** Phase 1.
 
@@ -186,12 +186,14 @@ Root documentation, `.opencode/`, `.orchestrator/`, `tools/`, `ArtSource/`, `Bui
 
 ### Tasks
 
-- Block out room proportions and player/customer paths.
-- Add entrance, counter, waiting area, machine wall, folding area, storage.
-- Add concealed door behind shelf/service panel without revealing the room.
-- Add collision, occlusion, and basic lighting.
-- Place placeholder props and signage.
-- Validate navigation, camera clearance, and scene references.
+| ID | Task | Status |
+|---|---|---|
+| LL-P2-001 | Audit the greybox layout and define circulation/clearance constraints | In progress |
+| LL-P2-002 | Add entrance door, storefront windows, and threshold | Planned |
+| LL-P2-003 | Add waiting area, storage shelving, utility alcove, and signage | Planned |
+| LL-P2-004 | Conceal the secret door behind a shelf/service panel | Planned |
+| LL-P2-005 | Add collision, navigation, and camera-clearance validation | Planned |
+| LL-P2-006 | Verify Phase 2 acceptance and record evidence | Planned |
 
 ### Acceptance criteria
 
