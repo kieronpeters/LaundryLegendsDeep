@@ -46,7 +46,7 @@ Set the active task, recovery decision, last checkpoint, and next action in `.or
 
 ## 6. Resume
 
-Start with `/continue-phase` or `LL-P1-001`. Do not replay completed bootstrap tasks. Do not skip dependencies. Re-run any check whose result was not durable.
+Start with `/continue-phase` or the `nextTask` in `.orchestrator/state.json`. Do not hardcode a task ID or replay completed tasks. Do not skip dependencies. Re-run any check whose result was not durable.
 
 ## 7. Stop safely if uncertain
 

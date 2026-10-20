@@ -9,7 +9,7 @@
     "renderPipeline": "Built-In Render Pipeline",
     "targetPlatform": "Windows 64-bit"
   },
-  "updatedAt": "2026-10-19T21:37:00+08:00",
+  "updatedAt": "2026-10-19T21:52:00+08:00",
   "currentMilestone": {
     "id": "M1",
     "name": "Playable laundry",
@@ -20,7 +20,7 @@
     "name": "Unity foundation",
     "status": "in_progress",
     "file": ".orchestrator/tasks/phase-01.json",
-    "completionNote": "LL-P1-001 through LL-P1-006 complete. LL-P1-007 (greybox and lighting) is next."
+    "completionNote": "LL-P1-001 through LL-P1-007 complete. LL-P1-008 (test scaffolding and batch validation docs) is next."
   },
   "nextPhase": {
     "number": 2,
@@ -29,12 +29,12 @@
     "file": ".orchestrator/tasks/phase-02.json"
   },
   "activeTask": null,
-  "lastCompletedTask": "LL-P1-006",
-  "nextTask": "LL-P1-007",
+  "lastCompletedTask": "LL-P1-007",
+  "nextTask": "LL-P1-008",
   "taskCounts": {
-    "complete": 14,
+    "complete": 15,
     "ready": 1,
-    "planned": 2,
+    "planned": 1,
     "pending": 1,
     "inProgress": 0,
     "failed": 0,
@@ -149,40 +149,42 @@
     "inventory": "ASSET_INVENTORY.md"
   },
   "lastRun": {
-    "id": "2026-10-19-ll-p1-006",
-    "report": ".orchestrator/reports/2026-10-19-ll-p1-006.md",
+    "id": "2026-10-19-ll-p1-007",
+    "report": ".orchestrator/reports/2026-10-19-ll-p1-007.md",
     "status": "complete",
-    "startedAt": "2026-10-19T21:36:00+08:00",
-    "completedAt": "2026-10-19T21:37:00+08:00",
+    "startedAt": "2026-10-19T21:37:00+08:00",
+    "completedAt": "2026-10-19T21:52:00+08:00",
     "checks": {
-      "player_prefab": "passed",
-      "player_scene_validation": "passed",
-      "playmode_tests": "passed_4_of_4",
-      "movement": "passed_automated",
-      "look": "passed_automated",
-      "pause_time": "passed_automated",
-      "interaction_raycast": "passed_automated",
-      "manual_cursor_and_feel": "not_run",
+      "greybox_build": "passed",
+      "greybox_validation": "passed",
+      "playmode_tests": "passed_8_of_8",
+      "traversal": "passed_automated",
+      "wall_containment": "passed_automated",
+      "secret_door_closed": "passed_automated",
+      "scale_dimensions": "passed_automated",
+      "lighting_presence": "passed_automated",
+      "preview_capture": "passed_agent_inspected",
+      "manual_visual_check": "not_run",
       "playtest": "not_run",
       "build": "not_run"
     },
     "filesChanged": [
-      "Assets/LaundryLegends/Scripts/Player/**",
-      "Assets/LaundryLegends/Scripts/Interaction/**",
-      "Assets/LaundryLegends/Prefabs/Gameplay/Player.prefab",
+      "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
+      "Assets/LaundryLegends/Art/Materials/Grey_*.mat",
+      "Assets/LaundryLegends/Editor/GreyboxSetupTool.cs",
       "Assets/LaundryLegends/Editor/PlayerSetupTool.cs",
       "Assets/LaundryLegends/Scenes/Laundromat.unity",
-      "Assets/LaundryLegends/Tests/PlayMode/PlayerControllerTests.cs",
+      "Assets/LaundryLegends/Tests/PlayMode/GreyboxTraversalTests.cs",
       ".orchestrator/state.json",
       ".orchestrator/tasks/phase-01.json",
-      ".orchestrator/reports/2026-10-19-ll-p1-006.md",
+      ".orchestrator/reports/2026-10-19-ll-p1-007.md",
       "PROJECT_STATE.md",
       "DEVELOPMENT_LOG.md"
     ]
   },
   "recovery": {
     "procedure": ".orchestrator/recovery/RESUME.md",
-    "resumeTask": "LL-P1-007",
+    "resumeTask": "LL-P1-008",
     "doNotReplay": [
       "LL-P0-001",
       "LL-P0-002",
@@ -197,7 +199,8 @@
       "LL-P1-003",
       "LL-P1-004",
       "LL-P1-005",
-      "LL-P1-006"
+      "LL-P1-006",
+      "LL-P1-007"
     ]
   }
 }

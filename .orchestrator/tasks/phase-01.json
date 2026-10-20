@@ -328,7 +328,7 @@
     {
       "id": "LL-P1-007",
       "title": "Build greybox laundromat environment and lighting",
-      "status": "ready",
+      "status": "complete",
       "priority": 7,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P1-004"],
@@ -344,27 +344,62 @@
       ],
       "checks": [
         {
-          "name": "Traversal smoke test",
-          "status": "pending",
-          "command": "Unity PlayMode traversal test",
-          "evidence": "Pending"
+          "name": "Greybox build",
+          "status": "passed",
+          "command": "Unity.exe -batchmode -quit -nographics -projectPath <root> -executeMethod LaundryLegends.Editor.GreyboxSetupTool.BuildGreyboxRoom -logFile TestResults/unity-greybox-build.log",
+          "evidence": "Exit code 0; GreyboxRoom prefab created with 8 machines, counter, folding table, secret door, and 4 point lights; TemporaryFloor removed."
         },
         {
-          "name": "Visual check",
-          "status": "pending",
+          "name": "Greybox validation",
+          "status": "passed",
+          "command": "Unity.exe -batchmode -quit -nographics -projectPath <root> -executeMethod LaundryLegends.Editor.GreyboxSetupTool.ValidateGreyboxRoom -logFile TestResults/unity-greybox-validate.log",
+          "evidence": "Exit code 0; floor support at 8 points, wall containment on 5 rays, secret door collider, 4 point lights, and player spawn validated."
+        },
+        {
+          "name": "PlayMode traversal and regression suite",
+          "status": "passed",
+          "command": "Unity.exe -batchmode -projectPath <root> -runTests -testPlatform PlayMode -testResults TestResults/playmode.xml -logFile TestResults/playmode.log",
+          "evidence": "Exit code 0; 8/8 passed, including PlayerWalksIntoRoomAndIsBlockedByMachineWall, PlayerCannotWalkThroughEastWall, SecretDoorIsPresentAndClosed, RoomHasPointAndDirectionalLighting, and all four prior tests."
+        },
+        {
+          "name": "Preview capture and agent inspection",
+          "status": "passed",
+          "command": "Unity.exe -batchmode -quit -projectPath <root> -executeMethod LaundryLegends.Editor.GreyboxSetupTool.CaptureGreyboxPreview -logFile TestResults/unity-greybox-capture.log",
+          "evidence": "Exit code 0; TestResults/greybox-entrance.png and greybox-secret.png captured and inspected: room, machine wall, counters, closed secret door, and lighting are visible."
+        },
+        {
+          "name": "Human visual check",
+          "status": "not_run",
           "command": "Human playtest",
-          "evidence": "Pending"
+          "evidence": "Unrun. Agent-inspected screenshots exist, but subjective scale, lighting quality, and comfort require a human Game-view check."
         }
       ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "result": {
+        "status": "success",
+        "summary": "Built a reproducible greybox laundromat prefab: 16x12 m room, entrance gap, machine wall with 8 washer/dryer boxes, counter, folding table, ceiling, four point lights, directional fill, and a closed foreshadowed secret door. Placed it in Laundromat, moved the player spawn inside the entrance, and removed the temporary floor. Added automated traversal, wall-containment, secret-door, scale, and lighting tests.",
+        "evidence": [
+          "TestResults/unity-greybox-build.log",
+          "TestResults/unity-greybox-validate.log",
+          "TestResults/unity-player-validate.log",
+          "TestResults/playmode.xml",
+          "TestResults/playmode.log",
+          "TestResults/greybox-entrance.png",
+          "TestResults/greybox-secret.png",
+          "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
+          "Assets/LaundryLegends/Art/Materials/Grey_*.mat",
+          "Assets/LaundryLegends/Editor/GreyboxSetupTool.cs",
+          "Assets/LaundryLegends/Tests/PlayMode/GreyboxTraversalTests.cs"
+        ],
+        "notes": "Human visual check remains unrun. The room is greybox placeholder geometry with flat Standard materials; no final art, machine behavior, UI, or interaction is implemented. PlayerSetupTool now recognizes GreyboxRoom as the walkable floor and no longer requires TemporaryFloor."
+      },
+      "retryCount": 1,
+      "startedAt": "2026-10-19T21:37:00+08:00",
+      "completedAt": "2026-10-19T21:52:00+08:00"
     },
     {
       "id": "LL-P1-008",
       "title": "Add test scaffolding and batch validation commands",
-      "status": "planned",
+      "status": "ready",
       "priority": 8,
       "owner": "ll-qa",
       "dependsOn": ["LL-P1-003", "LL-P1-005"],

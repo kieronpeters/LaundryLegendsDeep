@@ -72,9 +72,9 @@ namespace LaundryLegends.Editor
                     ValidatePlayerObject(player.gameObject, "Laundromat player", failures);
                 }
 
-                if (!HasRoot(scene, "TemporaryFloor"))
+                if (!HasRoot(scene, "TemporaryFloor") && !HasRoot(scene, "GreyboxRoom"))
                 {
-                    failures.Add("Laundromat has no TemporaryFloor.");
+                    failures.Add("Laundromat has no walkable floor (TemporaryFloor or GreyboxRoom).");
                 }
 
                 if (!HasRoot(scene, "Directional Light"))
@@ -144,7 +144,11 @@ namespace LaundryLegends.Editor
         {
             Scene scene = EditorSceneManager.OpenScene(LaundromatScenePath, OpenSceneMode.Single);
 
-            EnsureTemporaryFloor(scene);
+            if (!HasRoot(scene, "GreyboxRoom"))
+            {
+                EnsureTemporaryFloor(scene);
+            }
+
             EnsureDirectionalLight(scene);
             EnsurePlayerInstance(scene);
 

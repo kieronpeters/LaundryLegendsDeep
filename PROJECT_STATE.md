@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-19 21:37 (UTC+08:00)
+**Last updated:** 2026-10-19 21:52 (UTC+08:00)
 **Current milestone:** M1 — Playable laundry, **in progress**
 **Current phase:** Phase 1 — Unity foundation, **in progress**
 **Next phase:** Phase 2 — Physical laundromat, planned
 **Active task:** none
-**Next recommended task:** `LL-P1-007` — Build the greybox laundromat environment and lighting
+**Next recommended task:** `LL-P1-008` — Add test scaffolding and batch validation commands
 
 ## 1. Verified configuration
 
@@ -30,13 +30,14 @@
 
 ## 2. Existing project content
 
-- **Scenes:** `Bootstrap.unity`, `MainMenu.unity`, and `Laundromat.unity`. All are registered in build settings with Bootstrap at index 0. Bootstrap contains `GameSession` + `BootstrapController`; MainMenu contains `MainMenuController`; Laundromat contains a Player prefab instance, a temporary floor, and a directional light.
-- **Scripts:** runtime `GameState`, `GameSession`, `SceneRouter`, `BootstrapController`, `MainMenuController`, `FirstPersonController`, `PauseController`, `PlayerInteractor`, `IInteractable`, `SimpleInteractable`, and an assembly marker. Editor tools: `SceneSetupTool`, `PlayerSetupTool`.
+- **Scenes:** `Bootstrap.unity`, `MainMenu.unity`, and `Laundromat.unity`. All are registered in build settings with Bootstrap at index 0. Bootstrap contains `GameSession` + `BootstrapController`; MainMenu contains `MainMenuController`; Laundromat contains a greybox room prefab, the Player prefab instance, and a directional light.
+- **Scripts:** runtime `GameState`, `GameSession`, `SceneRouter`, `BootstrapController`, `MainMenuController`, `FirstPersonController`, `PauseController`, `PlayerInteractor`, `IInteractable`, `SimpleInteractable`, and an assembly marker. Editor tools: `SceneSetupTool`, `PlayerSetupTool`, `GreyboxSetupTool`.
 - **Assemblies:** `LaundryLegends.Runtime`, `LaundryLegends.Editor`, `LaundryLegends.Tests.EditMode`, `LaundryLegends.Tests.PlayMode`. Runtime, editor, and PlayMode test assemblies compile.
-- **Prefabs:** `Prefabs/Gameplay/Player.prefab` with CharacterController, first-person controller, pause controller, interaction raycast, child camera, and AudioListener.
-- **Tests:** PlayMode tests for scene routing and player movement/look/pause/interaction. No EditMode tests yet.
-- **Folders:** full `Assets/LaundryLegends` feature tree (33 directories) for art, audio, prefabs, scenes, scripts, settings, ScriptableObjects, UI, editor, and tests.
-- **Materials/textures/models/audio:** none; placeholder primitives only.
+- **Prefabs:** `Prefabs/Gameplay/Player.prefab` with CharacterController, first-person controller, pause controller, interaction raycast, child camera, and AudioListener. `Prefabs/Environment/GreyboxRoom.prefab` with room shell, counter, folding table, eight-machine wall, secret door, and ceiling point lights.
+- **Materials:** seven flat Standard greybox materials under `Art/Materials`; no textures.
+- **Tests:** 8 PlayMode tests covering scene routing, player movement/look/pause/interaction, greybox traversal, wall containment, secret-door closure, scale dimensions, and lighting presence. No EditMode tests yet.
+- **Folders:** full `Assets/LaundryLegends` feature tree for art, audio, prefabs, scenes, scripts, settings, ScriptableObjects, UI, editor, and tests.
+- **Textures/models/audio:** none; placeholder primitives only.
 - **Unity project files:** `Packages/manifest.json` (34 direct dependencies), `Packages/packages-lock.json` (37 resolved built-in packages), and generated files under `ProjectSettings/`.
 - **Bootstrap content:** documentation, `.opencode/` configuration, `.orchestrator/` state, validation tooling, and source/build/test directories.
 
@@ -59,12 +60,14 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Minimal instance-based `GameState` and persistent `GameSession` implemented without static mutable gameplay state.
 - Scene routing: Bootstrap → MainMenu → Laundromat, verified by PlayMode test.
 - First-person player prefab with CharacterController movement, mouse look, Esc pause overlay, cursor lock/release code, and a camera-raycast interaction stub using the legacy Input Manager.
-- PlayMode suite: 4/4 tests passed on 2026-10-19.
-- No greybox environment, production assets, save system, economy, customers, machines, UI, or build exists yet.
+- Greybox laundromat: 16×12 m room, entrance gap, counter, folding table, eight-machine wall, closed foreshadowed secret door, collision, four ceiling point lights, and directional fill.
+- Greybox preview captures inspected by the agent: `TestResults/greybox-entrance.png` and `TestResults/greybox-secret.png` (local-only).
+- PlayMode suite: 8/8 tests passed on 2026-10-19.
+- No production assets, save system, economy, customers, machine behavior, UI, or player build exists yet.
 
 ## 4. Incomplete and unverified
 
-- Greybox laundromat room, machine wall, counter, folding area, entrance, and final lighting.
+- Human visual check of greybox scale, readability, and lighting comfort.
 - Manual cursor-lock/release and subjective movement-feel check.
 - EditMode tests and batch validation commands/documentation (`LL-P1-008`).
 - Production art, audio, UI, animations, and models.
@@ -96,7 +99,8 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Folders/assemblies commit: `af52084f0ca41fa29c5be912e5d6759392949aff`
 - Scenes/build settings commit: `8bd3fb76ddc6fb1fb2eb99e99caf0ef6bb7f9e72`
 - GameState/routing commit: `6e02469a891198072299c9f17980383bf6764fc5`
-- Player/movement commit: recorded in the task-scoped commit and `git log`.
+- Player/movement commit: `e263d1d18cd70e50ffc55e3a2f19b5c7152ae8f7`
+- Greybox environment commit: recorded in the task-scoped commit and `git log`.
 - Remote: none. No push performed or authorized.
 - Note: `Library/`, `Logs/`, `UserSettings/`, and `TestResults/` are ignored and not committed.
 
@@ -113,23 +117,26 @@ See `.orchestrator/budgets.json`.
 
 ## 9. Last successful development run
 
-**Run:** `2026-10-19-ll-p1-006`
-**Report:** `.orchestrator/reports/2026-10-19-ll-p1-006.md`
-**Result:** `LL-P1-006` complete. Implemented and validated a first-person player prefab with CharacterController movement, mouse look, Esc pause overlay, cursor lock/release, and a camera-raycast interaction stub. Laundromat has the player plus a temporary floor and directional light. PlayMode suite passed 4/4: routing, movement/look, pause/resume, and interaction raycast. No manual cursor/feel check, playtest, or player build was performed.
+**Run:** `2026-10-19-ll-p1-007`
+**Report:** `.orchestrator/reports/2026-10-19-ll-p1-007.md`
+**Result:** `LL-P1-007` complete. Built and validated a reproducible greybox laundromat prefab with a 16×12 m room, entrance, counter, folding table, eight-machine wall, collision, four ceiling point lights, directional fill, and a closed foreshadowed secret door. Placed it in Laundromat, moved the player spawn inside the entrance, removed the temporary floor, and captured entrance/secret previews. PlayMode suite passed 8/8, including traversal, wall containment, secret-door closure, scale dimensions, and lighting presence. No human visual check, playtest, or player build was performed.
 
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then continue with `LL-P1-007`. Do not replay `LL-P0-*` or `LL-P1-001` through `LL-P1-006`. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then continue with `LL-P1-008`. Do not replay `LL-P0-*` or `LL-P1-001` through `LL-P1-007`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 
 - Unity Personal licensing requires periodic online refresh; batch automation can fail with exit `198` for reasons unrelated to the project.
 - Project settings were edited as serialized YAML before an editor settings API existed; Unity re-serialized and preserved them, but future changes should use an editor script or the Unity UI.
-- Linear color space and Medium quality are active; greybox lighting must be authored and checked in Linear space.
+- Linear color space and Medium quality are active; greybox lighting was tuned from captured images but has not been checked by a human in the Game view.
+- The greybox room, props, machines, and secret door are static placeholder primitives; no interaction or machine behavior exists.
+- The secret door is visual foreshadowing only; secret-room access is not implemented.
+- Four real-time point lights are unoptimized; performance has not been measured.
 - The pause overlay uses IMGUI as a placeholder; real UI arrives later.
 - Cursor lock/release and movement feel were not manually verified; batch tests skip cursor APIs.
 - `GameSession.Instance` is a static service handle; consumers should prefer explicit references where practical.
-- Test coverage is small (4 PlayMode tests); EditMode tests and documented batch commands are pending.
+- Test coverage is 8 PlayMode tests; EditMode tests and documented batch commands are pending (`LL-P1-008`).
 - The stray `C:\Users\Asus\Desktop\AI` log remains pending manual deletion.
 - The global OpenCode config points at a local Ollama model; the project config overrides it with DeepSeek. Confirm the provider remains available in future sessions.
 - The design contains proposed economy numbers that have never been tuned.

@@ -267,3 +267,43 @@ LL-P1-006 - first-person player controller and camera.
 ### Next
 
 LL-P1-007 - greybox laundromat environment and lighting.
+
+## 2026-10-19 - LL-P1-007 greybox environment and lighting
+
+**Phase:** 1 - Unity foundation
+**Task:** LL-P1-007
+**Status:** Complete (automated and captured-image checks; human visual check unrun)
+
+### Implemented
+
+- GreyboxRoom prefab: 16x12 m room, 3.2 m walls, entrance gap, ceiling, counter, folding table, eight-machine wall, and a closed foreshadowed secret door.
+- Seven flat Standard materials under Art/Materials for floor, walls, washer, dryer, counter, metal, and secret panel.
+- Four warm ceiling point lights (range 12, intensity 2.4) and a 0.55-intensity directional fill. Flat ambient lighting, fog off.
+- Player spawn moved to (0, 0.1, -4.5) inside the entrance; temporary floor removed.
+- GreyboxSetupTool: reproducible build, validation, and preview capture commands.
+- PlayerSetupTool now treats GreyboxRoom as the walkable floor.
+- GreyboxTraversalTests: room traversal, east-wall containment, secret-door closure, scale dimensions, and lighting presence.
+
+### Checks and evidence
+
+- TestResults/compile-greybox.log - exit 0; no compiler errors.
+- TestResults/unity-greybox-build.log - exit 0; room prefab built and placed.
+- TestResults/unity-greybox-validate.log - exit 0; floor, walls, secret door, lights, and spawn valid.
+- TestResults/unity-player-validate.log - exit 0; player still valid with the greybox floor.
+- TestResults/playmode.xml - 8/8 PlayMode tests passed.
+- TestResults/greybox-entrance.png and greybox-secret.png - captured and inspected by the agent.
+
+### Repair
+
+- Initial traversal test used 200 frames, which moved only 0.55 m under uncapped batch frame rate. Replaced with a 2.6-second Time.deltaTime loop.
+- Lighting was tuned from 1.8 (too dark) to 3.2 (clipped walls) to 2.4 with slightly darker walls.
+
+### Not performed
+
+- Human visual check of scale, readability, and lighting comfort.
+- Manual playtest.
+- Player build and performance measurement.
+
+### Next
+
+LL-P1-008 - test scaffolding and batch validation commands.
