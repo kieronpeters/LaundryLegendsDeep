@@ -48,6 +48,8 @@ Set the active task, recovery decision, last checkpoint, and next action in `.or
 
 Start with `/continue-phase` or the `nextTask` in `.orchestrator/state.json`. Do not hardcode a task ID or replay completed tasks. Do not skip dependencies. Re-run any check whose result was not durable.
 
+If `nextTask` is null because a phase just closed, do not invent work. Author or request the next phase task plan, then start its first eligible task.
+
 ## 7. Stop safely if uncertain
 
 If you cannot determine whether a scene, save file, or economy operation completed, stop. Preserve evidence and request a decision. A confused recovery is more dangerous than a pause.

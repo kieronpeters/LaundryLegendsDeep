@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "phase": 2,
   "name": "Physical laundromat",
-  "status": "in_progress",
-  "updatedAt": "2026-10-20T18:45:00+08:00",
+  "status": "complete",
+  "updatedAt": "2026-10-20T19:03:00+08:00",
   "tasks": [
     {
       "id": "LL-P2-001",
@@ -357,7 +357,7 @@
     {
       "id": "LL-P2-006",
       "title": "Verify Phase 2 acceptance and record evidence",
-      "status": "in_progress",
+      "status": "complete",
       "priority": 6,
       "owner": "build",
       "dependsOn": ["LL-P2-005"],
@@ -388,15 +388,33 @@
         },
         {
           "name": "Human layout verification",
-          "status": "pending",
+          "status": "passed",
           "command": "Owner walkthrough of the Game view using the checklist in .orchestrator/reports/2026-10-20-ll-p2-006.md",
-          "evidence": "Pending owner-reported review; local contact sheet is TestResults/phase2-acceptance.html."
+          "evidence": "Owner reported 'pass' for all six checklist items on 2026-10-20. Recorded as owner-reported, not agent-observed, in .orchestrator/reports/2026-10-20-ll-p2-006-human-verification.md. Local contact sheet: TestResults/phase2-acceptance.html."
         }
       ],
-      "result": null,
+      "result": {
+        "status": "success",
+        "summary": "Completed Phase 2 acceptance. Bootstrap, compile, six scene validators, EditMode 10/10, PlayMode 12/12, log scan, and seven captures passed. The owner reported pass for traversal, entrance-to-counter path, secret-access subtlety, lighting/readability, signage, and overall layout. No blocking issue was reported. Phase 2 is complete.",
+        "evidence": [
+          ".orchestrator/reports/2026-10-20-ll-p2-006.md",
+          ".orchestrator/reports/2026-10-20-ll-p2-006-human-verification.md",
+          "TestResults/phase2-p6-compile.log",
+          "TestResults/phase2-p6-entrance-validate.log",
+          "TestResults/phase2-p6-public-zones-validate.log",
+          "TestResults/phase2-p6-secret-validate.log",
+          "TestResults/phase2-p6-navigation-validate.log",
+          "TestResults/phase2-p6-greybox-validate.log",
+          "TestResults/phase2-p6-player-validate.log",
+          "TestResults/phase2-p6-editmode.xml",
+          "TestResults/phase2-p6-playmode.xml",
+          "TestResults/phase2-acceptance.html"
+        ],
+        "notes": "Human review is owner-reported from a single 'pass' reply; no independent agent walkthrough or per-item notes exist. The mirrored exterior-facing placeholder signage was not reported as blocking. No scene, prefab, runtime-script, package, or project-setting change was made. Phase 3 task planning is required before interaction work starts."
+      },
       "retryCount": 0,
       "startedAt": "2026-10-20T18:38:00+08:00",
-      "completedAt": null
+      "completedAt": "2026-10-20T19:03:00+08:00"
     }
   ]
 }

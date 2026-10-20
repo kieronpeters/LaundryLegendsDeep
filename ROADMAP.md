@@ -1,8 +1,8 @@
 # Laundry Legends — Development Roadmap
 
 **Last updated:** 2026-10-20
-**Current phase:** 2 — in progress
-**Next phase:** 3 — planned
+**Current phase:** 2 - complete
+**Next phase:** 3 - planned; task plan required
 **Authority:** This roadmap defines sequence, dependencies, deliverables, and acceptance. Update it when a genuine dependency requires a change; record the reason in a decision record.
 
 ## 0. Status legend
@@ -171,7 +171,7 @@ Root documentation, `.opencode/`, `.orchestrator/`, `tools/`, `ArtSource/`, `Bui
 
 ## Phase 2 — Physical laundromat
 
-**Status:** In progress
+**Status:** Complete
 **Objective:** Build the physical laundry space: room, entrance, windows, counter, waiting area, furniture, storage, and concealed back-room access.
 **Depends on:** Phase 1.
 
@@ -193,7 +193,7 @@ Root documentation, `.opencode/`, `.orchestrator/`, `tools/`, `ArtSource/`, `Bui
 | LL-P2-003 | Add waiting area, storage shelving, utility alcove, and signage | Complete |
 | LL-P2-004 | Conceal the secret door behind a shelf/service panel | Complete |
 | LL-P2-005 | Add collision, navigation, and camera-clearance validation | Complete |
-| LL-P2-006 | Verify Phase 2 acceptance and record evidence | In progress |
+| LL-P2-006 | Verify Phase 2 acceptance and record evidence | Complete |
 
 ### Acceptance criteria
 
@@ -215,6 +215,7 @@ Environment prefabs, materials, scene objects, lighting settings, collision/nav 
 ### Human verification
 
 - Walk the room, test sightlines, confirm the secret door is discoverable but not spoiled.
+- Result: project owner reported pass for all six review items on 2026-10-20. Recorded as owner-reported in `.orchestrator/reports/2026-10-20-ll-p2-006-human-verification.md`.
 
 ### Risks
 
@@ -224,9 +225,9 @@ Environment prefabs, materials, scene objects, lighting settings, collision/nav 
 
 ---
 
-## Phase 3 — Laundry interaction foundation
+## Phase 3 - Laundry interaction foundation
 
-**Status:** Planned
+**Status:** Planned; task plan required
 **Objective:** Implement player interaction, carrying, baskets, laundry items, prompts, and machine interaction hooks.
 **Depends on:** Phase 2.
 

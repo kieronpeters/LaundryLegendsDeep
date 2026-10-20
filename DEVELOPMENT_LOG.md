@@ -572,7 +572,7 @@ Resume LL-P1-009 with the human check. If it passes, close Phase 1 and start Pha
 
 **Phase:** 2 - Physical laundromat
 **Task:** LL-P2-006
-**Status:** In progress - automated checks passed; owner walkthrough pending
+**Status:** Complete - automated checks and owner-reported human acceptance passed
 
 ### Implemented / performed
 
@@ -589,14 +589,16 @@ Resume LL-P1-009 with the human check. If it passes, close Phase 1 and start Pha
 - `TestResults/phase2-p6-playmode.xml` - 12/12 passed.
 - Log scan found no compiler errors, exceptions, missing references, shader errors, or aborts.
 - Fresh captures: `phase2-entrance.png`, `phase2-storefront.png`, `phase2-waiting.png`, `phase2-machine-signage.png`, `phase2-utility.png`, `phase2-secret-approach.png`, `phase2-secret-close.png`.
-- Agent observation: the exterior-facing `LAUNDRY LEGENDS` sign is mirrored from inside, and `DROP OFF` is mirrored from the room side. The owner must judge whether this placeholder behavior is acceptable.
+- Agent observation: the exterior-facing `LAUNDRY LEGENDS` sign is mirrored from inside, and `DROP OFF` is mirrored from the room side. The owner did not report this as blocking.
+- Owner-reported human review: the project owner replied "pass" for all six checklist items on 2026-10-20. Recorded separately in `.orchestrator/reports/2026-10-20-ll-p2-006-human-verification.md`. No independent agent walkthrough was performed.
 
 ### Not performed
 
-- Owner Game-view walkthrough and acceptance decision.
+- Independent agent Game-view walkthrough; the human result is owner-reported only.
+- Per-item owner notes, timestamps, or screenshots; the owner gave one overall "pass".
 - Player build and performance measurement.
 - No interaction or secret-reveal implementation.
 
 ### Next
 
-Owner completes the checklist in `.orchestrator/reports/2026-10-20-ll-p2-006.md`. If it passes, record owner-reported evidence, mark `LL-P2-006` complete, and close Phase 2. If it fails, fix only the scoped issue and rerun the affected checks.
+Phase 2 is complete. Author and approve the Phase 3 task plan before starting interaction work; `.orchestrator/tasks/phase-03.json` does not exist yet. Do not replay `LL-P2-006`.

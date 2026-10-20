@@ -9,7 +9,7 @@
     "renderPipeline": "Built-In Render Pipeline",
     "targetPlatform": "Windows 64-bit"
   },
-  "updatedAt": "2026-10-20T18:45:00+08:00",
+  "updatedAt": "2026-10-20T19:03:00+08:00",
   "currentMilestone": {
     "id": "M1",
     "name": "Playable laundry",
@@ -18,9 +18,9 @@
   "currentPhase": {
     "number": 2,
     "name": "Physical laundromat",
-    "status": "in_progress",
+    "status": "complete",
     "file": ".orchestrator/tasks/phase-02.json",
-    "completionNote": "Phase 1 complete, including owner-reported human verification. Phase 2 storefront, public zones, signage, secret-door concealment, and navigation/camera validation (LL-P2-002 through LL-P2-005) are complete. LL-P2-006 automated acceptance verification is in progress; human review is required before the task or phase can close."
+    "completionNote": "Phase 2 is complete. Automated acceptance verification passed and the project owner reported pass for all six human-review items on 2026-10-20. Human evidence is recorded separately as owner-reported. Phase 3 has no task file yet; author and approve its task plan before starting interaction work."
   },
   "nextPhase": {
     "number": 3,
@@ -28,15 +28,15 @@
     "status": "planned",
     "file": ".orchestrator/tasks/phase-03.json"
   },
-  "activeTask": "LL-P2-006",
-  "lastCompletedTask": "LL-P2-005",
-  "nextTask": "LL-P2-006",
+  "activeTask": null,
+  "lastCompletedTask": "LL-P2-006",
+  "nextTask": null,
   "taskCounts": {
-    "complete": 22,
+    "complete": 23,
     "ready": 0,
     "planned": 0,
     "pending": 1,
-    "inProgress": 1,
+    "inProgress": 0,
     "failed": 0,
     "blocked": 0,
     "pendingApproval": 0
@@ -44,7 +44,7 @@
   "phaseStatuses": {
     "0": "complete",
     "1": "complete",
-    "2": "in_progress",
+    "2": "complete",
     "3": "planned",
     "4": "planned",
     "5": "planned",
@@ -66,9 +66,9 @@
     "checkpointCommit": "da130ddad18b633fb9bad82a3df5107168c91dd0",
     "baselineCommit": "b78218cccfeea741d3d227ffa95e679e9ba92a72",
     "remote": null,
-    "workingTree": "clean after the LL-P2-006 automated-evidence checkpoint (92c3dd8); the task is paused at the owner-review gate, and the untracked ProjectSettings/PackageManagerSettings.asset is preserved but not committed",
+    "workingTree": "clean after the LL-P2-006 closure commit; the untracked ProjectSettings/PackageManagerSettings.asset is preserved but not committed",
     "unityProjectCommit": "e244ba434ace223ff064df52b6a683615d9fb503",
-    "lastCheckpointAt": "2026-10-20T18:47:00+08:00"
+    "lastCheckpointAt": "2026-10-20T19:03:00+08:00"
   },
   "environment": {
     "opencodeCli": "2.0.28",
@@ -134,17 +134,18 @@
     "The project now uses Linear color space; future lit materials and lighting must be authored and checked for that space.",
     "Asset production may require licensed external sources and approval.",
     "Placeholder signage uses the built-in LegacyRuntime font and simple cube panels; it is not final typography or branding.",
-    "The secret-door concealment is a static placeholder shelf/panel; human review must judge whether it is too obvious or too subtle, and future reveal logic must animate or remove it.",
+    "The secret-door concealment is a static placeholder shelf/panel. The owner reported the Phase 2 subtlety review as passed; reveal logic and animation remain future work.",
     "Scene/prefab merge conflicts are a high-risk collaboration surface.",
     "Global OpenCode configuration uses a local Ollama default; this project overrides it with the verified free DeepSeek model.",
     "Free-model spend telemetry is not reliable; limits are conservative and process-based."
   ],
   "technicalDebt": [
-    "Test coverage is limited to 10 EditMode and 11 PlayMode tests; no gameplay, save, or performance coverage yet.",
+    "Test coverage is limited to 10 EditMode and 12 PlayMode tests; no gameplay, save, or performance coverage yet.",
     "No Git LFS patterns configured for future large assets.",
     "Economy values are untuned proposals.",
     "First-person perspective is provisional.",
-    "Project settings were edited as serialized YAML before an editor settings API existed; re-verified by batch reopen."
+    "Project settings were edited as serialized YAML before an editor settings API existed; re-verified by batch reopen.",
+    "MASTER_CONTEXT.md and ARCHITECTURE.md still contain stale Phase 0/no-Unity status text; reconcile them in a scoped documentation task before Phase 3 implementation."
   ],
   "assets": {
     "created": 16,
@@ -156,10 +157,9 @@
   "lastRun": {
     "id": "2026-10-20-ll-p2-006",
     "report": ".orchestrator/reports/2026-10-20-ll-p2-006.md",
-    "status": "paused",
-    "pauseReason": "Automated verification passed; owner walkthrough of layout, readability, and secret-door subtlety is required before the task or phase can close.",
+    "status": "complete",
     "startedAt": "2026-10-20T18:38:00+08:00",
-    "completedAt": null,
+    "completedAt": "2026-10-20T19:03:00+08:00",
     "checks": {
       "bootstrap": "passed",
       "compile": "passed",
@@ -173,7 +173,7 @@
       "playmode": "12/12 passed",
       "log_scan": "passed",
       "captures": "passed_agent_inspected",
-      "human_layout_review": "pending"
+      "human_layout_review": "passed_owner_reported"
     },
     "filesChanged": [
       "PROJECT_STATE.md",
@@ -181,12 +181,13 @@
       "DEVELOPMENT_LOG.md",
       ".orchestrator/state.json",
       ".orchestrator/tasks/phase-02.json",
-      ".orchestrator/reports/2026-10-20-ll-p2-006.md"
+      ".orchestrator/reports/2026-10-20-ll-p2-006.md",
+      ".orchestrator/reports/2026-10-20-ll-p2-006-human-verification.md"
     ]
   },
   "recovery": {
     "procedure": ".orchestrator/recovery/RESUME.md",
-    "resumeTask": "LL-P2-006",
+    "resumeTask": null,
     "doNotReplay": [
       "LL-P0-001",
       "LL-P0-002",
@@ -209,7 +210,8 @@
       "LL-P2-002",
       "LL-P2-003",
       "LL-P2-004",
-      "LL-P2-005"
+      "LL-P2-005",
+      "LL-P2-006"
     ]
   }
 }

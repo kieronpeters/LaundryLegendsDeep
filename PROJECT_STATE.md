@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-20 18:45 (UTC+08:00)
-**Current milestone:** M1 — Playable laundry, **in progress**
-**Current phase:** Phase 2 — Physical laundromat, **in progress**
-**Next phase:** Phase 3 — Laundry interaction foundation, planned
-**Active task:** `LL-P2-006` — automated verification passed; owner walkthrough pending
-**Next recommended task:** Complete the owner walkthrough and close `LL-P2-006`
+**Last updated:** 2026-10-20 19:03 (UTC+08:00)
+**Current milestone:** M1 - Playable laundry, **in progress**
+**Current phase:** Phase 2 - Physical laundromat, **complete**
+**Next phase:** Phase 3 - Laundry interaction foundation, planned; task plan not yet authored
+**Active task:** None - Phase 2 is complete
+**Next recommended task:** Author and approve the Phase 3 task plan before starting interaction work
 
 ## 1. Verified configuration
 
@@ -66,6 +66,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Phase 2 public zones: two south-east waiting chairs with a side table and planter; two shallow west-wall shelving units with bins; a north-west utility alcove with a half-height divider, cabinet/sink, mop bucket, and staff-only sign; and storefront, counter, machine-wall, and window signage. Public-zone validation passed; the agent inspected `TestResults/phase2-waiting.png`, `phase2-machine-signage.png`, and `phase2-utility.png`.
 - Phase 2 secret access: a shallow service panel and rolling supply shelf cover the east-wall door while leaving the top of the dark door, outer frame edges, casters, and a `SERVICE` marker readable. Concealment validation passed; the agent inspected `TestResults/phase2-secret-approach.png` and `phase2-secret-close.png`.
 - Phase 2 navigation: seven public routes, critical-prop colliders, renderer materials, missing references, and 1.5 m/1.7 m camera clearance samples are validated in the editor and PlayMode suite. Validation and tests passed on 2026-10-20.
+- Phase 2 acceptance: the project owner reported pass for all six Phase 2 review items on 2026-10-20: traversal, entrance-to-counter path, secret-access subtlety, lighting/readability, signage, and overall layout. Recorded as owner-reported human verification in `.orchestrator/reports/2026-10-20-ll-p2-006-human-verification.md`. Phase 2 is complete.
 - EditMode suite: 10/10 tests passed on 2026-10-20, including an opt-in deliberate-failure probe that correctly exits `2` and records `result="Failed"`.
 - PlayMode suite: 12/12 tests passed on 2026-10-20; the added tests cover storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, and public navigation/camera clearance. Earlier 8-, 9-, 10-, and 11-test runs are preserved in their task evidence.
 - Batch commands, evidence paths, failure-probe steps, and test-assembly isolation documented in `TESTING_GUIDE.md`.
@@ -75,7 +76,8 @@ The workspace was empty before bootstrap. No user work was overwritten.
 
 ## 4. Incomplete and unverified
 
-- Phase 2 human acceptance: walk the room, judge layout/readability, confirm the secret access is discoverable but not spoiled, and record evidence. Automated navigation/camera validation is complete.
+- Phase 3 task plan: `.orchestrator/tasks/phase-03.json` does not exist yet; author and approve it before interaction work.
+- Interaction, carrying, baskets, prompts, machine load/unload, customers, orders, and the secret-room reveal.
 - Production art, audio, UI, animations, and models.
 - Save system, economy, customers, laundry machines, orders, secret room, and arcade.
 - Player build and performance validation.
@@ -83,7 +85,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 
 ## 5. Blockers and dependencies
 
-- **No current hard blocker.** Phase 1 is complete. Phase 2 is in progress; the physical environment and automated validation are complete, and human acceptance is ready.
+- **No current hard blocker.** Phase 2 is complete. Phase 3 is dependency-eligible, but its task plan must be authored and approved before work starts.
 - Unity batch-mode licensing was resolved on 2026-10-19 by a Unity Hub refresh; it can expire again.
 - Unity Personal offline licensing expires periodically. If batch mode fails with exit `198`, refresh the license in Unity Hub before retrying; do not treat it as a project defect.
 - Package additions and project-wide settings changes are treated as approval gates. Phase 1 uses only the installed editor baseline plus UGUI/TextMeshPro and Test Framework.
@@ -115,7 +117,8 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Phase 2 public-zone commit: `89a9ad4`.
 - Phase 2 secret-door concealment commit: `2ef6b27`.
 - Phase 2 navigation/camera-validation commit: `56501e1`.
-- Phase 2 acceptance-evidence checkpoint: `92c3dd8`; `LL-P2-006` remains in progress pending owner review.
+- Phase 2 acceptance-evidence checkpoint: `92c3dd8`.
+- Phase 2 closure/owner-verification commit: recorded after this update.
 - Remote: none. No push performed or authorized.
 - Note: `Library/`, `Logs/`, `UserSettings/`, and `TestResults/` are ignored and not committed.
 - One untracked Unity-generated file exists: `ProjectSettings/PackageManagerSettings.asset`. It is preserved but not committed; it contains package-manager UI/default registry state, not a package addition. Review before deciding whether to version it.
@@ -162,27 +165,29 @@ See `.orchestrator/budgets.json`.
 **Report:** `.orchestrator/reports/2026-10-20-ll-p2-005.md`
 **Result:** Added `ValidatePublicNavigation` and a PlayMode navigation test covering seven public routes, critical-prop colliders, renderer materials, missing references, and 1.5 m/1.7 m camera clearance. Navigation plus all regression validations exited `0`; EditMode passed 10/10; PlayMode passed 12/12.
 
-**Latest run:** `2026-10-20-ll-p2-006` - **awaiting human review**
+**Latest run:** `2026-10-20-ll-p2-006` - **complete**
 **Report:** `.orchestrator/reports/2026-10-20-ll-p2-006.md`
-**Result:** Automated acceptance verification passed: bootstrap, compile, six scene validators, EditMode 10/10, PlayMode 12/12, clean log scan, and seven fresh captures. The agent inspected all captures. The owner must still walk the Game view and confirm traversal, sightlines, lighting/readability, and secret-door subtlety. `LL-P2-006` and Phase 2 are not complete yet.
+**Human verification:** `.orchestrator/reports/2026-10-20-ll-p2-006-human-verification.md`
+**Result:** Automated acceptance verification passed: bootstrap, compile, six scene validators, EditMode 10/10, PlayMode 12/12, clean log scan, and seven fresh captures. The project owner then reported pass for all six human-review items: traversal, entrance-to-counter path, secret-access subtlety, lighting/readability, signage, and overall layout. No blocking issue was reported. `LL-P2-006` and Phase 2 are complete. This is owner-reported human evidence, not an independent agent walkthrough.
 
-**Human review package:** `TestResults/phase2-acceptance.html` (local, ignored evidence) and the checklist in `.orchestrator/reports/2026-10-20-ll-p2-006.md`.
+**Review evidence:** `TestResults/phase2-acceptance.html` (local, ignored) and the captures under `TestResults/`.
 
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then resume `LL-P2-006` at the owner walkthrough. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, or `LL-P2-005`. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, and confirm Phase 2 is complete. There is no active task. Author and approve the Phase 3 task plan before starting interaction work. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, `LL-P2-005`, or `LL-P2-006`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 
-- Phase 2 needs scoped scene/prefab work; preserve the existing GreyboxRoom layout and validate traversal after each change. The physical environment and automated navigation/camera validation are complete; human acceptance remains.
+- Phase 2 is complete. Preserve the validated layout for Phase 3 interaction placement; rerun navigation/camera validation after any scene or prefab change.
+- `MASTER_CONTEXT.md` and `ARCHITECTURE.md` still contain stale Phase 0/no-Unity status text. Reconcile them in a scoped documentation task before Phase 3 implementation; do not treat them as current project status.
 - `ProjectSettings/PackageManagerSettings.asset` is untracked and Unity-generated. It was preserved but not committed; review before versioning.
 - Unity Personal licensing requires periodic online refresh; batch automation can fail with exit `198` for reasons unrelated to the project.
 - Project settings were edited as serialized YAML before an editor settings API existed; Unity re-serialized and preserved them, but future changes should use an editor script or the Unity UI.
 - Linear color space and Medium quality are active. Greybox lighting was checked by the project owner in the Game view on 2026-10-20 and reported acceptable; no measured performance data exists.
 - The greybox room, props, machines, and secret door are static placeholder primitives; no interaction or machine behavior exists.
 - The storefront glazing and open door leaves are static placeholders; there is no door interaction or animation. Phase 2 rendering captures require a graphics-capable batch run because `-nographics` crashed during capture.
-- Single-sided placeholder text faces its intended reader: `LAUNDRY LEGENDS` is mirrored from inside and `DROP OFF` is mirrored from the room side. The owner should decide whether this is acceptable for Phase 2 or needs a two-sided sign later.
-- The secret door is visually foreshadowed and now concealed by a service panel/shelf; secret-room access and reveal logic are not implemented.
+- Single-sided placeholder text faces its intended reader: `LAUNDRY LEGENDS` is mirrored from inside and `DROP OFF` is mirrored from the room side. The owner reported the Phase 2 review as passed and did not mark this as blocking; improve it later if presentation quality requires it.
+- The secret door is visually foreshadowed and concealed by a static service panel/shelf. The owner reported the Phase 2 subtlety review as passed; secret-room access and reveal logic are not implemented.
 - Four real-time point lights are unoptimized; performance has not been measured.
 - The pause overlay uses IMGUI as a placeholder; real UI arrives later.
 - Cursor lock/release and movement feel were confirmed by the project owner on 2026-10-20; batch tests still skip cursor APIs, so this remains owner-reported rather than independently reproduced.
