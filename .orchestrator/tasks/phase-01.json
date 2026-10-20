@@ -399,7 +399,7 @@
     {
       "id": "LL-P1-008",
       "title": "Add test scaffolding and batch validation commands",
-      "status": "ready",
+      "status": "complete",
       "priority": 8,
       "owner": "ll-qa",
       "dependsOn": ["LL-P1-003", "LL-P1-005"],
@@ -415,26 +415,56 @@
       "checks": [
         {
           "name": "EditMode tests",
-          "status": "pending",
-          "command": "Unity.exe -runTests -testPlatform EditMode",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "Unity.exe -batchmode -nographics -projectPath <root> -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile TestResults/editmode.log",
+          "evidence": "Exit code 0; 10/10 passed. Covers GameState rules, build-settings order, and the failure-reporting probe."
         },
         {
           "name": "PlayMode tests",
-          "status": "pending",
-          "command": "Unity.exe -runTests -testPlatform PlayMode",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "Unity.exe -batchmode -projectPath <root> -runTests -testPlatform PlayMode -testResults TestResults/playmode.xml -logFile TestResults/playmode.log",
+          "evidence": "Exit code 0; 8/8 passed, repeated to confirm stability after fixing a frame-rate-dependent movement assertion."
+        },
+        {
+          "name": "Deliberate failure reporting",
+          "status": "passed",
+          "command": "$env:LL_FAIL_PROBE='1'; Unity.exe ... -runTests -testPlatform EditMode -testFilter FailureReportingTests -testResults TestResults/editmode-probe.xml -logFile TestResults/editmode-probe.log",
+          "evidence": "Exit code 2; editmode-probe.xml reports result=\"Failed\", DeliberateFailureProbe failed, message \"Deliberate failure probe active: 1\". Normal EditMode rerun exited 0 with 10/10 passed."
+        },
+        {
+          "name": "Documentation and scaffolding review",
+          "status": "passed",
+          "command": "Manual review of TESTING_GUIDE.md and test assembly definitions",
+          "evidence": "Guide documents compile/EditMode/PlayMode/foundation commands, failure probe, evidence paths, batch timing, and test isolation. EditMode and PlayMode asmdefs reference only Runtime + Test Runner and are gated by UNITY_INCLUDE_TESTS."
         }
       ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "result": {
+        "status": "success",
+        "summary": "Added the first EditMode suite with GameState and build-settings coverage, a deliberate failure-reporting probe, and a hardened PlayMode movement test. Documented exact Start-Process batch commands, expected exit codes, log scanning, failure-probe evidence, batch frame-rate guidance, and test-assembly isolation in TESTING_GUIDE.md.",
+        "evidence": [
+          "TestResults/editmode.xml",
+          "TestResults/editmode.log",
+          "TestResults/editmode-probe.xml",
+          "TestResults/editmode-probe.log",
+          "TestResults/playmode.xml",
+          "TestResults/playmode.log",
+          "TestResults/playmode-repeat.xml",
+          "Assets/LaundryLegends/Tests/EditMode/GameStateTests.cs",
+          "Assets/LaundryLegends/Tests/EditMode/BuildSettingsTests.cs",
+          "Assets/LaundryLegends/Tests/EditMode/FailureReportingTests.cs",
+          "Assets/LaundryLegends/Tests/PlayMode/PlayerControllerTests.cs",
+          "TESTING_GUIDE.md"
+        ],
+        "notes": "The failure probe is inactive unless LL_FAIL_PROBE is set. A previous PlayMode run exposed a flaky one-frame movement assertion in PlayerMovesAndLooks; it now accumulates 0.1 seconds of Time.deltaTime and passed twice. Test XML/logs remain under ignored TestResults/."
+      },
+      "retryCount": 1,
+      "startedAt": "2026-10-20T08:50:00+08:00",
+      "completedAt": "2026-10-20T08:56:00+08:00"
     },
     {
       "id": "LL-P1-009",
       "title": "Verify Phase 1 acceptance and record evidence",
-      "status": "planned",
+      "status": "ready",
       "priority": 9,
       "owner": "build",
       "dependsOn": ["LL-P1-001", "LL-P1-002", "LL-P1-003", "LL-P1-004", "LL-P1-005", "LL-P1-006", "LL-P1-007", "LL-P1-008"],

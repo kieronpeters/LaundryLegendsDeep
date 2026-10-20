@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-19 21:52 (UTC+08:00)
+**Last updated:** 2026-10-20 08:56 (UTC+08:00)
 **Current milestone:** M1 — Playable laundry, **in progress**
 **Current phase:** Phase 1 — Unity foundation, **in progress**
 **Next phase:** Phase 2 — Physical laundromat, planned
 **Active task:** none
-**Next recommended task:** `LL-P1-008` — Add test scaffolding and batch validation commands
+**Next recommended task:** `LL-P1-009` — Verify Phase 1 acceptance and record evidence
 
 ## 1. Verified configuration
 
@@ -35,7 +35,7 @@
 - **Assemblies:** `LaundryLegends.Runtime`, `LaundryLegends.Editor`, `LaundryLegends.Tests.EditMode`, `LaundryLegends.Tests.PlayMode`. Runtime, editor, and PlayMode test assemblies compile.
 - **Prefabs:** `Prefabs/Gameplay/Player.prefab` with CharacterController, first-person controller, pause controller, interaction raycast, child camera, and AudioListener. `Prefabs/Environment/GreyboxRoom.prefab` with room shell, counter, folding table, eight-machine wall, secret door, and ceiling point lights.
 - **Materials:** seven flat Standard greybox materials under `Art/Materials`; no textures.
-- **Tests:** 8 PlayMode tests covering scene routing, player movement/look/pause/interaction, greybox traversal, wall containment, secret-door closure, scale dimensions, and lighting presence. No EditMode tests yet.
+- **Tests:** 10 EditMode tests covering `GameState`, build-settings order, and failure reporting; 8 PlayMode tests covering scene routing, player movement/look/pause/interaction, greybox traversal, wall containment, secret-door closure, scale dimensions, and lighting presence. Test assemblies are isolated from runtime.
 - **Folders:** full `Assets/LaundryLegends` feature tree for art, audio, prefabs, scenes, scripts, settings, ScriptableObjects, UI, editor, and tests.
 - **Textures/models/audio:** none; placeholder primitives only.
 - **Unity project files:** `Packages/manifest.json` (34 direct dependencies), `Packages/packages-lock.json` (37 resolved built-in packages), and generated files under `ProjectSettings/`.
@@ -62,14 +62,16 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - First-person player prefab with CharacterController movement, mouse look, Esc pause overlay, cursor lock/release code, and a camera-raycast interaction stub using the legacy Input Manager.
 - Greybox laundromat: 16×12 m room, entrance gap, counter, folding table, eight-machine wall, closed foreshadowed secret door, collision, four ceiling point lights, and directional fill.
 - Greybox preview captures inspected by the agent: `TestResults/greybox-entrance.png` and `TestResults/greybox-secret.png` (local-only).
-- PlayMode suite: 8/8 tests passed on 2026-10-19.
+- EditMode suite: 10/10 tests passed on 2026-10-20, including an opt-in deliberate-failure probe that correctly exits `2` and records `result="Failed"`.
+- PlayMode suite: 8/8 tests passed on 2026-10-20, repeated for stability after fixing a frame-rate-dependent movement assertion.
+- Batch commands, evidence paths, failure-probe steps, and test-assembly isolation documented in `TESTING_GUIDE.md`.
 - No production assets, save system, economy, customers, machine behavior, UI, or player build exists yet.
 
 ## 4. Incomplete and unverified
 
 - Human visual check of greybox scale, readability, and lighting comfort.
 - Manual cursor-lock/release and subjective movement-feel check.
-- EditMode tests and batch validation commands/documentation (`LL-P1-008`).
+- Phase 1 acceptance review and evidence record (`LL-P1-009`).
 - Production art, audio, UI, animations, and models.
 - Save system, economy, customers, laundry machines, orders, secret room, and arcade.
 - Player build and performance validation.
@@ -100,7 +102,8 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Scenes/build settings commit: `8bd3fb76ddc6fb1fb2eb99e99caf0ef6bb7f9e72`
 - GameState/routing commit: `6e02469a891198072299c9f17980383bf6764fc5`
 - Player/movement commit: `e263d1d18cd70e50ffc55e3a2f19b5c7152ae8f7`
-- Greybox environment commit: recorded in the task-scoped commit and `git log`.
+- Greybox environment commit: `13ceed9bb7c72d3519f50acbb5d6fe45c7bed6ac`
+- Test scaffolding commit: recorded in the task-scoped commit and `git log`.
 - Remote: none. No push performed or authorized.
 - Note: `Library/`, `Logs/`, `UserSettings/`, and `TestResults/` are ignored and not committed.
 
@@ -117,13 +120,13 @@ See `.orchestrator/budgets.json`.
 
 ## 9. Last successful development run
 
-**Run:** `2026-10-19-ll-p1-007`
-**Report:** `.orchestrator/reports/2026-10-19-ll-p1-007.md`
-**Result:** `LL-P1-007` complete. Built and validated a reproducible greybox laundromat prefab with a 16×12 m room, entrance, counter, folding table, eight-machine wall, collision, four ceiling point lights, directional fill, and a closed foreshadowed secret door. Placed it in Laundromat, moved the player spawn inside the entrance, removed the temporary floor, and captured entrance/secret previews. PlayMode suite passed 8/8, including traversal, wall containment, secret-door closure, scale dimensions, and lighting presence. No human visual check, playtest, or player build was performed.
+**Run:** `2026-10-20-ll-p1-008`
+**Report:** `.orchestrator/reports/2026-10-20-ll-p1-008.md`
+**Result:** `LL-P1-008` complete. Added the first EditMode suite (10 tests) for `GameState`, build-settings order, and failure reporting; hardened the PlayMode movement test against uncapped batch frame rates; and documented runnable `Start-Process` compile/test commands, exit-code expectations, failure-probe evidence, and test isolation in `TESTING_GUIDE.md`. EditMode passed 10/10, the deliberate failure probe exited `2` with `result="Failed"`, and PlayMode passed 8/8 twice. No human playtest or player build was performed.
 
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then continue with `LL-P1-008`. Do not replay `LL-P0-*` or `LL-P1-001` through `LL-P1-007`. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then continue with `LL-P1-009`. Do not replay `LL-P0-*` or `LL-P1-001` through `LL-P1-008`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 
@@ -136,7 +139,8 @@ Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect 
 - The pause overlay uses IMGUI as a placeholder; real UI arrives later.
 - Cursor lock/release and movement feel were not manually verified; batch tests skip cursor APIs.
 - `GameSession.Instance` is a static service handle; consumers should prefer explicit references where practical.
-- Test coverage is 8 PlayMode tests; EditMode tests and documented batch commands are pending (`LL-P1-008`).
+- Test coverage is 10 EditMode and 8 PlayMode tests; it does not yet cover machine cycles, orders, economy transactions, save/load, or UI.
+- `FailureReportingTests` fails when `LL_FAIL_PROBE` is left set; unset it after probing.
 - The stray `C:\Users\Asus\Desktop\AI` log remains pending manual deletion.
 - The global OpenCode config points at a local Ollama model; the project config overrides it with DeepSeek. Confirm the provider remains available in future sessions.
 - The design contains proposed economy numbers that have never been tuned.

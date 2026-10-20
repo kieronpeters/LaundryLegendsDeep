@@ -35,10 +35,18 @@ namespace LaundryLegends.Tests.PlayMode
             Vector3 startPosition = player.transform.position;
             Vector3 forward = player.transform.forward;
 
-            player.Move(new Vector2(0f, 1f));
+            // Batch PlayMode runs at an uncapped frame rate, so one frame is not
+            // a reliable amount of movement. Accumulate a short fixed duration.
+            float elapsed = 0f;
+            while (elapsed < 0.1f)
+            {
+                player.Move(new Vector2(0f, 1f));
+                yield return null;
+                elapsed += Time.deltaTime;
+            }
 
             Vector3 displacement = player.transform.position - startPosition;
-            Assert.Greater(Vector3.Dot(displacement, forward), 0.005f,
+            Assert.Greater(Vector3.Dot(displacement, forward), 0.05f,
                 "Forward input should move the player forward.");
 
             float yawBefore = player.transform.eulerAngles.y;

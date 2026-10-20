@@ -35,10 +35,9 @@ Run at every phase boundary and before commits that touch orchestration.
 Once the project exists:
 
 ```powershell
-& 'C:\Program Files\Unity\Hub\Editor\6000.0.64f1\Editor\Unity.exe' `
-  -batchmode -quit -nographics `
-  -projectPath 'C:\Users\Asus\Desktop\AI Coding Test\LaundryLegends' `
-  -logFile 'TestResults\compile.log'
+$process = Start-Process -FilePath 'C:\Program Files\Unity\Hub\Editor\6000.0.64f1\Editor\Unity.exe' -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"C:\Users\Asus\Desktop\AI Coding Test\LaundryLegends`" -logFile `"TestResults\compile.log`""
+$process.ExitCode
 ```
 
 Record the exit code and scan `TestResults\compile.log` for compiler errors, missing scripts, and import failures. A zero exit code with errors in the log is still a failure until explained.
@@ -46,12 +45,9 @@ Record the exit code and scan `TestResults\compile.log` for compiler errors, mis
 ### Level 2 — EditMode tests
 
 ```powershell
-& 'C:\Program Files\Unity\Hub\Editor\6000.0.64f1\Editor\Unity.exe' `
-  -batchmode -nographics `
-  -projectPath 'C:\Users\Asus\Desktop\AI Coding Test\LaundryLegends' `
-  -runTests -testPlatform EditMode `
-  -testResults 'TestResults\editmode.xml' `
-  -logFile 'TestResults\editmode.log'
+$process = Start-Process -FilePath 'C:\Program Files\Unity\Hub\Editor\6000.0.64f1\Editor\Unity.exe' -Wait -PassThru -ArgumentList `
+  "-batchmode -nographics -projectPath `"C:\Users\Asus\Desktop\AI Coding Test\LaundryLegends`" -runTests -testPlatform EditMode -testResults `"TestResults\editmode.xml`" -logFile `"TestResults\editmode.log`""
+$process.ExitCode
 ```
 
 Use for state machines, economy math, save serialization, definitions, and pure logic.
@@ -59,15 +55,23 @@ Use for state machines, economy math, save serialization, definitions, and pure 
 ### Level 3 — PlayMode tests
 
 ```powershell
-& 'C:\Program Files\Unity\Hub\Editor\6000.0.64f1\Editor\Unity.exe' `
-  -batchmode `
-  -projectPath 'C:\Users\Asus\Desktop\AI Coding Test\LaundryLegends' `
-  -runTests -testPlatform PlayMode `
-  -testResults 'TestResults\playmode.xml' `
-  -logFile 'TestResults\playmode.log'
+$process = Start-Process -FilePath 'C:\Program Files\Unity\Hub\Editor\6000.0.64f1\Editor\Unity.exe' -Wait -PassThru -ArgumentList `
+  "-batchmode -projectPath `"C:\Users\Asus\Desktop\AI Coding Test\LaundryLegends`" -runTests -testPlatform PlayMode -testResults `"TestResults\playmode.xml`" -logFile `"TestResults\playmode.log`""
+$process.ExitCode
 ```
 
 Use for interaction, machine cycles, order flow, customer flow, and scene smoke tests. Do not use `-nographics` unless the test has no rendering dependency.
+
+**Batch-mode timing:** batch PlayMode runs at an uncapped frame rate. A fixed frame count is not a fixed duration. Tests that need movement or elapsed time should accumulate `Time.deltaTime` (for example, a `while (elapsed < 0.1f)` loop) instead of assuming 60 frames per second.
+
+### Current suites (2026-10-20)
+
+| Suite | Tests | Coverage |
+|---|---:|---|
+| EditMode | 10 | `GameState` money/flags/day rules, build-settings order, and the failure-reporting probe |
+| PlayMode | 8 | scene routing, player movement/look, pause, interaction, greybox traversal, wall containment, secret door, scale, and lighting |
+
+Counts are a snapshot; use the XML `test-run` totals as the authoritative result.
 
 ### Level 4 — Scene and prefab validation
 
@@ -134,6 +138,72 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\validate-bootstrap.p
 ```
 
 It verifies required files, JSON parseability, task/state consistency, command presence, Git hygiene, and basic secret-file exclusions. It does **not** validate gameplay.
+
+### Foundation validation commands
+
+These editor methods validate the player prefab and the greybox scene without running the game:
+
+```powershell
+$unity = 'C:\Program Files\Unity\Hub\Editor\6000.0.64f1\Editor\Unity.exe'
+$project = 'C:\Users\Asus\Desktop\AI Coding Test\LaundryLegends'
+
+$player = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.PlayerSetupTool.ValidatePlayerSetup -logFile `"TestResults\unity-player-validate.log`""
+$player.ExitCode
+
+$greybox = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.GreyboxSetupTool.ValidateGreyboxRoom -logFile `"TestResults\unity-greybox-validate.log`""
+$greybox.ExitCode
+```
+
+### Reproducible batch test sequence
+
+Use `Start-Process -Wait` and a single quoted argument string. Passing an array of arguments can split the project path at its spaces.
+
+```powershell
+$unity = 'C:\Program Files\Unity\Hub\Editor\6000.0.64f1\Editor\Unity.exe'
+$project = 'C:\Users\Asus\Desktop\AI Coding Test\LaundryLegends'
+
+$compile = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -logFile `"TestResults\compile.log`""
+$compile.ExitCode
+
+$editMode = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -nographics -projectPath `"$project`" -runTests -testPlatform EditMode -testResults `"TestResults\editmode.xml`" -logFile `"TestResults\editmode.log`""
+$editMode.ExitCode
+
+$playMode = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -projectPath `"$project`" -runTests -testPlatform PlayMode -testResults `"TestResults\playmode.xml`" -logFile `"TestResults\playmode.log`""
+$playMode.ExitCode
+```
+
+Exit `0` means the command and all selected tests passed. Exit `2` means the test run completed with failures. Any other nonzero exit needs log inspection. Then scan all logs:
+
+```powershell
+Select-String -Path 'TestResults\*.log' -Pattern 'error CS|Exception|NullReferenceException|MissingReferenceException|Shader error|Aborting batchmode'
+```
+
+### Failure-reporting probe
+
+`FailureReportingTests.DeliberateFailureProbe` stays green in normal runs. Set `LL_FAIL_PROBE=1` to make it fail on purpose and prove the runner records a real failure rather than skipping it:
+
+```powershell
+$env:LL_FAIL_PROBE = '1'
+$probe = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -nographics -projectPath `"$project`" -runTests -testPlatform EditMode -testFilter FailureReportingTests -testResults `"TestResults\editmode-probe.xml`" -logFile `"TestResults\editmode-probe.log`""
+$probe.ExitCode
+Remove-Item Env:\LL_FAIL_PROBE
+```
+
+Expected evidence: exit `2`, `result="Failed"`, and the message `Deliberate failure probe active: 1`. Run the normal EditMode suite afterward to confirm it is green again.
+
+### Test scaffolding isolation
+
+- `LaundryLegends.Runtime` has no references to test assemblies.
+- `LaundryLegends.Tests.EditMode` and `LaundryLegends.Tests.PlayMode` reference only the runtime assembly and Unity Test Runner, and are gated by `UNITY_INCLUDE_TESTS`.
+- EditMode tests compile for the Editor platform only.
+- Test code lives under `Assets/LaundryLegends/Tests/`, never under `Scripts/`.
+- Test XML and logs remain under ignored `TestResults/`; they are evidence, not shipped content.
 
 ## 6. Save/load checks
 

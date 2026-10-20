@@ -307,3 +307,39 @@ LL-P1-007 - greybox laundromat environment and lighting.
 ### Next
 
 LL-P1-008 - test scaffolding and batch validation commands.
+
+## 2026-10-20 - LL-P1-008 test scaffolding and batch commands
+
+**Phase:** 1 - Unity foundation
+**Task:** LL-P1-008
+**Status:** Complete (automated checks; no playtest or build)
+
+### Implemented
+
+- EditMode GameStateTests: money storage/rejection, no public money setter, flag rules, and day advance.
+- EditMode BuildSettingsTests: Bootstrap -> MainMenu -> Laundromat order and enabled scenes.
+- EditMode FailureReportingTests: opt-in LL_FAIL_PROBE=1 probe that deliberately fails.
+- Hardened PlayMode PlayerMovesAndLooks: accumulates 0.1 seconds of Time.deltaTime instead of relying on one frame.
+- TESTING_GUIDE.md: runnable Start-Process commands, exit-code guidance, current suite inventory, failure probe, batch timing, and test isolation.
+
+### Checks and evidence
+
+- TestResults/editmode.xml - exit 0; 10/10 passed.
+- TestResults/editmode-probe.xml - exit 2; deliberate probe failed with result="Failed".
+- TestResults/editmode.log - normal rerun after the probe; 10/10 passed.
+- TestResults/playmode.xml - exit 0; 8/8 passed.
+- TestResults/playmode-repeat.xml - exit 0; 8/8 passed again.
+- tools/validate-bootstrap.ps1 - passed.
+
+### Repair
+
+- One PlayMode run failed because PlayerMovesAndLooks moved for only one uncapped batch frame. Fixed with a simulated-duration loop; two repeat runs passed.
+
+### Not performed
+
+- Human playtest.
+- Player build and performance measurement.
+
+### Next
+
+LL-P1-009 - Phase 1 acceptance verification and evidence record.
