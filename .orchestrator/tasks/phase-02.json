@@ -3,7 +3,7 @@
   "phase": 2,
   "name": "Physical laundromat",
   "status": "in_progress",
-  "updatedAt": "2026-10-20T11:45:00+08:00",
+  "updatedAt": "2026-10-20T18:45:00+08:00",
   "tasks": [
     {
       "id": "LL-P2-001",
@@ -357,7 +357,7 @@
     {
       "id": "LL-P2-006",
       "title": "Verify Phase 2 acceptance and record evidence",
-      "status": "ready",
+      "status": "in_progress",
       "priority": 6,
       "owner": "build",
       "dependsOn": ["LL-P2-005"],
@@ -382,20 +382,20 @@
       "checks": [
         {
           "name": "Automated Phase 2 verification",
-          "status": "pending",
-          "command": "Structural validation, compile, scene validation, EditMode and PlayMode tests, log scan",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "Structural validation, compile, entrance/public-zone/secret/navigation/greybox/player validation, EditMode and PlayMode tests, log scan, fresh captures",
+          "evidence": "Bootstrap passed. Compile and all six scene validators exited 0. EditMode 10/10 and PlayMode 12/12 passed. Log scan clean. Seven fresh captures inspected. Evidence: TestResults/phase2-p6-*.log, phase2-p6-editmode.xml, phase2-p6-playmode.xml, phase2-*.png."
         },
         {
           "name": "Human layout verification",
           "status": "pending",
-          "command": "Human walkthrough of the Game view",
-          "evidence": "Pending"
+          "command": "Owner walkthrough of the Game view using the checklist in .orchestrator/reports/2026-10-20-ll-p2-006.md",
+          "evidence": "Pending owner-reported review; local contact sheet is TestResults/phase2-acceptance.html."
         }
       ],
       "result": null,
       "retryCount": 0,
-      "startedAt": null,
+      "startedAt": "2026-10-20T18:38:00+08:00",
       "completedAt": null
     }
   ]

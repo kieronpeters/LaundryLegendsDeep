@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-20 16:02 (UTC+08:00)
+**Last updated:** 2026-10-20 18:45 (UTC+08:00)
 **Current milestone:** M1 — Playable laundry, **in progress**
 **Current phase:** Phase 2 — Physical laundromat, **in progress**
 **Next phase:** Phase 3 — Laundry interaction foundation, planned
-**Active task:** None — `LL-P2-005` is complete; `LL-P2-006` is ready
-**Next recommended task:** `LL-P2-006` — Verify Phase 2 acceptance and record evidence
+**Active task:** `LL-P2-006` — automated verification passed; owner walkthrough pending
+**Next recommended task:** Complete the owner walkthrough and close `LL-P2-006`
 
 ## 1. Verified configuration
 
@@ -157,13 +157,19 @@ See `.orchestrator/budgets.json`.
 **Report:** `.orchestrator/reports/2026-10-20-ll-p2-004.md`
 **Result:** Added a shallow east-wall service panel and rolling supply shelf that conceals the secret door while leaving its top edge, outer frame, casters, and a `SERVICE` marker readable. Concealment, entrance, public-zone, greybox, and player validation exited `0`; EditMode passed 10/10; PlayMode passed 11/11 including secret-door concealment. The agent inspected both secret-access captures. Human subtlety review remains part of `LL-P2-006`.
 
-**Latest run:** `2026-10-20-ll-p2-005` - **complete**
+**Previous run:** `2026-10-20-ll-p2-005` - **complete**
 **Report:** `.orchestrator/reports/2026-10-20-ll-p2-005.md`
-**Result:** Added `ValidatePublicNavigation` and a PlayMode navigation test covering seven public routes, critical-prop colliders, renderer materials, missing references, and 1.5 m/1.7 m camera clearance. Navigation plus all regression validations exited `0`; EditMode passed 10/10; PlayMode passed 12/12. Human Phase 2 acceptance remains the only open Phase 2 item.
+**Result:** Added `ValidatePublicNavigation` and a PlayMode navigation test covering seven public routes, critical-prop colliders, renderer materials, missing references, and 1.5 m/1.7 m camera clearance. Navigation plus all regression validations exited `0`; EditMode passed 10/10; PlayMode passed 12/12.
+
+**Latest run:** `2026-10-20-ll-p2-006` - **awaiting human review**
+**Report:** `.orchestrator/reports/2026-10-20-ll-p2-006.md`
+**Result:** Automated acceptance verification passed: bootstrap, compile, six scene validators, EditMode 10/10, PlayMode 12/12, clean log scan, and seven fresh captures. The agent inspected all captures. The owner must still walk the Game view and confirm traversal, sightlines, lighting/readability, and secret-door subtlety. `LL-P2-006` and Phase 2 are not complete yet.
+
+**Human review package:** `TestResults/phase2-acceptance.html` (local, ignored evidence) and the checklist in `.orchestrator/reports/2026-10-20-ll-p2-006.md`.
 
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then resume `LL-P2-006` (Phase 2 acceptance and human review). Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, or `LL-P2-005`. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then resume `LL-P2-006` at the owner walkthrough. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, or `LL-P2-005`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 
@@ -174,6 +180,7 @@ Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect 
 - Linear color space and Medium quality are active. Greybox lighting was checked by the project owner in the Game view on 2026-10-20 and reported acceptable; no measured performance data exists.
 - The greybox room, props, machines, and secret door are static placeholder primitives; no interaction or machine behavior exists.
 - The storefront glazing and open door leaves are static placeholders; there is no door interaction or animation. Phase 2 rendering captures require a graphics-capable batch run because `-nographics` crashed during capture.
+- Single-sided placeholder text faces its intended reader: `LAUNDRY LEGENDS` is mirrored from inside and `DROP OFF` is mirrored from the room side. The owner should decide whether this is acceptable for Phase 2 or needs a two-sided sign later.
 - The secret door is visually foreshadowed and now concealed by a service panel/shelf; secret-room access and reveal logic are not implemented.
 - Four real-time point lights are unoptimized; performance has not been measured.
 - The pause overlay uses IMGUI as a placeholder; real UI arrives later.

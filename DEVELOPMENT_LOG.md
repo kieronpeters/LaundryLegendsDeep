@@ -567,3 +567,36 @@ Resume LL-P1-009 with the human check. If it passes, close Phase 1 and start Pha
 ### Next
 
 `LL-P2-006` - run the complete Phase 2 verification, capture the layout, and obtain human review.
+
+## 2026-10-20 - LL-P2-006 automated acceptance verification
+
+**Phase:** 2 - Physical laundromat
+**Task:** LL-P2-006
+**Status:** In progress - automated checks passed; owner walkthrough pending
+
+### Implemented / performed
+
+- Ran bootstrap validation, compile, entrance/public-zone/secret/navigation/greybox/player validation, EditMode, and PlayMode.
+- Captured seven final Phase 2 views without `-nographics`.
+- Inspected all seven captures and prepared `TestResults/phase2-acceptance.html` plus a walkthrough checklist.
+- No scene, prefab, runtime-script, package, or project-setting change.
+
+### Checks and evidence
+
+- `TestResults/phase2-p6-compile.log` - exit 0.
+- `TestResults/phase2-p6-entrance-validate.log`, `phase2-p6-public-zones-validate.log`, `phase2-p6-secret-validate.log`, `phase2-p6-navigation-validate.log`, `phase2-p6-greybox-validate.log`, and `phase2-p6-player-validate.log` - all exit 0.
+- `TestResults/phase2-p6-editmode.xml` - 10/10 passed.
+- `TestResults/phase2-p6-playmode.xml` - 12/12 passed.
+- Log scan found no compiler errors, exceptions, missing references, shader errors, or aborts.
+- Fresh captures: `phase2-entrance.png`, `phase2-storefront.png`, `phase2-waiting.png`, `phase2-machine-signage.png`, `phase2-utility.png`, `phase2-secret-approach.png`, `phase2-secret-close.png`.
+- Agent observation: the exterior-facing `LAUNDRY LEGENDS` sign is mirrored from inside, and `DROP OFF` is mirrored from the room side. The owner must judge whether this placeholder behavior is acceptable.
+
+### Not performed
+
+- Owner Game-view walkthrough and acceptance decision.
+- Player build and performance measurement.
+- No interaction or secret-reveal implementation.
+
+### Next
+
+Owner completes the checklist in `.orchestrator/reports/2026-10-20-ll-p2-006.md`. If it passes, record owner-reported evidence, mark `LL-P2-006` complete, and close Phase 2. If it fails, fix only the scoped issue and rerun the affected checks.

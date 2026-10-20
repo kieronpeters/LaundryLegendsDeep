@@ -9,7 +9,7 @@
     "renderPipeline": "Built-In Render Pipeline",
     "targetPlatform": "Windows 64-bit"
   },
-  "updatedAt": "2026-10-20T16:02:00+08:00",
+  "updatedAt": "2026-10-20T18:45:00+08:00",
   "currentMilestone": {
     "id": "M1",
     "name": "Playable laundry",
@@ -20,7 +20,7 @@
     "name": "Physical laundromat",
     "status": "in_progress",
     "file": ".orchestrator/tasks/phase-02.json",
-    "completionNote": "Phase 1 complete, including owner-reported human verification. Phase 2 storefront, public zones, signage, secret-door concealment, and navigation/camera validation (LL-P2-002 through LL-P2-005) are complete; LL-P2-006 acceptance and human review is ready."
+    "completionNote": "Phase 1 complete, including owner-reported human verification. Phase 2 storefront, public zones, signage, secret-door concealment, and navigation/camera validation (LL-P2-002 through LL-P2-005) are complete. LL-P2-006 automated acceptance verification is in progress; human review is required before the task or phase can close."
   },
   "nextPhase": {
     "number": 3,
@@ -28,15 +28,15 @@
     "status": "planned",
     "file": ".orchestrator/tasks/phase-03.json"
   },
-  "activeTask": null,
+  "activeTask": "LL-P2-006",
   "lastCompletedTask": "LL-P2-005",
   "nextTask": "LL-P2-006",
   "taskCounts": {
     "complete": 22,
-    "ready": 1,
+    "ready": 0,
     "planned": 0,
     "pending": 1,
-    "inProgress": 0,
+    "inProgress": 1,
     "failed": 0,
     "blocked": 0,
     "pendingApproval": 0
@@ -66,7 +66,7 @@
     "checkpointCommit": "da130ddad18b633fb9bad82a3df5107168c91dd0",
     "baselineCommit": "b78218cccfeea741d3d227ffa95e679e9ba92a72",
     "remote": null,
-    "workingTree": "clean after the LL-P2-005 navigation/camera-validation commit (56501e1); one untracked Unity-generated ProjectSettings/PackageManagerSettings.asset is preserved but not committed",
+    "workingTree": "LL-P2-006 automated acceptance evidence is complete and awaiting human review; scoped report/state/doc changes are uncommitted, and the preserved untracked ProjectSettings/PackageManagerSettings.asset is not committed",
     "unityProjectCommit": "e244ba434ace223ff064df52b6a683615d9fb503",
     "lastCheckpointAt": "2026-10-20T16:08:00+08:00"
   },
@@ -154,33 +154,34 @@
     "note": "Procedural placeholders only: 3 scenes, 2 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
   },
   "lastRun": {
-    "id": "2026-10-20-ll-p2-005",
-    "report": ".orchestrator/reports/2026-10-20-ll-p2-005.md",
-    "status": "complete",
-    "startedAt": "2026-10-20T15:54:00+08:00",
-    "completedAt": "2026-10-20T16:02:00+08:00",
+    "id": "2026-10-20-ll-p2-006",
+    "report": ".orchestrator/reports/2026-10-20-ll-p2-006.md",
+    "status": "paused",
+    "pauseReason": "Automated verification passed; owner walkthrough of layout, readability, and secret-door subtlety is required before the task or phase can close.",
+    "startedAt": "2026-10-20T18:38:00+08:00",
+    "completedAt": null,
     "checks": {
+      "bootstrap": "passed",
       "compile": "passed",
-      "navigation_validation": "passed",
       "entrance_validation": "passed",
       "public_zone_validation": "passed",
       "concealment_validation": "passed",
+      "navigation_validation": "passed",
       "greybox_validation": "passed",
       "player_validation": "passed",
       "editmode": "10/10 passed",
       "playmode": "12/12 passed",
-      "log_scan": "passed"
+      "log_scan": "passed",
+      "captures": "passed_agent_inspected",
+      "human_layout_review": "pending"
     },
     "filesChanged": [
-      "Assets/LaundryLegends/Editor/Phase2SetupTool.cs",
-      "Assets/LaundryLegends/Tests/PlayMode/GreyboxTraversalTests.cs",
-      "TESTING_GUIDE.md",
       "PROJECT_STATE.md",
       "ROADMAP.md",
       "DEVELOPMENT_LOG.md",
       ".orchestrator/state.json",
       ".orchestrator/tasks/phase-02.json",
-      ".orchestrator/reports/2026-10-20-ll-p2-005.md"
+      ".orchestrator/reports/2026-10-20-ll-p2-006.md"
     ]
   },
   "recovery": {

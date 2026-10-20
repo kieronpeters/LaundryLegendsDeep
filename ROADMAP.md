@@ -193,7 +193,7 @@ Root documentation, `.opencode/`, `.orchestrator/`, `tools/`, `ArtSource/`, `Bui
 | LL-P2-003 | Add waiting area, storage shelving, utility alcove, and signage | Complete |
 | LL-P2-004 | Conceal the secret door behind a shelf/service panel | Complete |
 | LL-P2-005 | Add collision, navigation, and camera-clearance validation | Complete |
-| LL-P2-006 | Verify Phase 2 acceptance and record evidence | Ready |
+| LL-P2-006 | Verify Phase 2 acceptance and record evidence | In progress |
 
 ### Acceptance criteria
 
