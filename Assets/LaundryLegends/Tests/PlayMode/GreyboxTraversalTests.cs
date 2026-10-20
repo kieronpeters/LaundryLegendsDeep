@@ -100,6 +100,7 @@ namespace LaundryLegends.Tests.PlayMode
             // Start outside the room, facing the storefront, and walk in.
             player.transform.position = new Vector3(0f, 0.1f, -7.2f);
             player.transform.rotation = Quaternion.identity;
+            Physics.SyncTransforms();
             yield return null;
 
             float elapsed = 0f;
@@ -118,6 +119,7 @@ namespace LaundryLegends.Tests.PlayMode
             // Turn around and walk back out.
             player.transform.position = new Vector3(0f, 0.1f, -4.5f);
             player.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+            Physics.SyncTransforms();
             yield return null;
 
             elapsed = 0f;
@@ -132,6 +134,50 @@ namespace LaundryLegends.Tests.PlayMode
                 "Player should be able to leave through the storefront entrance.");
             Assert.Greater(player.transform.position.y, -0.5f,
                 "Player should not fall through the exterior ground while leaving.");
+        }
+
+        [UnityTest]
+        public IEnumerator PublicZonesArePresentAndClear()
+        {
+            yield return null;
+
+            GameObject room = GameObject.Find("GreyboxRoom");
+            Assert.IsNotNull(room, "Laundromat should contain the greybox room.");
+
+            string[] required =
+            {
+                "WaitingArea/Waiting_Chair_1",
+                "WaitingArea/Waiting_Chair_2",
+                "WaitingArea/Waiting_SideTable",
+                "StorageWest/Storage_Shelf_1",
+                "StorageWest/Storage_Shelf_2",
+                "UtilityAlcove/Utility_Divider",
+                "UtilityAlcove/Utility_Cabinet",
+                "Signage/Sign_Storefront",
+                "Signage/Sign_MachineWall",
+                "Signage/Sign_Counter"
+            };
+
+            foreach (string path in required)
+            {
+                Transform target = room.transform.Find(path);
+                Assert.IsNotNull(target, $"Missing public-zone object: {path}.");
+                Assert.IsNotNull(target.GetComponentInChildren<Collider>(true),
+                    $"Public-zone object has no collider: {path}.");
+            }
+
+            TextMesh machineSign = room.transform
+                .Find("Signage/Sign_MachineWall")
+                .GetComponentInChildren<TextMesh>(true);
+            Assert.IsNotNull(machineSign, "Machine-wall sign should have readable text.");
+            StringAssert.Contains("WASH", machineSign.text);
+
+            Assert.IsFalse(
+                Physics.Linecast(new Vector3(0f, 1.1f, -4.1f), new Vector3(0f, 1.1f, 4.3f)),
+                "Public props should not block the central aisle.");
+            Assert.IsFalse(
+                Physics.Linecast(new Vector3(0f, 1.1f, -4.1f), new Vector3(-2.7f, 1.1f, -2.4f)),
+                "Public props should not block the entrance-to-counter route.");
         }
 
         [UnityTest]

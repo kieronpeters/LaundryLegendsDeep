@@ -9,7 +9,7 @@
     "renderPipeline": "Built-In Render Pipeline",
     "targetPlatform": "Windows 64-bit"
   },
-  "updatedAt": "2026-10-20T10:32:00+08:00",
+  "updatedAt": "2026-10-20T11:45:00+08:00",
   "currentMilestone": {
     "id": "M1",
     "name": "Playable laundry",
@@ -20,7 +20,7 @@
     "name": "Physical laundromat",
     "status": "in_progress",
     "file": ".orchestrator/tasks/phase-02.json",
-    "completionNote": "Phase 1 complete, including owner-reported human verification. Phase 2 storefront facade (LL-P2-002) is complete; LL-P2-003 waiting/storage/signage is ready."
+    "completionNote": "Phase 1 complete, including owner-reported human verification. Phase 2 storefront facade (LL-P2-002) and waiting/storage/signage (LL-P2-003) are complete; LL-P2-004 secret-door concealment is ready."
   },
   "nextPhase": {
     "number": 3,
@@ -29,12 +29,12 @@
     "file": ".orchestrator/tasks/phase-03.json"
   },
   "activeTask": null,
-  "lastCompletedTask": "LL-P2-002",
-  "nextTask": "LL-P2-003",
+  "lastCompletedTask": "LL-P2-003",
+  "nextTask": "LL-P2-004",
   "taskCounts": {
-    "complete": 19,
+    "complete": 20,
     "ready": 1,
-    "planned": 3,
+    "planned": 2,
     "pending": 1,
     "inProgress": 0,
     "failed": 0,
@@ -66,9 +66,9 @@
     "checkpointCommit": "da130ddad18b633fb9bad82a3df5107168c91dd0",
     "baselineCommit": "b78218cccfeea741d3d227ffa95e679e9ba92a72",
     "remote": null,
-    "workingTree": "clean after the LL-P2-002 storefront commit; one untracked Unity-generated ProjectSettings/PackageManagerSettings.asset is preserved but not committed",
+    "workingTree": "clean after the LL-P2-003 public-zone commit; one untracked Unity-generated ProjectSettings/PackageManagerSettings.asset is preserved but not committed",
     "unityProjectCommit": "e244ba434ace223ff064df52b6a683615d9fb503",
-    "lastCheckpointAt": "2026-10-20T10:35:00+08:00"
+    "lastCheckpointAt": "2026-10-20T11:45:00+08:00"
   },
   "environment": {
     "opencodeCli": "2.0.28",
@@ -133,46 +133,48 @@
     "No dedicated image, 3D, audio, or voice-generation tool is verified.",
     "The project now uses Linear color space; future lit materials and lighting must be authored and checked for that space.",
     "Asset production may require licensed external sources and approval.",
+    "Placeholder signage uses the built-in LegacyRuntime font and simple cube panels; it is not final typography or branding.",
     "Scene/prefab merge conflicts are a high-risk collaboration surface.",
     "Global OpenCode configuration uses a local Ollama default; this project overrides it with the verified free DeepSeek model.",
     "Free-model spend telemetry is not reliable; limits are conservative and process-based."
   ],
   "technicalDebt": [
-    "Test coverage is limited to 10 EditMode and 9 PlayMode tests; no gameplay, save, or performance coverage yet.",
+    "Test coverage is limited to 10 EditMode and 10 PlayMode tests; no gameplay, save, or performance coverage yet.",
     "No Git LFS patterns configured for future large assets.",
     "Economy values are untuned proposals.",
     "First-person perspective is provisional.",
     "Project settings were edited as serialized YAML before an editor settings API existed; re-verified by batch reopen."
   ],
   "assets": {
-    "created": 14,
-    "integrated": 14,
+    "created": 16,
+    "integrated": 16,
     "verified": 2,
     "inventory": "ASSET_INVENTORY.md",
-    "note": "Procedural placeholders only: 3 scenes, 2 prefabs, and 9 materials. Verified counts room and player; production art/audio remain absent."
+    "note": "Procedural placeholders only: 3 scenes, 2 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
   },
   "lastRun": {
-    "id": "2026-10-20-ll-p2-002",
-    "report": ".orchestrator/reports/2026-10-20-ll-p2-002.md",
+    "id": "2026-10-20-ll-p2-003",
+    "report": ".orchestrator/reports/2026-10-20-ll-p2-003.md",
     "status": "complete",
-    "startedAt": "2026-10-20T10:24:00+08:00",
-    "completedAt": "2026-10-20T10:32:00+08:00",
+    "startedAt": "2026-10-20T10:40:00+08:00",
+    "completedAt": "2026-10-20T11:45:00+08:00",
     "checks": {
       "compile": "passed",
-      "facade_build": "passed",
-      "facade_validation": "passed",
+      "public_zone_build": "passed",
+      "public_zone_validation": "passed",
+      "entrance_validation": "passed",
       "greybox_validation": "passed",
       "player_validation": "passed",
       "editmode": "10/10 passed",
-      "playmode": "9/9 passed",
-      "entrance_capture": "passed_agent_inspected",
+      "playmode": "10/10 passed",
+      "public_zone_capture": "passed_agent_inspected",
       "log_scan": "passed"
     },
     "filesChanged": [
       "Assets/LaundryLegends/Editor/Phase2SetupTool.cs",
       "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
-      "Assets/LaundryLegends/Art/Materials/Grey_Glass.mat",
-      "Assets/LaundryLegends/Art/Materials/Grey_Sky.mat",
+      "Assets/LaundryLegends/Art/Materials/Grey_Chair.mat",
+      "Assets/LaundryLegends/Art/Materials/Grey_Sign.mat",
       "Assets/LaundryLegends/Tests/PlayMode/GreyboxTraversalTests.cs",
       "TESTING_GUIDE.md",
       "ASSET_INVENTORY.md",
@@ -181,12 +183,12 @@
       "DEVELOPMENT_LOG.md",
       ".orchestrator/state.json",
       ".orchestrator/tasks/phase-02.json",
-      ".orchestrator/reports/2026-10-20-ll-p2-002.md"
+      ".orchestrator/reports/2026-10-20-ll-p2-003.md"
     ]
   },
   "recovery": {
     "procedure": ".orchestrator/recovery/RESUME.md",
-    "resumeTask": "LL-P2-003",
+    "resumeTask": "LL-P2-004",
     "doNotReplay": [
       "LL-P0-001",
       "LL-P0-002",
@@ -206,7 +208,8 @@
       "LL-P1-008",
       "LL-P1-009",
       "LL-P2-001",
-      "LL-P2-002"
+      "LL-P2-002",
+      "LL-P2-003"
     ]
   }
 }

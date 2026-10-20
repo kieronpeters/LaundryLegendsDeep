@@ -3,7 +3,7 @@
   "phase": 2,
   "name": "Physical laundromat",
   "status": "in_progress",
-  "updatedAt": "2026-10-20T10:32:00+08:00",
+  "updatedAt": "2026-10-20T11:45:00+08:00",
   "tasks": [
     {
       "id": "LL-P2-001",
@@ -151,12 +151,13 @@
     {
       "id": "LL-P2-003",
       "title": "Add waiting area, storage shelving, utility alcove, and signage",
-      "status": "ready",
+      "status": "complete",
       "priority": 3,
       "owner": "build",
       "dependsOn": ["LL-P2-002"],
       "objective": "Furnish the public room with a customer waiting area, storage/shelving, a utility alcove, and readable placeholder signage that supports circulation and laundromat identity.",
       "scope": [
+        "Assets/LaundryLegends/Editor/**",
         "Assets/LaundryLegends/Prefabs/Environment/**",
         "Assets/LaundryLegends/Art/Materials/**",
         "Assets/LaundryLegends/Scenes/Laundromat.unity",
@@ -164,7 +165,9 @@
         "TestResults/**",
         ".orchestrator/**",
         "PROJECT_STATE.md",
-        "DEVELOPMENT_LOG.md"
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md",
+        "ASSET_INVENTORY.md"
       ],
       "mustNotTouch": [
         "Packages/**",
@@ -182,26 +185,47 @@
       "checks": [
         {
           "name": "Layout and collision validation",
-          "status": "pending",
-          "command": "Greybox validation plus PlayMode traversal/clearance tests",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "Phase2SetupTool.ValidatePublicZones; entrance/greybox/player validation; EditMode and PlayMode suites",
+          "evidence": "All validation methods exited 0. EditMode 10/10 passed; PlayMode 10/10 passed, including a new public-zone presence and central-lane clearance test. Evidence: TestResults/phase2-p3-public-validate.log, phase2-p3-entrance-validate.log, phase2-p3-greybox-validate.log, phase2-p3-player-validate.log, phase2-p3-editmode.xml, phase2-p3-playmode.xml."
         },
         {
           "name": "Visual capture review",
-          "status": "pending",
-          "command": "Capture entrance, waiting area, machine wall, and secret-door views",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "Phase2SetupTool.CapturePublicZones without -nographics; inspect phase2-waiting.png, phase2-machine-signage.png, phase2-utility.png",
+          "evidence": "Exit 0; all three captures inspected. Waiting chairs/table, machine-wall lettering, utility divider/sign, and storage shelving are visible. Captures are agent-inspected placeholders; human review remains in LL-P2-006."
         }
       ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "result": {
+        "status": "success",
+        "summary": "Added two waiting chairs, a side table, and a planter along the south-east wall; two shallow west-wall shelving units with bins; a north-west utility alcove with a half-height divider, cabinet/sink, mop bucket, and staff-only sign; and storefront, counter, machine-wall, and window signage. The central aisle and entrance-to-counter route remain clear; the secret door stays closed.",
+        "evidence": [
+          "Assets/LaundryLegends/Editor/Phase2SetupTool.cs",
+          "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
+          "Assets/LaundryLegends/Art/Materials/Grey_Chair.mat",
+          "Assets/LaundryLegends/Art/Materials/Grey_Sign.mat",
+          "Assets/LaundryLegends/Tests/PlayMode/GreyboxTraversalTests.cs",
+          "TestResults/phase2-p3-build.log",
+          "TestResults/phase2-p3-public-validate.log",
+          "TestResults/phase2-p3-entrance-validate.log",
+          "TestResults/phase2-p3-greybox-validate.log",
+          "TestResults/phase2-p3-player-validate.log",
+          "TestResults/phase2-p3-editmode.xml",
+          "TestResults/phase2-p3-playmode.xml",
+          "TestResults/phase2-waiting.png",
+          "TestResults/phase2-machine-signage.png",
+          "TestResults/phase2-utility.png"
+        ],
+        "notes": "Signage uses the built-in LegacyRuntime font as a placeholder, with dark panels and light text. The validation linecasts start past the player capsule. The entrance test now calls Physics.SyncTransforms after teleporting the player to make the two movement phases deterministic. No secret-door state, runtime script, package, or project-setting change was made."
+      },
+      "retryCount": 2,
+      "startedAt": "2026-10-20T10:40:00+08:00",
+      "completedAt": "2026-10-20T11:45:00+08:00"
     },
     {
       "id": "LL-P2-004",
       "title": "Conceal the secret door behind a shelf/service panel",
-      "status": "planned",
+      "status": "ready",
       "priority": 4,
       "owner": "build",
       "dependsOn": ["LL-P2-003"],

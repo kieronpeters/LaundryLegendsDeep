@@ -448,3 +448,44 @@ Resume LL-P1-009 with the human check. If it passes, close Phase 1 and start Pha
 ### Next
 
 `LL-P2-003` - add the waiting area, storage shelving, utility alcove, and placeholder signage.
+
+## 2026-10-20 - LL-P2-003 public zones and signage
+
+**Phase:** 2 - Physical laundromat
+**Task:** LL-P2-003
+**Status:** Complete (automated checks and agent-inspected captures; human public-zone review pending)
+
+### Implemented
+
+- Added a south-east waiting area with two chairs, a side table, and a planter.
+- Added two shallow west-wall storage shelving units with bins.
+- Added a north-west utility alcove with a half-height divider, cabinet/sink, mop bucket, and `STAFF ONLY` sign.
+- Added placeholder signage on the storefront, machine wall (`WASH   DRY   FOLD`), counter (`DROP OFF`), and right window (`OPEN`).
+- Added `Grey_Chair` and `Grey_Sign` placeholder materials.
+- Extended `Phase2SetupTool` with idempotent `BuildPublicZones`, `ValidatePublicZones`, and `CapturePublicZones` commands.
+- Added a PlayMode test for public-zone presence and central-lane clearance.
+
+### Checks and evidence
+
+- `TestResults/phase2-p3-build.log` - exit 0; public zones built into the room prefab.
+- `TestResults/phase2-p3-public-validate.log` - exit 0; props present and central aisle/customer path clear.
+- `TestResults/phase2-p3-entrance-validate.log`, `phase2-p3-greybox-validate.log`, and `phase2-p3-player-validate.log` - exit 0.
+- `TestResults/phase2-p3-editmode.xml` - 10/10 passed.
+- `TestResults/phase2-p3-playmode.xml` - 10/10 passed, including `PublicZonesArePresentAndClear`.
+- `TestResults/phase2-waiting.png`, `phase2-machine-signage.png`, and `phase2-utility.png` - captured and inspected by the agent.
+
+### Repairs
+
+- The first public-zone validation linecast began inside the player capsule and reported the aisle blocked by `Player` at 0.46 m. The linecasts now start at `z = -4.1`, past the capsule.
+- The first full PlayMode run failed the entrance leave assertion at `-4.475` after teleporting the player. The test now calls `Physics.SyncTransforms()` after teleports; the rerun passed 10/10.
+- A temporary debug method used during the repair was removed.
+
+### Not performed
+
+- Human Phase 2 layout, signage, and clearance review; deferred to `LL-P2-006`.
+- Player build and performance measurement.
+- No package or project-setting change.
+
+### Next
+
+`LL-P2-004` - conceal the secret door behind a shelf/service panel.

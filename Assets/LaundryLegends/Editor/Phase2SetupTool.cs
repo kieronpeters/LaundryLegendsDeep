@@ -21,6 +21,14 @@ namespace LaundryLegends.Editor
         private const string RoomPrefabPath = "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab";
         private const string LaundromatScenePath = "Assets/LaundryLegends/Scenes/Laundromat.unity";
 
+        private static readonly string[] PublicZoneRootNames =
+        {
+            "WaitingArea",
+            "StorageWest",
+            "UtilityAlcove",
+            "Signage"
+        };
+
         private static readonly string[] GeneratedChildNames =
         {
             "Wall_South_Left_PierA",
@@ -166,6 +174,108 @@ namespace LaundryLegends.Editor
             Debug.Log("[Phase2] Captured entrance/storefront previews under TestResults/.");
         }
 
+        [MenuItem("Laundry Legends/Phase 2/Build Waiting, Storage, Utility, Signage")]
+        public static void BuildPublicZones()
+        {
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(RoomPrefabPath) == null)
+            {
+                throw new InvalidOperationException($"Missing room prefab: {RoomPrefabPath}");
+            }
+
+            Material wall = RequireMaterial("Grey_Wall");
+            Material metal = RequireMaterial("Grey_Metal");
+            Material counter = RequireMaterial("Grey_Counter");
+            Material washer = RequireMaterial("Grey_Washer");
+            Material dryer = RequireMaterial("Grey_Dryer");
+            Material chair = GetOrCreateColoredMaterial("Grey_Chair", new Color(0.22f, 0.40f, 0.42f), 0.2f, 0f);
+            Material sign = GetOrCreateColoredMaterial("Grey_Sign", new Color(0.07f, 0.08f, 0.09f), 0.35f, 0f);
+
+            GameObject contents = PrefabUtility.LoadPrefabContents(RoomPrefabPath);
+            try
+            {
+                Transform root = contents.transform;
+                RemovePublicZones(root);
+
+                BuildWaitingArea(root, chair, metal, counter);
+                BuildStorage(root, metal, counter, washer, dryer);
+                BuildUtilityAlcove(root, wall, metal, counter, sign);
+                BuildSignage(root, sign);
+
+                PrefabUtility.SaveAsPrefabAsset(contents, RoomPrefabPath);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(contents);
+            }
+
+            ConfigureSceneExterior();
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("[Phase2] Waiting area, storage, utility alcove, and signage built into the greybox room prefab.");
+        }
+
+        [MenuItem("Laundry Legends/Phase 2/Validate Public Zones")]
+        public static void ValidatePublicZones()
+        {
+            var failures = new List<string>();
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(RoomPrefabPath);
+            if (prefab == null)
+            {
+                failures.Add($"Missing room prefab: {RoomPrefabPath}");
+            }
+            else
+            {
+                ValidatePublicZoneStructure(prefab, failures);
+            }
+
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(LaundromatScenePath) == null)
+            {
+                failures.Add($"Missing scene: {LaundromatScenePath}");
+            }
+            else
+            {
+                Scene scene = EditorSceneManager.OpenScene(LaundromatScenePath, OpenSceneMode.Single);
+                GameObject room = FindRoot(scene, "GreyboxRoom");
+                if (room == null)
+                {
+                    failures.Add("Laundromat has no GreyboxRoom instance.");
+                }
+                else
+                {
+                    Physics.SyncTransforms();
+                    ValidatePublicZoneScene(room, failures);
+                    ValidateSecretDoorStillClosed(room, failures);
+                }
+            }
+
+            if (failures.Count > 0)
+            {
+                foreach (string failure in failures)
+                {
+                    Debug.LogError($"[Phase2] {failure}");
+                }
+
+                throw new InvalidOperationException($"Public-zone validation failed with {failures.Count} issue(s).");
+            }
+
+            Debug.Log("[Phase2] Public-zone validation passed: waiting area, storage, utility alcove, signage, clearance, and secret-door closure are valid.");
+        }
+
+        [MenuItem("Laundry Legends/Phase 2/Capture Public Zones")]
+        public static void CapturePublicZones()
+        {
+            EditorSceneManager.OpenScene(LaundromatScenePath, OpenSceneMode.Single);
+
+            // Waiting chairs and the south-east storefront windows.
+            CaptureView("phase2-waiting.png", new Vector3(1.2f, 1.7f, -2.6f), new Vector3(5.4f, 0.7f, -4.9f));
+            // Machine-wall sign and the central working aisle.
+            CaptureView("phase2-machine-signage.png", new Vector3(0f, 1.7f, 1.2f), new Vector3(0f, 1.9f, 5.6f));
+            // North-west utility alcove and its staff-only divider.
+            CaptureView("phase2-utility.png", new Vector3(-2.6f, 1.7f, 3.1f), new Vector3(-7.0f, 0.9f, 4.7f));
+
+            Debug.Log("[Phase2] Captured waiting, machine-signage, and utility previews under TestResults/.");
+        }
+
         private static void BuildSouthWalls(Transform root, Material wall)
         {
             // Left segment: x -8..-2, window opening at x -6.2..-3.8, y 0.9..2.4.
@@ -207,6 +317,170 @@ namespace LaundryLegends.Editor
         {
             CreateBox("Facade_Ground", root, new Vector3(0f, -0.3f, -7.35f), new Vector3(20f, 0.6f, 2.5f), floor);
             CreateBox("Facade_Backdrop", root, new Vector3(0f, 2.2f, -8.7f), new Vector3(20f, 5f, 0.2f), sky);
+        }
+
+        private static void BuildWaitingArea(Transform root, Material chair, Material metal, Material counter)
+        {
+            Transform group = CreateGroup(root, "WaitingArea");
+            CreateChair(group, "Waiting_Chair_1", new Vector3(4.4f, 0f, -4.9f), chair, metal);
+            CreateChair(group, "Waiting_Chair_2", new Vector3(5.3f, 0f, -4.9f), chair, metal);
+
+            var table = new GameObject("Waiting_SideTable");
+            table.transform.SetParent(group, false);
+            table.transform.localPosition = new Vector3(6.2f, 0f, -4.9f);
+            CreateBox("Waiting_SideTable_Top", table.transform, new Vector3(0f, 0.55f, 0f), new Vector3(0.5f, 0.06f, 0.5f), counter);
+            CreateBox("Waiting_SideTable_Pedestal", table.transform, new Vector3(0f, 0.27f, 0f), new Vector3(0.12f, 0.52f, 0.12f), metal);
+            CreateBox("Waiting_SideTable_Base", table.transform, new Vector3(0f, 0.02f, 0f), new Vector3(0.34f, 0.04f, 0.34f), metal);
+
+            CreateBox("Waiting_Planter", group, new Vector3(6.9f, 0.18f, -5.3f), new Vector3(0.34f, 0.36f, 0.34f), metal);
+            CreateBox("Waiting_Planter_Foliage", group, new Vector3(6.9f, 0.48f, -5.3f), new Vector3(0.42f, 0.3f, 0.42f), chair);
+        }
+
+        private static void CreateChair(Transform parent, string name, Vector3 localPosition, Material chair, Material metal)
+        {
+            var group = new GameObject(name);
+            group.transform.SetParent(parent, false);
+            group.transform.localPosition = localPosition;
+            Transform chairRoot = group.transform;
+
+            CreateBox(name + "_Seat", chairRoot, new Vector3(0f, 0.45f, 0f), new Vector3(0.55f, 0.12f, 0.55f), chair);
+            CreateBox(name + "_Back", chairRoot, new Vector3(0f, 0.78f, -0.22f), new Vector3(0.55f, 0.6f, 0.1f), chair);
+
+            const float legX = 0.22f;
+            const float legZ = 0.22f;
+            CreateBox(name + "_Leg_FL", chairRoot, new Vector3(-legX, 0.22f, legZ), new Vector3(0.05f, 0.44f, 0.05f), metal);
+            CreateBox(name + "_Leg_FR", chairRoot, new Vector3(legX, 0.22f, legZ), new Vector3(0.05f, 0.44f, 0.05f), metal);
+            CreateBox(name + "_Leg_BL", chairRoot, new Vector3(-legX, 0.22f, -legZ), new Vector3(0.05f, 0.44f, 0.05f), metal);
+            CreateBox(name + "_Leg_BR", chairRoot, new Vector3(legX, 0.22f, -legZ), new Vector3(0.05f, 0.44f, 0.05f), metal);
+        }
+
+        private static void BuildStorage(Transform root, Material metal, Material counter, Material washer, Material dryer)
+        {
+            Transform group = CreateGroup(root, "StorageWest");
+            CreateShelfUnit(group, "Storage_Shelf_1", new Vector3(-7.6f, 0f, -0.5f), metal, counter, washer, dryer);
+            CreateShelfUnit(group, "Storage_Shelf_2", new Vector3(-7.6f, 0f, 1.1f), metal, counter, washer, dryer);
+        }
+
+        private static void CreateShelfUnit(
+            Transform parent,
+            string name,
+            Vector3 localPosition,
+            Material metal,
+            Material counter,
+            Material washer,
+            Material dryer)
+        {
+            var group = new GameObject(name);
+            group.transform.SetParent(parent, false);
+            group.transform.localPosition = localPosition;
+            Transform shelf = group.transform;
+
+            CreateBox(name + "_Back", shelf, new Vector3(-0.18f, 1.0f, 0f), new Vector3(0.04f, 2.0f, 1.2f), metal);
+            CreateBox(name + "_SideA", shelf, new Vector3(0f, 1.0f, -0.58f), new Vector3(0.36f, 2.0f, 0.04f), metal);
+            CreateBox(name + "_SideB", shelf, new Vector3(0f, 1.0f, 0.58f), new Vector3(0.36f, 2.0f, 0.04f), metal);
+
+            float[] shelfHeights = { 0.35f, 0.85f, 1.35f, 1.85f };
+            for (int i = 0; i < shelfHeights.Length; i++)
+            {
+                CreateBox($"{name}_Shelf_{i + 1}", shelf, new Vector3(0f, shelfHeights[i], 0f), new Vector3(0.34f, 0.05f, 1.12f), counter);
+            }
+
+            CreateBox(name + "_Bin_A", shelf, new Vector3(0f, 0.52f, -0.28f), new Vector3(0.28f, 0.28f, 0.36f), washer);
+            CreateBox(name + "_Bin_B", shelf, new Vector3(0f, 1.02f, 0.24f), new Vector3(0.28f, 0.28f, 0.36f), dryer);
+            CreateBox(name + "_Bin_C", shelf, new Vector3(0f, 1.52f, -0.24f), new Vector3(0.28f, 0.28f, 0.36f), counter);
+        }
+
+        private static void BuildUtilityAlcove(Transform root, Material wall, Material metal, Material counter, Material sign)
+        {
+            Transform group = CreateGroup(root, "UtilityAlcove");
+            CreateBox("Utility_Divider", group, new Vector3(-5.05f, 0.525f, 4.4f), new Vector3(0.12f, 1.05f, 1.8f), wall);
+            CreateBox("Utility_DividerCap", group, new Vector3(-5.05f, 1.08f, 4.4f), new Vector3(0.18f, 0.06f, 1.9f), metal);
+
+            CreateBox("Utility_Cabinet", group, new Vector3(-7.2f, 0.45f, 4.95f), new Vector3(0.7f, 0.9f, 0.55f), metal);
+            CreateBox("Utility_CabinetTop", group, new Vector3(-7.2f, 0.93f, 4.95f), new Vector3(0.78f, 0.06f, 0.62f), counter);
+            CreateBox("Utility_Sink", group, new Vector3(-7.2f, 0.98f, 4.95f), new Vector3(0.5f, 0.08f, 0.34f), sign);
+            CreateCylinder("Utility_MopBucket", group, new Vector3(-6.55f, 0.25f, 4.55f), new Vector3(0.28f, 0.25f, 0.28f), metal);
+
+            CreateSign(group, "Utility_Sign", new Vector3(-4.96f, 0.78f, 4.4f), new Vector3(1.0f, 0.22f, 0.04f), sign,
+                "STAFF ONLY", 0.075f, -90f);
+        }
+
+        private static void BuildSignage(Transform root, Material sign)
+        {
+            Transform group = CreateGroup(root, "Signage");
+            CreateSign(group, "Sign_Storefront", new Vector3(0f, 2.86f, -6.12f), new Vector3(4.0f, 0.45f, 0.08f), sign,
+                "LAUNDRY LEGENDS", 0.14f, 0f);
+            CreateSign(group, "Sign_MachineWall", new Vector3(0f, 2.55f, 5.62f), new Vector3(6.0f, 0.5f, 0.06f), sign,
+                "WASH   DRY   FOLD", 0.14f, 0f);
+            CreateSign(group, "Sign_Counter", new Vector3(-4.5f, 1.36f, -2.98f), new Vector3(1.2f, 0.24f, 0.04f), sign,
+                "DROP OFF", 0.08f, 0f);
+            CreateSign(group, "Sign_Open", new Vector3(4.5f, 1.62f, -5.90f), new Vector3(0.6f, 0.26f, 0.04f), sign,
+                "OPEN", 0.075f, 180f);
+        }
+
+        private static void CreateSign(
+            Transform parent,
+            string name,
+            Vector3 localPosition,
+            Vector3 panelScale,
+            Material panelMaterial,
+            string text,
+            float characterSize,
+            float yRotation)
+        {
+            var group = new GameObject(name);
+            group.transform.SetParent(parent, false);
+            group.transform.localPosition = localPosition;
+            group.transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);
+
+            CreateBox(name + "_Panel", group.transform, Vector3.zero, panelScale, panelMaterial);
+
+            var textObject = new GameObject(name + "_Text");
+            textObject.transform.SetParent(group.transform, false);
+            textObject.transform.localPosition = new Vector3(0f, 0f, -(panelScale.z * 0.5f + 0.012f));
+            TextMesh mesh = textObject.AddComponent<TextMesh>();
+            mesh.text = text;
+            mesh.font = LoadLegacyFont();
+            mesh.fontSize = 64;
+            mesh.characterSize = characterSize;
+            mesh.anchor = TextAnchor.MiddleCenter;
+            mesh.alignment = TextAlignment.Center;
+            mesh.color = new Color(0.95f, 0.95f, 0.9f);
+            textObject.GetComponent<MeshRenderer>().sharedMaterial = mesh.font.material;
+        }
+
+        private static Font LoadLegacyFont()
+        {
+            Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            if (font == null)
+            {
+                font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            }
+
+            if (font == null)
+            {
+                throw new InvalidOperationException("No built-in legacy font is available for placeholder signage.");
+            }
+
+            return font;
+        }
+
+        private static Transform CreateGroup(Transform root, string name)
+        {
+            var group = new GameObject(name);
+            group.transform.SetParent(root, false);
+            return group.transform;
+        }
+
+        private static GameObject CreateCylinder(string name, Transform parent, Vector3 localPosition, Vector3 localScale, Material material)
+        {
+            GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            cylinder.name = name;
+            cylinder.transform.SetParent(parent, false);
+            cylinder.transform.localPosition = localPosition;
+            cylinder.transform.localScale = localScale;
+            cylinder.GetComponent<Renderer>().sharedMaterial = material;
+            return cylinder;
         }
 
         private static void ConfigureSceneExterior()
@@ -310,9 +584,157 @@ namespace LaundryLegends.Editor
 
         private static void RequireChild(GameObject parent, string name, List<string> failures)
         {
-            if (parent.transform.Find(name) == null)
+            RequireChild(parent.transform, name, failures);
+        }
+
+        private static void RequireChild(Transform parent, string name, List<string> failures)
+        {
+            if (parent.Find(name) == null)
             {
                 failures.Add($"Missing expected object: {name}.");
+            }
+        }
+
+        private static void ValidatePublicZoneStructure(GameObject prefab, List<string> failures)
+        {
+            Transform root = prefab.transform;
+            RequireChild(root, "WaitingArea", failures);
+            RequireChild(root, "WaitingArea/Waiting_Chair_1", failures);
+            RequireChild(root, "WaitingArea/Waiting_Chair_2", failures);
+            RequireChild(root, "WaitingArea/Waiting_SideTable", failures);
+            RequireChild(root, "StorageWest/Storage_Shelf_1", failures);
+            RequireChild(root, "StorageWest/Storage_Shelf_2", failures);
+            RequireChild(root, "UtilityAlcove/Utility_Divider", failures);
+            RequireChild(root, "UtilityAlcove/Utility_Cabinet", failures);
+            RequireChild(root, "UtilityAlcove/Utility_Sign", failures);
+            RequireChild(root, "Signage/Sign_Storefront", failures);
+            RequireChild(root, "Signage/Sign_MachineWall", failures);
+            RequireChild(root, "Signage/Sign_Counter", failures);
+            RequireChild(root, "Signage/Sign_Open", failures);
+
+            RequireCollider(root, "WaitingArea/Waiting_Chair_1", failures);
+            RequireCollider(root, "WaitingArea/Waiting_Chair_2", failures);
+            RequireCollider(root, "WaitingArea/Waiting_SideTable", failures);
+            RequireCollider(root, "StorageWest/Storage_Shelf_1", failures);
+            RequireCollider(root, "StorageWest/Storage_Shelf_2", failures);
+            RequireCollider(root, "UtilityAlcove/Utility_Divider", failures);
+            RequireCollider(root, "UtilityAlcove/Utility_Cabinet", failures);
+
+            RequireSignText(root, "Signage/Sign_Storefront", "LAUNDRY LEGENDS", failures);
+            RequireSignText(root, "Signage/Sign_MachineWall", "WASH", failures);
+            RequireSignText(root, "Signage/Sign_Counter", "DROP OFF", failures);
+            RequireSignText(root, "Signage/Sign_Open", "OPEN", failures);
+            RequireSignText(root, "UtilityAlcove/Utility_Sign", "STAFF ONLY", failures);
+
+            CheckBounds(root, "WaitingArea", bounds => bounds.min.x > 3.8f,
+                "Waiting area must stay east of the central entrance-to-counter lane.", failures);
+            CheckBounds(root, "StorageWest", bounds => bounds.max.x < -7.3f,
+                "Storage shelving must stay against the west wall and leave the counter aisle clear.", failures);
+            CheckBounds(root, "UtilityAlcove", bounds => bounds.max.x < -4.8f,
+                "Utility alcove must stay in the north-west corner and off the machine aisle.", failures);
+
+            Transform storefront = root.Find("Signage/Sign_Storefront/Sign_Storefront_Panel");
+            if (storefront != null && GetBounds(storefront.gameObject).min.y < 2.1f)
+            {
+                failures.Add("Storefront sign hangs below the 2.1 m clearance line.");
+            }
+
+            Transform machineSign = root.Find("Signage/Sign_MachineWall/Sign_MachineWall_Panel");
+            if (machineSign != null && GetBounds(machineSign.gameObject).min.y < 2.1f)
+            {
+                failures.Add("Machine-wall sign hangs below the 2.1 m clearance line.");
+            }
+        }
+
+        private static void ValidatePublicZoneScene(GameObject room, List<string> failures)
+        {
+            RequireChild(room.transform, "WaitingArea", failures);
+            RequireChild(room.transform, "StorageWest", failures);
+            RequireChild(room.transform, "UtilityAlcove", failures);
+            RequireChild(room.transform, "Signage", failures);
+
+            // Start past the player capsule at the spawn point so the validation target is not
+            // reported as an obstruction.
+            if (Physics.Linecast(new Vector3(0f, 1.1f, -4.1f), new Vector3(0f, 1.1f, 4.3f), out RaycastHit centralHit))
+            {
+                failures.Add($"Central aisle is blocked by {centralHit.collider.gameObject.name} at {centralHit.distance:0.00} m.");
+            }
+
+            if (Physics.Linecast(new Vector3(0f, 1.1f, -4.1f), new Vector3(-2.7f, 1.1f, -2.4f), out RaycastHit counterHit))
+            {
+                failures.Add($"Entrance-to-counter route is blocked by {counterHit.collider.gameObject.name} at {counterHit.distance:0.00} m.");
+            }
+        }
+
+        private static void RequireCollider(Transform root, string path, List<string> failures)
+        {
+            Transform target = root.Find(path);
+            if (target == null)
+            {
+                return;
+            }
+
+            if (target.GetComponentInChildren<Collider>(true) == null)
+            {
+                failures.Add($"Expected a collider under {path}.");
+            }
+        }
+
+        private static void RequireSignText(Transform root, string path, string expected, List<string> failures)
+        {
+            Transform sign = root.Find(path);
+            if (sign == null)
+            {
+                return;
+            }
+
+            TextMesh text = sign.GetComponentInChildren<TextMesh>(true);
+            if (text == null)
+            {
+                failures.Add($"Sign {path} has no TextMesh.");
+            }
+            else if (!text.text.Contains(expected))
+            {
+                failures.Add($"Sign {path} text '{text.text}' does not contain '{expected}'.");
+            }
+        }
+
+        private static void CheckBounds(Transform root, string path, Func<Bounds, bool> predicate, string message, List<string> failures)
+        {
+            Transform target = root.Find(path);
+            if (target == null)
+            {
+                return;
+            }
+
+            if (!predicate(GetBounds(target.gameObject)))
+            {
+                failures.Add(message);
+            }
+        }
+
+        private static Bounds GetBounds(GameObject target)
+        {
+            Renderer[] renderers = target.GetComponentsInChildren<Renderer>(true);
+            if (renderers.Length == 0)
+            {
+                return new Bounds(target.transform.position, Vector3.zero);
+            }
+
+            Bounds bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++)
+            {
+                bounds.Encapsulate(renderers[i].bounds);
+            }
+
+            return bounds;
+        }
+
+        private static void RemovePublicZones(Transform root)
+        {
+            foreach (string name in PublicZoneRootNames)
+            {
+                RemoveChild(root, name);
             }
         }
 
@@ -409,6 +831,29 @@ namespace LaundryLegends.Editor
             material.EnableKeyword("_EMISSION");
             material.SetColor("_EmissionColor", new Color(0.18f, 0.25f, 0.33f));
             material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material GetOrCreateColoredMaterial(string name, Color color, float glossiness, float metallic)
+        {
+            string path = $"{MaterialFolder}/{name}.mat";
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (material == null)
+            {
+                Shader shader = Shader.Find("Standard");
+                if (shader == null)
+                {
+                    throw new InvalidOperationException("Standard shader is unavailable.");
+                }
+
+                material = new Material(shader);
+                AssetDatabase.CreateAsset(material, path);
+            }
+
+            material.color = color;
+            material.SetFloat("_Glossiness", glossiness);
+            material.SetFloat("_Metallic", metallic);
             EditorUtility.SetDirty(material);
             return material;
         }

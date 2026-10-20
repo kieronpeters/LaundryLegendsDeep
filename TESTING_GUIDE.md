@@ -69,7 +69,7 @@ Use for interaction, machine cycles, order flow, customer flow, and scene smoke 
 | Suite | Tests | Coverage |
 |---|---:|---|
 | EditMode | 10 | `GameState` money/flags/day rules, build-settings order, and the failure-reporting probe |
-| PlayMode | 9 | scene routing, player movement/look, pause, interaction, greybox traversal, storefront enter/leave, wall containment, secret door, scale, and lighting |
+| PlayMode | 10 | scene routing, player movement/look, pause, interaction, greybox traversal, storefront enter/leave, public-zone presence/central-lane clearance, wall containment, secret door, scale, and lighting |
 
 Counts are a snapshot; use the XML `test-run` totals as the authoritative result.
 
@@ -183,6 +183,32 @@ $capture.ExitCode
 ```
 
 Expected files: `TestResults/phase2-entrance.png` and `TestResults/phase2-storefront.png`. Record whether a human or only the agent inspected them; these captures are not a substitute for the Phase 2 human walkthrough.
+
+### Phase 2 public zones
+
+The waiting area, storage shelving, utility alcove, and signage are also additive to `GreyboxRoom.prefab`. After any room or public-zone change, run:
+
+```powershell
+$buildZones = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.Phase2SetupTool.BuildPublicZones -logFile `"TestResults\phase2-p3-build.log`""
+$buildZones.ExitCode
+
+$validateZones = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.Phase2SetupTool.ValidatePublicZones -logFile `"TestResults\phase2-p3-validate.log`""
+$validateZones.ExitCode
+```
+
+`BuildPublicZones` is idempotent, but it must run again if `GreyboxSetupTool.BuildGreyboxRoom` or `BuildEntranceEnvelope` rebuilds the room. `ValidatePublicZones` checks that the waiting chairs, shelves, utility divider, and signage exist, and linecasts the central aisle and customer path.
+
+Capture the waiting area, machine-wall signage, and utility alcove for visual review **without** `-nographics`:
+
+```powershell
+$captureZones = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -projectPath `"$project`" -executeMethod LaundryLegends.Editor.Phase2SetupTool.CapturePublicZones -logFile `"TestResults\phase2-p3-capture.log`""
+$captureZones.ExitCode
+```
+
+Expected files: `TestResults/phase2-waiting.png`, `TestResults/phase2-machine-signage.png`, and `TestResults/phase2-utility.png`. Agent inspection is recorded in the task report; human review remains part of `LL-P2-006`.
 
 ### Reproducible batch test sequence
 
