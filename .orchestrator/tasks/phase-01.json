@@ -464,7 +464,7 @@
     {
       "id": "LL-P1-009",
       "title": "Verify Phase 1 acceptance and record evidence",
-      "status": "ready",
+      "status": "blocked",
       "priority": 9,
       "owner": "build",
       "dependsOn": ["LL-P1-001", "LL-P1-002", "LL-P1-003", "LL-P1-004", "LL-P1-005", "LL-P1-006", "LL-P1-007", "LL-P1-008"],
@@ -479,15 +479,74 @@
       ],
       "checks": [
         {
-          "name": "Full Phase 1 validation",
-          "status": "pending",
-          "command": "Structural + Unity compile + tests + manual playtest",
-          "evidence": "Pending"
+          "name": "Structural validation",
+          "status": "passed",
+          "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\tools\\validate-bootstrap.ps1",
+          "evidence": "Bootstrap validation PASSED; 18 tasks, 10 commands, 4 agents checked."
+        },
+        {
+          "name": "Unity compile",
+          "status": "passed",
+          "command": "Unity.exe -batchmode -quit -nographics -projectPath <root> -logFile TestResults/phase1-compile.log",
+          "evidence": "Exit code 0; no compiler or import errors in the log."
+        },
+        {
+          "name": "Foundation scene validation",
+          "status": "passed",
+          "command": "Unity.exe -batchmode -quit -nographics -projectPath <root> -executeMethod LaundryLegends.Editor.SceneSetupTool.ValidateFoundationScenes -logFile TestResults/phase1-scenes.log",
+          "evidence": "Exit code 0; three scenes load without errors, Bootstrap is index 0, no missing scripts."
+        },
+        {
+          "name": "Player and greybox validation",
+          "status": "passed",
+          "command": "PlayerSetupTool.ValidatePlayerSetup; GreyboxSetupTool.ValidateGreyboxRoom",
+          "evidence": "Both exit 0; player/camera/pause/interaction/floor/light present, no Input System; greybox floor, walls, secret door, lights, and spawn valid."
+        },
+        {
+          "name": "EditMode tests",
+          "status": "passed",
+          "command": "Unity.exe -batchmode -nographics -projectPath <root> -runTests -testPlatform EditMode -testResults TestResults/phase1-editmode.xml -logFile TestResults/phase1-editmode.log",
+          "evidence": "Exit code 0; 10/10 passed."
+        },
+        {
+          "name": "PlayMode tests",
+          "status": "passed",
+          "command": "Unity.exe -batchmode -projectPath <root> -runTests -testPlatform PlayMode -testResults TestResults/phase1-playmode.xml -logFile TestResults/phase1-playmode.log",
+          "evidence": "Exit code 0; 8/8 passed."
+        },
+        {
+          "name": "Package and pipeline check",
+          "status": "passed",
+          "command": "Manifest and Git diff inspection",
+          "evidence": "No com.unity.inputsystem, URP, or HDRP in manifest; no package-manifest changes since the approved baseline. Settings diffs are approved scene registration and prior Unity normalization."
+        },
+        {
+          "name": "Human movement, camera, and greybox readability",
+          "status": "blocked",
+          "command": "Human playtest in the Unity Game view",
+          "evidence": "Not performed. Automated movement/look, pause, traversal, scale, and captured images exist, but cursor lock/release, comfort, and subjective readability require a human."
         }
       ],
-      "result": null,
+      "result": {
+        "status": "blocked",
+        "summary": "Automated Phase 1 verification passes: compile, scene/player/greybox validation, 10/10 EditMode, 8/8 PlayMode, package/pipeline checks, and structural validation. Phase 1 cannot be declared complete because the required human verification of movement feel, camera, cursor release, and greybox readability has not been performed.",
+        "evidence": [
+          "TestResults/phase1-compile.log",
+          "TestResults/phase1-scenes.log",
+          "TestResults/phase1-player.log",
+          "TestResults/phase1-greybox.log",
+          "TestResults/phase1-editmode.xml",
+          "TestResults/phase1-editmode.log",
+          "TestResults/phase1-playmode.xml",
+          "TestResults/phase1-playmode.log",
+          "TestResults/greybox-entrance.png",
+          "TestResults/greybox-secret.png",
+          ".orchestrator/reports/2026-10-20-ll-p1-009.md"
+        ],
+        "notes": "Blocker: one human Game-view check is required. No player build was produced; the human can open Laundromat in the Unity editor, press Play, walk and look, press Esc to confirm cursor release, and inspect the greybox scale/lighting. Do not mark Phase 1 complete until that evidence is recorded."
+      },
       "retryCount": 0,
-      "startedAt": null,
+      "startedAt": "2026-10-20T09:02:00+08:00",
       "completedAt": null
     }
   ]

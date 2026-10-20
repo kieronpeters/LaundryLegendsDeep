@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-20 08:56 (UTC+08:00)
+**Last updated:** 2026-10-20 09:21 (UTC+08:00)
 **Current milestone:** M1 — Playable laundry, **in progress**
 **Current phase:** Phase 1 — Unity foundation, **in progress**
 **Next phase:** Phase 2 — Physical laundromat, planned
 **Active task:** none
-**Next recommended task:** `LL-P1-009` — Verify Phase 1 acceptance and record evidence
+**Next recommended task:** `LL-P1-009` — Verify Phase 1 acceptance and record evidence (blocked on the human movement/camera/greybox check)
 
 ## 1. Verified configuration
 
@@ -71,7 +71,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 
 - Human visual check of greybox scale, readability, and lighting comfort.
 - Manual cursor-lock/release and subjective movement-feel check.
-- Phase 1 acceptance review and evidence record (`LL-P1-009`).
+- Phase 1 acceptance remains blocked on that human check; automated evidence is recorded in `.orchestrator/reports/2026-10-20-ll-p1-009.md`.
 - Production art, audio, UI, animations, and models.
 - Save system, economy, customers, laundry machines, orders, secret room, and arcade.
 - Player build and performance validation.
@@ -120,16 +120,21 @@ See `.orchestrator/budgets.json`.
 
 ## 9. Last successful development run
 
-**Run:** `2026-10-20-ll-p1-008`
+**Last successful run:** `2026-10-20-ll-p1-008`
 **Report:** `.orchestrator/reports/2026-10-20-ll-p1-008.md`
 **Result:** `LL-P1-008` complete. Added the first EditMode suite (10 tests) for `GameState`, build-settings order, and failure reporting; hardened the PlayMode movement test against uncapped batch frame rates; and documented runnable `Start-Process` compile/test commands, exit-code expectations, failure-probe evidence, and test isolation in `TESTING_GUIDE.md`. EditMode passed 10/10, the deliberate failure probe exited `2` with `result="Failed"`, and PlayMode passed 8/8 twice. No human playtest or player build was performed.
 
+**Phase 1 verification run:** `2026-10-20-ll-p1-009` - **blocked**
+**Report:** `.orchestrator/reports/2026-10-20-ll-p1-009.md`
+**Result:** Automated Phase 1 verification passed: structural validation, compile, foundation scene/player/greybox validation, 10/10 EditMode tests, 8/8 PlayMode tests, and package/pipeline checks. Phase 1 is not complete because the required human check of movement feel, camera, cursor release, and greybox readability has not been performed.
+
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then continue with `LL-P1-009`. Do not replay `LL-P0-*` or `LL-P1-001` through `LL-P1-008`. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, then resume `LL-P1-009` by performing the human checklist in `.orchestrator/reports/2026-10-20-ll-p1-009.md`. Do not replay `LL-P0-*` or `LL-P1-001` through `LL-P1-008`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 
+- **Phase 1 blocker:** the human movement/camera/cursor/greybox check has not been performed. Automated evidence is complete; do not mark Phase 1 complete without the human record.
 - Unity Personal licensing requires periodic online refresh; batch automation can fail with exit `198` for reasons unrelated to the project.
 - Project settings were edited as serialized YAML before an editor settings API existed; Unity re-serialized and preserved them, but future changes should use an editor script or the Unity UI.
 - Linear color space and Medium quality are active; greybox lighting was tuned from captured images but has not been checked by a human in the Game view.

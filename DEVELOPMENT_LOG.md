@@ -343,3 +343,32 @@ LL-P1-008 - test scaffolding and batch validation commands.
 ### Next
 
 LL-P1-009 - Phase 1 acceptance verification and evidence record.
+## 2026-10-20 - LL-P1-009 Phase 1 verification
+
+**Phase:** 1 - Unity foundation
+**Task:** LL-P1-009
+**Status:** Blocked on the required human verification; all automated checks passed
+
+### Checks and evidence
+
+- tools/validate-bootstrap.ps1 - PASSED.
+- TestResults/phase1-compile.log - exit 0; no compile/import errors.
+- TestResults/phase1-scenes.log - exit 0; three scenes load, Bootstrap index 0, no missing scripts.
+- TestResults/phase1-player.log - exit 0; player/camera/pause/interaction/floor/light valid; no Input System.
+- TestResults/phase1-greybox.log - exit 0; floor, walls, secret door, lights, spawn valid.
+- TestResults/phase1-editmode.xml - exit 0; 10/10 passed.
+- TestResults/phase1-playmode.xml - exit 0; 8/8 passed.
+- Package/pipeline check - no Input System, URP, or HDRP; no manifest change since baseline.
+
+### Blocker
+
+The roadmap requires a human to verify movement feel, camera, cursor release, and greybox readability. That check has not been performed, so Phase 1 is not complete. The checklist is in .orchestrator/reports/2026-10-20-ll-p1-009.md.
+
+### Not performed
+
+- Human Game-view verification.
+- Player build and performance measurement.
+
+### Next
+
+Resume LL-P1-009 with the human check. If it passes, close Phase 1 and start Phase 2; if it fails, fix the scoped issue and rerun the affected checks.

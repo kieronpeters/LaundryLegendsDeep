@@ -1,8 +1,8 @@
 # Laundry Legends — Development Roadmap
 
-**Last updated:** 2026-10-19
-**Current phase:** 0 — complete
-**Next phase:** 1 — ready
+**Last updated:** 2026-10-20
+**Current phase:** 1 — in progress (blocked on human verification)
+**Next phase:** 2 — planned
 **Authority:** This roadmap defines sequence, dependencies, deliverables, and acceptance. Update it when a genuine dependency requires a change; record the reason in a decision record.
 
 ## 0. Status legend
@@ -102,7 +102,7 @@ Root documentation, `.opencode/`, `.orchestrator/`, `tools/`, `ArtSource/`, `Bui
 
 ## Phase 1 — Unity foundation
 
-**Status:** Ready
+**Status:** In progress (blocked on human verification)
 **Objective:** Create a validated Unity 6.0 LTS project with Built-In RP, project structure, scene flow, player movement/camera, greybox environment, and baseline tests.
 **Depends on:** Phase 0.
 
@@ -122,15 +122,15 @@ Root documentation, `.opencode/`, `.orchestrator/`, `tools/`, `ArtSource/`, `Bui
 
 | ID | Task | Status |
 |---|---|---|
-| LL-P1-001 | Create Unity project at repo root, preserve bootstrap files, verify license/log | Ready |
-| LL-P1-002 | Record and approve baseline package manifest and project settings | Planned |
-| LL-P1-003 | Create folder structure, runtime/editor/test assembly definitions | Planned |
-| LL-P1-004 | Create Bootstrap/MainMenu/Laundromat scenes and build settings | Planned |
-| LL-P1-005 | Implement minimal GameState and scene routing | Planned |
-| LL-P1-006 | Implement first-person movement, mouse look, and interaction raycast stub | Planned |
-| LL-P1-007 | Build greybox room, lighting, and placeholder props | Planned |
-| LL-P1-008 | Add EditMode/PlayMode smoke tests and batch-mode validation commands | Planned |
-| LL-P1-009 | Verify compile, scene load, movement/camera, and record evidence | Planned |
+| LL-P1-001 | Create Unity project at repo root, preserve bootstrap files, verify license/log | Complete |
+| LL-P1-002 | Record and approve baseline package manifest and project settings | Complete |
+| LL-P1-003 | Create folder structure, runtime/editor/test assembly definitions | Complete |
+| LL-P1-004 | Create Bootstrap/MainMenu/Laundromat scenes and build settings | Complete |
+| LL-P1-005 | Implement minimal GameState and scene routing | Complete |
+| LL-P1-006 | Implement first-person movement, mouse look, and interaction raycast stub | Complete |
+| LL-P1-007 | Build greybox room, lighting, and placeholder props | Complete |
+| LL-P1-008 | Add EditMode/PlayMode smoke tests and batch-mode validation commands | Complete |
+| LL-P1-009 | Verify compile, scene load, movement/camera, and record evidence | Blocked (human check) |
 
 ### Acceptance criteria
 
