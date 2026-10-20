@@ -111,7 +111,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Phase 1 verification/blocker record: `38b63e645d85f63febda5351f62e0c0d213950df`
 - Phase 1 closeout and Phase 2 task-plan commit: `1902ce0879d7cf91ecf67c4317c605c33c39ba61`.
 - Phase 2 storefront facade commit: `b92186b`.
-- Phase 2 public-zone commit: recorded in `git log`.
+- Phase 2 public-zone commit: `89a9ad4`.
 - Remote: none. No push performed or authorized.
 - Note: `Library/`, `Logs/`, `UserSettings/`, and `TestResults/` are ignored and not committed.
 - One untracked Unity-generated file exists: `ProjectSettings/PackageManagerSettings.asset`. It is preserved but not committed; it contains package-manager UI/default registry state, not a package addition. Review before deciding whether to version it.
