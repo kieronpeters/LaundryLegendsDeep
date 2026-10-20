@@ -66,9 +66,9 @@
     "checkpointCommit": "da130ddad18b633fb9bad82a3df5107168c91dd0",
     "baselineCommit": "b78218cccfeea741d3d227ffa95e679e9ba92a72",
     "remote": null,
-    "workingTree": "LL-P2-005 navigation/camera validation is complete but uncommitted; the LL-P2-004 commit is 2ef6b27 and the working tree contains only scoped 005 edits plus the preserved untracked ProjectSettings/PackageManagerSettings.asset",
+    "workingTree": "clean after the LL-P2-005 navigation/camera-validation commit (56501e1); one untracked Unity-generated ProjectSettings/PackageManagerSettings.asset is preserved but not committed",
     "unityProjectCommit": "e244ba434ace223ff064df52b6a683615d9fb503",
-    "lastCheckpointAt": "2026-10-20T16:02:00+08:00"
+    "lastCheckpointAt": "2026-10-20T16:08:00+08:00"
   },
   "environment": {
     "opencodeCli": "2.0.28",
