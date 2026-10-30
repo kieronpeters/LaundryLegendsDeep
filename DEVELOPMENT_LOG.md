@@ -602,3 +602,42 @@ Resume LL-P1-009 with the human check. If it passes, close Phase 1 and start Pha
 ### Next
 
 Phase 2 is complete. Author and approve the Phase 3 task plan before starting interaction work; `.orchestrator/tasks/phase-03.json` does not exist yet. Do not replay `LL-P2-006`.
+
+## 2026-10-30 - LL-P3-001 Phase 3 plan and interaction contracts
+
+**Phase:** 3 - Laundry interaction foundation
+**Task:** LL-P3-001
+**Status:** Complete - documentation and orchestration only
+
+### Implemented / performed
+
+- Authored a seven-task Phase 3 plan (`LL-P3-001` through `LL-P3-007`) in `.orchestrator/tasks/phase-03.json`.
+- Obtained two independent read-only `ll-reviewer` reviews. Both returned "approve with changes"; every blocking finding was applied before approval.
+- Recorded the accepted interaction, type-ownership, item-identity, carry, prompt, and machine-hook contracts in `.orchestrator/decisions/0005-phase-3-interaction-contracts.md`.
+- Reconciled `MASTER_CONTEXT.md` and `ARCHITECTURE.md`, which still described a pre-Unity Phase 0 project.
+- Updated `ROADMAP.md` and `PROJECT_STATE.md` for Phase 3 start.
+- No script, prefab, scene, material, package, or project-setting change.
+
+### Decisions
+
+- `IInteractable` exposes prompt, `CanInteract(GameObject)`, and `Interact(GameObject)`.
+- `PlayerInteractor` owns target resolution, prompt state, the interaction key/label, a testable `TryInteract`, and change notification.
+- `CarryController` holds one item on the Player prefab; `LaundryItem` carries `TemplateId`, runtime `InstanceId`, and kind (`Basket`, `LooseLaundry`, `Bag`).
+- Only `LooseLaundry` is washer-loadable in Phase 3. Basket contents, machine cycles, economy, orders, and customers remain out of scope.
+- The prompt is an IMGUI placeholder with testable `IsVisible`/`CurrentLabel` state; no TextMeshPro import or new package.
+
+### Checks and evidence
+
+- `phase-03.json` and `state.json` parsed with `ConvertFrom-Json`.
+- `tools/validate-bootstrap.ps1` passed on 2026-10-30: 7 JSON documents and 31 tasks; only the expected asset-baseline warning.
+- `git diff --check` reported no whitespace errors.
+- Report: `.orchestrator/reports/2026-10-30-phase-3-plan.md`.
+
+### Not performed
+
+- Unity compile, EditMode, PlayMode, log scan, captures, playtest, or any gameplay change. This task was documentation-only.
+- No human review was requested for `LL-P3-001`; the human acceptance gate is `LL-P3-007`.
+
+### Next
+
+`LL-P3-002` - harden the interaction contract and target resolution. Do not start `LL-P3-003` until `LL-P3-002` compiles and its tests pass.

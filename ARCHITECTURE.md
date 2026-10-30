@@ -1,6 +1,6 @@
 # Laundry Legends — Architecture
 
-**Status:** Phase 0 baseline. No Unity project exists yet; paths and components below are the planned structure for Phase 1 onward.
+**Status:** Phase 2 complete; Phase 3 interaction foundation approved and in progress. The Unity project, scenes, prefabs, player, and test assemblies exist. Phase 3 implementation begins with `LL-P3-002`.
 **Engine decision:** Unity 6.0 LTS `6000.0.64f1`, Built-In Render Pipeline, Windows 64-bit.
 
 ## 1. Architecture principles
@@ -17,7 +17,7 @@
 ## 2. Repository layout
 
 ```text
-LaundryLegends/                     Unity project root (after Phase 1)
+LaundryLegends/                     Unity project root
 ├── Assets/
 │   └── LaundryLegends/
 │       ├── Art/
@@ -64,16 +64,16 @@ LaundryLegends/                     Unity project root (after Phase 1)
 └── *.md                           Durable documentation
 ```
 
-No `Assets/`, `Packages/`, or `ProjectSettings/` exists until Phase 1 creates them. Do not fabricate them.
+The Unity project exists. Paths above are the implemented structure plus the planned feature folders for later phases. Do not fabricate files that are not present.
 
 ## 3. Assembly definitions
 
-Planned in Phase 1:
+Implemented:
 
-- `LaundryLegends.Runtime.asmdef` — all runtime code.
-- `LaundryLegends.Editor.asmdef` — editor-only tooling, if needed.
-- `LaundryLegends.Tests.EditMode.asmdef` — edit-mode tests; references runtime and test framework.
-- `LaundryLegends.Tests.PlayMode.asmdef` — play-mode tests; references runtime and test framework.
+- `LaundryLegends.Runtime.asmdef` - all runtime code.
+- `LaundryLegends.Editor.asmdef` - editor-only tooling.
+- `LaundryLegends.Tests.EditMode.asmdef` - edit-mode tests; references runtime and test framework.
+- `LaundryLegends.Tests.PlayMode.asmdef` - play-mode tests; references runtime and test framework.
 
 Rules:
 
@@ -106,11 +106,14 @@ Domain services may know about data and other services. UI/presentation may read
 | `GameState` | Money, day/time, progression flags, current profile | Scene objects, UI layout |
 | `EconomyService` | Transactions, price lookup, daily summary | Machine timers, customer movement |
 | `OrderService` / `OrderStateMachine` | Order lifecycle, contents, payout, state transitions | Player carrying, scene animation |
-| `LaundryItem` / `LaundryLoad` | Item identity, cleanliness/wetness, load grouping | Order payment |
+| `LaundryItem` / `LaundryLoad` | Item kind, template ID, runtime instance ID, carry/load eligibility, held/dropped representation | Order payment, machine timers |
+| `MachineLoadSlot` | One-load boundary, accepted item kind, exact item ownership while loaded | Cycle timers, economy, order state |
 | `MachineController` | Machine state, cycle timer, capacity, load reference | Money mutation, UI rendering |
+| `CarryController` | Held item/basket attachment, drop/place rules, held-state cleanup | Order completion, machine cycles |
+| `CarrySlot` | One compatible item placement boundary | Inventory aggregation, orders |
+| `InteractionPromptView` | Display of the current prompt and key label | Gameplay state mutation |
 | `CustomerAgent` | Arrival, queue, handoff, patience, collection, payment request | Economy balance internals |
-| `InteractionController` | Raycast/target selection, prompt text, interaction dispatch | Domain state mutation beyond calling interfaces |
-| `CarryController` | Held item/basket attachment, drop/place rules | Order completion |
+| `PlayerInteractor` (`InteractionController` role) | Raycast/target selection, eligibility, prompt text, interaction dispatch | Domain state mutation beyond calling interfaces |
 | `SecretRoomController` | Discovery flags, reveal sequence, room state | Arcade income calculation |
 | `ArcadeService` | Machine ownership, appeal, plays, arcade income | Player movement |
 | `SaveService` | Snapshot/restore, versioning, corruption handling | Gameplay rules |
@@ -230,7 +233,7 @@ Scene rules:
 ## 10. Input
 
 - Legacy Input Manager initially: WASD movement, mouse look, `E` interact, `Q` drop/back, `Tab` order ticket, `Esc` open a minimal pause overlay and release the cursor; `Resume` closes it and locks the cursor again.
-- Input mappings live in one place, not scattered string literals.
+- Input mappings live in one place, not scattered string literals. For Phase 3 interaction, `PlayerInteractor.InteractKey` is the source of the key and `InteractKeyLabel` is the display label; the prompt view must not hard-code `E`.
 - Rebindings and gamepad support are later, and require approval if they add a package.
 - Do not mix legacy input and the new Input System in one feature.
 
@@ -248,6 +251,7 @@ Scene rules:
 
 - UGUI + TextMeshPro initially (built-in packages; no new dependency).
 - Canvas prefabs separated by concern: HUD, interaction prompt, pause menu, order ticket, settings.
+- Phase 3 uses an IMGUI `InteractionPromptView` placeholder on the Player prefab, with testable `IsVisible`/`CurrentLabel` state and the built-in font. It must not import TextMeshPro Essentials or create final UI prefabs; the UI phase replaces it.
 - UI never finds domain objects with `FindObjectOfType` in production paths; inject or register references.
 - Prompts must be localizable later; avoid hard-coded long strings in scene components.
 - Support keyboard/mouse first; focus navigation later.
@@ -315,10 +319,13 @@ Architecture decisions live in `.orchestrator/decisions/`:
 
 ## 19. Technical debt and risks
 
-- Unity project creation and batch-mode licensing are unverified.
-- No compile/test harness exists yet.
+- Unity batch-mode licensing can expire; refresh it in Unity Hub before treating exit `198` as a project defect.
+- The project has compile and test harnesses; the suite is 10 EditMode and 12 PlayMode tests and does not yet cover carry, machine cycles, orders, economy, customers, save/load, or UI.
 - Scene/prefab merge conflicts are the highest collaboration risk; enforce one owner and small commits.
+- Carry is attachment-based in Phase 3; clipping, drop-point validity, and held-item cleanup need automated and human review.
+- Item identity exists before save/load; instance IDs must be serialized in the save phase or they will not survive a reload.
 - Save compatibility must be designed before content grows.
 - Placeholder art can hide readability problems; playtest early.
+- The IMGUI prompt is temporary and is not final UI quality.
 - Built-In RP is appropriate for scope but may limit advanced lighting; do not switch without evidence and approval.
 - Performance targets are unknown until the greybox runs on the target machine.

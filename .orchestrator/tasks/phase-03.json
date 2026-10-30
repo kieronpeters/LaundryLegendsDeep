@@ -1,0 +1,379 @@
+{
+  "schemaVersion": 1,
+  "phase": 3,
+  "name": "Laundry interaction foundation",
+  "status": "in_progress",
+  "updatedAt": "2026-10-30T18:55:00+08:00",
+  "tasks": [
+    {
+      "id": "LL-P3-001",
+      "title": "Reconcile Phase 3 context and lock interaction contracts",
+      "status": "complete",
+      "priority": 1,
+      "owner": "build",
+      "dependsOn": ["LL-P2-006"],
+      "objective": "Reconcile the stale project context with the completed Phase 2 state and lock the Phase 3 interaction, carry, item-identity, prompt, and machine-hook contracts before implementation.",
+      "scope": [
+        "MASTER_CONTEXT.md",
+        "ARCHITECTURE.md",
+        "ROADMAP.md",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        ".orchestrator/state.json",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/reports/**",
+        ".orchestrator/decisions/**"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Scripts/**",
+        "Assets/LaundryLegends/Editor/**",
+        "Assets/LaundryLegends/Prefabs/**",
+        "Assets/LaundryLegends/Scenes/**",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "MASTER_CONTEXT.md no longer describes a pre-Unity Phase 0 project and points to the correct current phase and next task",
+        "ARCHITECTURE.md reflects the implemented Phase 2 structure and states the Phase 3 interaction/carry contracts",
+        "A decision record defines type ownership, item identity, input ownership, prompt technology, and machine-load scope",
+        "The decision record is reviewed and approved by the lead on 2026-10-30 under the owner's instruction to review and approve the next step; it introduces no package, input-system, render-pipeline, save-format, or scene-architecture change",
+        "The decision record explicitly excludes basket contents/load grouping, machine cycles, economy, orders, and customer flow from Phase 3",
+        "Phase 3 tasks, dependencies, scopes, and acceptance are recorded and internally consistent",
+        "No script, prefab, scene, package, or project-setting file is changed"
+      ],
+      "checks": [
+        {
+          "name": "Documentation and contract review",
+          "status": "passed",
+          "command": "Read-only documentation diff review plus tools/validate-bootstrap.ps1",
+          "evidence": "Two independent ll-reviewer verdicts; bootstrap validation passed on 2026-10-30 with 7 JSON documents and 31 tasks; phase-03.json and state.json parsed"
+        }
+      ],
+      "result": "Context reconciled and Phase 3 contracts locked. No script, prefab, scene, package, or project-setting file changed.",
+      "retryCount": 0,
+      "startedAt": "2026-10-30T18:50:00+08:00",
+      "completedAt": "2026-10-30T18:55:00+08:00"
+    },
+    {
+      "id": "LL-P3-002",
+      "title": "Harden interaction contract and target resolution",
+      "status": "ready",
+      "priority": 2,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-001"],
+      "objective": "Turn the existing interaction stub into a reliable, testable contract with explicit eligibility, prompt, change notification, and dispatch behavior, without adding carry or UI.",
+      "scope": [
+        "Assets/LaundryLegends/Scripts/Interaction/**",
+        "Assets/LaundryLegends/Editor/PlayerSetupTool.cs",
+        "Assets/LaundryLegends/Tests/EditMode/**",
+        "Assets/LaundryLegends/Tests/PlayMode/PlayerControllerTests.cs",
+        ".orchestrator/state.json",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Prefabs/Environment/**",
+        "Assets/LaundryLegends/Prefabs/Gameplay/Player.prefab",
+        "Assets/LaundryLegends/Scenes/**",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "IInteractable exposes InteractionPrompt, CanInteract(GameObject), and Interact(GameObject)",
+        "SimpleInteractable remains eligible by default, can be disabled, and raises its event only when eligible",
+        "PlayerInteractor exposes CurrentInteractable, CurrentTarget, CurrentPrompt, InteractKey, InteractKeyLabel, and a testable TryInteract path",
+        "Target/prompt changes are observable without polling private state",
+        "Out-of-range, blocked, disabled, and paused interactions never dispatch",
+        "The interaction key is defined in one interaction-owned field and exposed for prompt display; UI does not hardcode E",
+        "Existing PlayerControllerTests still pass and new coverage verifies eligibility, prompt, and notification behavior",
+        "Compile, EditMode, PlayMode, and log scan pass"
+      ],
+      "checks": [
+        {
+          "name": "Compile and interaction tests",
+          "status": "pending",
+          "command": "Unity batch compile; EditMode suite; PlayMode PlayerControllerTests and full suite; log scan",
+          "evidence": "Pending"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
+    },
+    {
+      "id": "LL-P3-003",
+      "title": "Implement carry state, item identity, and drop/place rules",
+      "status": "planned",
+      "priority": 3,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-002"],
+      "objective": "Add one-item carrying with explicit hold attachment, drop, and placement rules, define LaundryItem identity and kinds, and protect against duplication and loss through normal and interrupted interactions.",
+      "scope": [
+        "Assets/LaundryLegends/Scripts/Interaction/**",
+        "Assets/LaundryLegends/Scripts/Player/**",
+        "Assets/LaundryLegends/Scripts/Laundry/**",
+        "Assets/LaundryLegends/Prefabs/Gameplay/Player.prefab",
+        "Assets/LaundryLegends/Editor/PlayerSetupTool.cs",
+        "Assets/LaundryLegends/Tests/EditMode/**",
+        "Assets/LaundryLegends/Tests/PlayMode/**",
+        ".orchestrator/state.json",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Prefabs/Environment/**",
+        "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/**",
+        "Assets/LaundryLegends/Scenes/**",
+        "Packages/**",
+        "ProjectSettings/**",
+        "Assets/LaundryLegends/Scripts/Core/**",
+        "Assets/LaundryLegends/Scripts/Economy/**",
+        "Assets/LaundryLegends/Scripts/Customers/**",
+        "Assets/LaundryLegends/Scripts/Save/**"
+      ],
+      "acceptance": [
+        "LaundryItemKind defines Basket, LooseLaundry, and Bag; LaundryItem owns TemplateId, InstanceId, kind, and carry eligibility",
+        "TemplateId is a non-empty prefab-template identifier; InstanceId is unique per spawned instance and remains stable while the instance exists",
+        "CarryController is on the Player prefab through an idempotent editor setup path and supports at most one held item",
+        "Pickup attaches the item to an explicit hold anchor and disables its world physics/collider safely",
+        "Drop restores the item to a valid world state; a blocked drop uses a safe fallback that does not lose or teleport the item into geometry",
+        "CarrySlot placement succeeds only for an empty compatible slot and rejects occupied or incompatible slots",
+        "No-stuck safeguards cover held item destroyed or disabled while carried, CarryController disabled or scene unloaded while holding, blocked drop, and double interaction in one frame",
+        "Automated tests prove no duplication or loss of the item instance",
+        "Player prefab setup/validation is idempotent",
+        "Compile, EditMode carry tests, PlayMode pickup/drop/place tests, and log scan pass"
+      ],
+      "checks": [
+        {
+          "name": "Carry logic and player integration",
+          "status": "pending",
+          "command": "Unity batch compile; EditMode carry-state and identity tests; PlayMode pickup/drop/place and no-stuck tests; full regression suites; log scan",
+          "evidence": "Pending"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
+    },
+    {
+      "id": "LL-P3-004",
+      "title": "Add basket, loose-laundry, and bag placeholder prefabs",
+      "status": "planned",
+      "priority": 4,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-003"],
+      "objective": "Create the first carryable placeholder assets with stable template identity, colliders, and a small additive scene placement that supports carrying tests without blocking public routes.",
+      "scope": [
+        "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/**",
+        "Assets/LaundryLegends/Art/Materials/**",
+        "Assets/LaundryLegends/Editor/Phase3SetupTool.cs",
+        "Assets/LaundryLegends/Scenes/Laundromat.unity",
+        "Assets/LaundryLegends/Tests/EditMode/**",
+        "Assets/LaundryLegends/Tests/PlayMode/**",
+        "ASSET_INVENTORY.md",
+        ".orchestrator/state.json",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Prefabs/Environment/**",
+        "Assets/LaundryLegends/Scripts/**",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "Basket.prefab, LooseLaundry.prefab, and Bag.prefab exist under Prefabs/Gameplay/Laundry using the established simple prefab naming",
+        "Every prefab has a collider, LaundryItem component, non-empty unique TemplateId, and placeholder material",
+        "Basket is a carryable container placeholder; Bag is a carryable completed-order placeholder; only LooseLaundry is marked washer-loadable",
+        "Basket contents/load grouping remains out of scope and the bag has no order behavior in Phase 3",
+        "A small additive Phase3Items root places one basket, one bag, and at least two loose-laundry instances near the public work area, clear of the seven validated routes",
+        "A Git checkpoint is recorded before editing Laundromat.unity; scene placement is additive-only, with no relocation, rescale, or deletion of existing geometry",
+        "Phase3SetupTool validation rejects duplicate/blank TemplateIds, missing colliders, missing LaundryItem components, missing materials, and route-blocking placement",
+        "The scene opens with existing references intact and Phase 2 navigation/camera validation still passes",
+        "If material/meta creation would exceed the 30-changed-file task budget, material creation is split into a scoped follow-up before scene placement",
+        "Compile, Phase 3 asset validation, Phase 2 navigation validation, EditMode/PlayMode suites, and log scan pass"
+      ],
+      "checks": [
+        {
+          "name": "Prefab, scene, and route validation",
+          "status": "pending",
+          "command": "LaundryLegends.Editor.Phase3SetupTool.BuildItems and ValidateItems; LaundryLegends.Editor.Phase2SetupTool.ValidatePublicNavigation; Unity batch compile; EditMode/PlayMode suites; log scan",
+          "evidence": "Pending"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
+    },
+    {
+      "id": "LL-P3-005",
+      "title": "Add interaction prompt UI and controls hint",
+      "status": "planned",
+      "priority": 5,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-002", "LL-P3-004"],
+      "objective": "Add a readable placeholder interaction prompt that names the target and action, shows the interaction key from PlayerInteractor, and hides cleanly when no valid target or the game is paused.",
+      "scope": [
+        "Assets/LaundryLegends/Scripts/UI/**",
+        "Assets/LaundryLegends/Prefabs/Gameplay/Player.prefab",
+        "Assets/LaundryLegends/Editor/PlayerSetupTool.cs",
+        "Assets/LaundryLegends/Tests/PlayMode/**",
+        ".orchestrator/state.json",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Prefabs/Environment/**",
+        "Assets/LaundryLegends/Scenes/Laundromat.unity",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "InteractionPromptView is an IMGUI placeholder on the Player prefab, documented as temporary pending the UI phase",
+        "InteractionPromptView exposes testable IsVisible and CurrentLabel state that OnGUI renders from",
+        "It subscribes to PlayerInteractor change notifications and displays only when the current interaction is eligible",
+        "Prompt text combines the interactable prompt with the interaction key label sourced from PlayerInteractor",
+        "Prompt hides when there is no target, the target becomes ineligible, or the game is paused, including Time.timeScale == 0",
+        "The prompt does not steal focus or cursor state from PauseController and uses no new package or font asset",
+        "PlayMode coverage verifies visible/hidden transitions and the displayed key label",
+        "Compile, PlayMode suites, and log scan pass"
+      ],
+      "checks": [
+        {
+          "name": "Prompt view and tests",
+          "status": "pending",
+          "command": "Unity batch compile; PlayMode prompt tests and full suite; log scan",
+          "evidence": "Pending"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
+    },
+    {
+      "id": "LL-P3-006",
+      "title": "Add one machine load/unload interaction hook",
+      "status": "planned",
+      "priority": 6,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-003", "LL-P3-004", "LL-P3-005"],
+      "objective": "Add a single washer load/unload interaction target that accepts one LooseLaundry item, rejects invalid or occupied loads, and returns the exact same item on unload without implementing machine cycles.",
+      "scope": [
+        "Assets/LaundryLegends/Scripts/Laundry/**",
+        "Assets/LaundryLegends/Scripts/Interaction/**",
+        "Assets/LaundryLegends/Editor/Phase3SetupTool.cs",
+        "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
+        "Assets/LaundryLegends/Tests/EditMode/**",
+        "Assets/LaundryLegends/Tests/PlayMode/**",
+        ".orchestrator/state.json",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/**",
+        "Assets/LaundryLegends/Scripts/Core/**",
+        "Assets/LaundryLegends/Scripts/Economy/**",
+        "Assets/LaundryLegends/Scripts/Customers/**",
+        "Assets/LaundryLegends/Scripts/Save/**",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "One existing washer exposes a load/unload interaction target without moving, rescaling, or restructuring existing room geometry",
+        "A Git checkpoint is recorded before editing GreyboxRoom.prefab; the hook is additive-only and existing room geometry is preserved",
+        "An empty slot accepts one LooseLaundry item and rejects Basket, Bag, and already-occupied loads without changing ownership",
+        "Invalid loads are rejected with a clear prompt/result and leave both the item and slot unchanged",
+        "Unload returns the exact same item instance and leaves the slot empty",
+        "Double-load and double-unload attempts cannot duplicate or lose an item",
+        "Phase3SetupTool is re-appliable after a GreyboxRoom rebuild and ValidateMachineHook fails loudly if the hook is missing or duplicated",
+        "Phase 3 asset validation and Phase 2 navigation/camera validation still pass",
+        "Compile, EditMode load-rule tests, PlayMode load/unload tests, and log scan pass"
+      ],
+      "checks": [
+        {
+          "name": "Machine hook and regression",
+          "status": "pending",
+          "command": "LaundryLegends.Editor.Phase3SetupTool.BuildMachineHook and ValidateMachineHook; LaundryLegends.Editor.Phase2SetupTool.ValidatePublicNavigation; Unity batch compile; EditMode/PlayMode suites; log scan",
+          "evidence": "Pending"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
+    },
+    {
+      "id": "LL-P3-007",
+      "title": "Verify Phase 3 acceptance and record evidence",
+      "status": "planned",
+      "priority": 7,
+      "owner": "build",
+      "dependsOn": ["LL-P3-006"],
+      "objective": "Run the complete Phase 3 verification, capture carry/prompt/machine interactions, prove no normal-path duplication or loss, and obtain the required human review of carrying feel and prompt clarity.",
+      "scope": [
+        "TestResults/**",
+        ".orchestrator/state.json",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "ROADMAP.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Scripts/**",
+        "Assets/LaundryLegends/Prefabs/**",
+        "Assets/LaundryLegends/Scenes/**",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "Player can pick up, carry, and place a basket and loose laundry",
+        "Prompts correctly describe the object and action",
+        "Items cannot be duplicated or lost through normal tested interactions",
+        "Machine interaction accepts a valid load and rejects invalid loads",
+        "No-stuck regression covers held-item destruction, disabled carry, scene unload, blocked drop, double interaction, double load, and double unload",
+        "Phase 3/Phase 2 validators and full test suites pass",
+        "Carry, prompt, and machine interaction captures are recorded as agent-inspected evidence, captured without -nographics",
+        "Human verifies carrying feel, prompt clarity, and no obvious clipping",
+        "Git checkpoint and phase report are recorded"
+      ],
+      "checks": [
+        {
+          "name": "Automated Phase 3 verification",
+          "status": "pending",
+          "command": "Bootstrap; Unity batch compile; Phase3SetupTool.ValidateItems and ValidateMachineHook; Phase2SetupTool.ValidatePublicNavigation; EditMode/PlayMode suites; no-stuck regression; log scan; captures executed without -nographics",
+          "evidence": "Pending"
+        },
+        {
+          "name": "Human carry and prompt review",
+          "status": "pending",
+          "command": "Owner walkthrough of carrying, placing, dropping, prompts, and machine load/unload",
+          "evidence": "Pending owner-reported review"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
+    }
+  ]
+}

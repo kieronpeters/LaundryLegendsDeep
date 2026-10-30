@@ -7,7 +7,7 @@
 
 Build **Laundry Legends** from an empty directory into a finished, polished, playable 3D PC game through a persistent, phase-based development system. The system must survive new sessions, model changes, crashes, and long gaps without losing state or repeating completed work.
 
-The project is currently at the end of **Phase 0 (bootstrap)**. No Unity project or gameplay exists yet. The next task is **LL-P1-001**, creating and validating the Unity foundation.
+The project is currently in **Phase 3 (laundry interaction foundation)**. Phase 0 bootstrap, Phase 1 foundation, and Phase 2 physical laundromat are complete. Phase 2's human acceptance is recorded as owner-reported. Phase 3's seven-task plan is approved and `LL-P3-001` (context reconciliation and interaction contracts) is complete; implementation begins with `LL-P3-002`.
 
 ## 2. The game in one paragraph
 
@@ -100,9 +100,9 @@ See `ARCHITECTURE.md` for the full conventions.
 | Phase | Focus | Status |
 |---|---|---|
 | 0 | Bootstrap, Git, docs, environment, orchestration | Complete |
-| 1 | Unity foundation, scene flow, player, greybox | Ready next |
-| 2 | Physical laundromat and concealed access | Planned |
-| 3 | Interaction and laundry handling | Planned |
+| 1 | Unity foundation, scene flow, player, greybox | Complete |
+| 2 | Physical laundromat and concealed access | Complete |
+| 3 | Interaction and laundry handling | In progress |
 | 4 | Washer, dryer, folding, order state machine | Planned |
 | 5 | Customers, handoff, payment, first full loop | Planned |
 | 6 | Business simulation and upgrades | Planned |
@@ -128,7 +128,7 @@ See `ARCHITECTURE.md` for the full conventions.
 - Unity editors installed: `6000.0.0f1`, `6000.0.64f1`, `6000.5.7f1`. Selected: `6000.0.64f1`.
 - Windows standalone playback engine installed for `6000.0.64f1`. No other platform modules verified.
 - .NET SDK `10.0.401`; Node `24.21.0`; npm `11.19.0`; Python `3.15.0`.
-- Unity entitlement license file exists, but batch-mode Unity launch is **unverified** until Phase 1.
+- Unity entitlement license file exists. Batch-mode compile, validation, and test runs have repeatedly exited `0`; the offline license can expire and may require a Unity Hub refresh.
 - No Blender, FFmpeg, ImageMagick, or GitHub CLI on `PATH`. No dedicated image, 3D, audio, or voice-generation tool is verified.
 - OpenCode tools verified: shell, read/write/edit, Git, web search/fetch, browser preview, subagents, worktrees.
 - The global OpenCode config currently defaults to `ollama/qwen3.5:4b`; this project explicitly selects the verified DeepSeek model. Do not expose credentials or keys.
@@ -206,10 +206,11 @@ A task is done only when:
 
 ## 15. Current limitations
 
-- Bootstrap docs are verified structurally, not playtested.
-- Unity batch-mode licensing and project creation are unverified.
-- No game assets exist.
-- No automated Unity test suite exists yet.
+- Phase 2 human acceptance is owner-reported; the agent did not independently walk the Game view.
+- Unity batch-mode licensing can expire; refresh it in Unity Hub before treating exit `198` as a project defect.
+- Only procedural placeholder assets exist; no production art, audio, animation, or models.
+- The automated suite is 10 EditMode and 12 PlayMode tests; it does not yet cover interaction carrying, machine cycles, orders, economy, customers, save/load, or UI.
+- Phase 3 interaction, carry, item, prompt, and machine-hook contracts are recorded in `.orchestrator/decisions/0005-phase-3-interaction-contracts.md`; implementation has not started.
 - No image/3D/audio authoring pipeline is verified.
 - Spend telemetry is not reliable for free models; budget enforcement is conservative and process-based.
 - The game cannot be built autonomously end-to-end without integration, testing, and human feedback.

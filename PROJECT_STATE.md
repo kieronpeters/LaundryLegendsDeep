@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-20 19:10 (UTC+08:00)
+**Last updated:** 2026-10-30 18:55 (UTC+08:00)
 **Current milestone:** M1 - Playable laundry, **in progress**
-**Current phase:** Phase 2 - Physical laundromat, **complete**
-**Next phase:** Phase 3 - Laundry interaction foundation, planned; task plan not yet authored
-**Active task:** None - Phase 2 is complete
-**Next recommended task:** Author and approve the Phase 3 task plan before starting interaction work
+**Current phase:** Phase 3 - Laundry interaction foundation, **in progress**
+**Next phase:** Phase 4 - Laundry processing, planned
+**Active task:** None - `LL-P3-001` is complete
+**Next recommended task:** `LL-P3-002` - harden interaction contract and target resolution
 
 ## 1. Verified configuration
 
@@ -67,6 +67,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Phase 2 secret access: a shallow service panel and rolling supply shelf cover the east-wall door while leaving the top of the dark door, outer frame edges, casters, and a `SERVICE` marker readable. Concealment validation passed; the agent inspected `TestResults/phase2-secret-approach.png` and `phase2-secret-close.png`.
 - Phase 2 navigation: seven public routes, critical-prop colliders, renderer materials, missing references, and 1.5 m/1.7 m camera clearance samples are validated in the editor and PlayMode suite. Validation and tests passed on 2026-10-20.
 - Phase 2 acceptance: the project owner reported pass for all six Phase 2 review items on 2026-10-20: traversal, entrance-to-counter path, secret-access subtlety, lighting/readability, signage, and overall layout. Recorded as owner-reported human verification in `.orchestrator/reports/2026-10-20-ll-p2-006-human-verification.md`. Phase 2 is complete.
+- Phase 3 plan: seven sequential tasks (`LL-P3-001` through `LL-P3-007`) recorded in `.orchestrator/tasks/phase-03.json` and approved on 2026-10-30 after two independent read-only reviews. `LL-P3-001` reconciled `MASTER_CONTEXT.md` and `ARCHITECTURE.md` and locked interaction, carry, item-identity, prompt, and machine-hook contracts in `.orchestrator/decisions/0005-phase-3-interaction-contracts.md`. No gameplay code changed in `LL-P3-001`.
 - EditMode suite: 10/10 tests passed on 2026-10-20, including an opt-in deliberate-failure probe that correctly exits `2` and records `result="Failed"`.
 - PlayMode suite: 12/12 tests passed on 2026-10-20; the added tests cover storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, and public navigation/camera clearance. Earlier 8-, 9-, 10-, and 11-test runs are preserved in their task evidence.
 - Batch commands, evidence paths, failure-probe steps, and test-assembly isolation documented in `TESTING_GUIDE.md`.
@@ -76,7 +77,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 
 ## 4. Incomplete and unverified
 
-- Phase 3 task plan: `.orchestrator/tasks/phase-03.json` does not exist yet; author and approve it before interaction work.
+- Phase 3 implementation: interaction eligibility/dispatch, carry state, item identity, item prefabs, prompt UI, and machine load/unload hooks. Contracts are recorded; code has not been written.
 - Interaction, carrying, baskets, prompts, machine load/unload, customers, orders, and the secret-room reveal.
 - Production art, audio, UI, animations, and models.
 - Save system, economy, customers, laundry machines, orders, secret room, and arcade.
@@ -85,7 +86,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 
 ## 5. Blockers and dependencies
 
-- **No current hard blocker.** Phase 2 is complete. Phase 3 is dependency-eligible, but its task plan must be authored and approved before work starts.
+- **No current hard blocker.** Phase 3 is in progress; `LL-P3-002` is ready. Implementation must remain sequential because one Unity editor may operate on the project at a time.
 - Unity batch-mode licensing was resolved on 2026-10-19 by a Unity Hub refresh; it can expire again.
 - Unity Personal offline licensing expires periodically. If batch mode fails with exit `198`, refresh the license in Unity Hub before retrying; do not treat it as a project defect.
 - Package additions and project-wide settings changes are treated as approval gates. Phase 1 uses only the installed editor baseline plus UGUI/TextMeshPro and Test Framework.
@@ -165,7 +166,11 @@ See `.orchestrator/budgets.json`.
 **Report:** `.orchestrator/reports/2026-10-20-ll-p2-005.md`
 **Result:** Added `ValidatePublicNavigation` and a PlayMode navigation test covering seven public routes, critical-prop colliders, renderer materials, missing references, and 1.5 m/1.7 m camera clearance. Navigation plus all regression validations exited `0`; EditMode passed 10/10; PlayMode passed 12/12.
 
-**Latest run:** `2026-10-20-ll-p2-006` - **complete**
+**Latest run:** `2026-10-30-ll-p3-001` - **complete**
+**Report:** `.orchestrator/reports/2026-10-30-phase-3-plan.md`
+**Result:** Authored and approved the seven-task Phase 3 plan after two independent `ll-reviewer` reviews, recorded the interaction/carry/item/prompt/machine contracts in decision `0005`, and reconciled stale Phase 0/Phase 2 context in `MASTER_CONTEXT.md`, `ARCHITECTURE.md`, and `ROADMAP.md`. Bootstrap validation passed with 7 JSON documents and 31 tasks; JSON parsed. No Unity compile, test, playtest, or gameplay change was performed.
+
+**Previous run:** `2026-10-20-ll-p2-006` - **complete**
 **Report:** `.orchestrator/reports/2026-10-20-ll-p2-006.md`
 **Human verification:** `.orchestrator/reports/2026-10-20-ll-p2-006-human-verification.md`
 **Result:** Automated acceptance verification passed: bootstrap, compile, six scene validators, EditMode 10/10, PlayMode 12/12, clean log scan, and seven fresh captures. The project owner then reported pass for all six human-review items: traversal, entrance-to-counter path, secret-access subtlety, lighting/readability, signage, and overall layout. No blocking issue was reported. `LL-P2-006` and Phase 2 are complete. This is owner-reported human evidence, not an independent agent walkthrough.
@@ -174,12 +179,11 @@ See `.orchestrator/budgets.json`.
 
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, and confirm Phase 2 is complete. There is no active task. Author and approve the Phase 3 task plan before starting interaction work. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, `LL-P2-005`, or `LL-P2-006`. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, and confirm `LL-P3-001` is complete. There is no active task; `LL-P3-002` is the next ready task. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, `LL-P2-005`, `LL-P2-006`, or `LL-P3-001`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 
 - Phase 2 is complete. Preserve the validated layout for Phase 3 interaction placement; rerun navigation/camera validation after any scene or prefab change.
-- `MASTER_CONTEXT.md` and `ARCHITECTURE.md` still contain stale Phase 0/no-Unity status text. Reconcile them in a scoped documentation task before Phase 3 implementation; do not treat them as current project status.
 - `ProjectSettings/PackageManagerSettings.asset` is untracked and Unity-generated. It was preserved but not committed; review before versioning.
 - Unity Personal licensing requires periodic online refresh; batch automation can fail with exit `198` for reasons unrelated to the project.
 - Project settings were edited as serialized YAML before an editor settings API existed; Unity re-serialized and preserved them, but future changes should use an editor script or the Unity UI.
@@ -192,7 +196,7 @@ Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect 
 - The pause overlay uses IMGUI as a placeholder; real UI arrives later.
 - Cursor lock/release and movement feel were confirmed by the project owner on 2026-10-20; batch tests still skip cursor APIs, so this remains owner-reported rather than independently reproduced.
 - `GameSession.Instance` is a static service handle; consumers should prefer explicit references where practical.
-- Test coverage is 10 EditMode and 12 PlayMode tests; it does not yet cover machine cycles, orders, economy transactions, save/load, or UI.
+- Test coverage is 10 EditMode and 12 PlayMode tests; it does not yet cover interaction eligibility, carrying, machine cycles, orders, economy transactions, save/load, or UI. Phase 3 must add that coverage.
 - `FailureReportingTests` fails when `LL_FAIL_PROBE` is left set; unset it after probing.
 - The stray `C:\Users\Asus\Desktop\AI` log remains pending manual deletion.
 - The global OpenCode config points at a local Ollama model; the project config overrides it with DeepSeek. Confirm the provider remains available in future sessions.

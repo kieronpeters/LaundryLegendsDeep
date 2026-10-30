@@ -1,8 +1,8 @@
 # Laundry Legends — Development Roadmap
 
-**Last updated:** 2026-10-20
-**Current phase:** 2 - complete
-**Next phase:** 3 - planned; task plan required
+**Last updated:** 2026-10-30
+**Current phase:** 3 - in progress
+**Next phase:** 4 - planned
 **Authority:** This roadmap defines sequence, dependencies, deliverables, and acceptance. Update it when a genuine dependency requires a change; record the reason in a decision record.
 
 ## 0. Status legend
@@ -227,7 +227,7 @@ Environment prefabs, materials, scene objects, lighting settings, collision/nav 
 
 ## Phase 3 - Laundry interaction foundation
 
-**Status:** Planned; task plan required
+**Status:** In progress
 **Objective:** Implement player interaction, carrying, baskets, laundry items, prompts, and machine interaction hooks.
 **Depends on:** Phase 2.
 
@@ -242,12 +242,15 @@ Environment prefabs, materials, scene objects, lighting settings, collision/nav 
 
 ### Tasks
 
-- Define interaction interface and target detection.
-- Implement carry controller with drop/place rules.
-- Create basket, loose laundry, and bag placeholders.
-- Add interaction prompts and input.
-- Add machine load/unload hooks.
-- Add EditMode tests for carry eligibility and interaction resolution.
+| ID | Task | Status |
+|---|---|---|
+| LL-P3-001 | Reconcile Phase 3 context and lock interaction contracts | Complete |
+| LL-P3-002 | Harden interaction contract and target resolution | Ready |
+| LL-P3-003 | Implement carry state, item identity, and drop/place rules | Planned |
+| LL-P3-004 | Add basket, loose-laundry, and bag placeholder prefabs | Planned |
+| LL-P3-005 | Add interaction prompt UI and controls hint | Planned |
+| LL-P3-006 | Add one machine load/unload interaction hook | Planned |
+| LL-P3-007 | Verify Phase 3 acceptance and record evidence | Planned |
 
 ### Acceptance criteria
 
