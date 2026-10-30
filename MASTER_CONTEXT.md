@@ -209,8 +209,8 @@ A task is done only when:
 - Phase 2 human acceptance is owner-reported; the agent did not independently walk the Game view.
 - Unity batch-mode licensing can expire; refresh it in Unity Hub before treating exit `198` as a project defect.
 - Only procedural placeholder assets exist; no production art, audio, animation, or models.
-- The automated suite is 10 EditMode and 12 PlayMode tests; it does not yet cover interaction carrying, machine cycles, orders, economy, customers, save/load, or UI.
-- Phase 3 interaction, carry, item, prompt, and machine-hook contracts are recorded in `.orchestrator/decisions/0005-phase-3-interaction-contracts.md`; implementation has not started.
+- The automated suite is 15 EditMode and 18 PlayMode tests; it does not yet cover interaction carrying, machine cycles, orders, economy, customers, save/load, or UI.
+- Phase 3 interaction, carry, item, prompt, and machine-hook contracts are recorded in `.orchestrator/decisions/0005-phase-3-interaction-contracts.md`. The interaction contract is implemented; carry, items, prompt UI, and the machine hook are not.
 - No image/3D/audio authoring pipeline is verified.
 - Spend telemetry is not reliable for free models; budget enforcement is conservative and process-based.
 - The game cannot be built autonomously end-to-end without integration, testing, and human feedback.

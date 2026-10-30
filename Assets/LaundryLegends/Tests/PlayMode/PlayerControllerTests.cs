@@ -97,5 +97,189 @@ namespace LaundryLegends.Tests.PlayMode
             Object.Destroy(target);
             yield return null;
         }
+
+        [UnityTest]
+        public IEnumerator InteractionExposesPromptAndDispatchesThroughTryInteract()
+        {
+            PlayerInteractor interactor = Object.FindFirstObjectByType<PlayerInteractor>();
+            Assert.IsNotNull(interactor, "Laundromat should contain a PlayerInteractor.");
+            Camera camera = interactor.GetComponentInChildren<Camera>();
+            Assert.IsNotNull(camera, "Player should have a camera.");
+
+            GameObject target = CreateTarget(camera, 2f);
+            SimpleInteractable simple = target.AddComponent<SimpleInteractable>();
+            int interactions = 0;
+            simple.Interacted += _ => interactions++;
+
+            Physics.SyncTransforms();
+            yield return null;
+            yield return null;
+
+            Assert.AreSame(simple, interactor.CurrentInteractable);
+            Assert.AreEqual(target, interactor.CurrentTarget);
+            Assert.AreEqual("Interact", interactor.CurrentPrompt);
+            Assert.AreEqual(KeyCode.E, interactor.InteractKey);
+            Assert.AreEqual("E", interactor.InteractKeyLabel);
+            Assert.IsTrue(interactor.TryInteract(), "An eligible target should dispatch.");
+            Assert.AreEqual(1, interactions);
+
+            Object.Destroy(target);
+            yield return null;
+            yield return null;
+
+            Assert.IsNull(interactor.CurrentInteractable, "Destroyed targets should clear.");
+            Assert.IsNull(interactor.CurrentTarget);
+            Assert.IsNull(interactor.CurrentPrompt);
+        }
+
+        [UnityTest]
+        public IEnumerator TargetChangedNotificationFiresWhenTargetAppearsAndClears()
+        {
+            PlayerInteractor interactor = Object.FindFirstObjectByType<PlayerInteractor>();
+            Assert.IsNotNull(interactor, "Laundromat should contain a PlayerInteractor.");
+            Camera camera = interactor.GetComponentInChildren<Camera>();
+            Assert.IsNotNull(camera, "Player should have a camera.");
+
+            int changes = 0;
+            interactor.TargetChanged += () => changes++;
+
+            GameObject target = CreateTarget(camera, 2f);
+            target.AddComponent<SimpleInteractable>();
+
+            Physics.SyncTransforms();
+            yield return null;
+            yield return null;
+
+            Assert.GreaterOrEqual(changes, 1, "A new target should raise the change notification.");
+            Assert.IsNotNull(interactor.CurrentTarget);
+
+            int changesWhileTargeted = changes;
+            Object.Destroy(target);
+            yield return null;
+            yield return null;
+
+            Assert.Greater(changes, changesWhileTargeted, "Clearing a target should raise the change notification.");
+            Assert.IsNull(interactor.CurrentTarget);
+        }
+
+        [UnityTest]
+        public IEnumerator IneligibleInteractionIsNotReportedOrDispatched()
+        {
+            PlayerInteractor interactor = Object.FindFirstObjectByType<PlayerInteractor>();
+            Assert.IsNotNull(interactor, "Laundromat should contain a PlayerInteractor.");
+            Camera camera = interactor.GetComponentInChildren<Camera>();
+            Assert.IsNotNull(camera, "Player should have a camera.");
+
+            GameObject target = CreateTarget(camera, 2f);
+            SimpleInteractable simple = target.AddComponent<SimpleInteractable>();
+            simple.SetInteractable(false);
+            int interactions = 0;
+            simple.Interacted += _ => interactions++;
+
+            Physics.SyncTransforms();
+            yield return null;
+            yield return null;
+
+            Assert.IsNull(interactor.CurrentInteractable, "Ineligible targets must not be reported.");
+            Assert.IsNull(interactor.CurrentTarget);
+            Assert.IsNull(interactor.CurrentPrompt);
+            Assert.IsFalse(interactor.TryInteract(), "Ineligible targets must not dispatch.");
+            Assert.AreEqual(0, interactions);
+
+            Object.Destroy(target);
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator BlockedInteractionIsNotReportedOrDispatched()
+        {
+            PlayerInteractor interactor = Object.FindFirstObjectByType<PlayerInteractor>();
+            Assert.IsNotNull(interactor, "Laundromat should contain a PlayerInteractor.");
+            Camera camera = interactor.GetComponentInChildren<Camera>();
+            Assert.IsNotNull(camera, "Player should have a camera.");
+
+            GameObject blocker = CreateTarget(camera, 1.5f);
+            GameObject target = CreateTarget(camera, 2.5f);
+            SimpleInteractable simple = target.AddComponent<SimpleInteractable>();
+            int interactions = 0;
+            simple.Interacted += _ => interactions++;
+
+            Physics.SyncTransforms();
+            yield return null;
+            yield return null;
+
+            Assert.IsNull(interactor.CurrentTarget, "A non-interactable collider should block the raycast.");
+            Assert.IsFalse(interactor.TryInteract());
+            Assert.AreEqual(0, interactions);
+
+            Object.Destroy(blocker);
+            Object.Destroy(target);
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator OutOfRangeInteractionIsNotReportedOrDispatched()
+        {
+            PlayerInteractor interactor = Object.FindFirstObjectByType<PlayerInteractor>();
+            Assert.IsNotNull(interactor, "Laundromat should contain a PlayerInteractor.");
+            Camera camera = interactor.GetComponentInChildren<Camera>();
+            Assert.IsNotNull(camera, "Player should have a camera.");
+
+            GameObject target = CreateTarget(camera, 10f);
+            SimpleInteractable simple = target.AddComponent<SimpleInteractable>();
+            int interactions = 0;
+            simple.Interacted += _ => interactions++;
+
+            Physics.SyncTransforms();
+            yield return null;
+            yield return null;
+
+            Assert.IsNull(interactor.CurrentTarget, "Targets beyond the interaction range must not be reported.");
+            Assert.IsFalse(interactor.TryInteract());
+            Assert.AreEqual(0, interactions);
+
+            Object.Destroy(target);
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator PausedInteractionClearsTargetAndDoesNotDispatch()
+        {
+            PlayerInteractor interactor = Object.FindFirstObjectByType<PlayerInteractor>();
+            Assert.IsNotNull(interactor, "Laundromat should contain a PlayerInteractor.");
+            Camera camera = interactor.GetComponentInChildren<Camera>();
+            Assert.IsNotNull(camera, "Player should have a camera.");
+
+            GameObject target = CreateTarget(camera, 2f);
+            SimpleInteractable simple = target.AddComponent<SimpleInteractable>();
+            int interactions = 0;
+            simple.Interacted += _ => interactions++;
+
+            Physics.SyncTransforms();
+            yield return null;
+            yield return null;
+
+            Assert.IsNotNull(interactor.CurrentTarget, "The target should resolve before pausing.");
+
+            Time.timeScale = 0f;
+            yield return null;
+
+            Assert.IsNull(interactor.CurrentTarget, "Pausing should clear the reported target.");
+            Assert.IsNull(interactor.CurrentPrompt);
+            Assert.IsFalse(interactor.TryInteract(), "Paused interactions must not dispatch.");
+            Assert.AreEqual(0, interactions);
+
+            Time.timeScale = 1f;
+            Object.Destroy(target);
+            yield return null;
+        }
+
+        private static GameObject CreateTarget(Camera camera, float distance)
+        {
+            GameObject target = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            target.name = "TestInteractable";
+            target.transform.position = camera.transform.position + camera.transform.forward * distance;
+            return target;
+        }
     }
 }

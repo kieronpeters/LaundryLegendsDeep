@@ -3,7 +3,7 @@
   "phase": 3,
   "name": "Laundry interaction foundation",
   "status": "in_progress",
-  "updatedAt": "2026-10-30T18:55:00+08:00",
+  "updatedAt": "2026-10-30T19:12:00+08:00",
   "tasks": [
     {
       "id": "LL-P3-001",
@@ -57,7 +57,7 @@
     {
       "id": "LL-P3-002",
       "title": "Harden interaction contract and target resolution",
-      "status": "ready",
+      "status": "complete",
       "priority": 2,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P3-001"],
@@ -94,20 +94,20 @@
       "checks": [
         {
           "name": "Compile and interaction tests",
-          "status": "pending",
+          "status": "passed",
           "command": "Unity batch compile; EditMode suite; PlayMode PlayerControllerTests and full suite; log scan",
-          "evidence": "Pending"
+          "evidence": "Compile exit 0; EditMode 15/15 passed; PlayMode 18/18 passed; logs clean on 2026-10-30 (TestResults/p3-002-*.log, ignored)"
         }
       ],
-      "result": null,
+      "result": "Interaction contract hardened: eligibility, prompt, key label, change notification, and testable dispatch implemented. Existing behavior preserved; no carry or UI added.",
       "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "startedAt": "2026-10-30T18:56:00+08:00",
+      "completedAt": "2026-10-30T19:12:00+08:00"
     },
     {
       "id": "LL-P3-003",
       "title": "Implement carry state, item identity, and drop/place rules",
-      "status": "planned",
+      "status": "ready",
       "priority": 3,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P3-002"],

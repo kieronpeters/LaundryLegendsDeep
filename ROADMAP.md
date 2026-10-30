@@ -245,8 +245,8 @@ Environment prefabs, materials, scene objects, lighting settings, collision/nav 
 | ID | Task | Status |
 |---|---|---|
 | LL-P3-001 | Reconcile Phase 3 context and lock interaction contracts | Complete |
-| LL-P3-002 | Harden interaction contract and target resolution | Ready |
-| LL-P3-003 | Implement carry state, item identity, and drop/place rules | Planned |
+| LL-P3-002 | Harden interaction contract and target resolution | Complete |
+| LL-P3-003 | Implement carry state, item identity, and drop/place rules | Ready |
 | LL-P3-004 | Add basket, loose-laundry, and bag placeholder prefabs | Planned |
 | LL-P3-005 | Add interaction prompt UI and controls hint | Planned |
 | LL-P3-006 | Add one machine load/unload interaction hook | Planned |

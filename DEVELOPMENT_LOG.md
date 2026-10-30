@@ -641,3 +641,37 @@ Phase 2 is complete. Author and approve the Phase 3 task plan before starting in
 ### Next
 
 `LL-P3-002` - harden the interaction contract and target resolution. Do not start `LL-P3-003` until `LL-P3-002` compiles and its tests pass.
+
+## 2026-10-30 - LL-P3-002 interaction contract and target resolution
+
+**Phase:** 3 - Laundry interaction foundation
+**Task:** LL-P3-002
+**Status:** Complete - compile, EditMode, PlayMode, and log scan passed
+
+### Implemented / performed
+
+- Extended `IInteractable` with `CanInteract(GameObject)` while preserving `InteractionPrompt` and `Interact`.
+- Made `SimpleInteractable` eligible by default, disableable through a serialized flag or component disable, and event-safe when ineligible.
+- Added `CurrentInteractable`, `InteractKey`, `InteractKeyLabel`, `TryInteract`, and a `TargetChanged` notification to `PlayerInteractor`.
+- Centralized target resolution: out-of-range, blocked, ineligible, disabled, and paused targets are neither reported nor dispatched.
+- Added five EditMode eligibility tests and six PlayMode interaction tests.
+- No carry, item, prompt UI, scene, prefab, package, or project-setting change.
+
+### Checks and evidence
+
+- Unity compile exited `0`; log clean (`TestResults/p3-002-compile.log`, ignored).
+- EditMode: 15/15 passed (`TestResults/p3-002-editmode.xml`, ignored).
+- PlayMode: 18/18 passed without `-nographics` (`TestResults/p3-002-playmode.xml`, ignored).
+- Log scan found no compiler errors, exceptions, missing references, shader errors, or aborts.
+- Bootstrap validation passed with 7 JSON documents and 31 tasks; JSON parsed; `git diff --check` passed.
+- Report: `.orchestrator/reports/2026-10-30-ll-p3-002.md`.
+
+### Not performed
+
+- Carry, item identity, item prefabs, prompt UI, and machine load/unload. These are `LL-P3-003` through `LL-P3-006`.
+- Human Game-view review, playtest, player build, and performance measurement.
+- `ValidatePlayerSetup`; the Player prefab and scene were not modified.
+
+### Next
+
+`LL-P3-003` - implement carry state, item identity, and drop/place rules. Do not start `LL-P3-004` until `LL-P3-003` compiles and its tests pass.

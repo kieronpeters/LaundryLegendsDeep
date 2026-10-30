@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-30 18:55 (UTC+08:00)
+**Last updated:** 2026-10-30 19:12 (UTC+08:00)
 **Current milestone:** M1 - Playable laundry, **in progress**
 **Current phase:** Phase 3 - Laundry interaction foundation, **in progress**
 **Next phase:** Phase 4 - Laundry processing, planned
-**Active task:** None - `LL-P3-001` is complete
-**Next recommended task:** `LL-P3-002` - harden interaction contract and target resolution
+**Active task:** None - `LL-P3-002` is complete
+**Next recommended task:** `LL-P3-003` - implement carry state, item identity, and drop/place rules
 
 ## 1. Verified configuration
 
@@ -68,8 +68,9 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Phase 2 navigation: seven public routes, critical-prop colliders, renderer materials, missing references, and 1.5 m/1.7 m camera clearance samples are validated in the editor and PlayMode suite. Validation and tests passed on 2026-10-20.
 - Phase 2 acceptance: the project owner reported pass for all six Phase 2 review items on 2026-10-20: traversal, entrance-to-counter path, secret-access subtlety, lighting/readability, signage, and overall layout. Recorded as owner-reported human verification in `.orchestrator/reports/2026-10-20-ll-p2-006-human-verification.md`. Phase 2 is complete.
 - Phase 3 plan: seven sequential tasks (`LL-P3-001` through `LL-P3-007`) recorded in `.orchestrator/tasks/phase-03.json` and approved on 2026-10-30 after two independent read-only reviews. `LL-P3-001` reconciled `MASTER_CONTEXT.md` and `ARCHITECTURE.md` and locked interaction, carry, item-identity, prompt, and machine-hook contracts in `.orchestrator/decisions/0005-phase-3-interaction-contracts.md`. No gameplay code changed in `LL-P3-001`.
-- EditMode suite: 10/10 tests passed on 2026-10-20, including an opt-in deliberate-failure probe that correctly exits `2` and records `result="Failed"`.
-- PlayMode suite: 12/12 tests passed on 2026-10-20; the added tests cover storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, and public navigation/camera clearance. Earlier 8-, 9-, 10-, and 11-test runs are preserved in their task evidence.
+- Phase 3 interaction contract: `IInteractable` now exposes prompt, `CanInteract`, and `Interact`; `SimpleInteractable` is eligible by default and can be disabled; `PlayerInteractor` exposes the current interactable/target/prompt, the interaction key and label, `TryInteract`, and a `TargetChanged` notification. Out-of-range, blocked, ineligible, disabled, and paused targets are neither reported nor dispatched. Verified on 2026-10-30 with compile exit `0`, EditMode 15/15, PlayMode 18/18, and a clean log scan.
+- EditMode suite: 15/15 tests passed on 2026-10-30; the added tests cover interaction eligibility, disabled components, and event-only-when-eligible behavior.
+- PlayMode suite: 18/18 tests passed on 2026-10-30; the added tests cover prompt/key exposure, `TryInteract` dispatch, target-change notification, ineligible/blocked/out-of-range/paused rejection, and target clearing.
 - Batch commands, evidence paths, failure-probe steps, and test-assembly isolation documented in `TESTING_GUIDE.md`.
 - The project owner completed all six Phase 1 Game-view checks on 2026-10-20: movement/speed, camera/comfort, pause/cursor release, room layout, secret door, and lighting/readability. Recorded as owner-reported human verification in `.orchestrator/reports/2026-10-20-ll-p1-009-human-verification.md`.
 - Phase 1 is complete. Automated results and screenshots are preserved unchanged; the human confirmation is a separate addendum.
@@ -77,7 +78,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 
 ## 4. Incomplete and unverified
 
-- Phase 3 implementation: interaction eligibility/dispatch, carry state, item identity, item prefabs, prompt UI, and machine load/unload hooks. Contracts are recorded; code has not been written.
+- Phase 3 implementation: carry state, item identity, item prefabs, prompt UI, and machine load/unload hooks. Interaction contract and eligibility are implemented; the rest has not been written.
 - Interaction, carrying, baskets, prompts, machine load/unload, customers, orders, and the secret-room reveal.
 - Production art, audio, UI, animations, and models.
 - Save system, economy, customers, laundry machines, orders, secret room, and arcade.
@@ -166,7 +167,11 @@ See `.orchestrator/budgets.json`.
 **Report:** `.orchestrator/reports/2026-10-20-ll-p2-005.md`
 **Result:** Added `ValidatePublicNavigation` and a PlayMode navigation test covering seven public routes, critical-prop colliders, renderer materials, missing references, and 1.5 m/1.7 m camera clearance. Navigation plus all regression validations exited `0`; EditMode passed 10/10; PlayMode passed 12/12.
 
-**Latest run:** `2026-10-30-ll-p3-001` - **complete**
+**Latest run:** `2026-10-30-ll-p3-002` - **complete**
+**Report:** `.orchestrator/reports/2026-10-30-ll-p3-002.md`
+**Result:** Hardened the interaction contract. `IInteractable` now exposes prompt, eligibility, and interaction; `SimpleInteractable` is eligible by default and can be disabled; `PlayerInteractor` exposes `CurrentInteractable`, `CurrentTarget`, `CurrentPrompt`, `InteractKey`, `InteractKeyLabel`, a testable `TryInteract`, and a `TargetChanged` notification. Compile exited `0`, EditMode passed 15/15, PlayMode passed 18/18, and the log scan was clean. No carry, item, prompt UI, scene, prefab, package, or project-setting change was made.
+
+**Previous run:** `2026-10-30-ll-p3-001` - **complete**
 **Report:** `.orchestrator/reports/2026-10-30-phase-3-plan.md`
 **Result:** Authored and approved the seven-task Phase 3 plan after two independent `ll-reviewer` reviews, recorded the interaction/carry/item/prompt/machine contracts in decision `0005`, and reconciled stale Phase 0/Phase 2 context in `MASTER_CONTEXT.md`, `ARCHITECTURE.md`, and `ROADMAP.md`. Bootstrap validation passed with 7 JSON documents and 31 tasks; JSON parsed. No Unity compile, test, playtest, or gameplay change was performed.
 
@@ -179,7 +184,7 @@ See `.orchestrator/budgets.json`.
 
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, and confirm `LL-P3-001` is complete. There is no active task; `LL-P3-002` is the next ready task. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, `LL-P2-005`, `LL-P2-006`, or `LL-P3-001`. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, and confirm `LL-P3-002` is complete. There is no active task; `LL-P3-003` is the next ready task. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, `LL-P2-005`, `LL-P2-006`, `LL-P3-001`, or `LL-P3-002`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 
@@ -188,7 +193,7 @@ Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect 
 - Unity Personal licensing requires periodic online refresh; batch automation can fail with exit `198` for reasons unrelated to the project.
 - Project settings were edited as serialized YAML before an editor settings API existed; Unity re-serialized and preserved them, but future changes should use an editor script or the Unity UI.
 - Linear color space and Medium quality are active. Greybox lighting was checked by the project owner in the Game view on 2026-10-20 and reported acceptable; no measured performance data exists.
-- The greybox room, props, machines, and secret door are static placeholder primitives; no interaction or machine behavior exists.
+- The greybox room, props, machines, and secret door are static placeholder primitives; interaction targeting exists, but carrying and machine behavior do not.
 - The storefront glazing and open door leaves are static placeholders; there is no door interaction or animation. Phase 2 rendering captures require a graphics-capable batch run because `-nographics` crashed during capture.
 - Single-sided placeholder text faces its intended reader: `LAUNDRY LEGENDS` is mirrored from inside and `DROP OFF` is mirrored from the room side. The owner reported the Phase 2 review as passed and did not mark this as blocking; improve it later if presentation quality requires it.
 - The secret door is visually foreshadowed and concealed by a static service panel/shelf. The owner reported the Phase 2 subtlety review as passed; secret-room access and reveal logic are not implemented.
@@ -196,7 +201,7 @@ Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect 
 - The pause overlay uses IMGUI as a placeholder; real UI arrives later.
 - Cursor lock/release and movement feel were confirmed by the project owner on 2026-10-20; batch tests still skip cursor APIs, so this remains owner-reported rather than independently reproduced.
 - `GameSession.Instance` is a static service handle; consumers should prefer explicit references where practical.
-- Test coverage is 10 EditMode and 12 PlayMode tests; it does not yet cover interaction eligibility, carrying, machine cycles, orders, economy transactions, save/load, or UI. Phase 3 must add that coverage.
+- Test coverage is 15 EditMode and 18 PlayMode tests; it does not yet cover carrying, machine cycles, orders, economy transactions, save/load, or UI. Phase 3 must add carry and machine-hook coverage.
 - `FailureReportingTests` fails when `LL_FAIL_PROBE` is left set; unset it after probing.
 - The stray `C:\Users\Asus\Desktop\AI` log remains pending manual deletion.
 - The global OpenCode config points at a local Ollama model; the project config overrides it with DeepSeek. Confirm the provider remains available in future sessions.
