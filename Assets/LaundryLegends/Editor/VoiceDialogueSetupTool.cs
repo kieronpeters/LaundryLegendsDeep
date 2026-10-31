@@ -184,8 +184,40 @@ namespace LaundryLegends.Editor
                 Debug.Log($"[VOICE] {npcName}: {archetype}, triggers={string.Join(",", triggers)}");
             }
 
+            FixAmbience(root);
+
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
+        }
+
+        /// <summary>
+        /// Removes the legacy stock voice clips and adds the rare street ambience.
+        /// The old thank-you clip contained an unwanted recording, so the dialogue
+        /// bank is now the only speech source.
+        /// </summary>
+        private static void FixAmbience(GameObject root)
+        {
+            var ambient = root.GetComponentInChildren<LaundryLegends.NPC.AmbientNpc>(true);
+            if (ambient != null)
+            {
+                ambient.ClearVoiceClips();
+            }
+
+            GameObject ambience = GameObject.Find("StreetAmbience");
+            if (ambience == null)
+            {
+                ambience = new GameObject("StreetAmbience");
+            }
+
+            if (ambience.GetComponent<AudioSource>() == null)
+            {
+                ambience.AddComponent<AudioSource>();
+            }
+
+            if (ambience.GetComponent<LaundryLegends.Audio.AmbientScooterHorn>() == null)
+            {
+                ambience.AddComponent<LaundryLegends.Audio.AmbientScooterHorn>();
+            }
         }
 
         private static void EnsureFolder(string path)

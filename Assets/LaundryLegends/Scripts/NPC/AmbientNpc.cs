@@ -58,6 +58,16 @@ namespace LaundryLegends.NPC
             _dropOffSlot = slot;
         }
 
+        /// <summary>
+        /// Removes the legacy stock voice clips. Used once the dialogue bank owns
+        /// speech, so an unsuitable stock clip can never play again.
+        /// </summary>
+        public void ClearVoiceClips()
+        {
+            _enterClip = null;
+            _leaveClip = null;
+        }
+
         private void Awake()
         {
             _startPosition = transform.position;
