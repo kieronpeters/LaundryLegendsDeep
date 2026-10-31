@@ -107,6 +107,7 @@ Domain services may know about data and other services. UI/presentation may read
 | `EconomyService` | Transactions, price lookup, daily summary | Machine timers, customer movement |
 | `OrderService` / `OrderStateMachine` | Order lifecycle, contents, payout, state transitions | Player carrying, scene animation |
 | `LaundryItem` / `LaundryLoad` | Item kind, template ID, runtime instance ID, carry/load eligibility, held/dropped representation | Order payment, machine timers |
+| `LaundryItemInteractable` | Pickup prompt, free-item eligibility, delegation to `CarryController` | Carry state, machine ownership |
 | `MachineLoadHook` | One-load washer boundary, accepted item kind, exact item ownership, load/unload interaction | Cycle timers, economy, order state |
 | `MachineLoadSlot` | One-load boundary, accepted item kind, exact item ownership while loaded | Cycle timers, economy, order state |
 | `MachineController` | Machine state, cycle timer, capacity, load reference | Money mutation, UI rendering |
@@ -321,7 +322,7 @@ Architecture decisions live in `.orchestrator/decisions/`:
 ## 19. Technical debt and risks
 
 - Unity batch-mode licensing can expire; refresh it in Unity Hub before treating exit `198` as a project defect.
-- The project has compile and test harnesses; the suite is 26 EditMode and 35 PlayMode tests and does not yet cover machine cycles, orders, economy, customers, save/load, or final UI. Editor validators cover item prefabs, scene placement, and the machine-hook geometry.
+- The project has compile and test harnesses; the suite is 31 EditMode and 36 PlayMode tests and does not yet cover machine cycles, orders, economy, customers, save/load, or final UI. Editor validators cover item prefabs, scene placement, pickup wiring, and the machine-hook geometry.
 - Scene/prefab merge conflicts are the highest collaboration risk; enforce one owner and small commits.
 - Carry is attachment-based in Phase 3; clipping, drop-point validity, and held-item cleanup need automated and human review.
 - Item identity exists before save/load; instance IDs must be serialized in the save phase or they will not survive a reload.

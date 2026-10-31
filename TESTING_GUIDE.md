@@ -68,8 +68,8 @@ Use for interaction, machine cycles, order flow, customer flow, and scene smoke 
 
 | Suite | Tests | Coverage |
 |---|---:|---|
-| EditMode | 26 | `GameState` money/flags/day rules, build-settings order, the failure-reporting probe, interaction eligibility/disabled/event rules, item identity/kind/carryability, carry-slot compatibility/placement, and machine load/unload rules |
-| PlayMode | 35 | scene routing, player movement/look, pause, interaction targeting/prompt/key/dispatch/rejection, item pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, washer targeting, load/unload identity, rejection without ownership change, greybox traversal, storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, public navigation/camera clearance, wall containment, secret door, scale, and lighting |
+| EditMode | 31 | `GameState` money/flags/day rules, build-settings order, the failure-reporting probe, interaction eligibility/disabled/event rules, item identity/kind/carryability, carry-slot compatibility/placement, machine load/unload rules, and item pickup rules |
+| PlayMode | 36 | scene routing, player movement/look, pause, interaction targeting/prompt/key/dispatch/rejection, item pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, scene basket pickup, washer targeting, load/unload identity, rejection without ownership change, greybox traversal, storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, public navigation/camera clearance, wall containment, secret door, scale, and lighting |
 
 Counts are a snapshot; use the XML `test-run` totals as the authoritative result.
 
@@ -266,7 +266,17 @@ $itemCheck = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
 $itemCheck.ExitCode
 ```
 
-Run the Phase 2 navigation validation as well after any item placement change. `ValidateItems` counts one basket, one bag, and two loose-laundry instances; it tolerates extra instances but reports blocked routes.
+Run the Phase 2 navigation validation as well after any item placement change. `ValidateItems` counts one basket, one bag, and two loose-laundry instances; it tolerates extra instances but reports blocked routes. It also requires exactly one `LaundryItemInteractable` on each item prefab and scene instance.
+
+Apply the pickup component to the item prefabs without rebuilding the scene:
+
+```powershell
+$pickup = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.Phase3SetupTool.SetupItemPickup -logFile `"TestResults\p3-item-pickup.log`""
+$pickup.ExitCode
+```
+
+`SetupItemPickup` is idempotent, keeps one component per prefab, and rewires it to the prefab's `LaundryItem`.
 
 ### Phase 3 interaction prompt setup
 

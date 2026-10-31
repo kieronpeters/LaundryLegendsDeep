@@ -209,8 +209,8 @@ A task is done only when:
 - Phase 2 human acceptance is owner-reported; the agent did not independently walk the Game view.
 - Unity batch-mode licensing can expire; refresh it in Unity Hub before treating exit `198` as a project defect.
 - Only procedural placeholder assets exist; no production art, audio, animation, or models.
-- The automated suite is 26 EditMode and 35 PlayMode tests; it does not yet cover machine cycles, orders, economy, customers, save/load, or final UI. Item prefabs, scene placement, and machine-hook geometry are covered by editor validators.
-- Phase 3 interaction, carry, item, prompt, and machine-hook contracts are recorded in `.orchestrator/decisions/0005-phase-3-interaction-contracts.md`. Interaction, carry, item identity, drop/place rules, item prefabs, scene placement, the IMGUI prompt, and one washer load/unload hook are implemented; acceptance verification remains.
+- The automated suite is 31 EditMode and 36 PlayMode tests; it does not yet cover machine cycles, orders, economy, customers, save/load, or final UI. Item prefabs, scene placement, pickup wiring, and machine-hook geometry are covered by editor validators.
+- Phase 3 interaction, carry, item, prompt, and machine-hook contracts are recorded in `.orchestrator/decisions/0005-phase-3-interaction-contracts.md`. Interaction, pickup, carry, item identity, drop/place rules, item prefabs, scene placement, the IMGUI prompt, and one washer load/unload hook are implemented; acceptance verification remains. A repair task `LL-P3-008` added the missing item pickup interaction after acceptance review.
 - No image/3D/audio authoring pipeline is verified.
 - Spend telemetry is not reliable for free models; budget enforcement is conservative and process-based.
 - The game cannot be built autonomously end-to-end without integration, testing, and human feedback.

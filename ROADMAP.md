@@ -251,6 +251,7 @@ Environment prefabs, materials, scene objects, lighting settings, collision/nav 
 | LL-P3-005 | Add interaction prompt UI and controls hint | Complete |
 | LL-P3-006 | Add one machine load/unload interaction hook | Complete |
 | LL-P3-007 | Verify Phase 3 acceptance and record evidence | Ready |
+| LL-P3-008 | Add pickup interaction for laundry items (repair for acceptance gap) | Complete |
 
 ### Acceptance criteria
 

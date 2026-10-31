@@ -156,7 +156,7 @@ namespace LaundryLegends.Interaction
             }
 
             var unityObject = interactable as UnityEngine.Object;
-            return unityObject == null || unityObject != null;
+            return ReferenceEquals(unityObject, null) || unityObject != null;
         }
     }
 }

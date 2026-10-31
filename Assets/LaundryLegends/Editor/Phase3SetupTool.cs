@@ -50,10 +50,25 @@ namespace LaundryLegends.Editor
             BuildLooseLaundry(laundryMaterial);
             BuildBag(bagMaterial);
 
+            EnsureItemPickup(BasketPath);
+            EnsureItemPickup(LooseLaundryPath);
+            EnsureItemPickup(BagPath);
+
             ConfigureSceneItems();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[Phase3] Placeholder laundry prefabs and additive scene placement built.");
+        }
+
+        [MenuItem("Laundry Legends/Phase 3/Setup Item Pickup")]
+        public static void SetupItemPickup()
+        {
+            EnsureItemPickup(BasketPath);
+            EnsureItemPickup(LooseLaundryPath);
+            EnsureItemPickup(BagPath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("[Phase3] Item pickup interaction components ensured on all laundry prefabs.");
         }
 
         [MenuItem("Laundry Legends/Phase 3/Validate Items")]
@@ -398,6 +413,36 @@ namespace LaundryLegends.Editor
             body.isKinematic = false;
         }
 
+        private static void EnsureItemPickup(string prefabPath)
+        {
+            GameObject prefab = PrefabUtility.LoadPrefabContents(prefabPath);
+            try
+            {
+                LaundryItem item = prefab.GetComponent<LaundryItem>();
+                if (item == null)
+                {
+                    throw new InvalidOperationException($"{prefabPath} has no LaundryItem.");
+                }
+
+                LaundryItemInteractable[] existing = prefab.GetComponents<LaundryItemInteractable>();
+                for (int i = 1; i < existing.Length; i++)
+                {
+                    UnityEngine.Object.DestroyImmediate(existing[i]);
+                }
+
+                LaundryItemInteractable pickup = existing.Length > 0
+                    ? existing[0]
+                    : prefab.AddComponent<LaundryItemInteractable>();
+                pickup.Configure(item);
+
+                PrefabUtility.SaveAsPrefabAsset(prefab, prefabPath);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(prefab);
+            }
+        }
+
         private static void ConfigureSceneItems()
         {
             Scene scene = EditorSceneManager.OpenScene(LaundromatScenePath, OpenSceneMode.Single);
@@ -479,6 +524,16 @@ namespace LaundryLegends.Editor
                 failures.Add($"{path}: missing collider.");
             }
 
+            LaundryItemInteractable[] pickups = prefab.GetComponents<LaundryItemInteractable>();
+            if (pickups.Length != 1)
+            {
+                failures.Add($"{path}: expected exactly one LaundryItemInteractable, found {pickups.Length}.");
+            }
+            else if (pickups[0].Item != item)
+            {
+                failures.Add($"{path}: pickup interaction is not wired to its LaundryItem.");
+            }
+
             foreach (Renderer renderer in prefab.GetComponentsInChildren<Renderer>(true))
             {
                 if (renderer.sharedMaterial == null)
@@ -526,6 +581,11 @@ namespace LaundryLegends.Editor
                 if (item.GetComponentInChildren<Collider>(true) == null)
                 {
                     failures.Add($"{item.name}: scene instance has no collider.");
+                }
+
+                if (item.GetComponent<LaundryItemInteractable>() == null)
+                {
+                    failures.Add($"{item.name}: scene instance has no pickup interaction.");
                 }
 
                 Vector3 point = new Vector3(item.transform.position.x, 1.1f, item.transform.position.z);

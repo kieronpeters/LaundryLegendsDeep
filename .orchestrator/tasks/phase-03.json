@@ -3,7 +3,7 @@
   "phase": 3,
   "name": "Laundry interaction foundation",
   "status": "in_progress",
-  "updatedAt": "2026-10-31T04:05:00+08:00",
+  "updatedAt": "2026-10-31T05:20:00+08:00",
   "tasks": [
     {
       "id": "LL-P3-001",
@@ -327,7 +327,7 @@
       "status": "ready",
       "priority": 7,
       "owner": "build",
-      "dependsOn": ["LL-P3-006"],
+      "dependsOn": ["LL-P3-006", "LL-P3-008"],
       "objective": "Run the complete Phase 3 verification, capture carry/prompt/machine interactions, prove no normal-path duplication or loss, and obtain the required human review of carrying feel and prompt clarity.",
       "scope": [
         "TestResults/**",
@@ -374,6 +374,61 @@
       "retryCount": 0,
       "startedAt": null,
       "completedAt": null
+    },
+    {
+      "id": "LL-P3-008",
+      "title": "Add pickup interaction for laundry items",
+      "status": "complete",
+      "priority": 6.5,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-003", "LL-P3-004"],
+      "objective": "Close the acceptance gap where carry logic exists but no interaction target can pick up a scene laundry item. Add one compatible item interaction component to all three item prefabs and cover it with automated tests.",
+      "scope": [
+        "Assets/LaundryLegends/Scripts/Interaction/**",
+        "Assets/LaundryLegends/Scripts/Laundry/**",
+        "Assets/LaundryLegends/Editor/Phase3SetupTool.cs",
+        "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/**",
+        "Assets/LaundryLegends/Tests/EditMode/**",
+        "Assets/LaundryLegends/Tests/PlayMode/**",
+        ".orchestrator/state.json",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Prefabs/Environment/**",
+        "Assets/LaundryLegends/Scenes/Laundromat.unity",
+        "Assets/LaundryLegends/Prefabs/Gameplay/Player.prefab",
+        "Assets/LaundryLegends/Scripts/Core/**",
+        "Assets/LaundryLegends/Scripts/Economy/**",
+        "Assets/LaundryLegends/Scripts/Customers/**",
+        "Assets/LaundryLegends/Scripts/Save/**",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "All three item prefabs carry one LaundryItemInteractable wired to their LaundryItem",
+        "The prompt names the item kind and the pickup action without hard-coding the interaction key",
+        "Interacting while empty-handed picks up the item through CarryController",
+        "Interacting while already carrying does not steal or duplicate the second item",
+        "An item already held or loaded in a CarrySlot is not reported as pickup-eligible",
+        "The item prefab setup is idempotent and Phase 3 item validation fails if the pickup component is missing or duplicated",
+        "EditMode and PlayMode pickup tests pass, along with the full suites and log scan"
+      ],
+      "checks": [
+        {
+          "name": "Item pickup interaction and regression",
+          "status": "passed",
+          "command": "Phase3SetupTool.SetupItemPickup and ValidateItems; Unity batch compile; EditMode/PlayMode suites; log scan",
+          "evidence": "Pickup setup and item validation exit 0; compile exit 0; EditMode 31/31; PlayMode 36/36; logs clean on 2026-10-31 (TestResults/p3-008-*, ignored)"
+        }
+      ],
+      "result": "Added LaundryItemInteractable to all three item prefabs, with kind-specific prompts and guard rules for held and slotted items. Interaction now picks up a free item through CarryController; carrying one item cannot steal or duplicate a second. PlayerInteractor's destroyed-object guard was corrected at the same time.",
+      "retryCount": 1,
+      "startedAt": "2026-10-31T04:10:00+08:00",
+      "completedAt": "2026-10-31T05:20:00+08:00"
     }
   ]
 }

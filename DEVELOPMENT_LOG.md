@@ -820,3 +820,36 @@ Phase 2 is complete. Author and approve the Phase 3 task plan before starting in
 ### Next
 
 `LL-P3-007` - run Phase 3 acceptance verification and capture evidence. Do not start Phase 4 until acceptance is recorded.
+
+## 2026-10-31 - LL-P3-008 item pickup repair
+
+**Phase:** 3 - Laundry interaction foundation
+**Task:** LL-P3-008 (plan repair after acceptance review)
+**Status:** Complete - pickup setup, item validation, compile, EditMode, PlayMode, and log scan passed
+
+### Implemented / performed
+
+- Found during acceptance review: carry logic existed but no interaction target could pick up a scene item.
+- Added `LaundryItemInteractable` with kind-specific prompts, free-item eligibility, held/slotted guards, and delegation to `CarryController.TryPickUp`.
+- Added the component to all three item prefabs through idempotent `Phase3SetupTool.SetupItemPickup`; `BuildItems` now includes it.
+- Extended `ValidateItems` to require exactly one wired pickup component per prefab and scene instance.
+- Corrected `PlayerInteractor.IsAlive` to use `ReferenceEquals` so destroyed interactables are rejected.
+- Added five EditMode pickup tests and one PlayMode scene-pickup test.
+- No scene, player prefab, package, or project-setting change.
+
+### Checks and evidence
+
+- Pickup setup and `ValidateItems` exited `0` (`TestResults/p3-008-item-pickup.log`, `p3-008-validate-items.log`, ignored).
+- Unity compile exited `0` (`TestResults/p3-008-compile-2.log`, ignored).
+- EditMode: 31/31 passed (`TestResults/p3-008-editmode.xml`, ignored).
+- PlayMode: 36/36 passed (`TestResults/p3-008-playmode-2.xml`, ignored).
+- Log scan clean across final logs.
+- Report: `.orchestrator/reports/2026-10-31-ll-p3-008.md`.
+
+### Not performed
+
+- Captures, Phase 3 acceptance verification, and human review (`LL-P3-007`).
+
+### Next
+
+`LL-P3-007` - run the full acceptance verification and request the owner review.

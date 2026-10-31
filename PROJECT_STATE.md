@@ -1,10 +1,10 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-31 04:05 (UTC+08:00)
+**Last updated:** 2026-10-31 05:20 (UTC+08:00)
 **Current milestone:** M1 - Playable laundry, **in progress**
 **Current phase:** Phase 3 - Laundry interaction foundation, **in progress**
 **Next phase:** Phase 4 - Laundry processing, planned
-**Active task:** None - `LL-P3-006` is complete
+**Active task:** None - `LL-P3-008` is complete
 **Next recommended task:** `LL-P3-007` - verify Phase 3 acceptance and record evidence
 
 ## 1. Verified configuration
@@ -31,7 +31,7 @@
 ## 2. Existing project content
 
 - **Scenes:** `Bootstrap.unity`, `MainMenu.unity`, and `Laundromat.unity`. All are registered in build settings with Bootstrap at index 0. Bootstrap contains `GameSession` + `BootstrapController`; MainMenu contains `MainMenuController`; Laundromat contains a greybox room prefab, the Player prefab instance, and a directional light.
-- **Scripts:** runtime `GameState`, `GameSession`, `SceneRouter`, `BootstrapController`, `MainMenuController`, `FirstPersonController`, `PauseController`, `PlayerInteractor`, `IInteractable`, `SimpleInteractable`, `CarryController`, `CarrySlot`, `LaundryItem`, `LaundryItemKind`, `InteractionPromptView`, and an assembly marker. Editor tools: `SceneSetupTool`, `PlayerSetupTool`, `GreyboxSetupTool`, `Phase2SetupTool`, `Phase3SetupTool`.
+- **Scripts:** runtime `GameState`, `GameSession`, `SceneRouter`, `BootstrapController`, `MainMenuController`, `FirstPersonController`, `PauseController`, `PlayerInteractor`, `IInteractable`, `SimpleInteractable`, `LaundryItemInteractable`, `CarryController`, `CarrySlot`, `LaundryItem`, `LaundryItemKind`, `MachineLoadHook`, `InteractionPromptView`, and an assembly marker. Editor tools: `SceneSetupTool`, `PlayerSetupTool`, `GreyboxSetupTool`, `Phase2SetupTool`, `Phase3SetupTool`.
 - **Assemblies:** `LaundryLegends.Runtime`, `LaundryLegends.Editor`, `LaundryLegends.Tests.EditMode`, `LaundryLegends.Tests.PlayMode`. Runtime, editor, and PlayMode test assemblies compile.
 - **Prefabs:** `Prefabs/Gameplay/Player.prefab` with CharacterController, first-person controller, pause controller, interaction raycast, carry controller with a `HoldAnchor` child, IMGUI interaction prompt view, child camera, and AudioListener. `Prefabs/Gameplay/Laundry/` with `Basket.prefab`, `LooseLaundry.prefab`, and `Bag.prefab`, each with a collider, rigidbody, placeholder material, and unique template ID. `Prefabs/Environment/GreyboxRoom.prefab` with room shell, counter, folding table, eight-machine wall (one washer carries the Phase 3 load/unload hook and drum slot), secret door, ceiling point lights, a south storefront (window openings/frames/glass, entrance frame with open glass leaves and threshold, and a minimal exterior ground/backdrop), a south-east waiting area, west-wall storage shelving, a north-west utility alcove with placeholder signage, and a service-panel/rolling-shelf cover in front of the secret door.
 - **Materials:** eleven flat Standard greybox materials under `Art/Materials`, including transparent `Grey_Glass`, emissive `Grey_Sky`, `Grey_Chair`, and `Grey_Sign`; no textures.
@@ -73,8 +73,9 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Phase 3 item prefabs: `Basket.prefab`, `LooseLaundry.prefab`, and `Bag.prefab` exist under `Prefabs/Gameplay/Laundry/` with unique template IDs (`laundry.basket`, `laundry.loose`, `laundry.bag`), colliders, rigidbodies, and existing greybox materials. Four instances (one basket, one bag, two loose-laundry) are placed additively under `Phase3Items` in `Laundromat.unity`. Item validation, Phase 2 navigation validation, compile, EditMode 21/21, and PlayMode 27/27 passed on 2026-10-31.
 - Phase 3 prompt: `InteractionPromptView` is an IMGUI placeholder on the Player prefab wired to `PlayerInteractor`. It exposes `IsVisible` and `CurrentLabel`, renders `"<prompt> [<key>]"` using the interactor's key label, and hides with no target, an ineligible or destroyed target, or `Time.timeScale == 0`. It does not touch cursor lock or pause state and uses the built-in font. Prompt setup and Player validation passed; compile, EditMode 21/21, PlayMode 31/31, and the log scan passed on 2026-10-31.
 - Phase 3 machine hook: `Machine_1` in `GreyboxRoom.prefab` carries one `MachineLoadHook` and an additive `DrumSlot` child with a `CarrySlot` limited to `LooseLaundry`. Loading moves the held loose item into the slot; unloading returns the exact same instance to an empty-handed carrier. Baskets, bags, occupied loads, empty-handed loads, and full-hand unloads are rejected with a `LastResult` message and no ownership change. Machine-hook validation, item validation, Phase 2 navigation, compile, EditMode 26/26, PlayMode 35/35, and the log scan passed on 2026-10-31.
-- EditMode suite: 26/26 tests passed on 2026-10-31; coverage includes interaction eligibility and item identity, carry compatibility, slot placement rules, and machine load/unload rules.
-- PlayMode suite: 35/35 tests passed on 2026-10-31; coverage includes prompt/key exposure, `TryInteract` dispatch, rejection cases, pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, washer targeting, load/unload identity, rejection without ownership change, and the Phase 2 scene checks.
+- Phase 3 item pickup: all three item prefabs carry `LaundryItemInteractable` wired to their `LaundryItem`. Prompts are kind-specific (`Pick up basket`, `Pick up laundry`, `Pick up bag`); a free item is picked up through `CarryController`; held or slotted items are not pickup-eligible, and a second item cannot steal the carried slot. Pickup setup and item validation passed; compile, EditMode 31/31, PlayMode 36/36, and the log scan passed on 2026-10-31.
+- EditMode suite: 31/31 tests passed on 2026-10-31; coverage includes interaction eligibility and item identity, carry compatibility, slot placement rules, machine load/unload rules, and item pickup rules.
+- PlayMode suite: 36/36 tests passed on 2026-10-31; coverage includes prompt/key exposure, `TryInteract` dispatch, rejection cases, pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, scene basket pickup, washer targeting, load/unload identity, rejection without ownership change, and the Phase 2 scene checks.
 - Batch commands, evidence paths, failure-probe steps, and test-assembly isolation documented in `TESTING_GUIDE.md`.
 - The project owner completed all six Phase 1 Game-view checks on 2026-10-20: movement/speed, camera/comfort, pause/cursor release, room layout, secret door, and lighting/readability. Recorded as owner-reported human verification in `.orchestrator/reports/2026-10-20-ll-p1-009-human-verification.md`.
 - Phase 1 is complete. Automated results and screenshots are preserved unchanged; the human confirmation is a separate addendum.
@@ -82,7 +83,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 
 ## 4. Incomplete and unverified
 
-- Phase 3 implementation: acceptance verification and evidence capture. Interaction, eligibility, carry, item identity, drop/place rules, item prefabs, scene placement, the IMGUI prompt, and one washer load/unload hook are implemented; formal acceptance and human review remain.
+- Phase 3 implementation: acceptance verification and evidence capture. Interaction, pickup, eligibility, carry, item identity, drop/place rules, item prefabs, scene placement, the IMGUI prompt, and one washer load/unload hook are implemented; formal acceptance and human review remain.
 - Interaction, carrying, baskets, prompts, machine load/unload, customers, orders, and the secret-room reveal.
 - Production art, audio, UI, animations, and models.
 - Save system, economy, customers, laundry machines, orders, secret room, and arcade.
@@ -171,7 +172,11 @@ See `.orchestrator/budgets.json`.
 **Report:** `.orchestrator/reports/2026-10-20-ll-p2-005.md`
 **Result:** Added `ValidatePublicNavigation` and a PlayMode navigation test covering seven public routes, critical-prop colliders, renderer materials, missing references, and 1.5 m/1.7 m camera clearance. Navigation plus all regression validations exited `0`; EditMode passed 10/10; PlayMode passed 12/12.
 
-**Latest run:** `2026-10-31-ll-p3-006` - **complete**
+**Latest run:** `2026-10-31-ll-p3-008` - **complete**
+**Report:** `.orchestrator/reports/2026-10-31-ll-p3-008.md`
+**Result:** Closed the acceptance gap where carry existed without an in-game pickup interaction. Added `LaundryItemInteractable` to all three item prefabs with kind-specific prompts and held/slotted guards; interaction now picks up a free item through `CarryController`, and carrying one item cannot steal or duplicate a second. Corrected `PlayerInteractor`'s destroyed-object guard. Pickup setup, item validation, compile, EditMode 31/31, PlayMode 36/36, and the log scan passed.
+
+**Previous run:** `2026-10-31-ll-p3-006` - **complete**
 **Report:** `.orchestrator/reports/2026-10-31-ll-p3-006.md`
 **Result:** Added one additive washer load/unload hook on `Machine_1` in `GreyboxRoom.prefab` with a `DrumSlot`/`CarrySlot` limited to loose laundry. Loading accepts one loose item; unloading returns the exact same instance to an empty-handed carrier. Baskets, bags, occupied loads, empty-handed loads, and full-hand unloads are rejected without changing ownership. `Phase3SetupTool.BuildMachineHook` is re-appliable after a room rebuild, and `ValidateMachineHook` checks a single hook, slot rules, and unchanged machine geometry. Machine validation, item validation, Phase 2 navigation, compile, EditMode 26/26, PlayMode 35/35, and the log scan passed. No scene file, package, or project-setting change was made.
 
@@ -204,7 +209,7 @@ See `.orchestrator/budgets.json`.
 
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, and confirm `LL-P3-006` is complete. There is no active task; `LL-P3-007` is the next ready task. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, `LL-P2-005`, `LL-P2-006`, `LL-P3-001`, `LL-P3-002`, `LL-P3-003`, `LL-P3-004`, `LL-P3-005`, or `LL-P3-006`. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, and confirm `LL-P3-008` is complete. There is no active task; `LL-P3-007` is the next ready task. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, `LL-P2-005`, `LL-P2-006`, `LL-P3-001`, `LL-P3-002`, `LL-P3-003`, `LL-P3-004`, `LL-P3-005`, `LL-P3-006`, or `LL-P3-008`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 
@@ -213,7 +218,7 @@ Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect 
 - Unity Personal licensing requires periodic online refresh; batch automation can fail with exit `198` for reasons unrelated to the project.
 - Project settings were edited as serialized YAML before an editor settings API existed; Unity re-serialized and preserved them, but future changes should use an editor script or the Unity UI.
 - Linear color space and Medium quality are active. Greybox lighting was checked by the project owner in the Game view on 2026-10-20 and reported acceptable; no measured performance data exists.
-- The greybox room, props, machines, and secret door are static placeholder primitives; interaction targeting, carrying, item prefabs, the IMGUI prompt, and one washer load/unload hook exist, but machine cycles and the other seven machines have no behavior.
+- The greybox room, props, machines, and secret door are static placeholder primitives; interaction targeting, pickup, carrying, item prefabs, the IMGUI prompt, and one washer load/unload hook exist, but machine cycles and the other seven machines have no behavior.
 - The storefront glazing and open door leaves are static placeholders; there is no door interaction or animation. Phase 2 rendering captures require a graphics-capable batch run because `-nographics` crashed during capture.
 - Single-sided placeholder text faces its intended reader: `LAUNDRY LEGENDS` is mirrored from inside and `DROP OFF` is mirrored from the room side. The owner reported the Phase 2 review as passed and did not mark this as blocking; improve it later if presentation quality requires it.
 - The secret door is visually foreshadowed and concealed by a static service panel/shelf. The owner reported the Phase 2 subtlety review as passed; secret-room access and reveal logic are not implemented.
@@ -221,7 +226,7 @@ Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect 
 - The pause overlay uses IMGUI as a placeholder; real UI arrives later.
 - Cursor lock/release and movement feel were confirmed by the project owner on 2026-10-20; batch tests still skip cursor APIs, so this remains owner-reported rather than independently reproduced.
 - `GameSession.Instance` is a static service handle; consumers should prefer explicit references where practical.
-- Test coverage is 26 EditMode and 35 PlayMode tests; it does not yet cover machine cycles, orders, economy transactions, save/load, or final UI. Item prefabs, scene placement, and the machine hook geometry are covered by editor validators.
+- Test coverage is 31 EditMode and 36 PlayMode tests; it does not yet cover machine cycles, orders, economy transactions, save/load, or final UI. Item prefabs, scene placement, pickup wiring, and machine-hook geometry are covered by editor validators.
 - `PlayerInteractor.IsAlive` still uses the original tautological Unity-null expression (`unityObject == null || unityObject != null`). `InteractionPromptView` uses a corrected check; an external `TryInteract` in the same frame a target is destroyed could still throw until the interactor helper is corrected.
 - `FailureReportingTests` fails when `LL_FAIL_PROBE` is left set; unset it after probing.
 - The stray `C:\Users\Asus\Desktop\AI` log remains pending manual deletion.
