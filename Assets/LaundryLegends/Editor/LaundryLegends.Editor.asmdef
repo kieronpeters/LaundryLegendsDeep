@@ -2,7 +2,9 @@
     "name": "LaundryLegends.Editor",
     "rootNamespace": "LaundryLegends.Editor",
     "references": [
-        "LaundryLegends.Runtime"
+        "LaundryLegends.Runtime",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Core.Runtime"
     ],
     "includePlatforms": [
         "Editor"

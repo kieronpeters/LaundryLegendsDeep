@@ -545,9 +545,13 @@ namespace LaundryLegends.Editor
             camera.backgroundColor = new Color(0.06f, 0.07f, 0.09f, 1f);
             camera.nearClipPlane = 0.05f;
             camera.farClipPlane = 120f;
-            camera.allowHDR = false;
+            camera.allowHDR = true;
             camera.allowMSAA = false;
             camera.useOcclusionCulling = true;
+
+            // URP needs this flag for bloom/tonemapping to reach the capture.
+            var data = cameraObject.AddComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>();
+            data.renderPostProcessing = true;
             return camera;
         }
 
