@@ -747,3 +747,40 @@ Phase 2 is complete. Author and approve the Phase 3 task plan before starting in
 ### Next
 
 `LL-P3-005` - add the interaction prompt UI and controls hint. Do not start `LL-P3-006` until the prompt tests pass.
+
+## 2026-10-31 - LL-P3-005 interaction prompt UI
+
+**Phase:** 3 - Laundry interaction foundation
+**Task:** LL-P3-005
+**Status:** Complete - compile, prompt setup, player validation, EditMode, PlayMode, and log scan passed
+
+### Implemented / performed
+
+- Added `InteractionPromptView` as an IMGUI placeholder in `Scripts/UI/`.
+- Exposes `IsVisible` and `CurrentLabel`; `OnGUI` renders only from that state using the built-in font.
+- Subscribes to `PlayerInteractor.TargetChanged` and refreshes each frame to catch pause, eligibility, and destroyed-target changes.
+- Combines the interactable prompt with `PlayerInteractor.InteractKeyLabel`; no key literal is hard-coded in the view.
+- Hides when there is no target, the target is ineligible or destroyed, or `Time.timeScale == 0`.
+- Does not read input or change cursor lock, so it cannot steal focus from `PauseController`.
+- Added idempotent `SetupPlayerPrompt`, prompt wiring checks in `ValidatePlayerSetup`, and four PlayMode tests.
+- No scene, item prefab, package, or project-setting change.
+
+### Checks and evidence
+
+- Unity compile exited `0` (`TestResults/p3-005-compile-2.log`, ignored).
+- Prompt setup and Player validation exited `0` (`TestResults/p3-005-prompt-setup.log`, `p3-005-player-validate.log`, ignored).
+- EditMode: 21/21 passed (`TestResults/p3-005-editmode-2.xml`, ignored).
+- PlayMode: 31/31 passed (`TestResults/p3-005-playmode-2.xml`, ignored).
+- The first PlayMode run failed 5 tests with `MissingReferenceException` because a copied `IsAlive` helper used a tautological Unity-null check; the view now uses `ReferenceEquals(...) || unityObject != null`, and the full suite was rerun clean.
+- Log scan clean across the final compile, EditMode, and PlayMode logs.
+- Report: `.orchestrator/reports/2026-10-31-ll-p3-005.md`.
+
+### Not performed
+
+- Machine load/unload (`LL-P3-006`).
+- Human Game-view review of prompt placement/readability, playtest, player build, and performance measurement.
+- Direct cursor-lock assertion; the view does not call cursor APIs, and batch mode skips them.
+
+### Next
+
+`LL-P3-006` - add one machine load/unload interaction hook. Do not start `LL-P3-007` until the machine tests pass.

@@ -69,7 +69,7 @@ Use for interaction, machine cycles, order flow, customer flow, and scene smoke 
 | Suite | Tests | Coverage |
 |---|---:|---|
 | EditMode | 21 | `GameState` money/flags/day rules, build-settings order, the failure-reporting probe, interaction eligibility/disabled/event rules, item identity/kind/carryability, and carry-slot compatibility/placement |
-| PlayMode | 27 | scene routing, player movement/look, pause, interaction targeting/prompt/key/dispatch/rejection, item pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, greybox traversal, storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, public navigation/camera clearance, wall containment, secret door, scale, and lighting |
+| PlayMode | 31 | scene routing, player movement/look, pause, interaction targeting/prompt/key/dispatch/rejection, item pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, greybox traversal, storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, public navigation/camera clearance, wall containment, secret door, scale, and lighting |
 
 Counts are a snapshot; use the XML `test-run` totals as the authoritative result.
 
@@ -267,6 +267,22 @@ $itemCheck.ExitCode
 ```
 
 Run the Phase 2 navigation validation as well after any item placement change. `ValidateItems` counts one basket, one bag, and two loose-laundry instances; it tolerates extra instances but reports blocked routes.
+
+### Phase 3 interaction prompt setup
+
+Apply the IMGUI prompt view to the Player prefab, then validate the player:
+
+```powershell
+$prompt = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.PlayerSetupTool.SetupPlayerPrompt -logFile `"TestResults\p3-prompt-setup.log`""
+$prompt.ExitCode
+
+$playerCheck = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.PlayerSetupTool.ValidatePlayerSetup -logFile `"TestResults\p3-prompt-validate.log`""
+$playerCheck.ExitCode
+```
+
+`SetupPlayerPrompt` is idempotent and rewires the view to the player's `PlayerInteractor`. `ValidatePlayerSetup` fails if the view is missing or points at a different interactor. The prompt itself is covered by `InteractionPromptTests` in the PlayMode suite.
 
 ### Reproducible batch test sequence
 

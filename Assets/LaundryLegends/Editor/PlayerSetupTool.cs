@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using LaundryLegends.Interaction;
 using LaundryLegends.Player;
+using LaundryLegends.UI;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -35,6 +36,7 @@ namespace LaundryLegends.Editor
             }
 
             EnsureCarrySetup();
+            EnsurePromptSetup();
             ConfigureLaundromatScene();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -53,6 +55,20 @@ namespace LaundryLegends.Editor
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[PlayerSetup] Player carry setup complete.");
+        }
+
+        [MenuItem("Laundry Legends/Setup Player Prompt")]
+        public static void SetupPlayerPrompt()
+        {
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath) == null)
+            {
+                throw new InvalidOperationException($"Missing player prefab: {PrefabPath}");
+            }
+
+            EnsurePromptSetup();
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("[PlayerSetup] Player prompt setup complete.");
         }
 
         [MenuItem("Laundry Legends/Validate Player")]
@@ -119,7 +135,7 @@ namespace LaundryLegends.Editor
                 throw new InvalidOperationException($"Player validation failed with {failures.Count} issue(s).");
             }
 
-            Debug.Log("[PlayerSetup] Validation passed: Player prefab, camera, CharacterController, pause, interaction, carry anchor, floor, and light are present; no Input System package.");
+            Debug.Log("[PlayerSetup] Validation passed: Player prefab, camera, CharacterController, pause, interaction, prompt view, carry anchor, floor, and light are present; no Input System package.");
         }
 
         private static void CreatePlayerPrefab()
@@ -185,6 +201,41 @@ namespace LaundryLegends.Editor
                 }
 
                 property.objectReferenceValue = anchor;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+
+                PrefabUtility.SaveAsPrefabAsset(contents, PrefabPath);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(contents);
+            }
+        }
+
+        private static void EnsurePromptSetup()
+        {
+            GameObject contents = PrefabUtility.LoadPrefabContents(PrefabPath);
+            try
+            {
+                PlayerInteractor interactor = contents.GetComponent<PlayerInteractor>();
+                if (interactor == null)
+                {
+                    throw new InvalidOperationException("Player prefab is missing PlayerInteractor.");
+                }
+
+                InteractionPromptView prompt = contents.GetComponent<InteractionPromptView>();
+                if (prompt == null)
+                {
+                    prompt = contents.AddComponent<InteractionPromptView>();
+                }
+
+                var serialized = new SerializedObject(prompt);
+                SerializedProperty property = serialized.FindProperty("_interactor");
+                if (property == null)
+                {
+                    throw new InvalidOperationException("Serialized field not found: _interactor on InteractionPromptView");
+                }
+
+                property.objectReferenceValue = interactor;
                 serialized.ApplyModifiedPropertiesWithoutUndo();
 
                 PrefabUtility.SaveAsPrefabAsset(contents, PrefabPath);
@@ -306,6 +357,21 @@ namespace LaundryLegends.Editor
             if (player.GetComponent<PauseController>() == null)
             {
                 failures.Add($"{label}: missing PauseController.");
+            }
+
+            PlayerInteractor interactor = player.GetComponent<PlayerInteractor>();
+            InteractionPromptView prompt = player.GetComponent<InteractionPromptView>();
+            if (prompt == null)
+            {
+                failures.Add($"{label}: missing InteractionPromptView.");
+            }
+            else if (prompt.Interactor == null)
+            {
+                failures.Add($"{label}: InteractionPromptView has no interactor reference.");
+            }
+            else if (prompt.Interactor != interactor)
+            {
+                failures.Add($"{label}: InteractionPromptView points at a different interactor.");
             }
 
             CarryController carry = player.GetComponent<CarryController>();

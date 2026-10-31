@@ -251,7 +251,7 @@ Scene rules:
 
 - UGUI + TextMeshPro initially (built-in packages; no new dependency).
 - Canvas prefabs separated by concern: HUD, interaction prompt, pause menu, order ticket, settings.
-- Phase 3 uses an IMGUI `InteractionPromptView` placeholder on the Player prefab, with testable `IsVisible`/`CurrentLabel` state and the built-in font. It must not import TextMeshPro Essentials or create final UI prefabs; the UI phase replaces it.
+- Phase 3 uses an IMGUI `InteractionPromptView` placeholder on the Player prefab, with testable `IsVisible`/`CurrentLabel` state and the built-in font. It reads the prompt and key label from `PlayerInteractor`, ignores paused time, and does not change cursor lock. It must not import TextMeshPro Essentials or create final UI prefabs; the UI phase replaces it.
 - UI never finds domain objects with `FindObjectOfType` in production paths; inject or register references.
 - Prompts must be localizable later; avoid hard-coded long strings in scene components.
 - Support keyboard/mouse first; focus navigation later.
@@ -320,7 +320,7 @@ Architecture decisions live in `.orchestrator/decisions/`:
 ## 19. Technical debt and risks
 
 - Unity batch-mode licensing can expire; refresh it in Unity Hub before treating exit `198` as a project defect.
-- The project has compile and test harnesses; the suite is 21 EditMode and 27 PlayMode tests and does not yet cover prompt UI, machine cycles, orders, economy, customers, save/load, or final UI. Editor validators cover item prefabs and scene placement.
+- The project has compile and test harnesses; the suite is 21 EditMode and 31 PlayMode tests and does not yet cover machine load/unload, machine cycles, orders, economy, customers, save/load, or final UI. Editor validators cover item prefabs and scene placement.
 - Scene/prefab merge conflicts are the highest collaboration risk; enforce one owner and small commits.
 - Carry is attachment-based in Phase 3; clipping, drop-point validity, and held-item cleanup need automated and human review.
 - Item identity exists before save/load; instance IDs must be serialized in the save phase or they will not survive a reload.

@@ -3,7 +3,7 @@
   "phase": 3,
   "name": "Laundry interaction foundation",
   "status": "in_progress",
-  "updatedAt": "2026-10-31T00:32:00+08:00",
+  "updatedAt": "2026-10-31T02:10:00+08:00",
   "tasks": [
     {
       "id": "LL-P3-001",
@@ -220,7 +220,7 @@
     {
       "id": "LL-P3-005",
       "title": "Add interaction prompt UI and controls hint",
-      "status": "ready",
+      "status": "complete",
       "priority": 5,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P3-002", "LL-P3-004"],
@@ -256,20 +256,20 @@
       "checks": [
         {
           "name": "Prompt view and tests",
-          "status": "pending",
-          "command": "Unity batch compile; PlayMode prompt tests and full suite; log scan",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "Unity batch compile; Player prompt setup and validation; PlayMode prompt tests and full suite; EditMode suite; log scan",
+          "evidence": "Compile exit 0; prompt setup and validation exit 0; PlayMode 31/31; EditMode 21/21; logs clean on 2026-10-31 after fixing a destroyed-interactable guard (TestResults/p3-005-*, ignored)"
         }
       ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "result": "Added an IMGUI InteractionPromptView on the Player prefab, wired to PlayerInteractor. It exposes IsVisible/CurrentLabel, combines the interactable prompt with the interactor key label, and hides for no target, ineligible targets, destroyed targets, and Time.timeScale == 0. Four PlayMode tests cover the transitions.",
+      "retryCount": 1,
+      "startedAt": "2026-10-31T00:35:00+08:00",
+      "completedAt": "2026-10-31T02:10:00+08:00"
     },
     {
       "id": "LL-P3-006",
       "title": "Add one machine load/unload interaction hook",
-      "status": "planned",
+      "status": "ready",
       "priority": 6,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P3-003", "LL-P3-004", "LL-P3-005"],
