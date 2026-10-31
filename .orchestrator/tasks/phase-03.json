@@ -970,6 +970,40 @@
       "retryCount": 0,
       "startedAt": null,
       "completedAt": null
+    },
+    {
+      "id": "LL-P3-022",
+      "title": "Add real dirty walls, debris, mop, and bucket",
+      "status": "complete",
+      "priority": 22,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-021"],
+      "objective": "Make the room read as a working laundromat with grime, dirt piles, a mop, a bucket, and wall scuffs.",
+      "scope": ["Assets/LaundryLegends/Editor/DirtyEnvironmentTool.cs", "Assets/LaundryLegends/Art/Materials/**", "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab"],
+      "mustNotTouch": ["Assets/LaundryLegends/Scripts/**", "Assets/LaundryLegends/Scenes/Laundromat.unity", "Packages/**", "ProjectSettings/**"],
+      "acceptance": ["Dirt piles, mop, bucket, and wall scuffs exist", "No colliders or navigation blockers added", "Validation and captures pass"],
+      "checks": [{"name": "Grime/debris", "status": "passed", "command": "Build and validate", "evidence": "3 dirt piles, mop, bucket, 5 scuffs; validation exit 0"}],
+      "result": "Added non-colliding dirt piles, a mop, a bucket, and wall scuffs to make the room feel used.",
+      "retryCount": 0,
+      "startedAt": "2026-10-31T20:20:00+08:00",
+      "completedAt": "2026-10-31T20:50:00+08:00"
+    },
+    {
+      "id": "LL-P3-023",
+      "title": "Add ambient NPCs, entering/leaving customer, and voice lines",
+      "status": "complete",
+      "priority": 23,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-022"],
+      "objective": "Place an attendant inside and a customer who walks in from the street with laundry, speaks, and leaves, then respawns.",
+      "scope": ["Assets/LaundryLegends/Scripts/NPC/**", "Assets/LaundryLegends/Editor/NpcSceneSetupTool.cs", "Assets/LaundryLegends/Audio/Voice/**", "Assets/LaundryLegends/Scenes/Laundromat.unity", "Assets/LaundryLegends/Tests/PlayMode/**"],
+      "mustNotTouch": [],
+      "acceptance": ["Attendant inside", "Customer enters, waits, speaks, leaves with laundry", "Voice lines play", "PlayMode test passes"],
+      "checks": [{"name": "Ambient NPC loop", "status": "passed", "command": "Build/validate; PlayMode", "evidence": "Attendant + customer placed; customer route/carried laundry/voice validated; PlayMode 39 passed + 1 skipped"}],
+      "result": "Added an indoor attendant and a street customer with a five-point enter/leave route, carried loose laundry, drop-off/thank-you voice lines, and respawn. PlayMode coverage verifies route, prop, voice, and movement.",
+      "retryCount": 2,
+      "startedAt": "2026-10-31T20:50:00+08:00",
+      "completedAt": "2026-10-31T22:20:00+08:00"
     }
   ]
 }

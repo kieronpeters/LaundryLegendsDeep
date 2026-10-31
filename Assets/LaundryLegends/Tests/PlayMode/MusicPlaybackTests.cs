@@ -19,8 +19,10 @@ namespace LaundryLegends.Tests.PlayMode
         [UnityTest]
         public IEnumerator MusicSourceIsConfiguredForLoopingAmbience()
         {
-            AudioSource source = Object.FindFirstObjectByType<AudioSource>();
-            Assert.IsNotNull(source, "Laundromat should contain one music AudioSource.");
+            GameObject music = GameObject.Find("Music");
+            Assert.IsNotNull(music, "Laundromat should contain the Music root.");
+            AudioSource source = music.GetComponent<AudioSource>();
+            Assert.IsNotNull(source, "The Music root needs an AudioSource.");
             Assert.IsNotNull(source.clip, "The music source needs a clip.");
             Assert.IsTrue(source.loop, "The music must loop.");
             Assert.IsTrue(source.playOnAwake, "The music must start automatically.");
