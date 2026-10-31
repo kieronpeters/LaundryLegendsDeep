@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using LaundryLegends.Interaction;
 using LaundryLegends.Laundry;
 using LaundryLegends.NPC;
 using UnityEditor;
@@ -42,6 +43,7 @@ namespace LaundryLegends.Editor
                 "Rainy season makes laundry take longer.",
                 "This load looks clean and fresh.",
                 "The dryers are warm today.");
+            attendant.AddComponent<LaundryStaff>();
 
             GameObject regular = Instantiate("NPC_Regular", new Vector3(5.6f, 0f, -5.2f), Quaternion.Euler(0f, 180f, 0f), root.transform);
             regular.name = "PhoneRegular";
@@ -52,6 +54,7 @@ namespace LaundryLegends.Editor
                 "I will pick up the kids after this.",
                 "The end-of-year rush is starting.",
                 "This shirt came out perfect.");
+            regular.AddComponent<PickupCustomer>();
 
             GameObject customer = Instantiate("NPC_Customer", new Vector3(0f, 0f, -10.5f), Quaternion.identity, root.transform);
             customer.name = "StreetCustomer";
@@ -86,8 +89,8 @@ namespace LaundryLegends.Editor
             }
 
             AudioSource voice = customer.AddComponent<AudioSource>();
-            voice.spatialBlend = 1f;
-            voice.volume = 0.8f;
+            voice.spatialBlend = 0f;
+            voice.volume = 0.9f;
             voice.rolloffMode = AudioRolloffMode.Linear;
             voice.minDistance = 1f;
             voice.maxDistance = 14f;
@@ -102,6 +105,12 @@ namespace LaundryLegends.Editor
                 "The kids need clean uniforms for school.",
                 "I will be back before the end of the year.",
                 "Please check this stain if you can.");
+
+            GameObject dropOffObject = GameObject.Find("DropOffSlot");
+            if (dropOffObject != null)
+            {
+                loop.ConfigureDropOff(dropOffObject.GetComponent<CarrySlot>());
+            }
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);

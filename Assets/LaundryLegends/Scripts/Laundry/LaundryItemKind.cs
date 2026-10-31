@@ -10,4 +10,13 @@ namespace LaundryLegends.Laundry
         LooseLaundry,
         Bag
     }
+
+    /// <summary>Visible processing stage for loose laundry.</summary>
+    public enum LaundryStage
+    {
+        Dirty,
+        Washed,
+        Dried,
+        Wrapped
+    }
 }

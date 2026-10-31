@@ -4,6 +4,20 @@ using UnityEngine;
 
 namespace LaundryLegends.Laundry
 {
+    public enum MachineKind
+    {
+        Washer,
+        Dryer
+    }
+
+    public enum MachineState
+    {
+        Empty,
+        Loaded,
+        Running,
+        Complete
+    }
+
     /// <summary>
     /// Phase 3 washer boundary: accepts one loose-laundry item and returns the
     /// same instance on unload. This is a load/unload hook only; cycles, timers,
@@ -13,8 +27,23 @@ namespace LaundryLegends.Laundry
     public sealed class MachineLoadHook : MonoBehaviour, IInteractable
     {
         [SerializeField] private CarrySlot _slot;
+        [SerializeField] private MachineKind _kind = MachineKind.Washer;
+        [SerializeField] private float _washerDuration = 20f;
+        [SerializeField] private float _dryerDuration = 25f;
         [SerializeField] private string _emptyPrompt = "Load washer";
         [SerializeField] private string _occupiedPrompt = "Take laundry";
+
+        private MachineState _state = MachineState.Empty;
+        private float _elapsed;
+
+        public MachineKind Kind => _kind;
+        public MachineState State => _state;
+        public bool IsRunning => _state == MachineState.Running;
+        public bool IsComplete => _state == MachineState.Complete;
+        public float Duration => _kind == MachineKind.Washer ? _washerDuration : _dryerDuration;
+        public float Progress => _state == MachineState.Complete ? 1f
+            : _state == MachineState.Running ? Mathf.Clamp01(_elapsed / Mathf.Max(0.01f, Duration))
+            : 0f;
 
         /// <summary>Last interaction result, exposed for tests and placeholder feedback.</summary>
         public string LastResult { get; private set; } = string.Empty;
@@ -25,7 +54,50 @@ namespace LaundryLegends.Laundry
 
         public bool IsLoaded => LoadedItem != null;
 
-        public string InteractionPrompt => IsLoaded ? _occupiedPrompt : _emptyPrompt;
+        public string InteractionPrompt
+        {
+            get
+            {
+                if (_state == MachineState.Running)
+                {
+                    string verb = _kind == MachineKind.Washer ? "Washing" : "Drying";
+                    return $"{verb} {Progress:P0}";
+                }
+
+                if (_state == MachineState.Complete)
+                {
+                    return "Take laundry";
+                }
+
+                if (_state == MachineState.Loaded)
+                {
+                    return _kind == MachineKind.Washer ? "Start washer" : "Start dryer";
+                }
+
+                return _kind == MachineKind.Washer ? "Load washer" : "Load dryer";
+            }
+        }
+
+        private void Update()
+        {
+            if (_state != MachineState.Running)
+            {
+                return;
+            }
+
+            _elapsed += Time.deltaTime;
+            if (_elapsed >= Duration)
+            {
+                _elapsed = Duration;
+                _state = MachineState.Complete;
+                LastResult = _kind == MachineKind.Washer ? "Wash complete" : "Dry complete";
+                LaundryItem item = LoadedItem;
+                if (item != null)
+                {
+                    item.SetStage(_kind == MachineKind.Washer ? LaundryStage.Washed : LaundryStage.Dried);
+                }
+            }
+        }
 
         public bool CanInteract(GameObject interactor)
         {
@@ -36,6 +108,86 @@ namespace LaundryLegends.Laundry
         public void Configure(CarrySlot slot)
         {
             _slot = slot;
+        }
+
+        public void Configure(CarrySlot slot, MachineKind kind)
+        {
+            _slot = slot;
+            _kind = kind;
+        }
+
+        public bool StartCycle()
+        {
+            if (_state != MachineState.Loaded)
+            {
+                LastResult = "Nothing ready to start";
+                return false;
+            }
+
+            _state = MachineState.Running;
+            _elapsed = 0f;
+            LastResult = _kind == MachineKind.Washer ? "Wash started" : "Dry started";
+            return true;
+        }
+
+        /// <summary>Test/authoring shortcut to finish a running cycle immediately.</summary>
+        public void CompleteCycle()
+        {
+            if (_state == MachineState.Running || _state == MachineState.Loaded)
+            {
+                _elapsed = Duration;
+                _state = MachineState.Complete;
+                LastResult = _kind == MachineKind.Washer ? "Wash complete" : "Dry complete";
+            }
+        }
+
+        /// <summary>Test/authoring shortcut to shorten or lengthen a cycle.</summary>
+        public void SetDuration(float duration)
+        {
+            if (_kind == MachineKind.Washer)
+            {
+                _washerDuration = Mathf.Max(0.05f, duration);
+            }
+            else
+            {
+                _dryerDuration = Mathf.Max(0.05f, duration);
+            }
+        }
+
+        /// <summary>Staff path: remove a completed item and empty the machine.</summary>
+        public LaundryItem TakeProcessedItem()
+        {
+            if (_state != MachineState.Complete || _slot == null)
+            {
+                return null;
+            }
+
+            LaundryItem item = _slot.Take();
+            if (item != null)
+            {
+                _state = MachineState.Empty;
+                _elapsed = 0f;
+            }
+
+            return item;
+        }
+
+        /// <summary>Staff path: place an item and mark the machine loaded.</summary>
+        public bool LoadProcessedItem(LaundryItem item)
+        {
+            if (_state != MachineState.Empty || item == null || _slot == null)
+            {
+                return false;
+            }
+
+            if (!_slot.TryPlace(item))
+            {
+                return false;
+            }
+
+            _state = MachineState.Loaded;
+            _elapsed = 0f;
+            return true;
         }
 
         public void Interact(GameObject interactor)
@@ -53,9 +205,20 @@ namespace LaundryLegends.Laundry
                 return;
             }
 
-            if (IsLoaded)
+            if (_state == MachineState.Running)
+            {
+                LastResult = "Cycle already running";
+                Debug.Log($"[Machine] {LastResult}.");
+                return;
+            }
+
+            if (_state == MachineState.Complete)
             {
                 TryUnload(carry);
+            }
+            else if (_state == MachineState.Loaded)
+            {
+                StartCycle();
             }
             else
             {
@@ -84,9 +247,9 @@ namespace LaundryLegends.Laundry
                 return false;
             }
 
-            if (IsLoaded)
+            if (_state != MachineState.Empty || IsLoaded)
             {
-                LastResult = "Machine already loaded";
+                LastResult = "Machine not empty";
                 return false;
             }
 
@@ -104,6 +267,12 @@ namespace LaundryLegends.Laundry
             }
 
             bool placed = carry.TryPlaceInto(_slot);
+            if (placed)
+            {
+                _state = MachineState.Loaded;
+                _elapsed = 0f;
+            }
+
             LastResult = placed ? "Loaded loose laundry" : "Machine rejected the load";
             return placed;
         }
@@ -124,6 +293,12 @@ namespace LaundryLegends.Laundry
             if (carry == null)
             {
                 LastResult = "Interactor cannot carry laundry";
+                return null;
+            }
+
+            if (_state == MachineState.Running)
+            {
+                LastResult = "Cannot unload while running";
                 return null;
             }
 
@@ -155,6 +330,8 @@ namespace LaundryLegends.Laundry
             }
 
             LastResult = "Unloaded loose laundry";
+            _state = MachineState.Empty;
+            _elapsed = 0f;
             return taken;
         }
     }

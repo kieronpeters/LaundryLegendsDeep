@@ -16,23 +16,23 @@
     "status": "in_progress"
   },
   "currentPhase": {
-    "number": 3,
-    "name": "Laundry interaction foundation",
-    "status": "complete",
-    "file": ".orchestrator/tasks/phase-03.json",
-    "completionNote": "Phase 3 is complete: interaction/carry/drop/prompts, machine hook, owner acceptance, full free asset extension (custom laundry props, appliances, room remodel/trim, dirty materials/debris, storefront frontage/signs, NPCs with voice and procedural pose, first-person hands, and a real CC BY Balinese music track)."
-  },
-  "nextPhase": {
     "number": 4,
     "name": "Laundry processing",
+    "status": "complete",
+    "file": ".orchestrator/tasks/phase-04.json",
+    "completionNote": "Phase 4 complete: washer/dryer state machines, staff-run wash/dry/fold/wrap loop, dirty-to-washed-to-dried-to-wrapped visuals, customer drop-off and pickup, progress prompts, longer two-track music playlist, and audible stock voices."
+  },
+  "nextPhase": {
+    "number": 5,
+    "name": "Customers and payments",
     "status": "planned",
     "file": ".orchestrator/tasks/phase-04.json"
   },
   "activeTask": null,
-  "lastCompletedTask": "LL-P3-019",
+  "lastCompletedTask": "LL-P4-007",
   "nextTask": null,
   "taskCounts": {
-    "complete": 46,
+    "complete": 53,
     "ready": 0,
     "planned": 0,
     "pending": 1,
@@ -46,7 +46,7 @@
     "1": "complete",
     "2": "complete",
     "3": "in_progress",
-    "4": "planned",
+    "4": "complete",
     "5": "planned",
     "6": "planned",
     "7": "planned",

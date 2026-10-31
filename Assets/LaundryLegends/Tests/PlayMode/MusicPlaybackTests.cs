@@ -24,7 +24,7 @@ namespace LaundryLegends.Tests.PlayMode
             AudioSource source = music.GetComponent<AudioSource>();
             Assert.IsNotNull(source, "The Music root needs an AudioSource.");
             Assert.IsNotNull(source.clip, "The music source needs a clip.");
-            Assert.IsTrue(source.loop, "The music must loop.");
+            Assert.IsFalse(source.loop, "The playlist source should advance clips, not loop one.");
             Assert.IsTrue(source.playOnAwake, "The music must start automatically.");
             Assert.That(source.volume, Is.InRange(0.2f, 0.6f), "Ambient volume should be audible but not dominant.");
             Assert.AreEqual(0f, source.spatialBlend, "Music should be non-spatial.");

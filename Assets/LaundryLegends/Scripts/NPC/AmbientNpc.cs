@@ -1,4 +1,6 @@
 using System.Collections;
+using LaundryLegends.Interaction;
+using LaundryLegends.Laundry;
 using UnityEngine;
 
 namespace LaundryLegends.NPC
@@ -19,6 +21,7 @@ namespace LaundryLegends.NPC
         [SerializeField] private AudioClip _enterClip;
         [SerializeField] private AudioClip _leaveClip;
         [SerializeField] private bool _loop = true;
+        [SerializeField] private CarrySlot _dropOffSlot;
 
         private int _index;
         private float _timer;
@@ -48,6 +51,11 @@ namespace LaundryLegends.NPC
             _voice = voice;
             _enterClip = enterClip;
             _leaveClip = leaveClip;
+        }
+
+        public void ConfigureDropOff(CarrySlot slot)
+        {
+            _dropOffSlot = slot;
         }
 
         private void Awake()
@@ -110,6 +118,7 @@ namespace LaundryLegends.NPC
                 _timer = _stopDuration;
                 if (_index == 2)
                 {
+                    DropCarriedProp();
                     Speak(_leaveClip);
                 }
             }
@@ -159,6 +168,21 @@ namespace LaundryLegends.NPC
             if (_carriedProp != null)
             {
                 _carriedProp.SetActive(visible);
+            }
+        }
+
+        private void DropCarriedProp()
+        {
+            if (_dropOffSlot == null || _carriedProp == null || !_carriedProp.activeSelf)
+            {
+                return;
+            }
+
+            LaundryItem item = _carriedProp.GetComponent<LaundryItem>();
+            if (item != null && _dropOffSlot.TryPlace(item))
+            {
+                item.SetStage(LaundryStage.Dirty);
+                _carriedProp = null;
             }
         }
 

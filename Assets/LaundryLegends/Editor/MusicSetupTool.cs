@@ -1,4 +1,5 @@
 using UnityEditor;
+using LaundryLegends.Audio;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -40,10 +41,19 @@ namespace LaundryLegends.Editor
             }
 
             source.clip = clip;
-            source.loop = true;
+            source.loop = false;
             source.playOnAwake = true;
             source.spatialBlend = 0f;
-            source.volume = 0.35f;
+            source.volume = 0.32f;
+
+            MusicPlaylist playlist = existing.GetComponent<MusicPlaylist>();
+            if (playlist == null)
+            {
+                playlist = existing.AddComponent<MusicPlaylist>();
+            }
+
+            AudioClip second = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/LaundryLegends/Audio/Music/TempleOfHangzhou.mp3");
+            playlist.Configure(source, clip, second);
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
@@ -66,9 +76,15 @@ namespace LaundryLegends.Editor
                 throw new System.InvalidOperationException("Music root has no clip.");
             }
 
-            if (!source.loop || !source.playOnAwake || source.volume <= 0f)
+            if (!source.playOnAwake || source.volume <= 0f)
             {
-                throw new System.InvalidOperationException("Music source is not configured as a looping ambient track.");
+                throw new System.InvalidOperationException("Music source is not configured as an ambient track.");
+            }
+
+            MusicPlaylist playlist = music.GetComponent<MusicPlaylist>();
+            if (playlist == null || playlist.ClipCount < 2)
+            {
+                throw new System.InvalidOperationException("Music playlist needs at least two clips.");
             }
 
             AudioSource[] sources = Object.FindObjectsByType<AudioSource>(FindObjectsSortMode.None);

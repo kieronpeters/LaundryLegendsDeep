@@ -64,6 +64,8 @@ namespace LaundryLegends.Tests.PlayMode
             Assert.IsTrue(machine.IsLoaded);
             Assert.AreSame(item, machine.LoadedItem);
             Assert.IsFalse(carry.IsCarrying, "Loading should empty the player's hands.");
+            Assert.AreEqual("Start washer", machine.InteractionPrompt);
+            machine.CompleteCycle();
             Assert.AreEqual("Take laundry", machine.InteractionPrompt);
 
             machine.Interact(player.gameObject);
@@ -111,6 +113,7 @@ namespace LaundryLegends.Tests.PlayMode
             Assert.IsTrue(carry.TryPickUp(first));
             machine.Interact(player.gameObject);
             Assert.AreSame(first, machine.LoadedItem);
+            machine.CompleteCycle();
 
             LaundryItem second = CreateItem("test.loose-b", LaundryItemKind.LooseLaundry);
             Assert.IsTrue(carry.TryPickUp(second));
@@ -128,9 +131,17 @@ namespace LaundryLegends.Tests.PlayMode
 
         private static MachineLoadHook FindMachine()
         {
-            MachineLoadHook machine = Object.FindFirstObjectByType<MachineLoadHook>();
-            Assert.IsNotNull(machine, "Laundromat should contain one MachineLoadHook.");
-            return machine;
+            MachineLoadHook[] hooks = Object.FindObjectsByType<MachineLoadHook>(FindObjectsSortMode.None);
+            foreach (MachineLoadHook hook in hooks)
+            {
+                if (hook.Kind == MachineKind.Washer)
+                {
+                    return hook;
+                }
+            }
+
+            Assert.Fail("Laundromat should contain a washer MachineLoadHook.");
+            return null;
         }
 
         private static FirstPersonController FindPlayer()

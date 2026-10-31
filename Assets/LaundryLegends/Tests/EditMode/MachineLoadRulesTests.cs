@@ -71,6 +71,7 @@ namespace LaundryLegends.Tests.EditMode
             Assert.IsTrue(loader.TryPickUp(loose));
             Assert.IsTrue(machine.TryLoad(loader));
 
+            machine.CompleteCycle();
             LaundryItem returned = machine.TryUnload(unloader);
             Assert.AreSame(loose, returned, "Unload must return the stored instance.");
             Assert.AreSame(loose, unloader.HeldItem);
@@ -107,6 +108,7 @@ namespace LaundryLegends.Tests.EditMode
             Assert.AreEqual("Load washer", machine.InteractionPrompt);
             Assert.IsTrue(carry.TryPickUp(loose));
             Assert.IsTrue(machine.TryLoad(carry));
+            machine.CompleteCycle();
             Assert.AreEqual("Take laundry", machine.InteractionPrompt);
             Assert.AreSame(loose, machine.TryUnload(carry));
             Assert.AreEqual("Load washer", machine.InteractionPrompt);
