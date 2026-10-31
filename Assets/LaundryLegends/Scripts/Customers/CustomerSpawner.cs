@@ -72,6 +72,12 @@ namespace LaundryLegends.Customers
             GameObject instance = Instantiate(_customerPrefab, _streetPoint.position, _streetPoint.rotation);
             instance.name = "OrderCustomer";
 
+            // The customer must not body-block the player in the doorway.
+            foreach (Collider collider in instance.GetComponentsInChildren<Collider>(true))
+            {
+                collider.isTrigger = true;
+            }
+
             var agent = instance.GetComponent<CustomerAgent>();
             if (agent == null)
             {

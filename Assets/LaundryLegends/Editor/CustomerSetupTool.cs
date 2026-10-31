@@ -65,8 +65,22 @@ namespace LaundryLegends.Editor
 
             // Customers are spawned deliberately (P5-E wiring); auto-starting here
             // would put a collider in the doorway and block the player.
-            serialized.FindProperty("_autoStart").boolValue = false;
+            serialized.FindProperty("_autoStart").boolValue = true;
             serialized.ApplyModifiedPropertiesWithoutUndo();
+
+            GameObject hud = GameObject.Find("HUD");
+            if (hud == null)
+            {
+                hud = new GameObject("HUD");
+            }
+
+            OrderTicketView ticket = hud.GetComponent<OrderTicketView>();
+            if (ticket == null)
+            {
+                ticket = hud.AddComponent<OrderTicketView>();
+            }
+
+            ticket.Configure(spawner);
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);

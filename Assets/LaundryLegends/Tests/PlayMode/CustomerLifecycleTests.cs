@@ -71,6 +71,36 @@ namespace LaundryLegends.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator ImpatientCustomerAbandonsAndLeavesWithoutPaying()
+        {
+            var spawner = Object.FindFirstObjectByType<CustomerSpawner>();
+            Assert.IsNotNull(spawner);
+            spawner.DisposeCurrent();
+
+            var wallet = new GameState(100);
+            var ledger = new OrderLedger(wallet);
+            spawner.Initialize(ledger, false);
+            spawner.SetRespawnDelay(0f);
+
+            CustomerAgent agent = spawner.SpawnNow();
+            Assert.IsNotNull(agent);
+            agent.SetWalkSpeed(6f);
+            agent.SetPatience(1f);
+
+            float elapsed = 0f;
+            while (elapsed < 20f && agent.State != CustomerState.Done)
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            Assert.AreEqual(CustomerState.Done, agent.State, "Impatient customer should leave.");
+            Assert.AreEqual(100, wallet.Money, "An abandoned order must not pay out.");
+
+            yield return null;
+        }
+
+        [UnityTest]
         public IEnumerator PayingTheSameOrderTwiceCreditsOnce()
         {
             var wallet = new GameState(100);

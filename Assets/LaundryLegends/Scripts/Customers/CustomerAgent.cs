@@ -31,6 +31,7 @@ namespace LaundryLegends.Customers
         [SerializeField] private float _queueSeconds = 0.6f;
         [SerializeField] private float _pickupSeconds = 0.5f;
         [SerializeField] private int _price = 40;
+        [SerializeField] private float _patienceSeconds = 90f;
 
         private OrderLedger _ledger;
         private CarrySlot _orderSlot;
@@ -72,6 +73,11 @@ namespace LaundryLegends.Customers
             _walkSpeed = Mathf.Max(0.2f, speed);
         }
 
+        public void SetPatience(float seconds)
+        {
+            _patienceSeconds = Mathf.Max(0.5f, seconds);
+        }
+
         private void Awake()
         {
             _locomotion = GetComponent<NpcLocomotion>();
@@ -110,11 +116,21 @@ namespace LaundryLegends.Customers
             }
 
             Enter(CustomerState.Waiting);
+            bool abandoned = false;
+            float waited = 0f;
             while (true)
             {
                 if (_order == null || _item == null)
                 {
                     yield break;
+                }
+
+                waited += Time.deltaTime;
+                if (waited >= _patienceSeconds)
+                {
+                    _ledger.TryAbandon(_order.OrderId, Time.time);
+                    abandoned = true;
+                    break;
                 }
 
                 LaundryStage stage = _item.Stage;
@@ -141,6 +157,14 @@ namespace LaundryLegends.Customers
                 yield return null;
             }
 
+            if (abandoned)
+            {
+                Enter(CustomerState.Leave);
+                yield return WalkTo(_exitPoint != null ? _exitPoint.position : transform.position);
+                Enter(CustomerState.Done);
+                yield break;
+            }
+
             Enter(CustomerState.Collect);
             yield return new WaitForSeconds(_pickupSeconds);
 
@@ -153,7 +177,6 @@ namespace LaundryLegends.Customers
                     _socket.Attach(collected);
                 }
             }
-
             Enter(CustomerState.Pay);
             if (_ledger.TryPay(_order.OrderId, Time.time))
             {
