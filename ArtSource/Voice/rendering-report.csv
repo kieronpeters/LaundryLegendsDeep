@@ -1,0 +1,55 @@
+file,archetype,trigger,text,duration_s,peak,peak_dbfs,rms_dbfs,status
+Draft/attendant/attendant_enter_01.wav,attendant,enter,"Morning. Rain came in sideways about six, so the floor by the door is slick.",5.808,29490,-0.9,-16.5,ok
+Draft/attendant/attendant_enter_02.wav,attendant,enter,You're just in time. The seven o'clock crowd already dropped off four bags.,5.506,29490,-0.9,-16.7,ok
+Draft/attendant/attendant_enter_03.wav,attendant,enter,Machine three is making that noise again. I gave it one more load to prove a point.,5.147,29490,-0.9,-15.0,ok
+Draft/attendant/attendant_counter_01.wav,attendant,counter,"Two loads, one white, one mixed. I put the delicates on the cold cycle.",5.785,29490,-0.9,-16.7,ok
+Draft/attendant/attendant_counter_02.wav,attendant,counter,This one's a school uniform. They want it back before noon.,4.496,29490,-0.9,-15.2,ok
+Draft/attendant/attendant_counter_03.wav,attendant,counter,Customer said the stain is cooking oil. I'll pre-treat it and hope.,4.485,29490,-0.9,-15.9,ok
+Draft/attendant/attendant_counter_04.wav,attendant,counter,End of the year is starting early. Everyone's washing everything at once.,5.089,29490,-0.9,-16.5,ok
+Draft/attendant/attendant_waiting_01.wav,attendant,waiting,Give the dryer another ten minutes. The air's too wet today for a short cycle.,4.833,29490,-0.9,-16.0,ok
+Draft/attendant/attendant_waiting_02.wav,attendant,waiting,Rainy season is good for business and terrible for drying. Trade-off.,4.810,29490,-0.9,-15.6,ok
+Draft/attendant/attendant_waiting_03.wav,attendant,waiting,"If the power dips again, that old washer resets. Keep an eye on the panel.",5.367,29490,-0.9,-16.9,ok
+Draft/attendant/attendant_waiting_04.wav,attendant,waiting,I folded the towels already. They're on the shelf behind you.,4.264,29490,-0.9,-16.2,ok
+Draft/attendant/attendant_pickup_01.wav,attendant,pickup,That's the one for the phone lady. She'll be here after school pickup.,4.009,29490,-0.9,-14.6,ok
+Draft/attendant/attendant_pickup_02.wav,attendant,pickup,"Checked it twice. No spots, and it still smells like soap, not the machine.",5.832,29490,-0.9,-17.2,ok
+Draft/attendant/attendant_pickup_03.wav,attendant,pickup,"Bag's tied. If she asks, tell her we used the gentle spin.",5.019,29490,-0.9,-17.6,ok
+Draft/attendant/attendant_idle_01.wav,attendant,idle,"Nyepi next month. Everything shuts, so everyone wants their laundry before.",5.808,29490,-0.9,-16.1,ok
+Draft/attendant/attendant_idle_02.wav,attendant,idle,My kid's class is doing the end-of-year performance. Three costume changes.,4.903,29490,-0.9,-14.6,ok
+Draft/attendant/attendant_idle_03.wav,attendant,idle,This humidity. Nothing dries unless you want it to.,3.939,29490,-0.9,-15.6,ok
+Draft/attendant/attendant_idle_04.wav,attendant,idle,We should get a second folding table before the ceremony rush.,3.717,29489,-0.9,-16.5,ok
+Draft/phone_regular/phone_regular_enter_01.wav,phone_regular,enter,"Sorry , one second. Yes, I'm at the laundry. No, the one by the corner.",5.566,29490,-0.9,-17.6,ok
+Draft/phone_regular/phone_regular_enter_02.wav,phone_regular,enter,"Hi. Just dropping these off. I'll be quick, I'm on my way to work.",4.858,29490,-0.9,-18.0,ok
+Draft/phone_regular/phone_regular_enter_03.wav,phone_regular,enter,"Hold on. Sorry. Two bags today, and the blue shirt needs a cold wash.",6.077,29490,-0.9,-17.2,ok
+Draft/phone_regular/phone_regular_counter_01.wav,phone_regular,counter,The school asked for the uniform back by Friday. Can we do Thursday?,5.135,29490,-0.9,-17.2,ok
+Draft/phone_regular/phone_regular_counter_02.wav,phone_regular,counter,This is my husband's work shirt. He says it's fine. It is not fine.,5.299,29490,-0.9,-19.0,ok
+Draft/phone_regular/phone_regular_counter_03.wav,phone_regular,counter,Whatever you did last time worked. That collar came out white again.,4.345,29490,-0.9,-19.8,ok
+Draft/phone_regular/phone_regular_counter_04.wav,phone_regular,counter,"Rainy season, so everything smells like a wet towel by day two.",4.692,29490,-0.9,-19.3,ok
+Draft/phone_regular/phone_regular_waiting_01.wav,phone_regular,waiting,"Sorry, say that again? The signal in here is terrible when it rains.",4.961,29490,-0.9,-18.0,ok
+Draft/phone_regular/phone_regular_waiting_02.wav,phone_regular,waiting,"Yes, I'm still waiting. No, I can't leave it until tomorrow.",4.253,29490,-0.9,-18.0,ok
+Draft/phone_regular/phone_regular_waiting_03.wav,phone_regular,waiting,"My daughter's school is flooded, so she's home. Which means more laundry.",5.065,29490,-0.9,-17.3,ok
+Draft/phone_regular/phone_regular_waiting_04.wav,phone_regular,waiting,"I'll sit by the window. Call me when it's done, I'll hear you.",4.090,29489,-0.9,-18.5,ok
+Draft/phone_regular/phone_regular_pickup_01.wav,phone_regular,pickup,"That's mine. Thank you , the kids will have clean uniforms tomorrow.",4.798,29490,-0.9,-19.1,ok
+Draft/phone_regular/phone_regular_pickup_02.wav,phone_regular,pickup,Let me check the bag. Good. Last place lost a sock every single time.,5.624,29490,-0.9,-18.1,ok
+Draft/phone_regular/phone_regular_pickup_03.wav,phone_regular,pickup,You're a lifesaver. I'll tell the others at the school gate.,3.660,29490,-0.9,-17.6,ok
+Draft/phone_regular/phone_regular_idle_01.wav,phone_regular,idle,"End of the year, everyone's got something to wash. Weddings, ceremonies, school.",5.715,29490,-0.9,-19.8,ok
+Draft/phone_regular/phone_regular_idle_02.wav,phone_regular,idle,It's so humid the towels never finish. I've been wearing the same jacket all week.,5.425,29490,-0.9,-19.8,ok
+Draft/phone_regular/phone_regular_idle_03.wav,phone_regular,idle,The road by the market flooded this morning. Took me twenty minutes to get here.,4.856,29490,-0.9,-17.8,ok
+Draft/phone_regular/phone_regular_idle_04.wav,phone_regular,idle,I'll bring my mother's things next week. She has opinions about soap.,4.671,29490,-0.9,-18.3,ok
+Draft/drop_off/drop_off_enter_01.wav,drop_off,enter,"Hi, is this where I leave the laundry? Someone said you do it by the kilo.",5.112,29490,-0.9,-19.0,ok
+Draft/drop_off/drop_off_enter_02.wav,drop_off,enter,Good morning. Rain caught me at the door. Is there somewhere I can put this?,5.276,29490,-0.9,-18.6,ok
+Draft/drop_off/drop_off_enter_03.wav,drop_off,enter,"Hello , my neighbour sent me. She said you're careful with the white shirts.",4.845,29490,-0.9,-20.4,ok
+Draft/drop_off/drop_off_counter_01.wav,drop_off,counter,"Just these two. One is bed sheets, the other is everything else.",4.589,29490,-0.9,-19.3,ok
+Draft/drop_off/drop_off_counter_02.wav,drop_off,counter,"There's a spot on the sleeve. Cooking oil, I think. Can you have a look?",5.694,29490,-0.9,-19.4,ok
+Draft/drop_off/drop_off_counter_03.wav,drop_off,counter,How long does it usually take? I don't mind waiting if it's not too long.,4.601,29490,-0.9,-18.9,ok
+Draft/drop_off/drop_off_counter_04.wav,drop_off,counter,I need it by Saturday. There's a ceremony at the temple and everyone's coming.,4.647,29490,-0.9,-19.7,ok
+Draft/drop_off/drop_off_waiting_01.wav,drop_off,waiting,It smells good in here. Like clean cotton. Ours just smells like rain.,5.125,29490,-0.9,-20.7,ok
+Draft/drop_off/drop_off_waiting_02.wav,drop_off,waiting,"I'll wait outside, it's crowded. Or under the awning, at least.",4.938,29490,-0.9,-20.1,ok
+Draft/drop_off/drop_off_waiting_03.wav,drop_off,waiting,"The kids are off school this week, so the house is loud and the baskets are full.",4.866,29490,-0.9,-18.7,ok
+Draft/drop_off/drop_off_waiting_04.wav,drop_off,waiting,"Do you take card, or should I find an ATM before you finish?",3.903,29489,-0.9,-18.1,ok
+Draft/drop_off/drop_off_pickup_01.wav,drop_off,pickup,"That's faster than I expected. Thank you, really.",4.113,29490,-0.9,-21.4,ok
+Draft/drop_off/drop_off_pickup_02.wav,drop_off,pickup,The shirt looks new. I'll bring the rest of the family's next time.,4.404,29490,-0.9,-19.4,ok
+Draft/drop_off/drop_off_pickup_03.wav,drop_off,pickup,"Can I pay now? I have exact change, I think.",4.032,29490,-0.9,-20.1,ok
+Draft/drop_off/drop_off_idle_01.wav,drop_off,idle,It's been raining since Tuesday. My whole line is still damp.,4.206,29489,-0.9,-19.1,ok
+Draft/drop_off/drop_off_idle_02.wav,drop_off,idle,"End of the year is expensive. New uniforms, new shoes, and now laundry.",6.052,29490,-0.9,-19.1,ok
+Draft/drop_off/drop_off_idle_03.wav,drop_off,idle,My son spilled juice on his good shirt. Of course it was the good shirt.,4.090,29490,-0.9,-19.2,ok
+Draft/drop_off/drop_off_idle_04.wav,drop_off,idle,Everyone says the dry season is easier. I'm still waiting for it.,4.322,29490,-0.9,-19.0,ok

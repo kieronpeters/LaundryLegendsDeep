@@ -46,11 +46,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 15fba85009ea9ad4088e156b6ddefbe6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   _templateId: laundry.loose
   _kind: 1
   _carryable: 1
+  _stage: 0
+  _wrappedVisualPrefab: {fileID: 3969768161469398527, guid: 07988e4105236df4c87b7f19f448121d, type: 3}
 --- !u!135 &1203707669365459178
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -109,8 +111,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2e169b30a8ee4ae4f85effe5d7a02186, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   _item: {fileID: 123537336935965332}
 --- !u!1001 &8576130799712817289
 PrefabInstance:
@@ -162,7 +164,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 02ea354c530d4894583e8f05ce39e831, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
-      value:
+      value: 
       objectReference: {fileID: 2100000, guid: 637e18c880aa6814b9df4f2c03bd26b5, type: 2}
     - target: {fileID: 919132149155446097, guid: 02ea354c530d4894583e8f05ce39e831, type: 3}
       propertyPath: m_Name

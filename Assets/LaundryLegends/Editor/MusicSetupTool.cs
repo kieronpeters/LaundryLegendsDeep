@@ -13,7 +13,7 @@ namespace LaundryLegends.Editor
     public static class MusicSetupTool
     {
         private const string ScenePath = "Assets/LaundryLegends/Scenes/Laundromat.unity";
-        private const string ClipPath = "Assets/LaundryLegends/Audio/Music/BalinesePrelude.mp3";
+        private const string ClipPath = "Assets/LaundryLegends/Audio/Music/ThatZenMoment.mp3";
 
         [MenuItem("Laundry Legends/Phase 3/Apply Music")]
         public static void ApplyMusic()
@@ -52,8 +52,9 @@ namespace LaundryLegends.Editor
                 playlist = existing.AddComponent<MusicPlaylist>();
             }
 
-            AudioClip second = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/LaundryLegends/Audio/Music/TempleOfHangzhou.mp3");
-            playlist.Configure(source, clip, second);
+            AudioClip second = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/LaundryLegends/Audio/Music/Ripples.mp3");
+            AudioClip third = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/LaundryLegends/Audio/Music/TempleOfHangzhou.mp3");
+            playlist.Configure(source, clip, second, third);
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);

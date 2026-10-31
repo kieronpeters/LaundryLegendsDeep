@@ -102,3 +102,17 @@ $RECYCLE.BIN/
 Captures/
 Screenshots/
 Recordings/
+
+# Local TTS tooling (W6). The Piper binary and the voice models are ~376 MB of
+# third-party downloads kept for reproducibility only; they are not part of the
+# game build and must not be committed. Re-download with the steps in
+# ArtSource/Licenses/piper-tts.md.
+Tools/Piper/piper/
+Tools/Piper/voices/
+ArtSource/Downloads/
+
+# Staged working copies and superseded model exports (not shipped)
+ArtSource/Drafts/
+ArtSource/Exports/NPC/
+ArtSource/Blender/rescale_npc_models.py
+ArtSource/Blender/WrappedBundle.blend1

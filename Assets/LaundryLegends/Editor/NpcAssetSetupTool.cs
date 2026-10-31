@@ -345,10 +345,8 @@ namespace LaundryLegends.Editor
                 renderer.sharedMaterial = material;
             }
 
-            if (instance.GetComponent<NpcPose>() == null)
-            {
-                instance.AddComponent<NpcPose>();
-            }
+            // Animation components (Animator, NpcLocomotion, CarryPose, CarrySocket)
+            // are authored by NpcAnimationSetupTool, not by the asset phase.
 
             PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
             UnityEngine.Object.DestroyImmediate(root);

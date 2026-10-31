@@ -1,11 +1,16 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-31 14:20 (UTC+08:00)
+**Last updated:** 2026-11-01 (realism pass)
 **Current milestone:** M1 - Playable laundry, **in progress**
-**Current phase:** Phase 3 - Laundry interaction foundation, **complete**
-**Next phase:** Phase 4 - Laundry processing, planned
-**Active task:** None - `LL-P3-019` is complete
-**Next recommended task:** Owner review of the completed Phase 3 scene and captures, then Phase 4 planning
+**Current phase:** Phase 4 - Laundry processing, **complete** (commit `c834cd6`); a post-phase realism pass is in progress
+**Next phase:** Phase 5 - Customers and payments, planned
+**Active task:** Realism pass workstreams W1-W7 (see `.orchestrator/ORCHESTRATION_PLAN.md`)
+**Next recommended task:** Owner review of animation captures, then Phase 5 planning
+
+> **Manager note (2026-11-01).** Sections below are historical and describe the
+> Phase 1-3 state; they are not rewritten wholesale. Current authoritative
+> status lives here, in `.orchestrator/ORCHESTRATION_PLAN.md`,
+> `.orchestrator/state.json`, and the dated files in `.orchestrator/reports/`.
 
 ## 1. Verified configuration
 

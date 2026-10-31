@@ -18,6 +18,10 @@ namespace LaundryLegends.Laundry
         [NonSerialized] private string _instanceId;
 
         [SerializeField] private LaundryStage _stage = LaundryStage.Dirty;
+        [SerializeField] private GameObject _wrappedVisualPrefab;
+
+        private GameObject _wrappedVisual;
+        private Renderer[] _baseRenderers;
 
         public LaundryStage Stage => _stage;
 
@@ -25,17 +29,23 @@ namespace LaundryLegends.Laundry
         public void SetStage(LaundryStage stage)
         {
             _stage = stage;
-            Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+            if (_baseRenderers == null || _baseRenderers.Length == 0)
+            {
+                _baseRenderers = GetComponentsInChildren<Renderer>(true);
+            }
+
             Color tint = stage == LaundryStage.Dirty ? new Color(0.75f, 0.85f, 0.85f, 1f)
                 : stage == LaundryStage.Washed ? new Color(0.9f, 0.95f, 1f, 1f)
                 : stage == LaundryStage.Dried ? new Color(1f, 0.98f, 0.9f, 1f)
                 : new Color(0.85f, 0.95f, 1f, 1f);
-            transform.localScale = stage == LaundryStage.Wrapped
-                ? new Vector3(0.78f, 0.5f, 0.78f)
-                : stage == LaundryStage.Dried ? new Vector3(0.9f, 0.6f, 0.9f) : Vector3.one;
 
-            foreach (Renderer renderer in renderers)
+            foreach (Renderer renderer in _baseRenderers)
             {
+                if (renderer == null)
+                {
+                    continue;
+                }
+
                 foreach (Material material in renderer.materials)
                 {
                     if (material.HasProperty("_Color"))
@@ -45,30 +55,88 @@ namespace LaundryLegends.Laundry
                 }
             }
 
-            Transform wrap = transform.Find("PlasticWrap");
-            if (stage == LaundryStage.Wrapped && wrap == null)
+            ApplyWrappedVisual(stage == LaundryStage.Wrapped);
+        }
+
+        /// <summary>
+        /// Swaps the folded-cloth body for the authored clear-plastic bundle. The
+        /// bundle is a prefab reference so the mesh stays a single asset.
+        /// </summary>
+        private void ApplyWrappedVisual(bool wrapped)
+        {
+            if (wrapped)
             {
-                GameObject plastic = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                plastic.name = "PlasticWrap";
-                Destroy(plastic.GetComponent<Collider>());
-                plastic.transform.SetParent(transform, false);
-                plastic.transform.localPosition = new Vector3(0f, 0.1f, 0f);
-                plastic.transform.localScale = new Vector3(0.38f, 0.24f, 0.32f);
-                Material material = new Material(Shader.Find("Standard"));
-                material.color = new Color(0.75f, 0.92f, 1f, 0.28f);
-                material.SetFloat("_Mode", 3f);
-                material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                material.SetInt("_ZWrite", 0);
-                material.DisableKeyword("_ALPHATEST_ON");
-                material.EnableKeyword("_ALPHABLEND_ON");
-                material.renderQueue = 3000;
-                plastic.GetComponent<Renderer>().sharedMaterial = material;
+                foreach (Renderer renderer in _baseRenderers)
+                {
+                    if (renderer != null)
+                    {
+                        renderer.enabled = false;
+                    }
+                }
+
+                if (_wrappedVisual == null && _wrappedVisualPrefab != null)
+                {
+                    _wrappedVisual = Instantiate(_wrappedVisualPrefab);
+                    _wrappedVisual.name = "WrappedVisual";
+                    _wrappedVisual.transform.SetParent(transform, false);
+                    _wrappedVisual.transform.localPosition = Vector3.zero;
+                    _wrappedVisual.transform.localRotation = Quaternion.identity;
+                    _wrappedVisual.transform.localScale = Vector3.one;
+                }
+
+                if (_wrappedVisual == null)
+                {
+                    // Items built at runtime (tests, spawned props) have no authored
+                    // bundle reference, so keep a simple transparent wrap visible.
+                    _wrappedVisual = CreateFallbackWrap();
+                }
+
+                if (_wrappedVisual != null)
+                {
+                    _wrappedVisual.SetActive(true);
+                }
+
+                return;
             }
-            else if (stage != LaundryStage.Wrapped && wrap != null)
+
+            if (_wrappedVisual != null)
             {
-                Destroy(wrap.gameObject);
+                _wrappedVisual.SetActive(false);
             }
+
+            foreach (Renderer renderer in _baseRenderers)
+            {
+                if (renderer != null)
+                {
+                    renderer.enabled = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Minimal transparent wrap for items that have no authored bundle
+        /// prefab (runtime-built items in tests and spawned props).
+        /// </summary>
+        private GameObject CreateFallbackWrap()
+        {
+            var plastic = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            plastic.name = "PlasticWrap";
+            Destroy(plastic.GetComponent<Collider>());
+            plastic.transform.SetParent(transform, false);
+            plastic.transform.localPosition = new Vector3(0f, 0.1f, 0f);
+            plastic.transform.localScale = new Vector3(0.38f, 0.24f, 0.32f);
+
+            var material = new Material(Shader.Find("Standard"));
+            material.color = new Color(0.75f, 0.92f, 1f, 0.28f);
+            material.SetFloat("_Mode", 3f);
+            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            material.SetInt("_ZWrite", 0);
+            material.DisableKeyword("_ALPHATEST_ON");
+            material.EnableKeyword("_ALPHABLEND_ON");
+            material.renderQueue = 3000;
+            plastic.GetComponent<Renderer>().sharedMaterial = material;
+            return plastic;
         }
 
         /// <summary>Stable prefab-template identifier, unique per prefab asset.</summary>

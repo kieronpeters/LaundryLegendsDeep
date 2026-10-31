@@ -1,6 +1,7 @@
 using System.Collections;
 using LaundryLegends.Interaction;
 using LaundryLegends.Laundry;
+using LaundryLegends.NPC;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -24,14 +25,20 @@ namespace LaundryLegends.Tests.PlayMode
             MachineLoadHook washer = FindHook("Machine_1");
             MachineLoadHook dryer = FindHook("Machine_2");
             FoldingStation folding = Object.FindFirstObjectByType<FoldingStation>();
+            LaundryStaff staff = Object.FindFirstObjectByType<LaundryStaff>();
             GameObject dropOffObject = GameObject.Find("DropOffSlot");
             Assert.IsNotNull(washer);
             Assert.IsNotNull(dryer);
             Assert.IsNotNull(folding);
+            Assert.IsNotNull(staff, "The Laundromat scene should have a staff NPC.");
             Assert.IsNotNull(dropOffObject);
 
             washer.SetDuration(0.25f);
             dryer.SetDuration(0.25f);
+
+            // The staff now walks the full route with animated steps; speed it up
+            // so the play mode test does not depend on real walking time.
+            staff.SetWalkSpeed(8f);
 
             var itemObject = new GameObject("LoopLoose");
             LaundryItem item = itemObject.AddComponent<LaundryItem>();
@@ -40,15 +47,16 @@ namespace LaundryLegends.Tests.PlayMode
             Assert.IsTrue(dropOff.TryPlace(item));
 
             float elapsed = 0f;
-            while (elapsed < 4f && !folding.IsReady)
+            while (elapsed < 20f && !folding.IsReady)
             {
                 yield return null;
                 elapsed += Time.deltaTime;
             }
 
             Assert.IsTrue(folding.IsReady, "Staff should wash, dry, fold, and wrap the item.");
-            Assert.AreEqual(LaundryStage.Wrapped, folding.ReadyItem.Stage);
-            Assert.IsNotNull(folding.ReadyItem.GetComponentInChildren<Renderer>());
+            Assert.AreSame(item, folding.ReadyItem, "The wrapped bundle should be the same item instance.");
+            Assert.AreEqual(LaundryStage.Wrapped, item.Stage);
+            Assert.IsNotNull(item.GetComponentInChildren<Renderer>());
 
             Object.Destroy(itemObject);
         }
