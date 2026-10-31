@@ -921,3 +921,36 @@ Phase 2 is complete. Author and approve the Phase 3 task plan before starting in
 ### Next
 
 `LL-P3-010` - research and document the free hybrid Blender + CC0 asset pipeline and the first asset prototype plan.
+
+## 2026-10-31 - LL-P3-010 free asset pipeline research
+
+**Phase:** 3 extension - free asset/NPC polish
+**Task:** LL-P3-010
+**Status:** Complete - research and documentation only; no install or download
+
+### Implemented / performed
+
+- Added `ASSET_PIPELINE.md` with the approved hybrid Blender + CC0 + Mixamo pipeline.
+- Recorded decision `0006` and the owner's approvals.
+- Documented Blender 4.5.15 LTS (5.2.3 LTS fallback), official source, footprint, and GPL/artwork ownership.
+- Compared Kenney, Quaternius, Poly Haven, Poly Pizza, 100 Avatars, Mixamo, Sketchfab, and Unity Asset Store terms.
+- Defined scale/orientation, poly budgets, export/import settings, folder layout, NPC plan, and Phase 1-3 polish backlog.
+- Selected the custom laundry basket as the first prototype and wrote a rollback path.
+- Updated `ASSET_INVENTORY.md` with the pipeline policy and a research change-log row.
+
+### Checks and evidence
+
+- Official Blender download/LTS/license pages, Kenney support, Quaternius QAL, Poly Haven license, Poly Pizza, 100 Avatars, and Sketchfab terms reviewed.
+- Mixamo's official FAQ returned 403 to automated fetch; its terms are summarized from Adobe Community citations and must be rechecked at download time.
+- No Unity compile/test was required for this documentation-only task.
+- Report: `.orchestrator/reports/2026-10-31-asset-pipeline-research.md`.
+
+### Not performed
+
+- Blender installation (`LL-P3-011`).
+- Asset download/import, NPC creation, and Unity changes.
+- Phase 4 gameplay.
+
+### Next
+
+`LL-P3-011` - install Blender 4.5 LTS, create the custom basket, import it, preserve the pickup/carry/machine contracts, and capture the result.

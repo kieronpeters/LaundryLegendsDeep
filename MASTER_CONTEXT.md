@@ -210,7 +210,7 @@ A task is done only when:
 - Unity batch-mode licensing can expire; refresh it in Unity Hub before treating exit `198` as a project defect.
 - Only procedural placeholder assets exist; no production art, audio, animation, or models.
 - The automated suite is 32 EditMode and 37 PlayMode tests plus one explicit capture test; it does not yet cover machine cycles, orders, economy, customers, save/load, or final UI. Item prefabs, scene placement, pickup wiring, and machine-hook geometry are covered by editor validators.
-- Phase 3 core acceptance is complete and owner-reviewed. A Phase 3 extension was approved for free asset/NPC polish: hybrid Blender plus CC0 packs, with `LL-P3-010` research and `LL-P3-011` first custom asset before Phase 4.
+- Phase 3 core acceptance is complete and owner-reviewed. A Phase 3 extension was approved for free asset/NPC polish: hybrid Blender plus CC0 packs, with `LL-P3-010` research complete and `LL-P3-011` first custom asset next before Phase 4. The pipeline and license matrix are in `ASSET_PIPELINE.md`; no Blender install or asset download has happened yet.
 - No image/3D/audio authoring pipeline is verified.
 - Spend telemetry is not reliable for free models; budget enforcement is conservative and process-based.
 - The game cannot be built autonomously end-to-end without integration, testing, and human feedback.

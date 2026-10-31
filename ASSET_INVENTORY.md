@@ -61,10 +61,12 @@ A prompt, brief, or idea is **not** an asset. Do not mark anything imported or i
 - Do not import assets with unclear licensing.
 - Do not commit paid or restricted assets unless the license permits repository use.
 - External asset acquisition requires human approval if it involves cost, account access, or unclear terms.
+- The approved zero-cost pipeline is documented in `ASSET_PIPELINE.md`: Blender LTS plus CC0 packs (Kenney, Quaternius, Poly Haven, Poly Pizza, 100 Avatars) and Mixamo animations. Every imported asset still gets its own source, author, license, and attribution row here before it is committed.
+- AI-generated assets are not approved. Quaternius and Mixamo raw files must not be redistributed as standalone packs.
 
 ## 6. Tool reality (verified 2026-10-19)
 
-- No Blender on `PATH`.
+- No Blender on `PATH` as of 2026-10-31. Blender 4.5 LTS installation is approved and scheduled in `LL-P3-011`; do not claim it is installed until verified.
 - No FFmpeg or ImageMagick on `PATH`.
 - No GitHub CLI on `PATH`.
 - No dedicated image, 3D, audio, or voice-generation tool exposed to this session.
@@ -80,3 +82,4 @@ A prompt, brief, or idea is **not** an asset. Do not mark anything imported or i
 | 2026-10-20 | Registered the procedural placeholder scenes, room and player prefabs, and nine-material greybox set; added the Phase 2 storefront materials | `TestResults/phase1-*.log`, `TestResults/phase2-*.log`, `TestResults/phase2-entrance.png`, `TestResults/phase2-storefront.png` |
 | 2026-10-20 | Extended the room prefab with waiting chairs, side table, planter, storage shelving and bins, utility alcove props, and built-in-font signage; added `Grey_Chair` and `Grey_Sign` for eleven materials total | `TestResults/phase2-p3-build.log`, `TestResults/phase2-p3-public-validate.log`, `TestResults/phase2-waiting.png`, `TestResults/phase2-machine-signage.png`, `TestResults/phase2-utility.png` |
 | 2026-10-20 | Added an idempotent secret-access service panel and rolling supply shelf with a `SERVICE` marker; no new material or imported asset | `TestResults/phase2-p4-build.log`, `TestResults/phase2-p4-validate.log`, `TestResults/phase2-secret-approach.png`, `TestResults/phase2-secret-close.png` |
+| 2026-10-31 | Registered the approved free hybrid pipeline (Blender + CC0 + Mixamo) and the first basket prototype plan; no asset downloaded or installed yet | `ASSET_PIPELINE.md`, `.orchestrator/decisions/0006-free-asset-pipeline.md`, `.orchestrator/reports/2026-10-31-asset-pipeline-research.md` |

@@ -9,7 +9,7 @@
     "renderPipeline": "Built-In Render Pipeline",
     "targetPlatform": "Windows 64-bit"
   },
-  "updatedAt": "2026-10-31T08:45:00+08:00",
+  "updatedAt": "2026-10-31T09:25:00+08:00",
   "currentMilestone": {
     "id": "M1",
     "name": "Playable laundry",
@@ -20,7 +20,7 @@
     "name": "Laundry interaction foundation",
     "status": "in_progress",
     "file": ".orchestrator/tasks/phase-03.json",
-    "completionNote": "Phase 3 core acceptance is complete. Interaction, pickup, carry, drop input, item identity, drop/place rules, item prefabs, scene placement, the IMGUI prompt/hint, and one washer load/unload hook passed automated and owner review. The approved Phase 3 extension (free Blender + CC0 asset/NPC polish) continues in LL-P3-010/011 before Phase 4."
+    "completionNote": "Phase 3 core acceptance is complete and owner-reviewed. The approved Phase 3 extension is underway: LL-P3-010 documented the free hybrid Blender + CC0 + Mixamo pipeline, license matrix, and first basket prototype. LL-P3-011 (Blender install and first custom asset) is ready; Phase 4 starts after the extension is reviewed."
   },
   "nextPhase": {
     "number": 4,
@@ -29,12 +29,12 @@
     "file": ".orchestrator/tasks/phase-04.json"
   },
   "activeTask": null,
-  "lastCompletedTask": "LL-P3-007",
-  "nextTask": "LL-P3-010",
+  "lastCompletedTask": "LL-P3-010",
+  "nextTask": "LL-P3-011",
   "taskCounts": {
-    "complete": 32,
+    "complete": 33,
     "ready": 1,
-    "planned": 1,
+    "planned": 0,
     "pending": 1,
     "inProgress": 0,
     "failed": 0,
@@ -154,36 +154,34 @@
     "note": "Procedural placeholders only: 3 scenes, 5 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
   },
   "lastRun": {
-    "id": "2026-10-31-ll-p3-007",
-    "report": ".orchestrator/reports/2026-10-31-ll-p3-007.md",
+    "id": "2026-10-31-ll-p3-010",
+    "report": ".orchestrator/reports/2026-10-31-asset-pipeline-research.md",
     "status": "complete",
-    "startedAt": "2026-10-31T05:25:00+08:00",
-    "completedAt": "2026-10-31T08:45:00+08:00",
+    "startedAt": "2026-10-31T08:50:00+08:00",
+    "completedAt": "2026-10-31T09:25:00+08:00",
     "checks": {
-      "compile": "exit 0",
-      "validators": "passed",
-      "editmode": "32/32 passed",
-      "playmode": "37 passed, 1 skipped",
-      "captures": "passed",
-      "log_scan": "passed",
-      "human_review": "owner-reported pass after LL-P3-009"
+      "official_sources": "reviewed",
+      "license_matrix": "documented",
+      "bootstrap": "pending run",
+      "install_or_download": "none"
     },
     "filesChanged": [
+      "ASSET_PIPELINE.md",
+      ".orchestrator/decisions/0006-free-asset-pipeline.md",
+      ".orchestrator/reports/2026-10-31-asset-pipeline-research.md",
       ".orchestrator/tasks/phase-03.json",
       ".orchestrator/state.json",
-      ".orchestrator/reports/2026-10-31-ll-p3-007.md",
-      ".orchestrator/reports/2026-10-31-ll-p3-007-human-verification.md",
+      "ASSET_INVENTORY.md",
       "PROJECT_STATE.md",
       "DEVELOPMENT_LOG.md",
       "ROADMAP.md",
       "MASTER_CONTEXT.md",
-      "ARCHITECTURE.md",
-      "TESTING_GUIDE.md"
+      "ARCHITECTURE.md"
     ]
   },
   "recovery": {
     "procedure": ".orchestrator/recovery/RESUME.md",
-    "resumeTask": "LL-P3-010",
+    "resumeTask": "LL-P3-011",
     "doNotReplay": [
       "LL-P0-001",
       "LL-P0-002",
@@ -216,7 +214,8 @@
       "LL-P3-006",
       "LL-P3-008",
       "LL-P3-009",
-      "LL-P3-007"
+      "LL-P3-007",
+      "LL-P3-010"
     ]
   }
 }
