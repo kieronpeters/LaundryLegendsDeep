@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -149,8 +149,8 @@ namespace LaundryLegends.Editor
             float gloss = material.HasProperty("_Glossiness") ? material.GetFloat("_Glossiness") : 0.2f;
             float metal = material.HasProperty("_Metallic") ? material.GetFloat("_Metallic") : 0f;
             float mode = material.HasProperty("_Mode") ? material.GetFloat("_Mode") : 0f;
-            bool transparent = mode > 0.5f && mode < 2.5f || material.renderQueue >= 3000;
-            bool cutout = mode > 1.5f && mode < 2.5f;
+            bool transparent = mode >= 2f || material.renderQueue >= 3000;
+            bool cutout = mode > 0.5f && mode < 1.5f;
             Color emission = material.HasProperty("_EmissionColor") ? material.GetColor("_EmissionColor") : Color.black;
             bool emits = material.IsKeywordEnabled("_EMISSION") && emission.maxColorComponent > 0.01f;
 
@@ -286,6 +286,102 @@ namespace LaundryLegends.Editor
             Debug.Log("[URP] Post-processing volume and reflection probe added.");
         }
 
+        [MenuItem("Laundry Legends/Rendering/Fix Transparency And Lights")]
+        public static void FixTransparencyAndLights()
+        {
+            int fixedMaterials = 0;
+            foreach (string guid in AssetDatabase.FindAssets("t:Material", new[] { "Assets/LaundryLegends" }))
+            {
+                var material = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(guid));
+                if (material == null || material.shader == null || material.shader.name.StartsWith("Universal") == false)
+                {
+                    continue;
+                }
+
+                string name = material.name.ToLowerInvariant();
+                bool shouldBeTransparent = name.Contains("glass") || name.Contains("film")
+                    || name.Contains("shadow") || material.renderQueue >= 3000;
+
+                if (shouldBeTransparent && material.GetFloat("_Surface") < 0.5f)
+                {
+                    material.SetFloat("_Surface", 1f);
+                    material.SetFloat("_Blend", 0f);
+                    material.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
+                    material.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
+                    material.SetFloat("_ZWrite", 0f);
+                    material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                    material.DisableKeyword("_ALPHATEST_ON");
+                    material.renderQueue = 3000;
+                    EditorUtility.SetDirty(material);
+                    fixedMaterials++;
+                }
+            }
+
+            int lights = 0;
+            var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            foreach (Light light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+            {
+                if (light.type == LightType.Directional)
+                {
+                    light.intensity = 1.2f;
+                    lights++;
+                    continue;
+                }
+
+                // URP point lights are lumen-scale; the built-in values were ~2.
+                light.intensity = Mathf.Max(light.intensity * 250f, 250f);
+                light.range = Mathf.Max(light.range, 7f);
+                lights++;
+            }
+
+            RenderSettings.ambientLight = new Color(0.45f, 0.45f, 0.47f);
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            AssetDatabase.SaveAssets();
+            Debug.Log($"[URP] Transparency fixed on {fixedMaterials} materials; {lights} lights retuned for URP.");
+        }
+
+        [MenuItem("Laundry Legends/Rendering/Tune Exposure")]
+        public static void TuneExposure()
+        {
+            var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+
+            foreach (Light light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+            {
+                if (light.type == LightType.Directional)
+                {
+                    light.intensity = 0.9f;
+                }
+                else
+                {
+                    light.intensity = 35f;
+                    light.range = Mathf.Clamp(light.range, 6f, 9f);
+                }
+            }
+
+            RenderSettings.ambientLight = new Color(0.32f, 0.33f, 0.36f);
+
+            var profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(ProfilePath);
+            if (profile != null)
+            {
+                if (profile.TryGet(out Bloom bloom))
+                {
+                    bloom.threshold.Override(1.1f);
+                    bloom.intensity.Override(0.22f);
+                }
+
+                if (profile.TryGet(out ColorAdjustments color))
+                {
+                    color.postExposure.Override(-0.9f);
+                }
+            }
+
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            AssetDatabase.SaveAssets();
+            Debug.Log("[URP] Exposure tuned: point lights 110, ambient 0.32, bloom 0.35 @ 1.1, exposure -0.6.");
+        }
+
         [MenuItem("Laundry Legends/Rendering/Validate URP")]
         public static void Validate()
         {
@@ -311,3 +407,4 @@ namespace LaundryLegends.Editor
         }
     }
 }
+
