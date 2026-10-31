@@ -227,8 +227,8 @@ Environment prefabs, materials, scene objects, lighting settings, collision/nav 
 
 ## Phase 3 - Laundry interaction foundation
 
-**Status:** In progress
-**Objective:** Implement player interaction, carrying, baskets, laundry items, prompts, and machine interaction hooks.
+**Status:** Complete
+**Objective:** Implement player interaction, carrying, baskets, laundry items, prompts, and machine interaction hooks; then complete the approved free-asset polish extension.
 **Depends on:** Phase 2.
 
 ### Deliverables
@@ -239,6 +239,7 @@ Environment prefabs, materials, scene objects, lighting settings, collision/nav 
 - Basket and laundry item prefabs with stable IDs.
 - At least one washer/dryer interaction target.
 - Interaction tests and no-stuck-state safeguards.
+- Free asset pipeline research, a custom Blender basket/loose/bag set, machine front details, and three CC0 NPC archetypes.
 
 ### Tasks
 
