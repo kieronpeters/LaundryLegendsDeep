@@ -821,6 +821,155 @@
       "retryCount": 3,
       "startedAt": "2026-10-31T17:40:00+08:00",
       "completedAt": "2026-10-31T18:10:00+08:00"
+    },
+    {
+      "id": "LL-P3-020",
+      "title": "Add an original Balinese-inspired music loop",
+      "status": "complete",
+      "priority": 18,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-013"],
+      "objective": "Create an original royalty-free gamelan/ambience track and play it in the Laundromat scene, with source script, license, import settings, and a PlayMode check.",
+      "scope": [
+        "ArtSource/Audio/**",
+        "ArtSource/Licenses/**",
+        "Assets/LaundryLegends/Audio/**",
+        "Assets/LaundryLegends/Editor/MusicSetupTool.cs",
+        "Assets/LaundryLegends/Scenes/Laundromat.unity",
+        "Assets/LaundryLegends/Tests/PlayMode/**",
+        "ASSET_INVENTORY.md",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/state.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Scripts/**",
+        "Assets/LaundryLegends/Prefabs/**",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "An original 60-90 second royalty-free track is generated with a committed source script and license note",
+        "The track uses a Balinese/gamelan-inspired palette and fits a laundry ambience",
+        "The Laundromat scene has one looping AudioSource with the track, play-on-awake, and sensible volume",
+        "The audio import is configured for game use and the clip is not streamed from an external source",
+        "A PlayMode test verifies the clip, loop, play-on-awake, and volume",
+        "Compile, suites, scene validation, and log scan pass"
+      ],
+      "checks": [
+        {
+          "name": "Music download and scene playback",
+          "status": "passed",
+          "command": "Download real CC BY track; import; add AudioSource; validate; PlayMode check",
+          "evidence": "Balinese Prelude (Geoff Harvey, CC BY 4.0) imported; music validation exit 0; PlayMode 39 total, 38 passed, 1 skipped; clip loops and plays on awake"
+        }
+      ],
+      "result": "Replaced the generated loop with the real CC BY 4.0 track 'Balinese Prelude' by Geoff Harvey - Purple Planet Music. Added the MP3, license/attribution note, a looping non-spatial AudioSource in the Laundromat scene, and a PlayMode music test.",
+      "retryCount": 2,
+      "startedAt": "2026-10-31T18:20:00+08:00",
+      "completedAt": "2026-10-31T20:10:00+08:00"
+    },
+    {
+      "id": "LL-P3-021",
+      "title": "Build walkable storefront frontage and physical signage",
+      "status": "complete",
+      "priority": 19,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-020"],
+      "objective": "Turn the storefront into a walkable exterior frontage with a sidewalk/road, an outward-facing LAUNDRY LEGENDS fascia sign, and mounted DROP OFF/OPEN signs instead of floating text.",
+      "scope": [
+        "Assets/LaundryLegends/Editor/StorefrontFrontageTool.cs",
+        "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
+        "Assets/LaundryLegends/Art/Materials/**",
+        "Assets/LaundryLegends/Tests/PlayMode/**",
+        "ASSET_INVENTORY.md",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/state.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Scripts/**",
+        "Assets/LaundryLegends/Scenes/Laundromat.unity",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "Walkable sidewalk and road extend south of the storefront with colliders",
+        "The open glass doors remain static/non-interactable and the threshold remains passable",
+        "An outward-facing LAUNDRY LEGENDS fascia sign is mounted above the entrance",
+        "DROP OFF and OPEN signs are mounted on the counter/wall/storefront, not floating text",
+        "A route from inside through the doors to the roadside is clear, and a PlayMode/ext validation confirms it",
+        "Navigation, Phase 3 validators, suites, captures, and log scan pass"
+      ],
+      "checks": [
+        {
+          "name": "Frontage and signage",
+          "status": "passed",
+          "command": "Build frontage; validate route/signs; suites and captures",
+          "evidence": "Sidewalk/road colliders and mounted fascia/DROP OFF/OPEN signs built; frontage route validation exit 0; public-zone/navigation validation exit 0; PlayMode 38 passed plus 1 capture test; captures inspected"
+        }
+      ],
+      "result": "Extended the storefront with a walkable sidewalk and road, moved the backdrop, mounted a two-sided LAUNDRY LEGENDS fascia sign, added OPEN/HOURS and DROP OFF wall/desk signs, and preserved the fixed-open doors. Frontage and navigation checks pass.",
+      "retryCount": 3,
+      "startedAt": "2026-10-31T19:00:00+08:00",
+      "completedAt": "2026-10-31T20:10:00+08:00"
+    },
+    {
+      "id": "LL-P3-017",
+      "title": "Replace machine bodies with custom appliance models",
+      "status": "complete",
+      "priority": 17,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-012"],
+      "objective": "Replace all eight primitive machine bodies and door discs with a custom appliance model while preserving colliders, scale, and the machine hook.",
+      "scope": ["ArtSource/**", "Assets/LaundryLegends/Art/**", "Assets/LaundryLegends/Editor/BasketAssetSetupTool.cs", "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab"],
+      "mustNotTouch": ["Assets/LaundryLegends/Scripts/**", "Assets/LaundryLegends/Scenes/Laundromat.unity", "Packages/**", "ProjectSettings/**"],
+      "acceptance": ["Eight appliance models with doors, panels, drawers, and slots", "Machine colliders, scale, and hook intact", "Validation and captures pass"],
+      "checks": [{"name": "Appliance models", "status": "passed", "command": "Blender export; apply; validate; capture", "evidence": "808-triangle appliance exported; eight models applied; validation exit 0; capture inspected"}],
+      "result": "Replaced all eight machine bodies/door discs with a custom 808-triangle appliance, role-colored washer/dryer bodies, metal/glass/dark details, and an added door ring that reads correctly in the Game view.",
+      "retryCount": 3,
+      "startedAt": "2026-10-31T18:15:00+08:00",
+      "completedAt": "2026-10-31T19:00:00+08:00"
+    },
+    {
+      "id": "LL-P3-018",
+      "title": "Replace room furniture with custom meshes",
+      "status": "planned",
+      "priority": 20,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-021"],
+      "objective": "Replace the primitive counter, folding table, waiting chairs, shelving, and secret-door cover with custom low-poly meshes while preserving colliders and navigation.",
+      "scope": ["ArtSource/**", "Assets/LaundryLegends/Art/**", "Assets/LaundryLegends/Editor/BasketAssetSetupTool.cs", "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab"],
+      "mustNotTouch": ["Assets/LaundryLegends/Scripts/**", "Assets/LaundryLegends/Scenes/Laundromat.unity", "Packages/**", "ProjectSettings/**"],
+      "acceptance": ["Counter/table/chairs/shelves/secret cover use custom meshes", "Colliders and navigation preserved", "Validators, suites, captures pass"],
+      "checks": [{"name": "Furniture meshes", "status": "pending", "command": "Blender export; apply; validate", "evidence": "Pending"}],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
+    },
+    {
+      "id": "LL-P3-019",
+      "title": "Add first-person hands and finish NPC pose",
+      "status": "planned",
+      "priority": 21,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-018"],
+      "objective": "Add a simple first-person hand/forearm placeholder and finish the NPC idle pose/outfit pass.",
+      "scope": ["ArtSource/**", "Assets/LaundryLegends/Art/**", "Assets/LaundryLegends/Editor/**", "Assets/LaundryLegends/Prefabs/Gameplay/**", "Assets/LaundryLegends/Tests/**"],
+      "mustNotTouch": ["Assets/LaundryLegends/Scenes/Laundromat.unity", "Packages/**", "ProjectSettings/**"],
+      "acceptance": ["Visible first-person hands when empty/carrying", "NPC arms posed naturally", "Suites and captures pass"],
+      "checks": [{"name": "Player hands/NPC pose", "status": "pending", "command": "Blender/Unity setup; validate; capture", "evidence": "Pending"}],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
     }
   ]
 }

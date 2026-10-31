@@ -2,10 +2,10 @@
 
 **Last updated:** 2026-10-31 14:20 (UTC+08:00)
 **Current milestone:** M1 - Playable laundry, **in progress**
-**Current phase:** Phase 3 - Laundry interaction foundation, **complete**
+**Current phase:** Phase 3 - Laundry interaction foundation, **in progress** (final design pass)
 **Next phase:** Phase 4 - Laundry processing, planned
-**Active task:** None - `LL-P3-013` is complete
-**Next recommended task:** Owner review of `TestResults/npc-archetypes.png`, then Phase 4 planning
+**Active task:** None - `LL-P3-021` is complete
+**Next recommended task:** `LL-P3-018` - replace room furniture with custom meshes
 
 ## 1. Verified configuration
 
@@ -83,8 +83,10 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - NPC archetypes: `NPC_Customer`, `NPC_Attendant`, and `NPC_Regular` were built from CC0 100 Avatars bases with humanoid avatars, capsule colliders, texture materials, and relaxed static poses. The source FBX files have no usable idle/walk/carry clips, so animation is documented as deferred; no behavior or scene placement was added. NPC validation, EditMode 32/32, PlayMode 37 passed plus one capture test, and an inspected preview capture passed on 2026-10-31.
 - Final polish: CC0 ambientCG tile, painted-plaster, and wood materials now cover the floor, walls/ceiling, and counters; room lights are warmer; `OPEN`/`HOURS` signs, detergent bottles, a plant, and a cart were added; NPC heights were normalized to 1.61-1.78 m with role tints and a relaxed pose. All eight validators, EditMode 32/32, PlayMode 37 passed plus one capture test, captures, and the log scan passed on 2026-10-31.
 - Phase 3 is complete, including the core acceptance and the approved free-asset extension.
+- Final design pass: custom 808-triangle washer/dryer models replaced all eight machine bodies; a real CC BY 4.0 "Balinese Prelude" track now loops in the scene; the storefront has a walkable sidewalk/road and mounted LAUNDRY LEGENDS, OPEN, and DROP OFF signs. Appliance, music, and frontage validations passed; EditMode 32/32; PlayMode 38 passed plus one capture test.
+- Remaining before Phase 3 closes: custom counter/table/chairs/shelves/secret cover (`LL-P3-018`) and first-person hands/final NPC pose (`LL-P3-019`).
 - EditMode suite: 32/32 tests passed on 2026-10-31; coverage includes interaction eligibility and item identity, carry compatibility, slot placement rules, machine load/unload rules, item pickup rules, and the drop key.
-- PlayMode suite: 37 tests passed plus one skipped explicit capture test on 2026-10-31; coverage includes prompt/key exposure, `TryInteract` dispatch, rejection cases, pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, the drop hint, scene basket pickup, washer targeting, load/unload identity, rejection without ownership change, and the Phase 2 scene checks.
+- PlayMode suite: 38 tests passed plus one skipped explicit capture test on 2026-10-31; coverage includes prompt/key exposure, `TryInteract` dispatch, rejection cases, pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, the drop hint, scene basket pickup, washer targeting, load/unload identity, rejection without ownership change, music playback, and the Phase 2 scene checks.
 - Batch commands, evidence paths, failure-probe steps, and test-assembly isolation documented in `TESTING_GUIDE.md`.
 - The project owner completed all six Phase 1 Game-view checks on 2026-10-20: movement/speed, camera/comfort, pause/cursor release, room layout, secret door, and lighting/readability. Recorded as owner-reported human verification in `.orchestrator/reports/2026-10-20-ll-p1-009-human-verification.md`.
 - Phase 1 is complete. Automated results and screenshots are preserved unchanged; the human confirmation is a separate addendum.
@@ -264,7 +266,7 @@ Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect 
 - The pause overlay uses IMGUI as a placeholder; real UI arrives later.
 - Cursor lock/release and movement feel were confirmed by the project owner on 2026-10-20; batch tests still skip cursor APIs, so this remains owner-reported rather than independently reproduced.
 - `GameSession.Instance` is a static service handle; consumers should prefer explicit references where practical.
-- Test coverage is 32 EditMode and 37 PlayMode tests plus one explicit capture test; it does not yet cover machine cycles, orders, economy transactions, save/load, or final UI. Item prefabs, scene placement, pickup wiring, and machine-hook geometry are covered by editor validators.
+- Test coverage is 32 EditMode and 38 PlayMode tests plus one explicit capture test; it does not yet cover machine cycles, orders, economy transactions, save/load, or final UI.
 - `PlayerInteractor.IsAlive` still uses the original tautological Unity-null expression (`unityObject == null || unityObject != null`). `InteractionPromptView` uses a corrected check; an external `TryInteract` in the same frame a target is destroyed could still throw until the interactor helper is corrected.
 - `FailureReportingTests` fails when `LL_FAIL_PROBE` is left set; unset it after probing.
 - The stray `C:\Users\Asus\Desktop\AI` log remains pending manual deletion.

@@ -631,6 +631,205 @@ namespace LaundryLegends.Editor
             Debug.Log("[Props] Signage/prop validation passed: signs, bottles, plant, cart, no colliders, hook intact.");
         }
 
+        [MenuItem("Laundry Legends/Phase 3/Apply Appliance Models")]
+        public static void ApplyApplianceModels()
+        {
+            const string modelPath = "Assets/LaundryLegends/Art/Models/Appliance.fbx";
+            ConfigureModelImporter(modelPath);
+
+            Material washer = EnsureMaterial($"{MaterialFolder}/MAT_Appliance_Washer.mat", "MAT_Appliance_Washer", new Color(0.32f, 0.55f, 0.78f, 1f), 0.35f);
+            Material dryer = EnsureMaterial($"{MaterialFolder}/MAT_Appliance_Dryer.mat", "MAT_Appliance_Dryer", new Color(0.85f, 0.58f, 0.28f, 1f), 0.35f);
+            Material metal = EnsureMaterial($"{MaterialFolder}/MAT_Appliance_Metal.mat", "MAT_Appliance_Metal", new Color(0.32f, 0.32f, 0.34f, 1f), 0.55f);
+            Material glass = EnsureMaterial($"{MaterialFolder}/MAT_Appliance_Glass.mat", "MAT_Appliance_Glass", new Color(0.08f, 0.12f, 0.14f, 1f), 0.6f);
+            Material dark = EnsureMaterial($"{MaterialFolder}/MAT_Appliance_Dark.mat", "MAT_Appliance_Dark", new Color(0.05f, 0.05f, 0.06f, 1f), 0.3f);
+
+            GameObject room = PrefabUtility.LoadPrefabContents(RoomPrefabPath);
+            try
+            {
+                for (int i = 1; i <= 8; i++)
+                {
+                    Transform machine = FindChild(room.transform, $"Machine_{i}");
+                    if (machine == null)
+                    {
+                        throw new InvalidOperationException($"GreyboxRoom has no Machine_{i}.");
+                    }
+
+                    Transform oldDoor = FindChild(room.transform, $"MachineDoor_{i}");
+                    if (oldDoor != null)
+                    {
+                        UnityEngine.Object.DestroyImmediate(oldDoor.gameObject);
+                    }
+
+                    Transform oldModel = machine.Find("ApplianceModel");
+                    if (oldModel != null)
+                    {
+                        UnityEngine.Object.DestroyImmediate(oldModel.gameObject);
+                    }
+
+                    Renderer bodyRenderer = machine.GetComponent<Renderer>();
+                    if (bodyRenderer != null)
+                    {
+                        bodyRenderer.enabled = false;
+                    }
+
+                    GameObject model = AssetDatabase.LoadAssetAtPath<GameObject>(modelPath);
+                    var instance = (GameObject)PrefabUtility.InstantiatePrefab(model, machine);
+                    instance.name = "ApplianceModel";
+                    instance.transform.localPosition = Vector3.zero;
+                    instance.transform.localRotation = Quaternion.identity;
+                    Vector3 scale = machine.localScale;
+                    instance.transform.localScale = new Vector3(
+                        scale.x != 0f ? 1f / scale.x : 1f,
+                        scale.y != 0f ? 1f / scale.y : 1f,
+                        scale.z != 0f ? 1f / scale.z : 1f);
+
+                    Material body = i % 2 == 1 ? washer : dryer;
+                    foreach (Renderer renderer in instance.GetComponentsInChildren<Renderer>(true))
+                    {
+                        Material[] materials = renderer.sharedMaterials;
+                        for (int m = 0; m < materials.Length; m++)
+                        {
+                            if (m == 0)
+                            {
+                                materials[m] = body;
+                            }
+                            else if (materials[m] != null && materials[m].name.Contains("Glass"))
+                            {
+                                materials[m] = glass;
+                            }
+                            else if (materials[m] != null && materials[m].name.Contains("Dark"))
+                            {
+                                materials[m] = dark;
+                            }
+                            else
+                            {
+                                materials[m] = metal;
+                            }
+                        }
+
+                        renderer.sharedMaterials = materials;
+                    }
+
+                    AddDoorDisc(instance.transform, metal, glass);
+                }
+
+                PrefabUtility.SaveAsPrefabAsset(room, RoomPrefabPath);
+                Debug.Log("[Appliance] Replaced all eight machine bodies and doors with custom appliance models.");
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(room);
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
+        [MenuItem("Laundry Legends/Phase 3/Validate Appliance Models")]
+        public static void ValidateApplianceModels()
+        {
+            var failures = new List<string>();
+            GameObject room = AssetDatabase.LoadAssetAtPath<GameObject>(RoomPrefabPath);
+            if (room == null)
+            {
+                failures.Add($"Missing room prefab: {RoomPrefabPath}");
+            }
+            else
+            {
+                int models = 0;
+                for (int i = 1; i <= 8; i++)
+                {
+                    Transform machine = FindChild(room.transform, $"Machine_{i}");
+                    if (machine == null)
+                    {
+                        failures.Add($"Missing Machine_{i}.");
+                        continue;
+                    }
+
+                    if (machine.localScale != new Vector3(0.8f, 1.1f, 0.7f))
+                    {
+                        failures.Add($"Machine_{i} scale changed.");
+                    }
+
+                    if (machine.GetComponent<Collider>() == null)
+                    {
+                        failures.Add($"Machine_{i} lost its collider.");
+                    }
+
+                    if (FindChild(room.transform, $"MachineDoor_{i}") != null)
+                    {
+                        failures.Add($"Old MachineDoor_{i} still exists.");
+                    }
+
+                    Transform model = machine.Find("ApplianceModel");
+                    if (model == null)
+                    {
+                        failures.Add($"Machine_{i} has no ApplianceModel.");
+                        continue;
+                    }
+
+                    models++;
+                    Renderer[] renderers = model.GetComponentsInChildren<Renderer>(true);
+                    if (renderers.Length == 0)
+                    {
+                        failures.Add($"Machine_{i} appliance has no renderer.");
+                    }
+
+                    foreach (Renderer renderer in renderers)
+                    {
+                        if (renderer.sharedMaterials.Length == 0 || renderer.sharedMaterials[0] == null)
+                        {
+                            failures.Add($"Machine_{i} appliance has no body material.");
+                        }
+                    }
+                }
+
+                if (models != 8)
+                {
+                    failures.Add($"Expected 8 appliance models, found {models}.");
+                }
+
+                MachineLoadHook[] hooks = room.GetComponentsInChildren<MachineLoadHook>(true);
+                if (hooks.Length != 1 || hooks[0].gameObject.name != "Machine_1")
+                {
+                    failures.Add("MachineLoadHook must remain exactly once on Machine_1.");
+                }
+            }
+
+            if (failures.Count > 0)
+            {
+                foreach (string failure in failures)
+                {
+                    Debug.LogError($"[Appliance] {failure}");
+                }
+
+                throw new InvalidOperationException($"Appliance validation failed with {failures.Count} issue(s).");
+            }
+
+            Debug.Log("[Appliance] Validation passed: eight custom appliances, colliders and machine hook intact.");
+        }
+
+        private static void AddDoorDisc(Transform parent, Material ringMaterial, Material glassMaterial)
+        {
+            GameObject ring = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            ring.name = "DoorRing";
+            UnityEngine.Object.DestroyImmediate(ring.GetComponent<Collider>());
+            ring.transform.SetParent(parent, false);
+            ring.transform.localPosition = new Vector3(0f, 0.07f, -0.36f);
+            ring.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            ring.transform.localScale = new Vector3(0.46f, 0.008f, 0.46f);
+            ring.GetComponent<Renderer>().sharedMaterial = ringMaterial;
+
+            GameObject glass = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            glass.name = "DoorGlass";
+            UnityEngine.Object.DestroyImmediate(glass.GetComponent<Collider>());
+            glass.transform.SetParent(parent, false);
+            glass.transform.localPosition = new Vector3(0f, 0.07f, -0.365f);
+            glass.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            glass.transform.localScale = new Vector3(0.38f, 0.006f, 0.38f);
+            glass.GetComponent<Renderer>().sharedMaterial = glassMaterial;
+        }
+
         private static void CreateSign(Transform parent, string name, string text, Vector3 position, Material panelMaterial, Color textColor, float width)
         {
             CreateBox(parent, name, position, new Vector3(width, 0.36f, 0.05f), panelMaterial);

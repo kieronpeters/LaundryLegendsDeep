@@ -153,7 +153,6 @@ namespace LaundryLegends.Tests.PlayMode
                 "StorageWest/Storage_Shelf_2",
                 "UtilityAlcove/Utility_Divider",
                 "UtilityAlcove/Utility_Cabinet",
-                "Signage/Sign_Storefront",
                 "Signage/Sign_MachineWall",
                 "Signage/Sign_Counter"
             };
@@ -165,6 +164,9 @@ namespace LaundryLegends.Tests.PlayMode
                 Assert.IsNotNull(target.GetComponentInChildren<Collider>(true),
                     $"Public-zone object has no collider: {path}.");
             }
+
+            Assert.IsNotNull(room.transform.Find("FrontageRoot/Facade_SignPanel"),
+                "Storefront frontage should have a mounted fascia sign.");
 
             TextMesh machineSign = room.transform
                 .Find("Signage/Sign_MachineWall")

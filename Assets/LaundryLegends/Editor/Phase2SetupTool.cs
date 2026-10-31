@@ -962,7 +962,16 @@ namespace LaundryLegends.Editor
             RequireChild(root, "UtilityAlcove/Utility_Divider", failures);
             RequireChild(root, "UtilityAlcove/Utility_Cabinet", failures);
             RequireChild(root, "UtilityAlcove/Utility_Sign", failures);
-            RequireChild(root, "Signage/Sign_Storefront", failures);
+            Transform legacyStorefront = root.Find("Signage/Sign_Storefront");
+            if (legacyStorefront != null)
+            {
+                RequireChild(root, "Signage/Sign_Storefront", failures);
+            }
+            else
+            {
+                RequireChild(root, "FrontageRoot/Facade_SignPanel", failures);
+            }
+
             RequireChild(root, "Signage/Sign_MachineWall", failures);
             RequireChild(root, "Signage/Sign_Counter", failures);
             RequireChild(root, "Signage/Sign_Open", failures);
@@ -975,10 +984,34 @@ namespace LaundryLegends.Editor
             RequireCollider(root, "UtilityAlcove/Utility_Divider", failures);
             RequireCollider(root, "UtilityAlcove/Utility_Cabinet", failures);
 
-            RequireSignText(root, "Signage/Sign_Storefront", "LAUNDRY LEGENDS", failures);
+            if (root.Find("Signage/Sign_Storefront") != null)
+            {
+                RequireSignText(root, "Signage/Sign_Storefront", "LAUNDRY LEGENDS", failures);
+            }
+            else
+            {
+                RequireSignText(root, "FrontageRoot/Facade_SignText_Outside", "LAUNDRY LEGENDS", failures);
+            }
+
             RequireSignText(root, "Signage/Sign_MachineWall", "WASH", failures);
-            RequireSignText(root, "Signage/Sign_Counter", "DROP OFF", failures);
-            RequireSignText(root, "Signage/Sign_Open", "OPEN", failures);
+            if (root.Find("Signage/Sign_Counter/Sign_Counter_Text") != null)
+            {
+                RequireSignText(root, "Signage/Sign_Counter", "DROP OFF", failures);
+            }
+            else
+            {
+                RequireSignText(root, "FrontageRoot/DropOff_Text", "DROP OFF", failures);
+            }
+
+            if (root.Find("Signage/Sign_Open/Sign_Open_Text") != null)
+            {
+                RequireSignText(root, "Signage/Sign_Open", "OPEN", failures);
+            }
+            else
+            {
+                RequireSignText(root, "FrontageRoot/Facade_HoursText_Outside", "OPEN", failures);
+            }
+
             RequireSignText(root, "UtilityAlcove/Utility_Sign", "STAFF ONLY", failures);
 
             CheckBounds(root, "WaitingArea", bounds => bounds.min.x > 3.8f,
@@ -989,6 +1022,11 @@ namespace LaundryLegends.Editor
                 "Utility alcove must stay in the north-west corner and off the machine aisle.", failures);
 
             Transform storefront = root.Find("Signage/Sign_Storefront/Sign_Storefront_Panel");
+            if (storefront == null)
+            {
+                storefront = root.Find("FrontageRoot/Facade_SignPanel");
+            }
+
             if (storefront != null && GetBounds(storefront.gameObject).min.y < 2.1f)
             {
                 failures.Add("Storefront sign hangs below the 2.1 m clearance line.");

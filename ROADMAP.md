@@ -261,6 +261,11 @@ Environment prefabs, materials, scene objects, lighting settings, collision/nav 
 | LL-P3-014 | Polish environment materials and lighting | Complete |
 | LL-P3-015 | Improve signage and add small props | Complete |
 | LL-P3-016 | Polish NPC pose, scale, and outfits | Complete |
+| LL-P3-017 | Replace machine bodies with custom appliance models | Complete |
+| LL-P3-018 | Replace room furniture with custom meshes | Planned |
+| LL-P3-019 | Add first-person hands and finish NPC pose | Planned |
+| LL-P3-020 | Add a real royalty-free Balinese music track | Complete |
+| LL-P3-021 | Build walkable storefront frontage and physical signage | Complete |
 
 ### Acceptance criteria
 

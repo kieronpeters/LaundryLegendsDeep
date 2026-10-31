@@ -18,9 +18,9 @@
   "currentPhase": {
     "number": 3,
     "name": "Laundry interaction foundation",
-    "status": "complete",
+    "status": "in_progress",
     "file": ".orchestrator/tasks/phase-03.json",
-    "completionNote": "Phase 3 is complete: core interaction, pickup, carry, Q drop, prompts, item identity, machine load/unload, owner acceptance, and the full approved asset extension (Blender, custom laundry props, machine fronts, CC0 environment materials/lighting, signage/props, and three CC0 NPCs). Phase 4 is next after owner review of the final captures."
+    "completionNote": "Phase 3 remains open for the final design pass. Core acceptance, asset extension, music, appliances, and storefront frontage are complete; custom furniture (LL-P3-018) and first-person hands/NPC pose (LL-P3-019) remain."
   },
   "nextPhase": {
     "number": 4,
@@ -29,12 +29,12 @@
     "file": ".orchestrator/tasks/phase-04.json"
   },
   "activeTask": null,
-  "lastCompletedTask": "LL-P3-016",
-  "nextTask": null,
+  "lastCompletedTask": "LL-P3-021",
+  "nextTask": "LL-P3-018",
   "taskCounts": {
-    "complete": 39,
+    "complete": 42,
     "ready": 0,
-    "planned": 0,
+    "planned": 2,
     "pending": 1,
     "inProgress": 0,
     "failed": 0,
