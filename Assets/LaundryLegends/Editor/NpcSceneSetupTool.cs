@@ -36,6 +36,22 @@ namespace LaundryLegends.Editor
 
             GameObject attendant = Instantiate("NPC_Attendant", new Vector3(-4.6f, 0f, -1.9f), Quaternion.Euler(0f, 180f, 0f), root.transform);
             attendant.name = "Attendant";
+            attendant.AddComponent<NpcDialogue>().Configure(
+                "The weather is so humid today.",
+                "The kids are out of school this week.",
+                "Rainy season makes laundry take longer.",
+                "This load looks clean and fresh.",
+                "The dryers are warm today.");
+
+            GameObject regular = Instantiate("NPC_Regular", new Vector3(5.6f, 0f, -5.2f), Quaternion.Euler(0f, 180f, 0f), root.transform);
+            regular.name = "PhoneRegular";
+            AddPhone(regular);
+            regular.AddComponent<NpcDialogue>().Configure(
+                "Hello? Yes, I am at the laundry.",
+                "The weather is lovely on the coast.",
+                "I will pick up the kids after this.",
+                "The end-of-year rush is starting.",
+                "This shirt came out perfect.");
 
             GameObject customer = Instantiate("NPC_Customer", new Vector3(0f, 0f, -10.5f), Quaternion.identity, root.transform);
             customer.name = "StreetCustomer";
@@ -80,6 +96,12 @@ namespace LaundryLegends.Editor
             AudioClip thankyou = AssetDatabase.LoadAssetAtPath<AudioClip>($"{VoiceFolder}/customer_thankyou.mp3");
             AmbientNpc loop = customer.AddComponent<AmbientNpc>();
             loop.Configure(waypoints, carried, voice, dropoff, thankyou);
+            customer.AddComponent<NpcDialogue>().Configure(
+                "I am here to drop off my laundry.",
+                "The weather turned rainy this afternoon.",
+                "The kids need clean uniforms for school.",
+                "I will be back before the end of the year.",
+                "Please check this stain if you can.");
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
@@ -145,6 +167,20 @@ namespace LaundryLegends.Editor
             waypoint.transform.SetParent(parent, false);
             waypoint.transform.position = position;
             return waypoint.transform;
+        }
+
+        private static void AddPhone(GameObject npc)
+        {
+            var phone = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            phone.name = "Phone";
+            Object.DestroyImmediate(phone.GetComponent<Collider>());
+            phone.transform.SetParent(npc.transform, false);
+            phone.transform.localPosition = new Vector3(0.22f, 1.28f, 0.18f);
+            phone.transform.localScale = new Vector3(0.06f, 0.12f, 0.02f);
+            phone.GetComponent<Renderer>().sharedMaterial = new Material(Shader.Find("Standard"))
+            {
+                color = new Color(0.03f, 0.03f, 0.04f, 1f)
+            };
         }
 
         private static GameObject FindRoot(Scene scene, string name)

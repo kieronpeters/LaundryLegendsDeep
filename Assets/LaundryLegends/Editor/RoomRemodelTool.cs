@@ -57,6 +57,29 @@ namespace LaundryLegends.Editor
                 Add(root.transform, "ShelfTrim_1", new Vector3(-7.45f, 1.2f, 2.2f), new Vector3(0.04f, 1.6f, 0.06f), wood);
                 Add(root.transform, "SecretTrim", new Vector3(7.65f, 1.1f, 3.0f), new Vector3(0.06f, 2.1f, 0.08f), metal);
 
+                // Cabinet doors, drawers, and handles on the counter.
+                for (int i = 0; i < 3; i++)
+                {
+                    float x = -5.6f + i * 1.1f;
+                    Add(root.transform, $"CounterDoor_{i}", new Vector3(x, 0.48f, -2.965f), new Vector3(0.95f, 0.78f, 0.03f), wood);
+                    Add(root.transform, $"CounterHandle_{i}", new Vector3(x, 0.55f, -2.99f), new Vector3(0.18f, 0.03f, 0.02f), metal);
+                    Add(root.transform, $"CounterDrawer_{i}", new Vector3(x, 0.95f, -2.965f), new Vector3(0.95f, 0.18f, 0.03f), wood);
+                }
+
+                // Table legs and shelf uprights.
+                foreach (float x in new[] { 3.1f, 5.9f })
+                {
+                    foreach (float z in new[] { 0.45f, 1.55f })
+                    {
+                        Add(root.transform, "TableLeg", new Vector3(x, 0.4f, z), new Vector3(0.08f, 0.8f, 0.08f), wood);
+                    }
+                }
+
+                for (int i = 0; i < 3; i++)
+                {
+                    Add(root.transform, $"ShelfUpright_{i}", new Vector3(-7.46f, 0.85f, 1.4f + i * 0.8f), new Vector3(0.04f, 1.7f, 0.05f), metal);
+                }
+
                 PrefabUtility.SaveAsPrefabAsset(room, RoomPrefabPath);
                 Debug.Log("[Remodel] Added baseboards, crown, wainscot, aprons, cushions, and trim.");
             }
