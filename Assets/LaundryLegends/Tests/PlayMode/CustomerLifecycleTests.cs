@@ -117,6 +117,11 @@ namespace LaundryLegends.Tests.PlayMode
             Assert.AreEqual(CustomerState.Done, agent.State, "Impatient customer should leave.");
             Assert.AreEqual(100, wallet.Money, "An abandoned order must not pay out.");
 
+            yield return new WaitForSeconds(0.4f);
+            var folding = Object.FindFirstObjectByType<FoldingStation>();
+            Assert.IsNotNull(folding);
+            Assert.IsFalse(folding.IsReady, "Abandoned laundry must not clog the folding station.");
+
             yield return null;
         }
 

@@ -155,6 +155,19 @@ namespace LaundryLegends.Laundry
         }
 
         /// <summary>Staff path: remove a completed item and empty the machine.</summary>
+        /// <summary>
+        /// Staff/cleanup path: empty the machine regardless of state and return
+        /// whatever it held. Used when an order is abandoned so the pipeline
+        /// cannot stay blocked.
+        /// </summary>
+        public LaundryItem ForceUnload()
+        {
+            LaundryItem item = _slot != null ? _slot.Take() : null;
+            _state = MachineState.Empty;
+            _elapsed = 0f;
+            return item;
+        }
+
         public LaundryItem TakeProcessedItem()
         {
             if (_state != MachineState.Complete || _slot == null)

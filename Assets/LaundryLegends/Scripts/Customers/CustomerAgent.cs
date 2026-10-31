@@ -165,6 +165,7 @@ namespace LaundryLegends.Customers
 
             if (abandoned)
             {
+                CleanUpAbandonedItem();
                 Enter(CustomerState.Leave);
                 yield return WalkTo(_exitPoint != null ? _exitPoint.position : transform.position);
                 Enter(CustomerState.Done);
@@ -246,8 +247,57 @@ namespace LaundryLegends.Customers
             }
         }
 
-        private void Speak(DialogueTrigger trigger)
+        /// <summary>
+        /// Removes an abandoned customer's laundry from every stage. Without
+        /// this the folding station stays occupied and the next order could
+        /// never be wrapped.
+        /// </summary>
+        private void CleanUpAbandonedItem()
         {
+            if (_item == null)
+            {
+                return;
+            }
+
+            if (_folding != null && _folding.ReadyItem == _item)
+            {
+                _folding.TakeWrappedItem();
+            }
+
+            if (_orderSlot != null && _orderSlot.Occupant == _item)
+            {
+                _orderSlot.Take();
+            }
+
+            foreach (MachineLoadHook machine in UnityEngine.Object.FindObjectsByType<MachineLoadHook>(
+                         FindObjectsSortMode.None))
+            {
+                if (machine.LoadedItem == _item)
+                {
+                    machine.ForceUnload();
+                }
+            }
+
+            if (_socket != null && _socket.IsCarrying && _socket.Carried == _item)
+            {
+                _socket.Detach();
+            }
+
+            // The staff may already be carrying it; detach from any socket so the
+            // abandoned item cannot re-enter the pipeline.
+            foreach (CarrySocket socket in UnityEngine.Object.FindObjectsByType<CarrySocket>(
+                         FindObjectsSortMode.None))
+            {
+                if (socket.Carried == _item)
+                {
+                    socket.Detach();
+                }
+            }
+
+            Destroy(_item.gameObject, 0.1f);
+        }
+
+        private void Speak(DialogueTrigger trigger)        {
             if (_voice != null)
             {
                 _voice.Speak(trigger);
