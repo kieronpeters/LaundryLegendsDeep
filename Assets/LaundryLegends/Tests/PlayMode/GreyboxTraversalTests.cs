@@ -168,11 +168,21 @@ namespace LaundryLegends.Tests.PlayMode
             Assert.IsNotNull(room.transform.Find("FrontageRoot/Facade_SignPanel"),
                 "Storefront frontage should have a mounted fascia sign.");
 
-            TextMesh machineSign = room.transform
-                .Find("Signage/Sign_MachineWall")
-                .GetComponentInChildren<TextMesh>(true);
-            Assert.IsNotNull(machineSign, "Machine-wall sign should have readable text.");
-            StringAssert.Contains("WASH", machineSign.text);
+            Transform machineSign = room.transform.Find("Signage/Sign_MachineWall");
+            Assert.IsNotNull(machineSign, "Machine-wall sign should exist.");
+
+            Transform signQuad = null;
+            foreach (Transform candidate in machineSign.GetComponentsInChildren<Transform>(true))
+            {
+                if (candidate.name == "SignQuad")
+                {
+                    signQuad = candidate;
+                    break;
+                }
+            }
+
+            Assert.IsNotNull(signQuad, "Machine-wall sign should use the authored sign panel instead of legacy text.");
+            Assert.IsNotNull(signQuad.GetComponent<Renderer>(), "Machine-wall sign panel should have a renderer.");
 
             Assert.IsFalse(
                 Physics.Linecast(new Vector3(0f, 1.1f, -4.1f), new Vector3(0f, 1.1f, 4.3f)),
