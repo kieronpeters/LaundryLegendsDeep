@@ -13,7 +13,11 @@ namespace LaundryLegends.Customers
     {
         [SerializeField] private CustomerSpawner _spawner;
         [SerializeField] private float _width = 260f;
-        [SerializeField] private float _height = 110f;
+        [SerializeField] private float _height = 140f;
+
+        private string _receipt = string.Empty;
+        private string _lastResult = string.Empty;
+        private float _receiptUntil;
 
         public CustomerSpawner Spawner => _spawner;
 
@@ -42,6 +46,17 @@ namespace LaundryLegends.Customers
             return builder.ToString().TrimEnd('\n');
         }
 
+        /// <summary>Wallet line for the HUD.</summary>
+        public static string BuildWalletLine(OrderLedger ledger)
+        {
+            if (ledger == null || ledger.Wallet == null)
+            {
+                return "Coins: -";
+            }
+
+            return $"Coins: {ledger.Wallet.Money}";
+        }
+
         private static string StageWord(LaundryOrder order)
         {
             switch (order.State)
@@ -62,6 +77,27 @@ namespace LaundryLegends.Customers
             }
         }
 
+        private void Update()
+        {
+            if (_spawner == null)
+            {
+                return;
+            }
+
+            OrderLedger ledger = _spawner.Ledger;
+            if (ledger == null || ledger.LastResult == _lastResult)
+            {
+                return;
+            }
+
+            _lastResult = ledger.LastResult;
+            if (!string.IsNullOrEmpty(_lastResult))
+            {
+                _receipt = _lastResult;
+                _receiptUntil = Time.time + 5f;
+            }
+        }
+
         private void OnGUI()
         {
             if (_spawner == null)
@@ -76,7 +112,13 @@ namespace LaundryLegends.Customers
             }
 
             GUI.Box(new Rect(16f, 16f, _width, _height), "ORDER TICKET");
-            GUI.Label(new Rect(28f, 44f, _width - 24f, _height - 32f), BuildText(ledger));
+            GUI.Label(new Rect(28f, 42f, _width - 24f, 22f), BuildWalletLine(ledger));
+            GUI.Label(new Rect(28f, 66f, _width - 24f, _height - 60f), BuildText(ledger));
+
+            if (Time.time < _receiptUntil && !string.IsNullOrEmpty(_receipt))
+            {
+                GUI.Label(new Rect(28f, _height - 6f, _width - 24f, 24f), _receipt);
+            }
         }
     }
 }

@@ -91,6 +91,62 @@ namespace LaundryLegends.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator CustomerRespawnsAfterLeaving()
+        {
+            var spawner = Object.FindFirstObjectByType<CustomerSpawner>();
+            Assert.IsNotNull(spawner);
+            spawner.DisposeCurrent();
+
+            var wallet = new GameState(100);
+            var ledger = new OrderLedger(wallet);
+            spawner.SetRespawnDelay(0.5f);
+            spawner.Initialize(ledger, true);
+
+            var staff = Object.FindFirstObjectByType<LaundryStaff>();
+            if (staff != null)
+            {
+                staff.SetWalkSpeed(8f);
+            }
+
+            var washer = FindHook("Machine_1");
+            if (washer != null)
+            {
+                washer.SetDuration(0.3f);
+            }
+
+            var dryer = FindHook("Machine_2");
+            if (dryer != null)
+            {
+                dryer.SetDuration(0.3f);
+            }
+
+            CustomerAgent first = spawner.SpawnNow();
+            Assert.IsNotNull(first);
+            first.SetWalkSpeed(6f);
+
+            float elapsed = 0f;
+            while (elapsed < 45f && first.State != CustomerState.Done)
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            Assert.AreEqual(CustomerState.Done, first.State, "First customer should finish.");
+
+            float respawn = 0f;
+            while (respawn < 10f
+                   && (spawner.ActiveCustomer == null || spawner.ActiveCustomer == first))
+            {
+                respawn += Time.deltaTime;
+                yield return null;
+            }
+
+            Assert.IsNotNull(spawner.ActiveCustomer, "A second customer should spawn after the first leaves.");
+            Assert.AreNotSame(first, spawner.ActiveCustomer, "The respawned customer should be a new instance.");
+            Assert.GreaterOrEqual(wallet.Money, 140, "The first order should have paid out before respawning.");
+        }
+
+        [UnityTest]
         public IEnumerator ImpatientCustomerAbandonsAndLeavesWithoutPaying()
         {
             var spawner = Object.FindFirstObjectByType<CustomerSpawner>();

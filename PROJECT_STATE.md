@@ -2,10 +2,10 @@
 
 **Last updated:** 2026-11-01 (Phase 4 closed)
 **Current milestone:** M1 - Playable laundry, **in progress**
-**Current phase:** Phase 5 - Customers and payments, **in progress** (loop working at `f4bb0ef`)
-**Next phase:** Phase 5 completion, then Phase 6
+**Current phase:** Phase 5 - Customers and payments, **complete** (closure: `.orchestrator/reports/2026-11-01-phase-5-closure.md`)
+**Next phase:** Phase 6 - planned
 **Active task:** None
-**Next recommended task:** customer queue slots + human playtest, then the visual debt list
+**Next recommended task:** Owner playtest of the order loop, then Phase 6 planning
 
 > **Manager note (2026-11-01).** Sections below are historical and describe the
 > Phase 1-3 state; they are not rewritten wholesale. Current authoritative

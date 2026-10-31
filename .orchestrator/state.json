@@ -18,13 +18,13 @@
   "currentPhase": {
     "number": 5,
     "name": "Customers and payments",
-    "status": "in_progress",
-    "file": ".orchestrator/tasks/phase-04.json",
-    "completionNote": "Phase 4 complete at commit cf0d79d. Loop: washer/dryer, staff walk + visible carry, fold/wrap, customer drop-off and pickup, prompts. Realism pass added: retargeted humanoid animation (45 clips), 54 rendered voice lines wired with subtitles and a speaker cooldown, three-track music playlist, authored wrapped bundle, room fixtures/lighting/contact shadows, fixed signage. Known visual debt carried into Phase 5: NPCs use a placeholder mannequin (character rig mapping blocked), bundle film renders opaque, carry pose does not grip the item."
+    "status": "complete",
+    "file": ".orchestrator/tasks/phase-05-plan.md",
+    "completionNote": "Phase 5 complete. Customer order lifecycle (arrive, queue, handoff, waiting, collect, pay, leave) runs through the real staff wash/dry/wrap pipeline; exactly-once payment with duplicate rejection; patience abandonment with full pipeline cleanup; fast-service tip; wallet HUD with receipt; automatic respawn. Suites: EditMode 67/67, PlayMode 49 passed / 0 failed / 1 skipped. Owner playtest criterion delegated, not claimed. Known gap: single customer at a time, no multi-customer queue."
   },
   "nextPhase": {
-    "number": 5,
-    "name": "Customers and payments",
+    "number": 6,
+    "name": "Planned next phase",
     "status": "planned",
     "file": ".orchestrator/tasks/phase-05-plan.md"
   },
