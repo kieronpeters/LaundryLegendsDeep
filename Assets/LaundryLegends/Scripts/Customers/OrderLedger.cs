@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using LaundryLegends.Core;
+using LaundryLegends.Economy;
 using LaundryLegends.Laundry;
 
 namespace LaundryLegends.Customers
@@ -21,23 +22,59 @@ namespace LaundryLegends.Customers
 
         private readonly HashSet<string> _settledOrderIds = new HashSet<string>(StringComparer.Ordinal);
 
+        private readonly HashSet<string> _tippedOrderIds = new HashSet<string>(StringComparer.Ordinal);
+
         private readonly GameState _wallet;
+
+        private readonly EconomyService _economy;
 
         private int _nextOrderNumber;
 
         /// <summary>
-        /// Creates a ledger that credits <paramref name="wallet"/>. The wallet is
-        /// required so an order can never reach <see cref="OrderState.Paid"/>
-        /// without the money moving.
+        /// Legacy constructor: a ledger that credits <paramref name="wallet"/>
+        /// directly. Prefer <see cref="OrderLedger(GameState, EconomyService)"/>
+        /// so payments appear in the transaction log.
         /// </summary>
         /// <exception cref="ArgumentNullException">The wallet is null.</exception>
         public OrderLedger(GameState wallet)
+            : this(wallet, null)
         {
-            _wallet = wallet ?? throw new ArgumentNullException(nameof(wallet));
         }
 
-        /// <summary>The single money sink every payment goes through.</summary>
+        /// <summary>
+        /// Creates a ledger whose money moves through <paramref name="economy"/>.
+        /// When the service is present, every payment and tip is credited with
+        /// <see cref="EconomyService.TryEarn"/> so it is auditable. The wallet and
+        /// the service must share the same <see cref="GameState"/> instance.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Both arguments are null.</exception>
+        /// <exception cref="ArgumentException">The wallet is not the economy's wallet.</exception>
+        public OrderLedger(GameState wallet, EconomyService economy)
+        {
+            if (economy != null)
+            {
+                if (wallet != null && !ReferenceEquals(wallet, economy.Wallet))
+                {
+                    throw new ArgumentException(
+                        "The ledger wallet and the economy wallet must be the same GameState instance.",
+                        nameof(wallet));
+                }
+
+                _wallet = economy.Wallet;
+            }
+            else
+            {
+                _wallet = wallet ?? throw new ArgumentNullException(nameof(wallet));
+            }
+
+            _economy = economy;
+        }
+
+        /// <summary>The wallet every settlement credits.</summary>
         public GameState Wallet => _wallet;
+
+        /// <summary>The economy service payments flow through, or null for the legacy path.</summary>
+        public EconomyService Economy => _economy;
 
         /// <summary>Number of registered orders in every state.</summary>
         public int Count => _ordersById.Count;
@@ -233,11 +270,73 @@ namespace LaundryLegends.Customers
             }
 
             _settledOrderIds.Add(order.OrderId);
-            _wallet.TryCredit(order.Price); // Guaranteed by the CanCredit check above.
+            if (order.Price > 0)
+            {
+                // Guaranteed by the CanCredit check above. Routing through the
+                // economy service records the payout in the transaction log.
+                if (_economy != null)
+                {
+                    _economy.TryEarn(order.Price, $"Order {order.OrderId} paid", atSeconds);
+                }
+                else
+                {
+                    _wallet.TryCredit(order.Price);
+                }
+            }
 
             LastResult = order.Price > 0
                 ? $"Paid {order.Price} for order {order.OrderId}."
                 : $"Order {order.OrderId} settled with no charge.";
+            return true;
+        }
+
+        /// <summary>
+        /// Adds one tip for a paid order. The tip is recorded through the economy
+        /// service when present, and can only be credited once per order id.
+        /// Returns false without moving money for an unknown/unpaid order, a
+        /// non-positive amount, a repeat tip, or an unrepresentable credit.
+        /// </summary>
+        public bool TryAddTip(string orderId, int amount, float atSeconds)
+        {
+            if (!TryGetOrder(orderId, out LaundryOrder order))
+            {
+                return FailUnknownOrder(orderId);
+            }
+
+            if (order.State != OrderState.Paid)
+            {
+                return Fail($"Order {order.OrderId} cannot receive a tip while {order.State}.");
+            }
+
+            if (amount <= 0)
+            {
+                return Fail("Tip must be positive.");
+            }
+
+            if (_tippedOrderIds.Contains(order.OrderId))
+            {
+                return Fail($"Order {order.OrderId} already received its tip.");
+            }
+
+            if (!_wallet.CanCredit(amount))
+            {
+                return Fail($"Wallet cannot credit {amount} tip for order {order.OrderId}.");
+            }
+
+            if (_economy != null)
+            {
+                if (!_economy.TryEarn(amount, $"Tip for {order.OrderId}", atSeconds))
+                {
+                    return Fail($"Tip for order {order.OrderId} was rejected.");
+                }
+            }
+            else
+            {
+                _wallet.TryCredit(amount); // Guaranteed by the CanCredit check above.
+            }
+
+            _tippedOrderIds.Add(order.OrderId);
+            LastResult = $"Tip of {amount} for order {order.OrderId}.";
             return true;
         }
 

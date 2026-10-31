@@ -209,8 +209,7 @@ namespace LaundryLegends.Customers
             {
                 if (waited <= _tipWindowSeconds && _tip > 0)
                 {
-                    LastTip = _tip;
-                    _ledger.Wallet.TryCredit(_tip);
+                    LastTip = _ledger.TryAddTip(_order.OrderId, _tip, Time.time) ? _tip : 0;
                 }
 
                 Speak(DialogueTrigger.Pickup);

@@ -79,6 +79,12 @@ namespace LaundryLegends.Economy
 
         public event Action<Transaction> TransactionRecorded;
 
+        /// <summary>
+        /// Raised after an upgrade purchase is committed, so presentation and
+        /// machine effect appliers can react without polling ownership.
+        /// </summary>
+        public event Action<UpgradeDefinition> UpgradePurchased;
+
         public bool HasUpgrade(string upgradeId)
         {
             return !string.IsNullOrEmpty(upgradeId) && _purchased.Contains(upgradeId);
@@ -144,6 +150,7 @@ namespace LaundryLegends.Economy
 
             _purchased.Add(upgrade.Id);
             Record(TransactionKind.Upgrade, upgrade.Cost, $"Upgrade: {upgrade.DisplayName}", atSeconds);
+            UpgradePurchased?.Invoke(upgrade);
             return true;
         }
 

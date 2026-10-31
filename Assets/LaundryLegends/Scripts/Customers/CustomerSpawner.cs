@@ -1,6 +1,8 @@
 using LaundryLegends.Core;
+using LaundryLegends.Economy;
 using LaundryLegends.Interaction;
 using LaundryLegends.Laundry;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LaundryLegends.Customers
@@ -24,12 +26,25 @@ namespace LaundryLegends.Customers
         [SerializeField] private int _price = 40;
 
         private OrderLedger _ledger;
+        private EconomyService _economy;
+        private readonly List<UpgradeDefinition> _upgrades = new List<UpgradeDefinition>(UpgradeCatalogue.CreateDefault());
         private float _respawnTimer;
         private bool _waitingToRespawn;
 
         public CustomerAgent ActiveCustomer { get; private set; }
 
         public OrderLedger Ledger => _ledger;
+
+        public EconomyService Economy
+        {
+            get
+            {
+                EnsureEconomy();
+                return _economy;
+            }
+        }
+
+        public IReadOnlyList<UpgradeDefinition> Upgrades => _upgrades;
 
         public void Initialize(OrderLedger ledger, bool autoStart)
         {
@@ -44,15 +59,83 @@ namespace LaundryLegends.Customers
 
         private void Start()
         {
-            if (_ledger == null)
-            {
-                var wallet = GameSession.Instance != null ? GameSession.Instance.State : new GameState(0);
-                _ledger = new OrderLedger(wallet);
-            }
+            EnsureEconomy();
 
             if (_autoStart)
             {
                 SpawnNow();
+            }
+        }
+
+        /// <summary>
+        /// Owns exactly one economy service. If a ledger was injected without
+        /// one, the ledger keeps its legacy direct-credit path.
+        /// </summary>
+        private void EnsureEconomy()
+        {
+            if (_economy != null)
+            {
+                return;
+            }
+
+            if (_ledger != null && _ledger.Economy != null)
+            {
+                _economy = _ledger.Economy;
+            }
+            else
+            {
+                var wallet = _ledger != null
+                    ? _ledger.Wallet
+                    : (GameSession.Instance != null ? GameSession.Instance.State : new GameState(0));
+                _economy = new EconomyService(wallet);
+                if (_ledger == null)
+                {
+                    _ledger = new OrderLedger(wallet, _economy);
+                }
+            }
+
+            _economy.UpgradePurchased += OnUpgradePurchased;
+            ApplyOwnedUpgrades();
+        }
+
+        /// <summary>Buys the cheapest unowned upgrade from the catalogue.</summary>
+        public bool TryPurchaseNextUpgrade()
+        {
+            EnsureEconomy();
+            UpgradeDefinition next = _economy.FindNextGoal(_upgrades);
+            return next != null && _economy.TryPurchase(next, Time.time);
+        }
+
+        private void OnUpgradePurchased(UpgradeDefinition upgrade)
+        {
+            ApplyUpgrade(upgrade);
+        }
+
+        private void ApplyOwnedUpgrades()
+        {
+            foreach (UpgradeDefinition upgrade in _upgrades)
+            {
+                if (_economy != null && _economy.HasUpgrade(upgrade.Id))
+                {
+                    ApplyUpgrade(upgrade);
+                }
+            }
+        }
+
+        private static void ApplyUpgrade(UpgradeDefinition upgrade)
+        {
+            if (upgrade == null || upgrade.Id != UpgradeCatalogue.FastDryerId)
+            {
+                return;
+            }
+
+            foreach (MachineLoadHook machine in UnityEngine.Object.FindObjectsByType<MachineLoadHook>(
+                         FindObjectsSortMode.None))
+            {
+                if (machine.Kind == MachineKind.Dryer)
+                {
+                    machine.ApplyUpgrade(upgrade.Id, UpgradeCatalogue.FastDryerDurationMultiplier);
+                }
             }
         }
 

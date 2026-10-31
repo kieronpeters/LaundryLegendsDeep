@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using LaundryLegends.Interaction;
 using LaundryLegends.Player;
 using UnityEngine;
@@ -35,14 +37,25 @@ namespace LaundryLegends.Laundry
 
         private MachineState _state = MachineState.Empty;
         private float _elapsed;
+        private float _durationScale = 1f;
+        private readonly HashSet<string> _appliedUpgrades = new HashSet<string>(StringComparer.Ordinal);
 
         public MachineKind Kind => _kind;
         public MachineState State => _state;
         public bool IsRunning => _state == MachineState.Running;
         public bool IsComplete => _state == MachineState.Complete;
+
+        /// <summary>Authored cycle time, before any upgrade multiplier.</summary>
         public float Duration => _kind == MachineKind.Washer ? _washerDuration : _dryerDuration;
+
+        /// <summary>Multiplier applied by owned upgrades. Starts at 1.</summary>
+        public float DurationScale => _durationScale;
+
+        /// <summary>The cycle time actually used by the timer, including upgrades.</summary>
+        public float EffectiveDuration => Mathf.Max(0.05f, Duration * _durationScale);
+
         public float Progress => _state == MachineState.Complete ? 1f
-            : _state == MachineState.Running ? Mathf.Clamp01(_elapsed / Mathf.Max(0.01f, Duration))
+            : _state == MachineState.Running ? Mathf.Clamp01(_elapsed / Mathf.Max(0.01f, EffectiveDuration))
             : 0f;
 
         /// <summary>Last interaction result, exposed for tests and placeholder feedback.</summary>
@@ -86,9 +99,9 @@ namespace LaundryLegends.Laundry
             }
 
             _elapsed += Time.deltaTime;
-            if (_elapsed >= Duration)
+            if (_elapsed >= EffectiveDuration)
             {
-                _elapsed = Duration;
+                _elapsed = EffectiveDuration;
                 _state = MachineState.Complete;
                 LastResult = _kind == MachineKind.Washer ? "Wash complete" : "Dry complete";
                 LaundryItem item = LoadedItem;
@@ -135,7 +148,7 @@ namespace LaundryLegends.Laundry
         {
             if (_state == MachineState.Running || _state == MachineState.Loaded)
             {
-                _elapsed = Duration;
+                _elapsed = EffectiveDuration;
                 _state = MachineState.Complete;
                 LastResult = _kind == MachineKind.Washer ? "Wash complete" : "Dry complete";
             }
@@ -152,6 +165,36 @@ namespace LaundryLegends.Laundry
             {
                 _dryerDuration = Mathf.Max(0.05f, duration);
             }
+        }
+
+        /// <summary>
+        /// Applies one upgrade multiplier to this machine's cycle. Returns false
+        /// for an invalid multiplier or a repeat application, so callers can
+        /// re-run the effect safely.
+        /// </summary>
+        public bool ApplyUpgrade(string upgradeId, float durationMultiplier)
+        {
+            if (string.IsNullOrWhiteSpace(upgradeId)
+                || durationMultiplier <= 0f
+                || float.IsNaN(durationMultiplier)
+                || float.IsInfinity(durationMultiplier))
+            {
+                return false;
+            }
+
+            if (!_appliedUpgrades.Add(upgradeId))
+            {
+                return false;
+            }
+
+            _durationScale = Mathf.Max(0.05f, _durationScale * durationMultiplier);
+            return true;
+        }
+
+        /// <summary>True once <paramref name="upgradeId"/> has been applied to this machine.</summary>
+        public bool HasAppliedUpgrade(string upgradeId)
+        {
+            return !string.IsNullOrEmpty(upgradeId) && _appliedUpgrades.Contains(upgradeId);
         }
 
         /// <summary>Staff path: remove a completed item and empty the machine.</summary>

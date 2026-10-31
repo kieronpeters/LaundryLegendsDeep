@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Text;
+using LaundryLegends.Economy;
 using UnityEngine;
 
 namespace LaundryLegends.Customers
@@ -13,7 +15,7 @@ namespace LaundryLegends.Customers
     {
         [SerializeField] private CustomerSpawner _spawner;
         [SerializeField] private float _width = 260f;
-        [SerializeField] private float _height = 140f;
+        [SerializeField] private float _height = 280f;
 
         private string _receipt = string.Empty;
         private string _lastResult = string.Empty;
@@ -57,6 +59,51 @@ namespace LaundryLegends.Customers
             return $"Coins: {ledger.Wallet.Money}";
         }
 
+        /// <summary>One-line daily summary: income, costs, upgrades, net.</summary>
+        public static string BuildSummaryText(EconomyService economy)
+        {
+            if (economy == null)
+            {
+                return "Today: -";
+            }
+
+            DailySummary summary = economy.GetSummary();
+            return $"Today: +{summary.Income}  -{summary.Expenses}  -{summary.UpgradeSpend}  = {summary.Net}";
+        }
+
+        /// <summary>Upgrade list with owned markers.</summary>
+        public static string BuildUpgradeText(EconomyService economy, IReadOnlyList<UpgradeDefinition> upgrades)
+        {
+            if (economy == null || upgrades == null)
+            {
+                return "Upgrades: -";
+            }
+
+            var builder = new StringBuilder();
+            foreach (UpgradeDefinition upgrade in upgrades)
+            {
+                builder.Append(economy.HasUpgrade(upgrade.Id) ? "[x] " : "[ ] ")
+                    .Append(upgrade.DisplayName)
+                    .Append(" (")
+                    .Append(upgrade.Cost)
+                    .Append(")\n");
+            }
+
+            return builder.ToString().TrimEnd('\n');
+        }
+
+        /// <summary>Cheapest unowned upgrade, with the purchase key hint.</summary>
+        public static string BuildNextGoalText(EconomyService economy, IReadOnlyList<UpgradeDefinition> upgrades)
+        {
+            UpgradeDefinition next = economy != null ? economy.FindNextGoal(upgrades) : null;
+            if (next == null)
+            {
+                return "Next goal: none";
+            }
+
+            return $"Next goal: {next.DisplayName} ({next.Cost})   [U]";
+        }
+
         private static string StageWord(LaundryOrder order)
         {
             switch (order.State)
@@ -79,6 +126,8 @@ namespace LaundryLegends.Customers
 
         private void Update()
         {
+            UpdatePurchaseInput();
+
             if (_spawner == null)
             {
                 return;
@@ -111,14 +160,29 @@ namespace LaundryLegends.Customers
                 return;
             }
 
+            EconomyService economy = _spawner.Economy;
+
             GUI.Box(new Rect(16f, 16f, _width, _height), "ORDER TICKET");
             GUI.Label(new Rect(28f, 42f, _width - 24f, 22f), BuildWalletLine(ledger));
-            GUI.Label(new Rect(28f, 66f, _width - 24f, _height - 60f), BuildText(ledger));
+            GUI.Label(new Rect(28f, 66f, _width - 24f, 60f), BuildText(ledger));
+            GUI.Label(new Rect(28f, 126f, _width - 24f, 22f), BuildSummaryText(economy));
+            GUI.Label(new Rect(28f, 148f, _width - 24f, 70f), BuildUpgradeText(economy, _spawner.Upgrades));
+            GUI.Label(new Rect(28f, 222f, _width - 24f, 22f), BuildNextGoalText(economy, _spawner.Upgrades));
 
             if (Time.time < _receiptUntil && !string.IsNullOrEmpty(_receipt))
             {
-                GUI.Label(new Rect(28f, _height - 6f, _width - 24f, 24f), _receipt);
+                GUI.Label(new Rect(28f, 248f, _width - 24f, 24f), _receipt);
             }
+        }
+
+        private void UpdatePurchaseInput()
+        {
+            if (_spawner == null || !Input.GetKeyDown(KeyCode.U))
+            {
+                return;
+            }
+
+            _spawner.TryPurchaseNextUpgrade();
         }
     }
 }
