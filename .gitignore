@@ -116,3 +116,6 @@ ArtSource/Drafts/
 ArtSource/Exports/NPC/
 ArtSource/Blender/rescale_npc_models.py
 ArtSource/Blender/WrappedBundle.blend1
+
+# Blender auto-backups
+*.blend1
