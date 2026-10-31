@@ -9,7 +9,7 @@
     "renderPipeline": "Built-In Render Pipeline",
     "targetPlatform": "Windows 64-bit"
   },
-  "updatedAt": "2026-10-31T12:40:00+08:00",
+  "updatedAt": "2026-10-31T14:20:00+08:00",
   "currentMilestone": {
     "id": "M1",
     "name": "Playable laundry",
@@ -18,9 +18,9 @@
   "currentPhase": {
     "number": 3,
     "name": "Laundry interaction foundation",
-    "status": "in_progress",
+    "status": "complete",
     "file": ".orchestrator/tasks/phase-03.json",
-    "completionNote": "Phase 3 core acceptance is complete and owner-reviewed. Asset extension progress: LL-P3-010 pipeline research, LL-P3-011 Blender + custom basket, and LL-P3-012 loose/bag/machine polish are complete. LL-P3-013 creates three CC0 NPC archetypes next; Phase 4 follows after the extension review."
+    "completionNote": "Phase 3 is complete: core interaction, pickup, carry, Q drop, prompts, item identity, machine load/unload, and owner acceptance, plus the approved asset extension (Blender pipeline, custom basket/loose/bag, machine fronts, and three CC0 NPC archetypes). Phase 4 is next after owner review of the NPC capture."
   },
   "nextPhase": {
     "number": 4,
@@ -29,11 +29,11 @@
     "file": ".orchestrator/tasks/phase-04.json"
   },
   "activeTask": null,
-  "lastCompletedTask": "LL-P3-012",
-  "nextTask": "LL-P3-013",
+  "lastCompletedTask": "LL-P3-013",
+  "nextTask": null,
   "taskCounts": {
-    "complete": 35,
-    "ready": 1,
+    "complete": 36,
+    "ready": 0,
     "planned": 0,
     "pending": 1,
     "inProgress": 0,
@@ -154,49 +154,46 @@
     "note": "Procedural placeholders only: 3 scenes, 5 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
   },
   "lastRun": {
-    "id": "2026-10-31-ll-p3-012",
-    "report": ".orchestrator/reports/2026-10-31-ll-p3-012.md",
+    "id": "2026-10-31-ll-p3-013",
+    "report": ".orchestrator/reports/2026-10-31-ll-p3-013.md",
     "status": "complete",
-    "startedAt": "2026-10-31T11:15:00+08:00",
-    "completedAt": "2026-10-31T12:40:00+08:00",
+    "startedAt": "2026-10-31T12:45:00+08:00",
+    "completedAt": "2026-10-31T14:20:00+08:00",
     "checks": {
-      "compile": "exit 0",
-      "props_validation": "passed",
-      "machine_fronts_validation": "passed",
-      "item_validation": "passed",
-      "machine_hook_validation": "passed",
-      "navigation": "passed",
+      "npc_apply": "passed",
+      "npc_validation": "passed",
       "editmode": "32/32 passed",
       "playmode": "37 passed, 1 skipped",
-      "captures": "passed",
+      "capture": "passed",
       "log_scan": "passed"
     },
     "filesChanged": [
-      "ArtSource/Blender/create_laundry_props.py",
-      "ArtSource/Blender/LooseLaundry.blend",
-      "ArtSource/Blender/Bag.blend",
-      "ArtSource/Exports/LooseLaundry.fbx",
-      "ArtSource/Exports/Bag.fbx",
-      "Assets/LaundryLegends/Art/Models/LooseLaundry.fbx",
-      "Assets/LaundryLegends/Art/Models/Bag.fbx",
-      "Assets/LaundryLegends/Art/Materials/MAT_LooseLaundry.mat",
-      "Assets/LaundryLegends/Art/Materials/MAT_Bag.mat",
-      "Assets/LaundryLegends/Editor/BasketAssetSetupTool.cs",
-      "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/LooseLaundry.prefab",
-      "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/Bag.prefab",
-      "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
+      "ArtSource/Licenses/100-avatars.md",
+      "Assets/LaundryLegends/Art/Models/NPC/NPC_Customer.fbx",
+      "Assets/LaundryLegends/Art/Models/NPC/NPC_Attendant.fbx",
+      "Assets/LaundryLegends/Art/Models/NPC/NPC_Regular.fbx",
+      "Assets/LaundryLegends/Art/Textures/NPC/NPC_Customer.png",
+      "Assets/LaundryLegends/Art/Textures/NPC/NPC_Attendant.png",
+      "Assets/LaundryLegends/Art/Textures/NPC/NPC_Regular.png",
+      "Assets/LaundryLegends/Art/Materials/MAT_NPC_Customer.mat",
+      "Assets/LaundryLegends/Art/Materials/MAT_NPC_Attendant.mat",
+      "Assets/LaundryLegends/Art/Materials/MAT_NPC_Regular.mat",
+      "Assets/LaundryLegends/Editor/NpcAssetSetupTool.cs",
+      "Assets/LaundryLegends/Prefabs/Gameplay/NPC/NPC_Customer.prefab",
+      "Assets/LaundryLegends/Prefabs/Gameplay/NPC/NPC_Attendant.prefab",
+      "Assets/LaundryLegends/Prefabs/Gameplay/NPC/NPC_Regular.prefab",
       "ASSET_INVENTORY.md",
       ".orchestrator/tasks/phase-03.json",
       ".orchestrator/state.json",
-      ".orchestrator/reports/2026-10-31-ll-p3-012.md",
+      ".orchestrator/reports/2026-10-31-ll-p3-013.md",
       "PROJECT_STATE.md",
       "DEVELOPMENT_LOG.md",
-      "TESTING_GUIDE.md"
+      "ROADMAP.md"
     ]
   },
   "recovery": {
     "procedure": ".orchestrator/recovery/RESUME.md",
-    "resumeTask": "LL-P3-013",
+    "resumeTask": null,
     "doNotReplay": [
       "LL-P0-001",
       "LL-P0-002",
@@ -232,7 +229,8 @@
       "LL-P3-007",
       "LL-P3-010",
       "LL-P3-011",
-      "LL-P3-012"
+      "LL-P3-012",
+      "LL-P3-013"
     ]
   }
 }

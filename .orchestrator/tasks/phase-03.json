@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "phase": 3,
   "name": "Laundry interaction foundation",
-  "status": "in_progress",
-  "updatedAt": "2026-10-31T12:40:00+08:00",
+  "status": "complete",
+  "updatedAt": "2026-10-31T14:20:00+08:00",
   "tasks": [
     {
       "id": "LL-P3-001",
@@ -635,7 +635,7 @@
     {
       "id": "LL-P3-013",
       "title": "Create three free-licensed NPC archetypes",
-      "status": "ready",
+      "status": "complete",
       "priority": 11,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P3-012"],
@@ -672,15 +672,15 @@
       "checks": [
         {
           "name": "NPC archetypes",
-          "status": "pending",
+          "status": "passed",
           "command": "Download CC0 bases/animations; build prefabs; validate; suites",
-          "evidence": "Pending"
+          "evidence": "Three CC0 100 Avatars humanoids imported at about 1.5-1.8 m; capsule colliders and materials validated; NPC validation exit 0; EditMode 32/32; PlayMode 37 passed plus 1 capture test; no usable clips, so the static-pose fallback is documented; capture inspected on 2026-10-31"
         }
       ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "result": "Added NPC_Customer, NPC_Attendant, and NPC_Regular from CC0 100 Avatars bases. Each has a humanoid avatar, capsule collider, texture material, and a relaxed static arm pose. The FBX files contain no usable idle/walk/carry clips, so animation is documented as deferred; no behavior scripts or scene changes were added.",
+      "retryCount": 2,
+      "startedAt": "2026-10-31T12:45:00+08:00",
+      "completedAt": "2026-10-31T14:20:00+08:00"
     }
   ]
 }

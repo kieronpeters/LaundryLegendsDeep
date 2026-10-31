@@ -1015,3 +1015,34 @@ Phase 2 is complete. Author and approve the Phase 3 task plan before starting in
 ### Next
 
 `LL-P3-013` - three CC0 NPC archetypes with idle/walk/carry clips.
+
+## 2026-10-31 - LL-P3-013 CC0 NPC archetypes
+
+**Phase:** 3 extension - free asset/NPC polish
+**Task:** LL-P3-013
+**Status:** Complete - three prefabs, validation, suites, and preview capture passed
+
+### Implemented / performed
+
+- Downloaded the CC0 100 Avatars R2 release and used BizDude, SunflowerPerson, and CosmicPerson.
+- Imported three humanoid avatars at 1.5-1.8 m with a 14x global scale, capsule colliders, and texture materials.
+- Added `NpcAssetSetupTool` apply/pose/capture/validate utilities.
+- Applied a relaxed static arm pose; no usable idle/walk/carry clips exist in the FBX files, so animation is deferred.
+- Inspected `TestResults/npc-archetypes.png`.
+- Recorded the CC0 license in `ArtSource/Licenses/100-avatars.md`.
+
+### Checks and evidence
+
+- NPC apply and validation exited `0`; humanoid avatars, heights, colliders, and materials verified.
+- EditMode 32/32; PlayMode 37 passed, 1 explicit capture test skipped.
+- Preview capture inspected; import warned about one self-intersecting Customer polygon.
+- Report: `.orchestrator/reports/2026-10-31-ll-p3-013.md`.
+
+### Not performed
+
+- Animation playback, NPC behavior, scene placement, player build, performance measurement.
+- Human review of the NPC style.
+
+### Next
+
+Owner review of the NPC capture, then Phase 4 planning. Phase 3 is complete.
