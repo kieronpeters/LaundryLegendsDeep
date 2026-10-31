@@ -49,11 +49,69 @@ namespace LaundryLegends.Tests.EditMode
         public void UnaffordableUpgradeIsRejectedAtomically()
         {
             EconomyService economy = NewService(50);
-            var upgrade = new UpgradeDefinition("extra-washer", "Extra Washer", "More capacity", 200, "washer.count");
+            var upgrade = new UpgradeDefinition(
+                UpgradeCatalogue.ExtraWasherId,
+                "High-Efficiency Washer",
+                "Washes faster",
+                200,
+                UpgradeCatalogue.ExtraWasherCapability);
 
             Assert.IsFalse(economy.TryPurchase(upgrade, 1f));
             Assert.AreEqual(50, economy.Balance);
-            Assert.IsFalse(economy.HasUpgrade("extra-washer"));
+            Assert.IsFalse(economy.HasUpgrade(UpgradeCatalogue.ExtraWasherId));
+            Assert.AreEqual(0, economy.Transactions.Count);
+        }
+
+        [Test]
+        public void DailyOverheadDeductsOnceAndLogsOnce()
+        {
+            EconomyService economy = NewService(100);
+
+            Assert.IsTrue(DailyOverhead.TryCharge(economy, 5f));
+            Assert.AreEqual(85, economy.Balance);
+            Assert.AreEqual(1, economy.Transactions.Count);
+
+            Transaction charge = economy.Transactions[0];
+            Assert.AreEqual(TransactionKind.Expense, charge.Kind);
+            Assert.AreEqual(DailyOverhead.DefaultAmount, charge.Amount);
+            Assert.AreEqual(5f, charge.AtSeconds, 0.0001f);
+            StringAssert.Contains("overhead", charge.Reason);
+            Assert.AreEqual(15, economy.GetSummary().Expenses);
+        }
+
+        [Test]
+        public void UnaffordableDailyOverheadLeavesBalanceAndLogUntouched()
+        {
+            EconomyService economy = NewService(10);
+
+            Assert.IsFalse(DailyOverhead.TryCharge(economy, 5f));
+            Assert.AreEqual(10, economy.Balance);
+            Assert.AreEqual(0, economy.Transactions.Count);
+            Assert.AreEqual(0, economy.GetSummary().Expenses);
+        }
+
+        [Test]
+        public void DailyOverheadCanEmptyTheWalletButNotOverdrawIt()
+        {
+            EconomyService economy = NewService(20);
+
+            Assert.IsTrue(DailyOverhead.TryCharge(economy, 1f));
+            Assert.AreEqual(5, economy.Balance);
+
+            Assert.IsFalse(DailyOverhead.TryCharge(economy, 2f));
+            Assert.AreEqual(5, economy.Balance);
+            Assert.AreEqual(1, economy.Transactions.Count);
+        }
+
+        [Test]
+        public void DailyOverheadRejectsMissingEconomyAndNonPositiveAmount()
+        {
+            Assert.IsFalse(DailyOverhead.TryCharge(null, 1f));
+
+            EconomyService economy = NewService(100);
+            Assert.IsFalse(DailyOverhead.TryCharge(economy, 1f, 0));
+            Assert.IsFalse(DailyOverhead.TryCharge(economy, 1f, -15));
+            Assert.AreEqual(100, economy.Balance);
             Assert.AreEqual(0, economy.Transactions.Count);
         }
 

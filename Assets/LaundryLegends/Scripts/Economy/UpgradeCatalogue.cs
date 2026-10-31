@@ -5,6 +5,7 @@ namespace LaundryLegends.Economy
     /// <summary>
     /// The two upgrades Phase 6 ships with. Kept in code so the HUD, the
     /// machine effects, and tests all read the same ids, costs, and multipliers.
+    /// Both upgrades change a real machine timer; neither is flag-only.
     /// </summary>
     public static class UpgradeCatalogue
     {
@@ -12,13 +13,18 @@ namespace LaundryLegends.Economy
         public const string FastDryerCapability = "dryer.speed";
         public const float FastDryerDurationMultiplier = 0.7f;
 
+        /// <summary>
+        /// Stable purchase/save id. It is kept from the earlier flag-only
+        /// version so recorded ownership keeps resolving; the display name and
+        /// capability now describe the washer speed effect.
+        /// </summary>
         public const string ExtraWasherId = "extra-washer";
-        public const string ExtraWasherCapability = "washer.count";
+
+        public const string ExtraWasherCapability = "washer.speed";
+        public const float ExtraWasherDurationMultiplier = 0.75f;
 
         /// <summary>
         /// Fast Dryer is a real effect: every dryer cycle lasts 70% as long.
-        /// Extra Washer is a progression flag only; it records the purchase and
-        /// reserves the capability, but no second machine is spawned yet.
         /// </summary>
         public static UpgradeDefinition FastDryer()
         {
@@ -30,12 +36,17 @@ namespace LaundryLegends.Economy
                 FastDryerCapability);
         }
 
+        /// <summary>
+        /// High-Efficiency Washer is a real effect: every washer cycle lasts
+        /// 75% as long. The id stays <see cref="ExtraWasherId"/> so existing
+        /// ownership and save data remain valid.
+        /// </summary>
         public static UpgradeDefinition ExtraWasher()
         {
             return new UpgradeDefinition(
                 ExtraWasherId,
-                "Extra Washer",
-                "Reserves a second washer bay (progression flag only).",
+                "High-Efficiency Washer",
+                "Washes every load in 75% of the normal time.",
                 200,
                 ExtraWasherCapability);
         }

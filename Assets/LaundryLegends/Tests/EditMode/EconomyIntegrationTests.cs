@@ -94,6 +94,94 @@ namespace LaundryLegends.Tests.EditMode
         }
 
         [Test]
+        public void HighEfficiencyWasherUpgradeShortensTheWasherTimerOnce()
+        {
+            var go = new GameObject("Washer");
+            MachineLoadHook washer = go.AddComponent<MachineLoadHook>();
+            washer.Configure(null, MachineKind.Washer);
+            washer.SetDuration(20f);
+
+            Assert.AreEqual(20f, washer.EffectiveDuration, 0.001f);
+
+            Assert.IsTrue(washer.ApplyUpgrade(
+                UpgradeCatalogue.ExtraWasherId,
+                UpgradeCatalogue.ExtraWasherDurationMultiplier));
+            Assert.AreEqual(15f, washer.EffectiveDuration, 0.001f);
+            Assert.IsTrue(washer.HasAppliedUpgrade(UpgradeCatalogue.ExtraWasherId));
+
+            Assert.IsFalse(washer.ApplyUpgrade(UpgradeCatalogue.ExtraWasherId, 0.5f), "Upgrades apply once.");
+            Assert.AreEqual(15f, washer.EffectiveDuration, 0.001f);
+
+            Object.DestroyImmediate(go);
+        }
+
+        [Test]
+        public void HighEfficiencyWasherDefinitionMatchesTheCatalogue()
+        {
+            UpgradeDefinition upgrade = UpgradeCatalogue.ExtraWasher();
+
+            Assert.AreEqual(UpgradeCatalogue.ExtraWasherId, upgrade.Id);
+            Assert.AreEqual("High-Efficiency Washer", upgrade.DisplayName);
+            Assert.AreEqual("washer.speed", upgrade.CapabilityTag);
+            Assert.AreEqual(UpgradeCatalogue.ExtraWasherCapability, upgrade.CapabilityTag);
+            Assert.AreEqual(200, upgrade.Cost);
+            Assert.AreEqual(0.75f, UpgradeCatalogue.ExtraWasherDurationMultiplier, 0.0001f);
+            Assert.IsTrue(UpgradeEffects.TryGetMachineEffect(upgrade.Id, out MachineKind kind, out float multiplier));
+            Assert.AreEqual(MachineKind.Washer, kind);
+            Assert.AreEqual(0.75f, multiplier, 0.0001f);
+        }
+
+        [Test]
+        public void UpgradeEffectsOnlyTouchMatchingMachinesAndApplyOnce()
+        {
+            var washerObject = new GameObject("Washer");
+            MachineLoadHook washer = washerObject.AddComponent<MachineLoadHook>();
+            washer.Configure(null, MachineKind.Washer);
+            washer.SetDuration(20f);
+
+            var dryerObject = new GameObject("Dryer");
+            MachineLoadHook dryer = dryerObject.AddComponent<MachineLoadHook>();
+            dryer.Configure(null, MachineKind.Dryer);
+            dryer.SetDuration(20f);
+
+            var machines = new[] { washer, dryer };
+
+            Assert.AreEqual(1, UpgradeEffects.Apply(UpgradeCatalogue.ExtraWasher(), machines));
+            Assert.IsTrue(washer.HasAppliedUpgrade(UpgradeCatalogue.ExtraWasherId));
+            Assert.IsFalse(dryer.HasAppliedUpgrade(UpgradeCatalogue.ExtraWasherId), "Washer speed must not touch dryers.");
+            Assert.AreEqual(15f, washer.EffectiveDuration, 0.001f);
+            Assert.AreEqual(20f, dryer.EffectiveDuration, 0.001f);
+
+            Assert.AreEqual(0, UpgradeEffects.Apply(UpgradeCatalogue.ExtraWasher(), machines), "Reapplying is a no-op.");
+            Assert.AreEqual(15f, washer.EffectiveDuration, 0.001f);
+
+            Assert.AreEqual(1, UpgradeEffects.Apply(UpgradeCatalogue.FastDryer(), machines));
+            Assert.AreEqual(14f, dryer.EffectiveDuration, 0.001f);
+            Assert.AreEqual(15f, washer.EffectiveDuration, 0.001f);
+
+            Object.DestroyImmediate(washerObject);
+            Object.DestroyImmediate(dryerObject);
+        }
+
+        [Test]
+        public void UpgradeEffectsIgnoreUnknownUpgrades()
+        {
+            var go = new GameObject("Washer");
+            MachineLoadHook washer = go.AddComponent<MachineLoadHook>();
+            washer.Configure(null, MachineKind.Washer);
+            washer.SetDuration(20f);
+
+            var flagOnly = new UpgradeDefinition("flag-only", "Flag", "No world effect", 10, "flag");
+            Assert.AreEqual(0, UpgradeEffects.Apply(flagOnly, new[] { washer }));
+            Assert.AreEqual(20f, washer.EffectiveDuration, 0.001f);
+
+            Assert.AreEqual(0, UpgradeEffects.Apply(null, new[] { washer }));
+            Assert.IsFalse(UpgradeEffects.TryGetMachineEffect("flag-only", out _, out _));
+
+            Object.DestroyImmediate(go);
+        }
+
+        [Test]
         public void SummaryAndGoalTextReflectTheEconomy()
         {
             var wallet = new GameState(100);

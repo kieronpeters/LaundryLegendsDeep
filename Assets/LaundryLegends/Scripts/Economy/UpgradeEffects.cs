@@ -22,28 +22,54 @@ namespace LaundryLegends.Economy
                 return 0;
             }
 
-            if (upgrade.Id != UpgradeCatalogue.FastDryerId)
+            if (!TryGetMachineEffect(upgrade.Id, out MachineKind kind, out float durationMultiplier))
             {
-                // Extra Washer and any future flag-only upgrade change state in
-                // EconomyService only; there is no world effect to apply.
                 return 0;
             }
 
             int applied = 0;
             foreach (MachineLoadHook machine in machines)
             {
-                if (machine == null || machine.Kind != MachineKind.Dryer)
+                if (machine == null || machine.Kind != kind)
                 {
                     continue;
                 }
 
-                if (machine.ApplyUpgrade(upgrade.Id, UpgradeCatalogue.FastDryerDurationMultiplier))
+                if (machine.ApplyUpgrade(upgrade.Id, durationMultiplier))
                 {
                     applied += 1;
                 }
             }
 
             return applied;
+        }
+
+        /// <summary>
+        /// Capability map for the catalogue. Returns false for an unknown or
+        /// flag-only upgrade, in which case nothing in the scene changes.
+        /// </summary>
+        public static bool TryGetMachineEffect(
+            string upgradeId,
+            out MachineKind kind,
+            out float durationMultiplier)
+        {
+            switch (upgradeId)
+            {
+                case UpgradeCatalogue.FastDryerId:
+                    kind = MachineKind.Dryer;
+                    durationMultiplier = UpgradeCatalogue.FastDryerDurationMultiplier;
+                    return true;
+
+                case UpgradeCatalogue.ExtraWasherId:
+                    kind = MachineKind.Washer;
+                    durationMultiplier = UpgradeCatalogue.ExtraWasherDurationMultiplier;
+                    return true;
+
+                default:
+                    kind = MachineKind.Washer;
+                    durationMultiplier = 1f;
+                    return false;
+            }
         }
     }
 }

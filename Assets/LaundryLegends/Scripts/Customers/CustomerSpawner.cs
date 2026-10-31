@@ -122,21 +122,16 @@ namespace LaundryLegends.Customers
             }
         }
 
+        /// <summary>
+        /// Hands the upgrade to the shared capability map. Both catalogue
+        /// upgrades are machine-speed effects, and each machine ignores a repeat
+        /// application, so re-running this after a reload is safe.
+        /// </summary>
         private static void ApplyUpgrade(UpgradeDefinition upgrade)
         {
-            if (upgrade == null || upgrade.Id != UpgradeCatalogue.FastDryerId)
-            {
-                return;
-            }
-
-            foreach (MachineLoadHook machine in UnityEngine.Object.FindObjectsByType<MachineLoadHook>(
-                         FindObjectsSortMode.None))
-            {
-                if (machine.Kind == MachineKind.Dryer)
-                {
-                    machine.ApplyUpgrade(upgrade.Id, UpgradeCatalogue.FastDryerDurationMultiplier);
-                }
-            }
+            UpgradeEffects.Apply(
+                upgrade,
+                UnityEngine.Object.FindObjectsByType<MachineLoadHook>(FindObjectsSortMode.None));
         }
 
         public CustomerAgent SpawnNow()
