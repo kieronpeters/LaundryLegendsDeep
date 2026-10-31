@@ -310,6 +310,381 @@ namespace LaundryLegends.Editor
             Debug.Log("[Machine] Machine front validation passed: eight machines detailed, no colliders, hook and geometry intact.");
         }
 
+        [MenuItem("Laundry Legends/Phase 3/Apply Environment Materials")]
+        public static void ApplyEnvironmentMaterials()
+        {
+            string floorColor = "Assets/LaundryLegends/Art/Textures/Environment/Tiles141_Color.jpg";
+            string floorNormal = "Assets/LaundryLegends/Art/Textures/Environment/Tiles141_Normal.jpg";
+            string wallColor = "Assets/LaundryLegends/Art/Textures/Environment/PaintedPlaster017_Color.jpg";
+            string wallNormal = "Assets/LaundryLegends/Art/Textures/Environment/PaintedPlaster017_Normal.jpg";
+            string woodColor = "Assets/LaundryLegends/Art/Textures/Environment/WoodFloor064_Color.jpg";
+            string woodNormal = "Assets/LaundryLegends/Art/Textures/Environment/WoodFloor064_Normal.jpg";
+
+            Material floor = EnsureEnvironmentMaterial(
+                $"{MaterialFolder}/MAT_FloorTile.mat",
+                "MAT_FloorTile",
+                floorColor,
+                floorNormal,
+                new Vector2(6f, 6f),
+                0.25f);
+            Material wall = EnsureEnvironmentMaterial(
+                $"{MaterialFolder}/MAT_WallPaint.mat",
+                "MAT_WallPaint",
+                wallColor,
+                wallNormal,
+                new Vector2(3f, 2f),
+                0.08f);
+            Material wood = EnsureEnvironmentMaterial(
+                $"{MaterialFolder}/MAT_CounterWood.mat",
+                "MAT_CounterWood",
+                woodColor,
+                woodNormal,
+                new Vector2(2f, 2f),
+                0.2f);
+
+            floor.color = new Color(0.88f, 0.88f, 0.86f);
+            wall.color = new Color(0.72f, 0.72f, 0.70f);
+            wood.color = new Color(0.85f, 0.82f, 0.78f);
+
+            GameObject room = PrefabUtility.LoadPrefabContents(RoomPrefabPath);
+            try
+            {
+                int floors = 0;
+                int walls = 0;
+                int counters = 0;
+                foreach (Renderer renderer in room.GetComponentsInChildren<Renderer>(true))
+                {
+                    string name = renderer.gameObject.name;
+                    if (name == "Floor")
+                    {
+                        renderer.sharedMaterial = floor;
+                        floors++;
+                    }
+                    else if (name == "Ceiling" || name.StartsWith("Wall"))
+                    {
+                        renderer.sharedMaterial = wall;
+                        walls++;
+                    }
+                    else if (name == "Counter" || name == "FoldingTable")
+                    {
+                        renderer.sharedMaterial = wood;
+                        counters++;
+                    }
+                }
+
+                int lights = 0;
+                foreach (Light light in room.GetComponentsInChildren<Light>(true))
+                {
+                    if (light.type != LightType.Point)
+                    {
+                        continue;
+                    }
+
+                    light.color = new Color(1f, 0.92f, 0.80f);
+                    light.intensity = 2.6f;
+                    light.range = 14f;
+                    lights++;
+                }
+
+                if (floors == 0 || walls == 0 || counters == 0 || lights == 0)
+                {
+                    throw new InvalidOperationException(
+                        $"Environment material targets missing (floors {floors}, walls {walls}, counters {counters}, lights {lights}).");
+                }
+
+                PrefabUtility.SaveAsPrefabAsset(room, RoomPrefabPath);
+                Debug.Log($"[Environment] Replaced {floors} floor, {walls} wall/ceiling, {counters} counter renderers and warmed {lights} lights.");
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(room);
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
+        [MenuItem("Laundry Legends/Phase 3/Validate Environment Materials")]
+        public static void ValidateEnvironmentMaterials()
+        {
+            var failures = new List<string>();
+            GameObject room = AssetDatabase.LoadAssetAtPath<GameObject>(RoomPrefabPath);
+            if (room == null)
+            {
+                failures.Add($"Missing room prefab: {RoomPrefabPath}");
+            }
+            else
+            {
+                Material floor = AssetDatabase.LoadAssetAtPath<Material>($"{MaterialFolder}/MAT_FloorTile.mat");
+                Material wall = AssetDatabase.LoadAssetAtPath<Material>($"{MaterialFolder}/MAT_WallPaint.mat");
+                Material wood = AssetDatabase.LoadAssetAtPath<Material>($"{MaterialFolder}/MAT_CounterWood.mat");
+
+                if (floor == null || wall == null || wood == null)
+                {
+                    failures.Add("One or more environment materials are missing.");
+                }
+
+                foreach (Renderer renderer in room.GetComponentsInChildren<Renderer>(true))
+                {
+                    string name = renderer.gameObject.name;
+                    if (name == "Floor" && renderer.sharedMaterial != floor)
+                    {
+                        failures.Add("Floor does not use MAT_FloorTile.");
+                    }
+                    else if ((name == "Ceiling" || name.StartsWith("Wall")) && renderer.sharedMaterial != wall)
+                    {
+                        failures.Add($"{name} does not use MAT_WallPaint.");
+                    }
+                    else if ((name == "Counter" || name == "FoldingTable") && renderer.sharedMaterial != wood)
+                    {
+                        failures.Add($"{name} does not use MAT_CounterWood.");
+                    }
+                }
+
+                foreach (Light light in room.GetComponentsInChildren<Light>(true))
+                {
+                    if (light.type == LightType.Point && (light.intensity < 2.5f || light.color.b < 0.75f))
+                    {
+                        failures.Add($"{light.gameObject.name} lighting was not warmed/brightened.");
+                    }
+                }
+            }
+
+            if (failures.Count > 0)
+            {
+                foreach (string failure in failures)
+                {
+                    Debug.LogError($"[Environment] {failure}");
+                }
+
+                throw new InvalidOperationException($"Environment material validation failed with {failures.Count} issue(s).");
+            }
+
+            Debug.Log("[Environment] Validation passed: floor, walls, counters, and point lights use the polished setup.");
+        }
+
+        private static Material EnsureEnvironmentMaterial(
+            string materialPath,
+            string name,
+            string colorPath,
+            string normalPath,
+            Vector2 tiling,
+            float smoothness)
+        {
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            if (material != null)
+            {
+                return material;
+            }
+
+            Texture2D color = ConfigureTexture(colorPath, false);
+            Texture2D normal = ConfigureTexture(normalPath, true);
+
+            material = new Material(Shader.Find("Standard"))
+            {
+                name = name,
+                mainTexture = color
+            };
+            material.mainTextureScale = tiling;
+            if (normal != null)
+            {
+                material.SetTexture("_BumpMap", normal);
+                material.EnableKeyword("_NORMALMAP");
+            }
+
+            material.SetFloat("_Glossiness", smoothness);
+            material.SetFloat("_Metallic", 0f);
+            AssetDatabase.CreateAsset(material, materialPath);
+            return material;
+        }
+
+        private static Texture2D ConfigureTexture(string path, bool normal)
+        {
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer == null)
+            {
+                throw new InvalidOperationException($"Missing texture importer: {path}");
+            }
+
+            importer.textureType = normal ? TextureImporterType.NormalMap : TextureImporterType.Default;
+            importer.sRGBTexture = !normal;
+            importer.wrapMode = TextureWrapMode.Repeat;
+            importer.maxTextureSize = 1024;
+            importer.SaveAndReimport();
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        }
+
+        [MenuItem("Laundry Legends/Phase 3/Apply Signage and Props")]
+        public static void ApplySignageAndProps()
+        {
+            Material metal = LoadMaterial("Grey_Metal");
+            Material sign = LoadMaterial("Grey_Sign");
+            Material plant = EnsureMaterial($"{MaterialFolder}/MAT_Plant.mat", "MAT_Plant", new Color(0.22f, 0.45f, 0.22f, 1f), 0.15f);
+            Material detergent = EnsureMaterial($"{MaterialFolder}/MAT_Detergent.mat", "MAT_Detergent", new Color(0.18f, 0.38f, 0.72f, 1f), 0.45f);
+
+            GameObject room = PrefabUtility.LoadPrefabContents(RoomPrefabPath);
+            try
+            {
+                Transform existing = room.transform.Find("PolishedProps");
+                if (existing != null)
+                {
+                    UnityEngine.Object.DestroyImmediate(existing.gameObject);
+                }
+
+                var root = new GameObject("PolishedProps");
+                root.transform.SetParent(room.transform, false);
+
+                CreateSign(root.transform, "OpenSign", "OPEN", new Vector3(0f, 1.98f, -5.94f), sign, new Color(0.85f, 1f, 0.8f), 1.2f);
+                CreateSign(root.transform, "HoursSign", "HOURS 7-22", new Vector3(-3.0f, 1.70f, -5.92f), sign, Color.white, 1.8f);
+
+                foreach (TextMesh text in room.GetComponentsInChildren<TextMesh>(true))
+                {
+                    if (text.text.Contains("LAUNDRY LEGENDS") || text.text.Contains("DROP OFF"))
+                    {
+                        text.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
+                    }
+                }
+
+                for (int i = 0; i < 3; i++)
+                {
+                    CreateCylinder(root.transform, $"Detergent_{i + 1}", new Vector3(-4.8f + i * 0.3f, 1.30f, -2.5f), new Vector3(0.10f, 0.28f, 0.10f), detergent);
+                }
+
+                CreateCylinder(root.transform, "PlantPot", new Vector3(5.6f, 0.22f, -4.5f), new Vector3(0.32f, 0.22f, 0.32f), LoadMaterial("Grey_Counter"));
+                CreateSphere(root.transform, "PlantLeaves", new Vector3(5.6f, 0.58f, -4.5f), new Vector3(0.55f, 0.55f, 0.55f), plant);
+
+                CreateBox(root.transform, "CartBase", new Vector3(6.45f, 0.25f, 2.7f), new Vector3(0.65f, 0.45f, 0.5f), metal);
+                CreateBox(root.transform, "CartHandle", new Vector3(6.45f, 0.65f, 2.95f), new Vector3(0.65f, 0.08f, 0.08f), metal);
+
+                PrefabUtility.SaveAsPrefabAsset(room, RoomPrefabPath);
+                Debug.Log("[Props] Added open/hours signs, detergent bottles, plant, and cart additively.");
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(room);
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
+        [MenuItem("Laundry Legends/Phase 3/Validate Signage and Props")]
+        public static void ValidateSignageAndProps()
+        {
+            var failures = new List<string>();
+            GameObject room = AssetDatabase.LoadAssetAtPath<GameObject>(RoomPrefabPath);
+            if (room == null)
+            {
+                failures.Add($"Missing room prefab: {RoomPrefabPath}");
+            }
+            else
+            {
+                Transform props = room.transform.Find("PolishedProps");
+                if (props == null)
+                {
+                    failures.Add("Missing PolishedProps root.");
+                }
+                else
+                {
+                    if (props.Find("OpenSign") == null || props.Find("HoursSign") == null)
+                    {
+                        failures.Add("Open/hours signs are missing.");
+                    }
+
+                    int detergent = 0;
+                    foreach (Transform child in props)
+                    {
+                        if (child.name.StartsWith("Detergent_"))
+                        {
+                            detergent++;
+                        }
+
+                        if (child.GetComponent<Collider>() != null)
+                        {
+                            failures.Add($"{child.name} must not add a collider.");
+                        }
+                    }
+
+                    if (detergent != 3)
+                    {
+                        failures.Add($"Expected 3 detergent bottles, found {detergent}.");
+                    }
+                }
+
+                MachineLoadHook[] hooks = room.GetComponentsInChildren<MachineLoadHook>(true);
+                if (hooks.Length != 1 || hooks[0].gameObject.name != "Machine_1")
+                {
+                    failures.Add("MachineLoadHook must remain exactly once on Machine_1.");
+                }
+            }
+
+            if (failures.Count > 0)
+            {
+                foreach (string failure in failures)
+                {
+                    Debug.LogError($"[Props] {failure}");
+                }
+
+                throw new InvalidOperationException($"Signage/prop validation failed with {failures.Count} issue(s).");
+            }
+
+            Debug.Log("[Props] Signage/prop validation passed: signs, bottles, plant, cart, no colliders, hook intact.");
+        }
+
+        private static void CreateSign(Transform parent, string name, string text, Vector3 position, Material panelMaterial, Color textColor, float width)
+        {
+            CreateBox(parent, name, position, new Vector3(width, 0.36f, 0.05f), panelMaterial);
+
+            var textObject = new GameObject($"{name}_Text");
+            textObject.transform.SetParent(parent, false);
+            textObject.transform.localPosition = position + new Vector3(0f, 0f, 0.04f);
+            textObject.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
+            TextMesh mesh = textObject.AddComponent<TextMesh>();
+            mesh.text = text;
+            mesh.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            mesh.fontSize = 64;
+            mesh.characterSize = text.Length > 8 ? 0.06f : 0.08f;
+            mesh.anchor = TextAnchor.MiddleCenter;
+            mesh.alignment = TextAlignment.Center;
+            mesh.color = textColor;
+        }
+
+        private static void CreateBox(Transform parent, string name, Vector3 position, Vector3 size, Material material)
+        {
+            GameObject box = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            box.name = name;
+            UnityEngine.Object.DestroyImmediate(box.GetComponent<Collider>());
+            box.transform.SetParent(parent, false);
+            box.transform.localPosition = position;
+            box.transform.localRotation = Quaternion.identity;
+            box.transform.localScale = size;
+            box.GetComponent<Renderer>().sharedMaterial = material;
+        }
+
+        private static void CreateCylinder(Transform parent, string name, Vector3 position, Vector3 size, Material material)
+        {
+            GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            cylinder.name = name;
+            UnityEngine.Object.DestroyImmediate(cylinder.GetComponent<Collider>());
+            cylinder.transform.SetParent(parent, false);
+            cylinder.transform.localPosition = position;
+            cylinder.transform.localRotation = Quaternion.identity;
+            cylinder.transform.localScale = size;
+            cylinder.GetComponent<Renderer>().sharedMaterial = material;
+        }
+
+        private static void CreateSphere(Transform parent, string name, Vector3 position, Vector3 size, Material material)
+        {
+            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.name = name;
+            UnityEngine.Object.DestroyImmediate(sphere.GetComponent<Collider>());
+            sphere.transform.SetParent(parent, false);
+            sphere.transform.localPosition = position;
+            sphere.transform.localRotation = Quaternion.identity;
+            sphere.transform.localScale = size;
+            sphere.GetComponent<Renderer>().sharedMaterial = material;
+        }
+
         private static void ApplyProp(string prefabPath, string modelPath, Material material)
         {
             GameObject prefab = PrefabUtility.LoadPrefabContents(prefabPath);

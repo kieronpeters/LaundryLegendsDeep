@@ -22,9 +22,9 @@ namespace LaundryLegends.Editor
 
         private static readonly NpcSpec[] Specs =
         {
-            new NpcSpec("NPC_Customer", "Customer", new Color(0.35f, 0.55f, 0.85f)),
-            new NpcSpec("NPC_Attendant", "Attendant", new Color(0.85f, 0.65f, 0.25f)),
-            new NpcSpec("NPC_Regular", "Regular", new Color(0.55f, 0.45f, 0.75f))
+            new NpcSpec("NPC_Customer", "Customer", new Color(0.82f, 0.88f, 1f), 14f),
+            new NpcSpec("NPC_Attendant", "Attendant", new Color(1f, 0.90f, 0.62f), 15.5f),
+            new NpcSpec("NPC_Regular", "Regular", new Color(0.86f, 0.80f, 1f), 14f)
         };
 
         [MenuItem("Laundry Legends/Phase 3/Apply NPC Archetypes")]
@@ -41,7 +41,7 @@ namespace LaundryLegends.Editor
                 string materialPath = $"{MaterialFolder}/MAT_{spec.Id}.mat";
                 string prefabPath = $"{PrefabFolder}/{spec.Id}.prefab";
 
-                ConfigureImporter(modelPath);
+                ConfigureImporter(modelPath, spec.ImportScale);
                 Material material = EnsureMaterial(materialPath, spec.Id, texturePath, spec.Tint);
                 BuildPrefab(spec, modelPath, material, prefabPath);
             }
@@ -267,7 +267,7 @@ namespace LaundryLegends.Editor
             Debug.Log("[NPC] Captured TestResults/npc-archetypes.png.");
         }
 
-        private static void ConfigureImporter(string modelPath)
+        private static void ConfigureImporter(string modelPath, float scale)
         {
             var importer = AssetImporter.GetAtPath(modelPath) as ModelImporter;
             if (importer == null)
@@ -275,9 +275,9 @@ namespace LaundryLegends.Editor
                 throw new InvalidOperationException($"Missing model importer: {modelPath}");
             }
 
-            // 100 Avatars FBX exports are about 0.12 m tall at scale 1; 14x
-            // brings the imported humanoid to roughly 1.7 m for this project.
-            importer.globalScale = 14f;
+            // 100 Avatars FBX exports are about 0.12 m tall at scale 1; the
+            // per-archetype scale brings each humanoid to adult height.
+            importer.globalScale = scale;
             importer.useFileScale = true;
             importer.animationType = ModelImporterAnimationType.Human;
             importer.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel;
@@ -296,6 +296,8 @@ namespace LaundryLegends.Editor
             Material material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
             if (material != null)
             {
+                material.color = tint;
+                EditorUtility.SetDirty(material);
                 return material;
             }
 
@@ -303,15 +305,11 @@ namespace LaundryLegends.Editor
             material = new Material(Shader.Find("Standard"))
             {
                 name = $"MAT_{id}",
-                color = Color.white
+                color = tint
             };
             if (texture != null)
             {
                 material.mainTexture = texture;
-            }
-            else
-            {
-                material.color = tint;
             }
 
             material.SetFloat("_Glossiness", 0.1f);
@@ -390,11 +388,12 @@ namespace LaundryLegends.Editor
 
         private sealed class NpcSpec
         {
-            public NpcSpec(string id, string role, Color tint)
+            public NpcSpec(string id, string role, Color tint, float importScale)
             {
                 Id = id;
                 Role = role;
                 Tint = tint;
+                ImportScale = importScale;
             }
 
             public string Id { get; }
@@ -402,6 +401,8 @@ namespace LaundryLegends.Editor
             public string Role { get; }
 
             public Color Tint { get; }
+
+            public float ImportScale { get; }
         }
     }
 }

@@ -20,7 +20,7 @@
     "name": "Laundry interaction foundation",
     "status": "complete",
     "file": ".orchestrator/tasks/phase-03.json",
-    "completionNote": "Phase 3 is complete: core interaction, pickup, carry, Q drop, prompts, item identity, machine load/unload, and owner acceptance, plus the approved asset extension (Blender pipeline, custom basket/loose/bag, machine fronts, and three CC0 NPC archetypes). Phase 4 is next after owner review of the NPC capture."
+    "completionNote": "Phase 3 is complete: core interaction, pickup, carry, Q drop, prompts, item identity, machine load/unload, owner acceptance, and the full approved asset extension (Blender, custom laundry props, machine fronts, CC0 environment materials/lighting, signage/props, and three CC0 NPCs). Phase 4 is next after owner review of the final captures."
   },
   "nextPhase": {
     "number": 4,
@@ -29,10 +29,10 @@
     "file": ".orchestrator/tasks/phase-04.json"
   },
   "activeTask": null,
-  "lastCompletedTask": "LL-P3-013",
+  "lastCompletedTask": "LL-P3-016",
   "nextTask": null,
   "taskCounts": {
-    "complete": 36,
+    "complete": 39,
     "ready": 0,
     "planned": 0,
     "pending": 1,
@@ -154,38 +154,42 @@
     "note": "Procedural placeholders only: 3 scenes, 5 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
   },
   "lastRun": {
-    "id": "2026-10-31-ll-p3-013",
-    "report": ".orchestrator/reports/2026-10-31-ll-p3-013.md",
+    "id": "2026-10-31-ll-p3-014-016-polish",
+    "report": ".orchestrator/reports/2026-10-31-ll-p3-014-016-polish.md",
     "status": "complete",
-    "startedAt": "2026-10-31T12:45:00+08:00",
-    "completedAt": "2026-10-31T14:20:00+08:00",
+    "startedAt": "2026-10-31T14:30:00+08:00",
+    "completedAt": "2026-10-31T18:10:00+08:00",
     "checks": {
-      "npc_apply": "passed",
+      "environment_validation": "passed",
+      "signage_validation": "passed",
+      "item_validation": "passed",
+      "machine_hook_validation": "passed",
+      "public_zones": "passed",
+      "navigation": "passed",
+      "player_validation": "passed",
       "npc_validation": "passed",
       "editmode": "32/32 passed",
       "playmode": "37 passed, 1 skipped",
-      "capture": "passed",
+      "captures": "passed",
       "log_scan": "passed"
     },
     "filesChanged": [
-      "ArtSource/Licenses/100-avatars.md",
-      "Assets/LaundryLegends/Art/Models/NPC/NPC_Customer.fbx",
-      "Assets/LaundryLegends/Art/Models/NPC/NPC_Attendant.fbx",
-      "Assets/LaundryLegends/Art/Models/NPC/NPC_Regular.fbx",
-      "Assets/LaundryLegends/Art/Textures/NPC/NPC_Customer.png",
-      "Assets/LaundryLegends/Art/Textures/NPC/NPC_Attendant.png",
-      "Assets/LaundryLegends/Art/Textures/NPC/NPC_Regular.png",
-      "Assets/LaundryLegends/Art/Materials/MAT_NPC_Customer.mat",
-      "Assets/LaundryLegends/Art/Materials/MAT_NPC_Attendant.mat",
-      "Assets/LaundryLegends/Art/Materials/MAT_NPC_Regular.mat",
+      "ArtSource/Licenses/ambientcg.md",
+      "Assets/LaundryLegends/Art/Textures/Environment/**",
+      "Assets/LaundryLegends/Art/Materials/MAT_FloorTile.mat",
+      "Assets/LaundryLegends/Art/Materials/MAT_WallPaint.mat",
+      "Assets/LaundryLegends/Art/Materials/MAT_CounterWood.mat",
+      "Assets/LaundryLegends/Art/Materials/MAT_Plant.mat",
+      "Assets/LaundryLegends/Art/Materials/MAT_Detergent.mat",
+      "Assets/LaundryLegends/Art/Materials/MAT_NPC_*.mat",
+      "Assets/LaundryLegends/Art/Models/NPC/*.fbx.meta",
+      "Assets/LaundryLegends/Editor/BasketAssetSetupTool.cs",
       "Assets/LaundryLegends/Editor/NpcAssetSetupTool.cs",
-      "Assets/LaundryLegends/Prefabs/Gameplay/NPC/NPC_Customer.prefab",
-      "Assets/LaundryLegends/Prefabs/Gameplay/NPC/NPC_Attendant.prefab",
-      "Assets/LaundryLegends/Prefabs/Gameplay/NPC/NPC_Regular.prefab",
+      "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
       "ASSET_INVENTORY.md",
       ".orchestrator/tasks/phase-03.json",
       ".orchestrator/state.json",
-      ".orchestrator/reports/2026-10-31-ll-p3-013.md",
+      ".orchestrator/reports/2026-10-31-ll-p3-014-016-polish.md",
       "PROJECT_STATE.md",
       "DEVELOPMENT_LOG.md",
       "ROADMAP.md"
@@ -230,7 +234,10 @@
       "LL-P3-010",
       "LL-P3-011",
       "LL-P3-012",
-      "LL-P3-013"
+      "LL-P3-013",
+      "LL-P3-014",
+      "LL-P3-015",
+      "LL-P3-016"
     ]
   }
 }

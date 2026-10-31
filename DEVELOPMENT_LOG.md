@@ -1046,3 +1046,31 @@ Phase 2 is complete. Author and approve the Phase 3 task plan before starting in
 ### Next
 
 Owner review of the NPC capture, then Phase 4 planning. Phase 3 is complete.
+
+## 2026-10-31 - LL-P3-014 to LL-P3-016 final polish
+
+**Phase:** 3 extension - final visual polish
+**Tasks:** LL-P3-014 materials/lighting; LL-P3-015 signage/props; LL-P3-016 NPC polish
+**Status:** Complete - eight validators, suites, captures, and log scan passed
+
+### Implemented / performed
+
+- Applied CC0 ambientCG tile, painted-plaster, and wood materials to floor, walls/ceiling, and counters; warmed four room lights.
+- Added OPEN/HOURS signs, flipped existing storefront text for inside readability, and added three detergent bottles, a plant, and a cart.
+- Normalized NPC heights to 1.61-1.78 m, added role tints, and re-applied a relaxed pose (partial due to source rig).
+- Captured entrance, waiting area, machine wall, and NPCs for review.
+
+### Checks and evidence
+
+- Environment, signage/prop, item, machine-hook, public-zone, navigation, player, and NPC validators exited `0`.
+- EditMode 32/32; PlayMode 37 passed, 1 explicit capture test skipped.
+- Log scan clean; captures inspected.
+- Report: `.orchestrator/reports/2026-10-31-ll-p3-014-016-polish.md`.
+
+### Not performed
+
+- Full NPC animation/pose retargeting, human review, player build, performance measurement, Phase 4 gameplay.
+
+### Next
+
+Owner review of the final captures, then Phase 4 planning.

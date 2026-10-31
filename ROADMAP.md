@@ -258,6 +258,9 @@ Environment prefabs, materials, scene objects, lighting settings, collision/nav 
 | LL-P3-011 | Install Blender and build the first polished laundry assets | Complete |
 | LL-P3-012 | Polish loose laundry, bag, and machine visuals | Complete |
 | LL-P3-013 | Create three free-licensed NPC archetypes | Complete |
+| LL-P3-014 | Polish environment materials and lighting | Complete |
+| LL-P3-015 | Improve signage and add small props | Complete |
+| LL-P3-016 | Polish NPC pose, scale, and outfits | Complete |
 
 ### Acceptance criteria
 

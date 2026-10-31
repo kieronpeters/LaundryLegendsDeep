@@ -81,6 +81,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - First custom asset: Blender 4.5.15 LTS is installed from the official ZIP with a verified SHA-256. `ArtSource/` contains the editable `LaundryBasket.blend`, generator script, FBX export, and license note. `Basket.prefab` now uses a 756-triangle basket mesh and `MAT_Basket` with the original template ID, collider, rigidbody, pickup, carry, and machine rules. Basket validation, item validation, EditMode 32/32, PlayMode 37 passed plus one capture test, and the log scan passed on 2026-10-31. Loose laundry and bag remain placeholders.
 - Prop/machine polish: loose laundry is now a 324-triangle folded bundle and the bag a 432-triangle kraft bag, both with custom materials and unchanged gameplay contracts. Eight machines gained 24 additive front details (panel, drawer, coin slot) with no colliders, no geometry change, and the machine hook intact. Props/machine-front validation, item/machine-hook/navigation validation, EditMode 32/32, PlayMode 37 passed plus one capture test, and the log scan passed on 2026-10-31.
 - NPC archetypes: `NPC_Customer`, `NPC_Attendant`, and `NPC_Regular` were built from CC0 100 Avatars bases with humanoid avatars, capsule colliders, texture materials, and relaxed static poses. The source FBX files have no usable idle/walk/carry clips, so animation is documented as deferred; no behavior or scene placement was added. NPC validation, EditMode 32/32, PlayMode 37 passed plus one capture test, and an inspected preview capture passed on 2026-10-31.
+- Final polish: CC0 ambientCG tile, painted-plaster, and wood materials now cover the floor, walls/ceiling, and counters; room lights are warmer; `OPEN`/`HOURS` signs, detergent bottles, a plant, and a cart were added; NPC heights were normalized to 1.61-1.78 m with role tints and a relaxed pose. All eight validators, EditMode 32/32, PlayMode 37 passed plus one capture test, captures, and the log scan passed on 2026-10-31.
 - Phase 3 is complete, including the core acceptance and the approved free-asset extension.
 - EditMode suite: 32/32 tests passed on 2026-10-31; coverage includes interaction eligibility and item identity, carry compatibility, slot placement rules, machine load/unload rules, item pickup rules, and the drop key.
 - PlayMode suite: 37 tests passed plus one skipped explicit capture test on 2026-10-31; coverage includes prompt/key exposure, `TryInteract` dispatch, rejection cases, pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, the drop hint, scene basket pickup, washer targeting, load/unload identity, rejection without ownership change, and the Phase 2 scene checks.
@@ -180,9 +181,13 @@ See `.orchestrator/budgets.json`.
 **Report:** `.orchestrator/reports/2026-10-20-ll-p2-005.md`
 **Result:** Added `ValidatePublicNavigation` and a PlayMode navigation test covering seven public routes, critical-prop colliders, renderer materials, missing references, and 1.5 m/1.7 m camera clearance. Navigation plus all regression validations exited `0`; EditMode passed 10/10; PlayMode passed 12/12.
 
-**Latest run:** `2026-10-31-ll-p3-013` - **complete**
+**Latest run:** `2026-10-31-ll-p3-014-016-polish` - **complete**
+**Report:** `.orchestrator/reports/2026-10-31-ll-p3-014-016-polish.md`
+**Result:** Final polish pass: CC0 ambientCG tile/plaster/wood materials, warmer lighting, OPEN/HOURS signage, detergent bottles, plant, and cart, plus NPC height/tint/pose tuning. All eight validators, EditMode 32/32, PlayMode 37 passed plus one capture test, captures, and the log scan passed. Phase 3 is complete; Phase 4 follows after owner review.
+
+**Previous run:** `2026-10-31-ll-p3-013` - **complete**
 **Report:** `.orchestrator/reports/2026-10-31-ll-p3-013.md`
-**Result:** Added three CC0 NPC archetypes from 100 Avatars (BizDude, SunflowerPerson, CosmicPerson) with humanoid avatars, capsule colliders, texture materials, and relaxed static poses. The FBX files contain no usable idle/walk/carry clips, so animation is documented as deferred. NPC validation, EditMode 32/32, PlayMode 37 passed plus one capture test, and an inspected preview capture passed. Phase 3 is complete.
+**Result:** Added three CC0 NPC archetypes from 100 Avatars with humanoid avatars, capsule colliders, texture materials, and relaxed static poses.
 
 **Previous run:** `2026-10-31-ll-p3-012` - **complete**
 **Report:** `.orchestrator/reports/2026-10-31-ll-p3-012.md`
@@ -242,7 +247,7 @@ See `.orchestrator/budgets.json`.
 
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, and confirm `LL-P3-013` is complete. Phase 3 is complete. The next step is owner review of `TestResults/npc-archetypes.png` and Phase 4 planning; do not start Phase 4 until that review is recorded. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, `LL-P2-005`, `LL-P2-006`, `LL-P3-001`, `LL-P3-002`, `LL-P3-003`, `LL-P3-004`, `LL-P3-005`, `LL-P3-006`, `LL-P3-008`, `LL-P3-009`, `LL-P3-007`, `LL-P3-010`, `LL-P3-011`, `LL-P3-012`, or `LL-P3-013`. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, and confirm `LL-P3-016` is complete. Phase 3 is complete. The next step is owner review of the final captures and Phase 4 planning; do not start Phase 4 until that review is recorded. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001` through `LL-P2-006`, or `LL-P3-001` through `LL-P3-016`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 

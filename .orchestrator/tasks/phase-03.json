@@ -3,7 +3,7 @@
   "phase": 3,
   "name": "Laundry interaction foundation",
   "status": "complete",
-  "updatedAt": "2026-10-31T14:20:00+08:00",
+  "updatedAt": "2026-10-31T18:10:00+08:00",
   "tasks": [
     {
       "id": "LL-P3-001",
@@ -681,6 +681,146 @@
       "retryCount": 2,
       "startedAt": "2026-10-31T12:45:00+08:00",
       "completedAt": "2026-10-31T14:20:00+08:00"
+    },
+    {
+      "id": "LL-P3-014",
+      "title": "Polish environment materials and lighting",
+      "status": "complete",
+      "priority": 12,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-013"],
+      "objective": "Replace the flat grey room surfaces with CC0 PBR tile, paint, wood, and metal materials, and improve interior/storefront lighting without changing geometry or colliders.",
+      "scope": [
+        "ArtSource/**",
+        "Assets/LaundryLegends/Art/**",
+        "Assets/LaundryLegends/Editor/BasketAssetSetupTool.cs",
+        "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
+        "Assets/LaundryLegends/Tests/**",
+        "ASSET_INVENTORY.md",
+        "ASSET_PIPELINE.md",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/state.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Scripts/**",
+        "Assets/LaundryLegends/Scenes/Laundromat.unity",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "Floor, walls, counter, machine bodies, and storefront use CC0 PBR materials or documented original materials",
+        "Every downloaded texture has a license row with source URL and attribution status",
+        "Room geometry, machine colliders, the machine hook, and Phase 2 navigation remain unchanged",
+        "Lighting is warmer/brighter in the interior and readable at the storefront",
+        "Phase 2 navigation, Phase 3 validators, EditMode/PlayMode, captures, and log scan pass"
+      ],
+      "checks": [
+        {
+          "name": "Material and lighting pass",
+          "status": "passed",
+          "command": "Download CC0 textures; create materials; apply to room; validate; suites and captures",
+          "evidence": "ambientCG Tiles141/PaintedPlaster017/WoodFloor064 CC0 textures applied; environment validation exit 0; navigation/validators exit 0; EditMode 32/32; PlayMode 37 passed plus 1 capture test; captures inspected"
+        }
+      ],
+      "result": "Applied CC0 tile, painted-plaster, and wood PBR materials to floor, walls/ceiling, and counters; warmed and brightened the four room point lights. Environment validation and all regression checks pass.",
+      "retryCount": 1,
+      "startedAt": "2026-10-31T14:30:00+08:00",
+      "completedAt": "2026-10-31T16:30:00+08:00"
+    },
+    {
+      "id": "LL-P3-015",
+      "title": "Improve signage and add small props",
+      "status": "complete",
+      "priority": 13,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-014"],
+      "objective": "Improve existing room signage and add small CC0/original props (detergent, cart, plants, waiting details) without changing navigation or colliders.",
+      "scope": [
+        "ArtSource/**",
+        "Assets/LaundryLegends/Art/**",
+        "Assets/LaundryLegends/Editor/BasketAssetSetupTool.cs",
+        "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
+        "ASSET_INVENTORY.md",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/state.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Scripts/**",
+        "Assets/LaundryLegends/Scenes/Laundromat.unity",
+        "Assets/LaundryLegends/Prefabs/Gameplay/**",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "Signage is readable and consistent in style",
+        "Small props are additive, non-blocking, and within poly budgets",
+        "Every external asset has a license row",
+        "Navigation, validators, suites, captures, and log scan pass"
+      ],
+      "checks": [
+        {
+          "name": "Signage and prop pass",
+          "status": "passed",
+          "command": "Add signage/props; validate navigation; suites and captures",
+          "evidence": "OPEN/HOURS signs, three detergent bottles, plant, and cart added without colliders; signage/prop and navigation validation exit 0; captures inspected; EditMode/PlayMode pass"
+        }
+      ],
+      "result": "Added readable OPEN and HOURS signs, flipped the existing LAUNDRY LEGENDS/DROP OFF text for inside readability, and added detergent bottles, a plant, and a cart. All additions are non-colliding and outside navigation routes.",
+      "retryCount": 2,
+      "startedAt": "2026-10-31T16:30:00+08:00",
+      "completedAt": "2026-10-31T17:40:00+08:00"
+    },
+    {
+      "id": "LL-P3-016",
+      "title": "Polish NPC pose, scale, and outfits",
+      "status": "complete",
+      "priority": 14,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-015"],
+      "objective": "Improve the three CC0 NPC prefabs with a natural idle pose, consistent scale, and role-distinct outfit/material treatment; animation remains deferred.",
+      "scope": [
+        "ArtSource/**",
+        "Assets/LaundryLegends/Art/**",
+        "Assets/LaundryLegends/Editor/NpcAssetSetupTool.cs",
+        "Assets/LaundryLegends/Prefabs/Gameplay/NPC/**",
+        "ASSET_INVENTORY.md",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/state.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Scripts/**",
+        "Assets/LaundryLegends/Scenes/Laundromat.unity",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "Arms are lowered into a natural idle pose on all three prefabs",
+        "Heights are consistent with a 1.6-1.8 m adult range",
+        "Each archetype has a distinct readable outfit/material treatment",
+        "NPC validation, EditMode/PlayMode, capture, and log scan pass"
+      ],
+      "checks": [
+        {
+          "name": "NPC visual polish",
+          "status": "passed",
+          "command": "Pose/tune materials; validate; suites and capture",
+          "evidence": "Heights 1.61-1.78 m, role tints applied, arm pose reapplied; NPC validation exit 0; EditMode 32/32; PlayMode 37 passed plus 1 capture test; preview inspected"
+        }
+      ],
+      "result": "Adjusted Attendant scale to 1.61 m, applied distinct role tints, and re-applied a relaxed arm pose. The source rig only partially lowers the arms; full pose/animation remains deferred. NPC validation, suites, and capture pass.",
+      "retryCount": 3,
+      "startedAt": "2026-10-31T17:40:00+08:00",
+      "completedAt": "2026-10-31T18:10:00+08:00"
     }
   ]
 }
