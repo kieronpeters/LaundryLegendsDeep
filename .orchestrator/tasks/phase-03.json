@@ -940,7 +940,7 @@
     {
       "id": "LL-P3-018",
       "title": "Replace room furniture with custom meshes",
-      "status": "planned",
+      "status": "complete",
       "priority": 20,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P3-021"],
@@ -948,16 +948,16 @@
       "scope": ["ArtSource/**", "Assets/LaundryLegends/Art/**", "Assets/LaundryLegends/Editor/BasketAssetSetupTool.cs", "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab"],
       "mustNotTouch": ["Assets/LaundryLegends/Scripts/**", "Assets/LaundryLegends/Scenes/Laundromat.unity", "Packages/**", "ProjectSettings/**"],
       "acceptance": ["Counter/table/chairs/shelves/secret cover use custom meshes", "Colliders and navigation preserved", "Validators, suites, captures pass"],
-      "checks": [{"name": "Furniture meshes", "status": "pending", "command": "Blender export; apply; validate", "evidence": "Pending"}],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "checks": [{"name": "Furniture meshes", "status": "passed", "command": "Blender export; apply; validate", "evidence": "Baseboards, crown, wainscot, counter/table aprons, chair cushions, shelf/secret trim added; remodel and navigation validation exit 0"}],
+      "result": "Remodeled the room with baseboards, crown molding, wainscot panels, counter/table aprons, chair cushions, and shelf/secret-cover trim, preserving colliders and navigation.",
+      "retryCount": 1,
+      "startedAt": "2026-10-31T22:20:00+08:00",
+      "completedAt": "2026-10-31T23:00:00+08:00"
     },
     {
       "id": "LL-P3-019",
       "title": "Add first-person hands and finish NPC pose",
-      "status": "planned",
+      "status": "complete",
       "priority": 21,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P3-018"],
@@ -965,11 +965,11 @@
       "scope": ["ArtSource/**", "Assets/LaundryLegends/Art/**", "Assets/LaundryLegends/Editor/**", "Assets/LaundryLegends/Prefabs/Gameplay/**", "Assets/LaundryLegends/Tests/**"],
       "mustNotTouch": ["Assets/LaundryLegends/Scenes/Laundromat.unity", "Packages/**", "ProjectSettings/**"],
       "acceptance": ["Visible first-person hands when empty/carrying", "NPC arms posed naturally", "Suites and captures pass"],
-      "checks": [{"name": "Player hands/NPC pose", "status": "pending", "command": "Blender/Unity setup; validate; capture", "evidence": "Pending"}],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "checks": [{"name": "Player hands/NPC pose", "status": "passed", "command": "Blender/Unity setup; validate; capture", "evidence": "FirstPersonHands imported on PlayerCamera; NpcPose lowers arms and adds walk swing; player validation and PlayMode pass"}],
+      "result": "Added visible first-person forearms/hands to the Player camera and a procedural NpcPose component that lowers the CC0 arms and adds walk/idle swing to the in-scene attendant and customer.",
+      "retryCount": 1,
+      "startedAt": "2026-10-31T23:00:00+08:00",
+      "completedAt": "2026-10-31T23:30:00+08:00"
     },
     {
       "id": "LL-P3-022",

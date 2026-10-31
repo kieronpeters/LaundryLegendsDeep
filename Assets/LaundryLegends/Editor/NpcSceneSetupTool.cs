@@ -76,8 +76,8 @@ namespace LaundryLegends.Editor
             voice.minDistance = 1f;
             voice.maxDistance = 14f;
 
-            AudioClip dropoff = AssetDatabase.LoadAssetAtPath<AudioClip>($"{VoiceFolder}/dropoff.wav");
-            AudioClip thankyou = AssetDatabase.LoadAssetAtPath<AudioClip>($"{VoiceFolder}/thankyou.wav");
+            AudioClip dropoff = AssetDatabase.LoadAssetAtPath<AudioClip>($"{VoiceFolder}/customer_hello.mp3");
+            AudioClip thankyou = AssetDatabase.LoadAssetAtPath<AudioClip>($"{VoiceFolder}/customer_thankyou.mp3");
             AmbientNpc loop = customer.AddComponent<AmbientNpc>();
             loop.Configure(waypoints, carried, voice, dropoff, thankyou);
 

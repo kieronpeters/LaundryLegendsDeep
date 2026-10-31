@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using LaundryLegends.NPC;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -342,6 +343,11 @@ namespace LaundryLegends.Editor
             foreach (Renderer renderer in instance.GetComponentsInChildren<Renderer>(true))
             {
                 renderer.sharedMaterial = material;
+            }
+
+            if (instance.GetComponent<NpcPose>() == null)
+            {
+                instance.AddComponent<NpcPose>();
             }
 
             PrefabUtility.SaveAsPrefabAsset(root, prefabPath);

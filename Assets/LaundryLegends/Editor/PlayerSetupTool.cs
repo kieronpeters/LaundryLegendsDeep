@@ -37,6 +37,7 @@ namespace LaundryLegends.Editor
 
             EnsureCarrySetup();
             EnsurePromptSetup();
+            EnsureHandsSetup();
             ConfigureLaundromatScene();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -69,6 +70,20 @@ namespace LaundryLegends.Editor
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[PlayerSetup] Player prompt setup complete.");
+        }
+
+        [MenuItem("Laundry Legends/Setup Player Hands")]
+        public static void SetupPlayerHands()
+        {
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath) == null)
+            {
+                throw new InvalidOperationException($"Missing player prefab: {PrefabPath}");
+            }
+
+            EnsureHandsSetup();
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("[PlayerSetup] Player hands setup complete.");
         }
 
         [MenuItem("Laundry Legends/Validate Player")]
@@ -264,6 +279,70 @@ namespace LaundryLegends.Editor
             }
         }
 
+        private static void EnsureHandsSetup()
+        {
+            const string modelPath = "Assets/LaundryLegends/Art/Models/FirstPersonHands.fbx";
+            const string materialPath = "Assets/LaundryLegends/Art/Materials/MAT_Hands.mat";
+            GameObject model = AssetDatabase.LoadAssetAtPath<GameObject>(modelPath);
+            if (model == null)
+            {
+                throw new InvalidOperationException($"Missing hands model: {modelPath}");
+            }
+
+            var importer = AssetImporter.GetAtPath(modelPath) as ModelImporter;
+            if (importer != null)
+            {
+                importer.globalScale = 1f;
+                importer.meshCompression = ModelImporterMeshCompression.Off;
+                importer.importCameras = false;
+                importer.importLights = false;
+                importer.addCollider = false;
+                importer.SaveAndReimport();
+            }
+
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            if (material == null)
+            {
+                material = new Material(Shader.Find("Standard")) { name = "MAT_Hands" };
+                material.color = new Color(0.55f, 0.38f, 0.28f, 1f);
+                material.SetFloat("_Glossiness", 0.2f);
+                AssetDatabase.CreateAsset(material, materialPath);
+            }
+
+            GameObject contents = PrefabUtility.LoadPrefabContents(PrefabPath);
+            try
+            {
+                Transform camera = contents.transform.Find("PlayerCamera");
+                if (camera == null)
+                {
+                    throw new InvalidOperationException("Player prefab has no PlayerCamera.");
+                }
+
+                Transform old = camera.Find("FirstPersonHands");
+                if (old != null)
+                {
+                    UnityEngine.Object.DestroyImmediate(old.gameObject);
+                }
+
+                var instance = (GameObject)PrefabUtility.InstantiatePrefab(model, camera);
+                instance.name = "FirstPersonHands";
+                instance.transform.localPosition = new Vector3(0f, -0.32f, 0.42f);
+                instance.transform.localRotation = Quaternion.identity;
+                instance.transform.localScale = Vector3.one;
+                foreach (Renderer renderer in instance.GetComponentsInChildren<Renderer>(true))
+                {
+                    renderer.sharedMaterial = material;
+                    renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                }
+
+                PrefabUtility.SaveAsPrefabAsset(contents, PrefabPath);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(contents);
+            }
+        }
+
         private static void ConfigureLaundromatScene()
         {
             Scene scene = EditorSceneManager.OpenScene(LaundromatScenePath, OpenSceneMode.Single);
@@ -427,6 +506,10 @@ namespace LaundryLegends.Editor
             else if (camera.GetComponent<AudioListener>() == null)
             {
                 failures.Add($"{label}: camera is missing an AudioListener.");
+            }
+            else if (camera.transform.Find("FirstPersonHands") == null)
+            {
+                failures.Add($"{label}: camera is missing FirstPersonHands.");
             }
         }
 
