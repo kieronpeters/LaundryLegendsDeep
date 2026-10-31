@@ -54,7 +54,27 @@ namespace LaundryLegends.Editor
         [MenuItem("Laundry Legends/Phase 4/Build Character Avatar")]
         public static void BuildEverything()
         {
-            Avatar avatar = BuildAvatar();
+            // Prefer the avatar the importer builds; only fall back to the
+            // hand-built description when the importer refuses the rig.
+            Avatar avatar = null;
+            foreach (var asset in AssetDatabase.LoadAllAssetsAtPath(ModelPath))
+            {
+                if (asset is Avatar imported && imported.isHuman && imported.isValid)
+                {
+                    avatar = imported;
+                    break;
+                }
+            }
+
+            if (avatar != null)
+            {
+                Debug.Log($"[CHAR] Using importer avatar '{avatar.name}' (human={avatar.isHuman}).");
+            }
+            else
+            {
+                avatar = BuildAvatar();
+            }
+
             foreach ((string id, Color shirt) in Specs)
             {
                 SwapPrefab(id, avatar, shirt);
@@ -192,8 +212,20 @@ namespace LaundryLegends.Editor
 
                         if (materials[i].name.IndexOf("Shirt", System.StringComparison.OrdinalIgnoreCase) >= 0)
                         {
-                            var tinted = new Material(materials[i]);
+                            // The tinted copy must be a real asset, otherwise the
+                            // prefab stores a reference to a non-persistent object
+                            // and renders with the magenta error material.
+                            string materialPath = $"Assets/LaundryLegends/Art/Materials/MAT_NPCShirt_{id}.mat";
+                            var tinted = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+                            if (tinted == null)
+                            {
+                                tinted = new Material(materials[i]);
+                                AssetDatabase.CreateAsset(tinted, materialPath);
+                            }
+
+                            tinted.shader = materials[i].shader;
                             tinted.color = shirtTint;
+                            EditorUtility.SetDirty(tinted);
                             materials[i] = tinted;
                         }
                     }

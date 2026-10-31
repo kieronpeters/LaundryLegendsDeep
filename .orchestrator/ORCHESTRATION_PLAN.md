@@ -14,6 +14,8 @@
 
 ## Workstreams
 
+### Phase 4 realism pass (closed)
+
 | ID | Workstream | Owner | Unity slot | Status |
 | --- | --- | --- | --- | --- |
 | W1 | Real humanoid animation, staff visible carrying | ll-unity-dev | **owns now** | code written; verifying |
@@ -23,6 +25,19 @@
 | W5 | Music swap (That Zen Moment + Ripples) | lead/unity-dev | queued after W1 | blocked |
 | W6 | Voice rendering (local open-weight TTS) | general agent | no (in progress) | in progress |
 | W7 | Docs/state/inventory updates | lead | — | continuous |
+
+### Phase 5 (active)
+
+| ID | Workstream | Owner | Unity slot | Status |
+| --- | --- | --- | --- | --- |
+| P5-A | Order model + exactly-once payment core (P5-001, P5-005) | ll-unity-dev | no (code only) | in progress |
+| P5-B | Character rig rescue (visual debt) | ll-unity-dev | **owns now** | in progress |
+| P5-C | Customer state machine (P5-002) | queued | after P5-B | blocked |
+| P5-D | Order handoff + ticket UI (P5-003, P5-004) | queued | after P5-C | blocked |
+| P5-E | Patience, queue, end-to-end (P5-006..008) | queued | after P5-D | blocked |
+
+Rule: exactly one workstream holds the Unity slot at a time; everyone else writes
+code and reports. P5-A and P5-B run concurrently because they do not share files.
 
 ## Wave 1 file ownership
 

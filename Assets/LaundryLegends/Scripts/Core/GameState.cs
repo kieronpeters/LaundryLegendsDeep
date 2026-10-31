@@ -30,8 +30,8 @@ namespace LaundryLegends.Core
 
         public IReadOnlyCollection<string> ProgressionFlags => _progressionFlags;
 
-        // Money intentionally has no public mutator. EconomyService will be the
-        // single writer when transactions are introduced; until then it is read-only.
+        // Money has no public setter. All movement goes through TrySpend and
+        // TryCredit so every change is guarded and reviewable in one place.
 
         public bool HasFlag(string flag)
         {
@@ -51,6 +51,64 @@ namespace LaundryLegends.Core
         public void AdvanceDay()
         {
             Day += 1;
+        }
+
+        /// <summary>
+        /// Deducts <paramref name="amount"/> when the player can afford it.
+        /// Returns false and leaves <see cref="Money"/> unchanged otherwise.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">The amount is negative.</exception>
+        public bool TrySpend(int amount)
+        {
+            if (amount < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(amount), "Spend amount cannot be negative.");
+            }
+
+            if (amount > Money)
+            {
+                return false;
+            }
+
+            Money -= amount;
+            return true;
+        }
+
+        /// <summary>
+        /// True when a credit of <paramref name="amount"/> is representable.
+        /// Callers check this before committing a payment so a successful
+        /// transaction can never silently skip the money movement.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">The amount is negative.</exception>
+        public bool CanCredit(int amount)
+        {
+            if (amount < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(amount), "Credit amount cannot be negative.");
+            }
+
+            return Money <= int.MaxValue - amount;
+        }
+
+        /// <summary>
+        /// Adds <paramref name="amount"/> to <see cref="Money"/>. Returns false
+        /// and leaves the balance unchanged when the result would overflow.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">The amount is negative.</exception>
+        public bool TryCredit(int amount)
+        {
+            if (amount < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(amount), "Credit amount cannot be negative.");
+            }
+
+            if (!CanCredit(amount))
+            {
+                return false;
+            }
+
+            Money += amount;
+            return true;
         }
     }
 }
