@@ -1,10 +1,10 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-31 05:20 (UTC+08:00)
+**Last updated:** 2026-10-31 08:35 (UTC+08:00)
 **Current milestone:** M1 - Playable laundry, **in progress**
 **Current phase:** Phase 3 - Laundry interaction foundation, **in progress**
 **Next phase:** Phase 4 - Laundry processing, planned
-**Active task:** None - `LL-P3-008` is complete
+**Active task:** None - `LL-P3-009` is complete
 **Next recommended task:** `LL-P3-007` - verify Phase 3 acceptance and record evidence
 
 ## 1. Verified configuration
@@ -74,8 +74,9 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Phase 3 prompt: `InteractionPromptView` is an IMGUI placeholder on the Player prefab wired to `PlayerInteractor`. It exposes `IsVisible` and `CurrentLabel`, renders `"<prompt> [<key>]"` using the interactor's key label, and hides with no target, an ineligible or destroyed target, or `Time.timeScale == 0`. It does not touch cursor lock or pause state and uses the built-in font. Prompt setup and Player validation passed; compile, EditMode 21/21, PlayMode 31/31, and the log scan passed on 2026-10-31.
 - Phase 3 machine hook: `Machine_1` in `GreyboxRoom.prefab` carries one `MachineLoadHook` and an additive `DrumSlot` child with a `CarrySlot` limited to `LooseLaundry`. Loading moves the held loose item into the slot; unloading returns the exact same instance to an empty-handed carrier. Baskets, bags, occupied loads, empty-handed loads, and full-hand unloads are rejected with a `LastResult` message and no ownership change. Machine-hook validation, item validation, Phase 2 navigation, compile, EditMode 26/26, PlayMode 35/35, and the log scan passed on 2026-10-31.
 - Phase 3 item pickup: all three item prefabs carry `LaundryItemInteractable` wired to their `LaundryItem`. Prompts are kind-specific (`Pick up basket`, `Pick up laundry`, `Pick up bag`); a free item is picked up through `CarryController`; held or slotted items are not pickup-eligible, and a second item cannot steal the carried slot. Pickup setup and item validation passed; compile, EditMode 31/31, PlayMode 36/36, and the log scan passed on 2026-10-31.
-- EditMode suite: 31/31 tests passed on 2026-10-31; coverage includes interaction eligibility and item identity, carry compatibility, slot placement rules, machine load/unload rules, and item pickup rules.
-- PlayMode suite: 36/36 tests passed on 2026-10-31; coverage includes prompt/key exposure, `TryInteract` dispatch, rejection cases, pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, scene basket pickup, washer targeting, load/unload identity, rejection without ownership change, and the Phase 2 scene checks.
+- Phase 3 drop input: `CarryController` has a serialized `Q` drop key with a paused-time guard and a `DropKeyLabel`; `InteractionPromptView` shows `[Q] Drop` only while carrying. Player setup serialized the key and carry reference; validation covers both. Owner review had found the basket could be picked up but not put down. Compile, EditMode 32/32, PlayMode 37 passed plus one skipped explicit capture test, and the log scan passed on 2026-10-31.
+- EditMode suite: 32/32 tests passed on 2026-10-31; coverage includes interaction eligibility and item identity, carry compatibility, slot placement rules, machine load/unload rules, item pickup rules, and the drop key.
+- PlayMode suite: 37 tests passed plus one skipped explicit capture test on 2026-10-31; coverage includes prompt/key exposure, `TryInteract` dispatch, rejection cases, pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, the drop hint, scene basket pickup, washer targeting, load/unload identity, rejection without ownership change, and the Phase 2 scene checks.
 - Batch commands, evidence paths, failure-probe steps, and test-assembly isolation documented in `TESTING_GUIDE.md`.
 - The project owner completed all six Phase 1 Game-view checks on 2026-10-20: movement/speed, camera/comfort, pause/cursor release, room layout, secret door, and lighting/readability. Recorded as owner-reported human verification in `.orchestrator/reports/2026-10-20-ll-p1-009-human-verification.md`.
 - Phase 1 is complete. Automated results and screenshots are preserved unchanged; the human confirmation is a separate addendum.
@@ -172,7 +173,11 @@ See `.orchestrator/budgets.json`.
 **Report:** `.orchestrator/reports/2026-10-20-ll-p2-005.md`
 **Result:** Added `ValidatePublicNavigation` and a PlayMode navigation test covering seven public routes, critical-prop colliders, renderer materials, missing references, and 1.5 m/1.7 m camera clearance. Navigation plus all regression validations exited `0`; EditMode passed 10/10; PlayMode passed 12/12.
 
-**Latest run:** `2026-10-31-ll-p3-008` - **complete**
+**Latest run:** `2026-10-31-ll-p3-009` - **complete**
+**Report:** `.orchestrator/reports/2026-10-31-ll-p3-009.md`
+**Result:** Added a serialized `Q` drop key and paused-time guard to `CarryController`, plus an IMGUI `[Q] Drop` hint in `InteractionPromptView`. Player setup serialized the drop key and carry reference; validation covers both. Compile, EditMode 32/32, PlayMode 37 passed plus one skipped explicit capture test, and the log scan passed. This closed the owner-review blocker where a picked-up basket could not be put down.
+
+**Previous run:** `2026-10-31-ll-p3-008` - **complete**
 **Report:** `.orchestrator/reports/2026-10-31-ll-p3-008.md`
 **Result:** Closed the acceptance gap where carry existed without an in-game pickup interaction. Added `LaundryItemInteractable` to all three item prefabs with kind-specific prompts and held/slotted guards; interaction now picks up a free item through `CarryController`, and carrying one item cannot steal or duplicate a second. Corrected `PlayerInteractor`'s destroyed-object guard. Pickup setup, item validation, compile, EditMode 31/31, PlayMode 36/36, and the log scan passed.
 
@@ -209,7 +214,7 @@ See `.orchestrator/budgets.json`.
 
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, and confirm `LL-P3-008` is complete. There is no active task; `LL-P3-007` is the next ready task. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, `LL-P2-005`, `LL-P2-006`, `LL-P3-001`, `LL-P3-002`, `LL-P3-003`, `LL-P3-004`, `LL-P3-005`, `LL-P3-006`, or `LL-P3-008`. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, and confirm `LL-P3-009` is complete. There is no active task; `LL-P3-007` is the next ready task. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, `LL-P2-005`, `LL-P2-006`, `LL-P3-001`, `LL-P3-002`, `LL-P3-003`, `LL-P3-004`, `LL-P3-005`, `LL-P3-006`, `LL-P3-008`, or `LL-P3-009`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 
@@ -226,7 +231,7 @@ Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect 
 - The pause overlay uses IMGUI as a placeholder; real UI arrives later.
 - Cursor lock/release and movement feel were confirmed by the project owner on 2026-10-20; batch tests still skip cursor APIs, so this remains owner-reported rather than independently reproduced.
 - `GameSession.Instance` is a static service handle; consumers should prefer explicit references where practical.
-- Test coverage is 31 EditMode and 36 PlayMode tests; it does not yet cover machine cycles, orders, economy transactions, save/load, or final UI. Item prefabs, scene placement, pickup wiring, and machine-hook geometry are covered by editor validators.
+- Test coverage is 32 EditMode and 37 PlayMode tests plus one explicit capture test; it does not yet cover machine cycles, orders, economy transactions, save/load, or final UI. Item prefabs, scene placement, pickup wiring, and machine-hook geometry are covered by editor validators.
 - `PlayerInteractor.IsAlive` still uses the original tautological Unity-null expression (`unityObject == null || unityObject != null`). `InteractionPromptView` uses a corrected check; an external `TryInteract` in the same frame a target is destroyed could still throw until the interactor helper is corrected.
 - `FailureReportingTests` fails when `LL_FAIL_PROBE` is left set; unset it after probing.
 - The stray `C:\Users\Asus\Desktop\AI` log remains pending manual deletion.

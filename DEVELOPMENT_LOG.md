@@ -853,3 +853,38 @@ Phase 2 is complete. Author and approve the Phase 3 task plan before starting in
 ### Next
 
 `LL-P3-007` - run the full acceptance verification and request the owner review.
+
+## 2026-10-31 - LL-P3-009 drop input and hint
+
+**Phase:** 3 - Laundry interaction foundation
+**Task:** LL-P3-009 (owner-review repair)
+**Status:** Complete - setup, validation, compile, EditMode, PlayMode, and log scan passed
+
+### Implemented / performed
+
+- Owner review found that a carried basket could not be put down; pickup worked, but no input called `TryDrop`.
+- Added a serialized `KeyCode.Q` drop key to `CarryController`, ignored while paused, with `DropKey`/`DropKeyLabel`.
+- Added an IMGUI `[Q] Drop` hint to `InteractionPromptView`; it appears only while carrying and hides when paused or empty-handed.
+- Wired the prompt view's carry reference and serialized the Q key in Player setup; validation checks both.
+- Added an EditMode drop-key test and a PlayMode drop-hint/pause test.
+- No scene, item prefab, environment prefab, package, or project-setting change.
+
+### Checks and evidence
+
+- Compile exited `0` (`TestResults/p3-009-compile-3.log`, ignored).
+- Carry/prompt setup and Player validation exited `0` (`TestResults/p3-009-setup-*.log`, `p3-009-player-validate.log`, ignored).
+- EditMode: 32/32 passed (`TestResults/p3-009-editmode.xml`, ignored).
+- PlayMode: 37 passed, 1 explicit capture test skipped (`TestResults/p3-009-playmode.xml`, ignored).
+- Log scan clean.
+- The first compile attempt failed because the project was open in the owner's Unity editor; after it closed, setup and tests ran normally. A missing `using` in the new EditMode test was fixed before the passing run.
+- Report: `.orchestrator/reports/2026-10-31-ll-p3-009.md`.
+
+### Not performed
+
+- Owner retest of the Q drop key and hint.
+- New screenshots showing the drop hint; the existing capture test can regenerate them.
+- Phase 3 acceptance (`LL-P3-007`).
+
+### Next
+
+`LL-P3-007` - owner retest of drop, then acceptance evidence and report.

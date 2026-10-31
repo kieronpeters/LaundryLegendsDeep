@@ -3,7 +3,7 @@
   "phase": 3,
   "name": "Laundry interaction foundation",
   "status": "in_progress",
-  "updatedAt": "2026-10-31T05:20:00+08:00",
+  "updatedAt": "2026-10-31T08:35:00+08:00",
   "tasks": [
     {
       "id": "LL-P3-001",
@@ -324,10 +324,10 @@
     {
       "id": "LL-P3-007",
       "title": "Verify Phase 3 acceptance and record evidence",
-      "status": "in_progress",
+      "status": "ready",
       "priority": 7,
       "owner": "build",
-      "dependsOn": ["LL-P3-006", "LL-P3-008"],
+      "dependsOn": ["LL-P3-006", "LL-P3-008", "LL-P3-009"],
       "objective": "Run the complete Phase 3 verification, capture carry/prompt/machine interactions, prove no normal-path duplication or loss, and obtain the required human review of carrying feel and prompt clarity.",
       "scope": [
         "TestResults/**",
@@ -429,6 +429,154 @@
       "retryCount": 1,
       "startedAt": "2026-10-31T04:10:00+08:00",
       "completedAt": "2026-10-31T05:20:00+08:00"
+    },
+    {
+      "id": "LL-P3-009",
+      "title": "Add drop input and drop hint",
+      "status": "complete",
+      "priority": 6.6,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-003", "LL-P3-005"],
+      "objective": "Close the owner-review blocker where a carried basket could not be put down. Add a bounded drop input on CarryController and a visible drop hint, without changing carry ownership rules.",
+      "scope": [
+        "Assets/LaundryLegends/Scripts/Player/CarryController.cs",
+        "Assets/LaundryLegends/Scripts/UI/InteractionPromptView.cs",
+        "Assets/LaundryLegends/Editor/PlayerSetupTool.cs",
+        "Assets/LaundryLegends/Prefabs/Gameplay/Player.prefab",
+        "Assets/LaundryLegends/Tests/PlayMode/**",
+        "Assets/LaundryLegends/Tests/EditMode/**",
+        ".orchestrator/state.json",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Scripts/Interaction/**",
+        "Assets/LaundryLegends/Scripts/Laundry/**",
+        "Assets/LaundryLegends/Prefabs/Environment/**",
+        "Assets/LaundryLegends/Scenes/Laundromat.unity",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "A serialized drop key on CarryController drops the held item and is ignored while paused",
+        "The drop key label is exposed and the prompt view shows a visible drop hint only while carrying",
+        "Player prefab setup and validation cover the drop key and prompt-view carry reference",
+        "Dropping the basket and loose item restores their world state without duplicating or losing them",
+        "PlayMode tests cover drop-hint visibility and dropping through the new path",
+        "Compile, EditMode, PlayMode, and log scan pass"
+      ],
+      "checks": [
+        {
+          "name": "Drop input, hint, and regression",
+          "status": "passed",
+          "command": "PlayerSetupTool.SetupPlayerCarry/SetupPlayerPrompt/ValidatePlayerSetup; Unity batch compile; EditMode/PlayMode suites; log scan",
+          "evidence": "Setup, prompt, and validation exit 0; compile exit 0; EditMode 32/32; PlayMode 37 passed, 1 explicit capture test skipped; logs clean on 2026-10-31 (TestResults/p3-009-*, ignored)"
+        }
+      ],
+      "result": "Added a serialized Q drop key on CarryController, paused-time guard, DropKeyLabel, and an IMGUI [Q] Drop hint wired to the carry controller. Player setup serialized the key and carry reference; validation covers both. Dropping still uses the wall-aware TryDrop path.",
+      "retryCount": 1,
+      "startedAt": "2026-10-31T05:50:00+08:00",
+      "completedAt": "2026-10-31T08:35:00+08:00"
+    },
+    {
+      "id": "LL-P3-010",
+      "title": "Research the free hybrid Blender and CC0 asset pipeline",
+      "status": "planned",
+      "priority": 8,
+      "owner": "ll-designer",
+      "dependsOn": ["LL-P3-007"],
+      "objective": "Produce a detailed, license-aware plan for free asset and NPC production using Blender plus CC0/free packs, and define the first prototype asset set before any download or install.",
+      "scope": [
+        ".orchestrator/reports/**",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/state.json",
+        "ASSET_INVENTORY.md",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "ROADMAP.md",
+        "MASTER_CONTEXT.md",
+        "ARCHITECTURE.md",
+        "TESTING_GUIDE.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/**",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "Blender LTS version, official download source, install footprint, and GPL/commercial-use implications are documented",
+        "Kenney, Quaternius, Poly Haven, Mixamo, Poly Pizza, 100 Avatars, and Sketchfab CC0 terms are compared with exact license notes",
+        "ArtSource folder layout, naming, FBX/glTF export, scale/orientation, poly budgets, material rules, and Unity import settings are specified",
+        "A prioritized asset list covers laundry items, machines, environment polish, and 2-3 NPC archetypes",
+        "The first prototype asset is chosen with a time estimate, collision/animation needs, and rollback path",
+        "Risks include license drift, account requirements, AI-asset restrictions, import scale, rig/retarget issues, and package/install approval gates",
+        "No software is installed, no asset is downloaded, and no Unity or repository asset file is changed"
+      ],
+      "checks": [
+        {
+          "name": "Pipeline research and plan",
+          "status": "pending",
+          "command": "Verify official sources and licenses; write the pipeline plan and asset priority list; bootstrap and diff checks",
+          "evidence": "Pending"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
+    },
+    {
+      "id": "LL-P3-011",
+      "title": "Install Blender and build the first polished laundry assets",
+      "status": "planned",
+      "priority": 9,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-010"],
+      "objective": "Using the approved hybrid pipeline, install free Blender, establish ArtSource, and replace the basket or loose-laundry placeholder with a first custom low-poly asset that preserves the existing carry, pickup, and machine contracts.",
+      "scope": [
+        "ArtSource/**",
+        "Assets/LaundryLegends/Art/**",
+        "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/**",
+        "Assets/LaundryLegends/Tests/**",
+        "ASSET_INVENTORY.md",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/state.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Scripts/**",
+        "Assets/LaundryLegends/Prefabs/Environment/**",
+        "Assets/LaundryLegends/Scenes/Laundromat.unity",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "Blender LTS is installed from the official source with version, license, and approval recorded",
+        "ArtSource contains the editable source file and a documented export path",
+        "One laundry item gets a custom low-poly mesh with correct scale, orientation, materials, and a Unity-imported prefab",
+        "The replacement preserves template ID, pickup interaction, collider, rigidbody, washer eligibility, and existing tests",
+        "Captures show the new asset in the scene, and license/asset-inventory rows are added",
+        "Compile, EditMode, PlayMode, validators, and log scan pass",
+        "No external asset is used without a recorded license and source URL"
+      ],
+      "checks": [
+        {
+          "name": "Blender install and first asset",
+          "status": "pending",
+          "command": "Install Blender; author/export one asset; import and validate; run suites and captures",
+          "evidence": "Pending"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
     }
   ]
 }

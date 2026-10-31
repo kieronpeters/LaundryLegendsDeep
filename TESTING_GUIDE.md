@@ -68,8 +68,8 @@ Use for interaction, machine cycles, order flow, customer flow, and scene smoke 
 
 | Suite | Tests | Coverage |
 |---|---:|---|
-| EditMode | 31 | `GameState` money/flags/day rules, build-settings order, the failure-reporting probe, interaction eligibility/disabled/event rules, item identity/kind/carryability, carry-slot compatibility/placement, machine load/unload rules, and item pickup rules |
-| PlayMode | 36 | scene routing, player movement/look, pause, interaction targeting/prompt/key/dispatch/rejection, item pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, scene basket pickup, washer targeting, load/unload identity, rejection without ownership change, greybox traversal, storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, public navigation/camera clearance, wall containment, secret door, scale, and lighting |
+| EditMode | 32 | `GameState` money/flags/day rules, build-settings order, the failure-reporting probe, interaction eligibility/disabled/event rules, item identity/kind/carryability, carry-slot compatibility/placement, machine load/unload rules, item pickup rules, and the drop key |
+| PlayMode | 37 + 1 explicit | scene routing, player movement/look, pause, interaction targeting/prompt/key/dispatch/rejection, item pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, drop-hint visibility, scene basket pickup, washer targeting, load/unload identity, rejection without ownership change, greybox traversal, storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, public navigation/camera clearance, wall containment, secret door, scale, and lighting. The explicit test captures acceptance screenshots. |
 
 Counts are a snapshot; use the XML `test-run` totals as the authoritative result.
 
@@ -292,7 +292,7 @@ $playerCheck = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
 $playerCheck.ExitCode
 ```
 
-`SetupPlayerPrompt` is idempotent and rewires the view to the player's `PlayerInteractor`. `ValidatePlayerSetup` fails if the view is missing or points at a different interactor. The prompt itself is covered by `InteractionPromptTests` in the PlayMode suite.
+`SetupPlayerPrompt` is idempotent and rewires the view to the player's `PlayerInteractor`. `ValidatePlayerSetup` fails if the view is missing or points at a different interactor. The prompt itself is covered by `InteractionPromptTests` in the PlayMode suite. Carrying also shows a `[Q] Drop` hint; `CarryController.DropKey` is the source of the label, and paused time hides both hints.
 
 ### Phase 3 machine load/unload hook
 

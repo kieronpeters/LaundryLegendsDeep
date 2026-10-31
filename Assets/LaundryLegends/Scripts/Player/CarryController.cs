@@ -16,6 +16,7 @@ namespace LaundryLegends.Player
         [SerializeField] private Transform _holdAnchor;
         [SerializeField] private float _dropDistance = 1.2f;
         [SerializeField] private LayerMask _dropBlockMask = ~0;
+        [SerializeField] private KeyCode _dropKey = KeyCode.Q;
 
         [NonSerialized] private Rigidbody _heldBody;
         [NonSerialized] private bool _heldWasKinematic;
@@ -31,11 +32,22 @@ namespace LaundryLegends.Player
 
         public bool HasHoldAnchor => _holdAnchor != null;
 
+        /// <summary>Serialized drop input; the prompt view reads its label.</summary>
+        public KeyCode DropKey => _dropKey;
+
+        public string DropKeyLabel => _dropKey.ToString();
+
         private void Update()
         {
             if (HeldItem == null)
             {
                 ResetHeldState();
+                return;
+            }
+
+            if (Time.timeScale > 0f && Input.GetKeyDown(_dropKey))
+            {
+                TryDrop();
                 return;
             }
 

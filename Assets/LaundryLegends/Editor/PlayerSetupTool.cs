@@ -201,6 +201,13 @@ namespace LaundryLegends.Editor
                 }
 
                 property.objectReferenceValue = anchor;
+
+                SerializedProperty dropKey = serialized.FindProperty("_dropKey");
+                if (dropKey != null && dropKey.intValue == 0)
+                {
+                    dropKey.intValue = (int)KeyCode.Q;
+                }
+
                 serialized.ApplyModifiedPropertiesWithoutUndo();
 
                 PrefabUtility.SaveAsPrefabAsset(contents, PrefabPath);
@@ -237,6 +244,17 @@ namespace LaundryLegends.Editor
 
                 property.objectReferenceValue = interactor;
                 serialized.ApplyModifiedPropertiesWithoutUndo();
+
+                CarryController carry = contents.GetComponent<CarryController>();
+                if (carry != null)
+                {
+                    SerializedProperty carryProperty = serialized.FindProperty("_carry");
+                    if (carryProperty != null)
+                    {
+                        carryProperty.objectReferenceValue = carry;
+                        serialized.ApplyModifiedPropertiesWithoutUndo();
+                    }
+                }
 
                 PrefabUtility.SaveAsPrefabAsset(contents, PrefabPath);
             }
@@ -373,6 +391,14 @@ namespace LaundryLegends.Editor
             {
                 failures.Add($"{label}: InteractionPromptView points at a different interactor.");
             }
+            else if (prompt.Carry == null)
+            {
+                failures.Add($"{label}: InteractionPromptView has no carry reference.");
+            }
+            else if (prompt.Carry != player.GetComponent<CarryController>())
+            {
+                failures.Add($"{label}: InteractionPromptView points at a different carry controller.");
+            }
 
             CarryController carry = player.GetComponent<CarryController>();
             if (carry == null)
@@ -382,6 +408,10 @@ namespace LaundryLegends.Editor
             else if (!carry.HasHoldAnchor)
             {
                 failures.Add($"{label}: CarryController has no hold anchor.");
+            }
+            else if (carry.DropKey == KeyCode.None)
+            {
+                failures.Add($"{label}: CarryController has no drop key.");
             }
 
             if (player.transform.Find("HoldAnchor") == null)

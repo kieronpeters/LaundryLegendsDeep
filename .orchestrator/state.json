@@ -9,7 +9,7 @@
     "renderPipeline": "Built-In Render Pipeline",
     "targetPlatform": "Windows 64-bit"
   },
-  "updatedAt": "2026-10-31T05:20:00+08:00",
+  "updatedAt": "2026-10-31T08:35:00+08:00",
   "currentMilestone": {
     "id": "M1",
     "name": "Playable laundry",
@@ -20,7 +20,7 @@
     "name": "Laundry interaction foundation",
     "status": "in_progress",
     "file": ".orchestrator/tasks/phase-03.json",
-    "completionNote": "Phase 3 plan approved plus repair task LL-P3-008. LL-P3-001 through LL-P3-006 and LL-P3-008 are complete. Interaction, pickup, carry, item identity, drop/place rules, item prefabs, scene placement, the IMGUI prompt, and one washer load/unload hook are implemented and validated. LL-P3-007 is ready for acceptance verification."
+    "completionNote": "Phase 3 plan approved plus repair tasks LL-P3-008 (pickup) and LL-P3-009 (drop input), and an approved Phase 3 extension for free asset/NPC polish. LL-P3-001 through LL-P3-006, LL-P3-008, and LL-P3-009 are complete. LL-P3-007 acceptance and LL-P3-010/011 asset research follow."
   },
   "nextPhase": {
     "number": 4,
@@ -28,15 +28,15 @@
     "status": "planned",
     "file": ".orchestrator/tasks/phase-04.json"
   },
-  "activeTask": "LL-P3-007",
-  "lastCompletedTask": "LL-P3-008",
+  "activeTask": null,
+  "lastCompletedTask": "LL-P3-009",
   "nextTask": "LL-P3-007",
   "taskCounts": {
-    "complete": 30,
-    "ready": 0,
-    "planned": 0,
+    "complete": 31,
+    "ready": 1,
+    "planned": 2,
     "pending": 1,
-    "inProgress": 1,
+    "inProgress": 0,
     "failed": 0,
     "blocked": 0,
     "pendingApproval": 0
@@ -140,7 +140,7 @@
     "Free-model spend telemetry is not reliable; limits are conservative and process-based."
   ],
   "technicalDebt": [
-    "Test coverage is 31 EditMode and 36 PlayMode tests; no order, economy, save, or performance coverage yet.",
+    "Test coverage is 32 EditMode and 37 PlayMode tests (plus one explicit capture test); no order, economy, save, or performance coverage yet.",
     "No Git LFS patterns configured for future large assets.",
     "Economy values are untuned proposals.",
     "First-person perspective is provisional.",
@@ -154,31 +154,29 @@
     "note": "Procedural placeholders only: 3 scenes, 5 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
   },
   "lastRun": {
-    "id": "2026-10-31-ll-p3-008",
-    "report": ".orchestrator/reports/2026-10-31-ll-p3-008.md",
+    "id": "2026-10-31-ll-p3-009",
+    "report": ".orchestrator/reports/2026-10-31-ll-p3-009.md",
     "status": "complete",
-    "startedAt": "2026-10-31T04:10:00+08:00",
-    "completedAt": "2026-10-31T05:20:00+08:00",
+    "startedAt": "2026-10-31T05:50:00+08:00",
+    "completedAt": "2026-10-31T08:35:00+08:00",
     "checks": {
       "compile": "exit 0",
-      "pickup_setup": "passed",
-      "item_validation": "passed",
-      "editmode": "31/31 passed",
-      "playmode": "36/36 passed",
+      "player_setup": "passed",
+      "player_validation": "passed",
+      "editmode": "32/32 passed",
+      "playmode": "37 passed, 1 skipped",
       "log_scan": "passed"
     },
     "filesChanged": [
-      "Assets/LaundryLegends/Scripts/Interaction/LaundryItemInteractable.cs",
-      "Assets/LaundryLegends/Scripts/Interaction/PlayerInteractor.cs",
-      "Assets/LaundryLegends/Editor/Phase3SetupTool.cs",
-      "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/Basket.prefab",
-      "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/LooseLaundry.prefab",
-      "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/Bag.prefab",
-      "Assets/LaundryLegends/Tests/EditMode/ItemPickupRulesTests.cs",
-      "Assets/LaundryLegends/Tests/PlayMode/ItemPickupTests.cs",
+      "Assets/LaundryLegends/Scripts/Player/CarryController.cs",
+      "Assets/LaundryLegends/Scripts/UI/InteractionPromptView.cs",
+      "Assets/LaundryLegends/Editor/PlayerSetupTool.cs",
+      "Assets/LaundryLegends/Prefabs/Gameplay/Player.prefab",
+      "Assets/LaundryLegends/Tests/EditMode/CarryRulesTests.cs",
+      "Assets/LaundryLegends/Tests/PlayMode/InteractionPromptTests.cs",
       ".orchestrator/tasks/phase-03.json",
       ".orchestrator/state.json",
-      ".orchestrator/reports/2026-10-31-ll-p3-008.md",
+      ".orchestrator/reports/2026-10-31-ll-p3-009.md",
       "PROJECT_STATE.md",
       "DEVELOPMENT_LOG.md",
       "TESTING_GUIDE.md"
@@ -217,7 +215,8 @@
       "LL-P3-004",
       "LL-P3-005",
       "LL-P3-006",
-      "LL-P3-008"
+      "LL-P3-008",
+      "LL-P3-009"
     ]
   }
 }

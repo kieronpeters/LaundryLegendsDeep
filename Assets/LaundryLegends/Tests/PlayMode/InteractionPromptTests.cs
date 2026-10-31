@@ -1,5 +1,7 @@
 using System.Collections;
 using LaundryLegends.Interaction;
+using LaundryLegends.Laundry;
+using LaundryLegends.Player;
 using LaundryLegends.UI;
 using NUnit.Framework;
 using UnityEngine;
@@ -111,6 +113,42 @@ namespace LaundryLegends.Tests.PlayMode
             Assert.IsTrue(prompt.IsVisible, "Resuming should restore the prompt for a still-valid target.");
 
             Object.Destroy(target);
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator DropHintTracksCarriedItemAndPause()
+        {
+            InteractionPromptView prompt = FindPrompt(out _, out _);
+            CarryController carry = prompt.Carry;
+            Assert.IsNotNull(carry, "The prompt view should reference the player carry controller.");
+            Assert.IsFalse(prompt.IsDropHintVisible);
+            Assert.AreEqual(string.Empty, prompt.DropHint);
+
+            GameObject item = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            item.name = "TestDropItem";
+            LaundryItem laundry = item.AddComponent<LaundryItem>();
+            laundry.Initialize("test.drop", LaundryItemKind.LooseLaundry);
+            Assert.IsTrue(carry.TryPickUp(laundry));
+
+            yield return null;
+
+            Assert.IsTrue(prompt.IsDropHintVisible, "Carrying should show the drop hint.");
+            Assert.AreEqual($"[{carry.DropKeyLabel}] Drop", prompt.DropHint);
+
+            Time.timeScale = 0f;
+            yield return null;
+            Assert.IsFalse(prompt.IsDropHintVisible, "Pausing should hide the drop hint.");
+
+            Time.timeScale = 1f;
+            yield return null;
+            Assert.IsTrue(carry.TryDrop());
+            yield return null;
+
+            Assert.IsFalse(prompt.IsDropHintVisible, "Dropping should hide the drop hint.");
+            Assert.AreEqual(string.Empty, prompt.DropHint);
+
+            Object.Destroy(item);
             yield return null;
         }
 

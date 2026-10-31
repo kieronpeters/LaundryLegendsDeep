@@ -1,4 +1,5 @@
 using LaundryLegends.Interaction;
+using LaundryLegends.Player;
 using UnityEngine;
 
 namespace LaundryLegends.UI
@@ -12,6 +13,7 @@ namespace LaundryLegends.UI
     public sealed class InteractionPromptView : MonoBehaviour
     {
         [SerializeField] private PlayerInteractor _interactor;
+        [SerializeField] private CarryController _carry;
 
         /// <summary>Whether the prompt should currently be drawn.</summary>
         public bool IsVisible { get; private set; }
@@ -19,14 +21,28 @@ namespace LaundryLegends.UI
         /// <summary>Text rendered while visible; empty while hidden.</summary>
         public string CurrentLabel { get; private set; } = string.Empty;
 
+        /// <summary>Whether the drop hint should currently be drawn.</summary>
+        public bool IsDropHintVisible { get; private set; }
+
+        /// <summary>Drop hint text; empty while nothing is held.</summary>
+        public string DropHint { get; private set; } = string.Empty;
+
         /// <summary>The interactor supplying prompt, target, and key label.</summary>
         public PlayerInteractor Interactor => _interactor;
+
+        /// <summary>The carry controller supplying held state and drop key.</summary>
+        public CarryController Carry => _carry;
 
         private void Awake()
         {
             if (_interactor == null)
             {
                 _interactor = GetComponent<PlayerInteractor>();
+            }
+
+            if (_carry == null)
+            {
+                _carry = GetComponent<CarryController>();
             }
         }
 
@@ -35,6 +51,11 @@ namespace LaundryLegends.UI
             if (_interactor == null)
             {
                 _interactor = GetComponent<PlayerInteractor>();
+            }
+
+            if (_carry == null)
+            {
+                _carry = GetComponent<CarryController>();
             }
 
             if (_interactor != null)
@@ -53,6 +74,8 @@ namespace LaundryLegends.UI
             }
 
             Hide();
+            IsDropHintVisible = false;
+            DropHint = string.Empty;
         }
 
         private void Update()
@@ -68,6 +91,10 @@ namespace LaundryLegends.UI
         /// </summary>
         public void Refresh()
         {
+            bool showDropHint = _carry != null && _carry.IsCarrying && Time.timeScale > 0f;
+            IsDropHintVisible = showDropHint;
+            DropHint = showDropHint ? $"[{_carry.DropKeyLabel}] Drop" : string.Empty;
+
             if (_interactor == null || Time.timeScale <= 0f)
             {
                 Hide();
@@ -97,22 +124,31 @@ namespace LaundryLegends.UI
             IsVisible = false;
             CurrentLabel = string.Empty;
         }
-
         private void OnGUI()
         {
-            if (!IsVisible || string.IsNullOrEmpty(CurrentLabel))
+            if (IsVisible && !string.IsNullOrEmpty(CurrentLabel))
             {
-                return;
+                const float width = 360f;
+                const float height = 34f;
+                var rect = new Rect(
+                    (Screen.width - width) * 0.5f,
+                    Screen.height - 96f,
+                    width,
+                    height);
+                GUI.Box(rect, CurrentLabel);
             }
 
-            const float width = 360f;
-            const float height = 34f;
-            var rect = new Rect(
-                (Screen.width - width) * 0.5f,
-                Screen.height - 96f,
-                width,
-                height);
-            GUI.Box(rect, CurrentLabel);
+            if (IsDropHintVisible && !string.IsNullOrEmpty(DropHint))
+            {
+                const float width = 140f;
+                const float height = 28f;
+                var rect = new Rect(
+                    (Screen.width - width) * 0.5f,
+                    Screen.height - 54f,
+                    width,
+                    height);
+                GUI.Box(rect, DropHint);
+            }
         }
 
         /// <summary>

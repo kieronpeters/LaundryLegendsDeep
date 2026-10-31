@@ -252,6 +252,7 @@ MonoBehaviour:
   _dropBlockMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  _dropKey: 113
 --- !u!114 &6146316434839707140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -265,3 +266,4 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   _interactor: {fileID: 5041115009354479133}
+  _carry: {fileID: 6351020079800008216}

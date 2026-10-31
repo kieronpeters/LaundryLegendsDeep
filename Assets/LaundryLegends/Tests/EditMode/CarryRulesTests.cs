@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using LaundryLegends.Interaction;
 using LaundryLegends.Laundry;
+using LaundryLegends.Player;
 using NUnit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -96,6 +97,17 @@ namespace LaundryLegends.Tests.EditMode
             Assert.IsTrue(slot.TryPlace(loose));
             Assert.IsFalse(slot.TryRemove(other));
             Assert.AreSame(loose, slot.Occupant);
+        }
+
+        [Test]
+        public void DropKeyDefaultsToQAndExposesALabel()
+        {
+            var player = new GameObject("Player");
+            _created.Add(player);
+            CarryController carry = player.AddComponent<CarryController>();
+
+            Assert.AreEqual(KeyCode.Q, carry.DropKey);
+            Assert.AreEqual("Q", carry.DropKeyLabel);
         }
 
         private LaundryItem CreateItem(string templateId, LaundryItemKind kind, bool carryable = true)
