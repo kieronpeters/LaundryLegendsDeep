@@ -30,9 +30,9 @@
 
 | ID | Workstream | Owner | Unity slot | Status |
 | --- | --- | --- | --- | --- |
-| P5-A | Order model + exactly-once payment core (P5-001, P5-005) | ll-unity-dev | no (code only) | in progress |
-| P5-B | Character rig rescue (visual debt) | ll-unity-dev | **owns now** | in progress |
-| P5-C | Customer state machine (P5-002) | queued | after P5-B | blocked |
+| P5-A | Order model + exactly-once payment core (P5-001, P5-005) | ll-unity-dev | no (code only) | **done** — committed `3498067`, 20 tests |
+| P5-B | Character rig rescue (visual debt) | ll-unity-dev | **owns now** | **done** — clothed humanoid character, EditMode 64/64 |
+| P5-C | Customer state machine (P5-002) | ll-unity-dev | **owns now** | in progress |
 | P5-D | Order handoff + ticket UI (P5-003, P5-004) | queued | after P5-C | blocked |
 | P5-E | Patience, queue, end-to-end (P5-006..008) | queued | after P5-D | blocked |
 
