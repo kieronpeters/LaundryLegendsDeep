@@ -1,4 +1,4 @@
-{
+﻿{
   "schemaVersion": 1,
   "project": {
     "name": "Laundry Legends",
@@ -9,7 +9,7 @@
     "renderPipeline": "Built-In Render Pipeline",
     "targetPlatform": "Windows 64-bit"
   },
-  "updatedAt": "2026-10-31T14:20:00+08:00",
+  "updatedAt": "2026-11-01T00:00:00+08:00",
   "currentMilestone": {
     "id": "M1",
     "name": "Playable laundry",
@@ -20,13 +20,13 @@
     "name": "Laundry processing",
     "status": "complete",
     "file": ".orchestrator/tasks/phase-04.json",
-    "completionNote": "Phase 4 complete: washer/dryer state machines, staff-run wash/dry/fold/wrap loop, dirty-to-washed-to-dried-to-wrapped visuals, customer drop-off and pickup, progress prompts, longer two-track music playlist, and audible stock voices."
+    "completionNote": "Phase 4 complete at commit cf0d79d. Loop: washer/dryer, staff walk + visible carry, fold/wrap, customer drop-off and pickup, prompts. Realism pass added: retargeted humanoid animation (45 clips), 54 rendered voice lines wired with subtitles and a speaker cooldown, three-track music playlist, authored wrapped bundle, room fixtures/lighting/contact shadows, fixed signage. Known visual debt carried into Phase 5: NPCs use a placeholder mannequin (character rig mapping blocked), bundle film renders opaque, carry pose does not grip the item."
   },
   "nextPhase": {
     "number": 5,
     "name": "Customers and payments",
     "status": "planned",
-    "file": ".orchestrator/tasks/phase-04.json"
+    "file": ".orchestrator/tasks/phase-05-plan.md"
   },
   "activeTask": null,
   "lastCompletedTask": "LL-P4-007",
@@ -241,3 +241,4 @@
     ]
   }
 }
+
