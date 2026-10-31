@@ -68,8 +68,8 @@ Use for interaction, machine cycles, order flow, customer flow, and scene smoke 
 
 | Suite | Tests | Coverage |
 |---|---:|---|
-| EditMode | 21 | `GameState` money/flags/day rules, build-settings order, the failure-reporting probe, interaction eligibility/disabled/event rules, item identity/kind/carryability, and carry-slot compatibility/placement |
-| PlayMode | 31 | scene routing, player movement/look, pause, interaction targeting/prompt/key/dispatch/rejection, item pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, greybox traversal, storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, public navigation/camera clearance, wall containment, secret door, scale, and lighting |
+| EditMode | 26 | `GameState` money/flags/day rules, build-settings order, the failure-reporting probe, interaction eligibility/disabled/event rules, item identity/kind/carryability, carry-slot compatibility/placement, and machine load/unload rules |
+| PlayMode | 35 | scene routing, player movement/look, pause, interaction targeting/prompt/key/dispatch/rejection, item pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, washer targeting, load/unload identity, rejection without ownership change, greybox traversal, storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, public navigation/camera clearance, wall containment, secret door, scale, and lighting |
 
 Counts are a snapshot; use the XML `test-run` totals as the authoritative result.
 
@@ -283,6 +283,22 @@ $playerCheck.ExitCode
 ```
 
 `SetupPlayerPrompt` is idempotent and rewires the view to the player's `PlayerInteractor`. `ValidatePlayerSetup` fails if the view is missing or points at a different interactor. The prompt itself is covered by `InteractionPromptTests` in the PlayMode suite.
+
+### Phase 3 machine load/unload hook
+
+Rebuild the washer hook additively after a `GreyboxRoom` rebuild, then validate it:
+
+```powershell
+$hook = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.Phase3SetupTool.BuildMachineHook -logFile `"TestResults\p3-build-machine.log`""
+$hook.ExitCode
+
+$hookCheck = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.Phase3SetupTool.ValidateMachineHook -logFile `"TestResults\p3-validate-machine.log`""
+$hookCheck.ExitCode
+```
+
+`BuildMachineHook` touches only `Machine_1`: it reuses or adds a `DrumSlot` child, a loose-laundry-only `CarrySlot`, and one `MachineLoadHook`, then saves `GreyboxRoom.prefab`. `ValidateMachineHook` fails if the hook is missing, duplicated, on the wrong machine, wired to the wrong slot, or if `Machine_1` moved or was rescaled. Run `ValidateItems` and `ValidatePublicNavigation` afterward.
 
 ### Reproducible batch test sequence
 

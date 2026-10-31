@@ -784,3 +784,39 @@ Phase 2 is complete. Author and approve the Phase 3 task plan before starting in
 ### Next
 
 `LL-P3-006` - add one machine load/unload interaction hook. Do not start `LL-P3-007` until the machine tests pass.
+
+## 2026-10-31 - LL-P3-006 machine load/unload hook
+
+**Phase:** 3 - Laundry interaction foundation
+**Task:** LL-P3-006
+**Status:** Complete - machine build/validation, item validation, navigation, compile, EditMode, PlayMode, and log scan passed
+
+### Implemented / performed
+
+- Added `MachineLoadHook` with `TryLoad`/`TryUnload`, `LoadedItem`, `IsLoaded`, `LastResult`, and a load/take prompt.
+- Added read-only `CarrySlot.AcceptsKind` for validation and tests.
+- Added `Phase3SetupTool.BuildMachineHook` and `ValidateMachineHook`.
+- Added one additive `DrumSlot` child and `MachineLoadHook` to `Machine_1` in `GreyboxRoom.prefab`; no machine position, scale, collider, or hierarchy node was removed or moved.
+- Loading accepts one loose-laundry item and rejects baskets, bags, an occupied machine, and empty hands without changing ownership.
+- Unloading returns the exact stored instance to an empty-handed carrier and rejects full hands.
+- Added five EditMode rule tests and four PlayMode load/unload/targeting tests.
+- Recorded the pre-edit checkpoint `cc6821a` before changing the room prefab.
+
+### Checks and evidence
+
+- `BuildMachineHook` and `ValidateMachineHook` exited `0` (`TestResults/p3-006-build-machine.log`, `p3-006-validate-machine.log`, ignored).
+- `ValidateItems` and `ValidatePublicNavigation` exited `0` (`TestResults/p3-006-validate-items.log`, `p3-006-navigation.log`, ignored).
+- Unity compile exited `0` (`TestResults/p3-006-compile-1.log`, ignored).
+- EditMode: 26/26 passed (`TestResults/p3-006-editmode.xml`, ignored).
+- PlayMode: 35/35 passed (`TestResults/p3-006-playmode.xml`, ignored).
+- Log scan clean; the only `Exception` matches in the PlayMode log are test-framework method names containing `Exceptions`.
+- Report: `.orchestrator/reports/2026-10-31-ll-p3-006.md`.
+
+### Not performed
+
+- Machine cycles, timers, water/soap, payment, and the other seven machines.
+- Human Game-view review of machine interaction, playtest, player build, and performance measurement.
+
+### Next
+
+`LL-P3-007` - run Phase 3 acceptance verification and capture evidence. Do not start Phase 4 until acceptance is recorded.

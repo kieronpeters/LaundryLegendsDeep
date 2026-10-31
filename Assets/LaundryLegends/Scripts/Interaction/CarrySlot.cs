@@ -34,6 +34,12 @@ namespace LaundryLegends.Interaction
                 && IsKindAccepted(item.Kind);
         }
 
+        /// <summary>Read-only kind check for editor validation and tests.</summary>
+        public bool AcceptsKind(LaundryItemKind kind)
+        {
+            return IsKindAccepted(kind);
+        }
+
         public void SetAcceptedKinds(params LaundryItemKind[] kinds)
         {
             _acceptedKinds = kinds ?? Array.Empty<LaundryItemKind>();

@@ -3,7 +3,7 @@
   "phase": 3,
   "name": "Laundry interaction foundation",
   "status": "in_progress",
-  "updatedAt": "2026-10-31T02:10:00+08:00",
+  "updatedAt": "2026-10-31T04:05:00+08:00",
   "tasks": [
     {
       "id": "LL-P3-001",
@@ -269,7 +269,7 @@
     {
       "id": "LL-P3-006",
       "title": "Add one machine load/unload interaction hook",
-      "status": "ready",
+      "status": "complete",
       "priority": 6,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P3-003", "LL-P3-004", "LL-P3-005"],
@@ -311,20 +311,20 @@
       "checks": [
         {
           "name": "Machine hook and regression",
-          "status": "pending",
-          "command": "LaundryLegends.Editor.Phase3SetupTool.BuildMachineHook and ValidateMachineHook; LaundryLegends.Editor.Phase2SetupTool.ValidatePublicNavigation; Unity batch compile; EditMode/PlayMode suites; log scan",
-          "evidence": "Pending"
+          "status": "passed",
+          "command": "LaundryLegends.Editor.Phase3SetupTool.BuildMachineHook and ValidateMachineHook; LaundryLegends.Editor.Phase3SetupTool.ValidateItems; LaundryLegends.Editor.Phase2SetupTool.ValidatePublicNavigation; Unity batch compile; EditMode/PlayMode suites; log scan",
+          "evidence": "Build hook, machine validation, item validation, and navigation exit 0; compile exit 0; EditMode 26/26; PlayMode 35/35; logs clean on 2026-10-31 (TestResults/p3-006-*, ignored)"
         }
       ],
-      "result": null,
+      "result": "Added one additive washer load/unload hook on Machine_1 with an accepted-kinds slot, loose-laundry-only loading, whole-item unload, rejection of baskets/bags/occupied loads/full hands, and same-instance return. GreyboxRoom geometry is unchanged. Phase3SetupTool can rebuild and validate the hook.",
       "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "startedAt": "2026-10-31T02:15:00+08:00",
+      "completedAt": "2026-10-31T04:05:00+08:00"
     },
     {
       "id": "LL-P3-007",
       "title": "Verify Phase 3 acceptance and record evidence",
-      "status": "planned",
+      "status": "ready",
       "priority": 7,
       "owner": "build",
       "dependsOn": ["LL-P3-006"],

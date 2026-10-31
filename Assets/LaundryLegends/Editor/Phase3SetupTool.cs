@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using LaundryLegends.Interaction;
 using LaundryLegends.Laundry;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -20,7 +21,10 @@ namespace LaundryLegends.Editor
         private const string BagPath = LaundryPrefabFolder + "/Bag.prefab";
         private const string MaterialFolder = "Assets/LaundryLegends/Art/Materials";
         private const string LaundromatScenePath = "Assets/LaundryLegends/Scenes/Laundromat.unity";
+        private const string RoomPrefabPath = "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab";
         private const string ItemsRootName = "Phase3Items";
+        private const string MachineHookTargetName = "Machine_1";
+        private const string DrumSlotName = "DrumSlot";
 
         private static readonly (string Label, Vector3 Start, Vector3 End)[] PublicRoutes =
         {
@@ -93,6 +97,222 @@ namespace LaundryLegends.Editor
             }
 
             Debug.Log("[Phase3] Item validation passed: prefabs, identity, colliders, materials, scene placement, and route clearance are valid.");
+        }
+
+        [MenuItem("Laundry Legends/Phase 3/Build Machine Hook")]
+        public static void BuildMachineHook()
+        {
+            GameObject room = PrefabUtility.LoadPrefabContents(RoomPrefabPath);
+            try
+            {
+                Transform machine = FindChild(room.transform, MachineHookTargetName);
+                if (machine == null)
+                {
+                    throw new InvalidOperationException($"GreyboxRoom has no {MachineHookTargetName} child.");
+                }
+
+                foreach (MachineLoadHook existing in room.GetComponentsInChildren<MachineLoadHook>(true))
+                {
+                    if (existing.gameObject != machine.gameObject)
+                    {
+                        UnityEngine.Object.DestroyImmediate(existing);
+                    }
+                }
+
+                Transform drum = machine.Find(DrumSlotName);
+                if (drum == null)
+                {
+                    var drumObject = new GameObject(DrumSlotName);
+                    drum = drumObject.transform;
+                    drum.SetParent(machine, false);
+                    drum.localPosition = new Vector3(0f, 0f, -0.1f);
+                    drum.localRotation = Quaternion.identity;
+                    drum.localScale = Vector3.one;
+                }
+
+                CarrySlot slot = drum.GetComponent<CarrySlot>();
+                if (slot == null)
+                {
+                    slot = drum.gameObject.AddComponent<CarrySlot>();
+                }
+
+                slot.SetAcceptedKinds(LaundryItemKind.LooseLaundry);
+                var slotSerialized = new SerializedObject(slot);
+                SerializedProperty anchor = slotSerialized.FindProperty("_anchor");
+                if (anchor == null)
+                {
+                    throw new InvalidOperationException("Serialized field not found: _anchor on CarrySlot");
+                }
+
+                anchor.objectReferenceValue = drum;
+                slotSerialized.ApplyModifiedPropertiesWithoutUndo();
+
+                MachineLoadHook hook = machine.GetComponent<MachineLoadHook>();
+                if (hook == null)
+                {
+                    hook = machine.gameObject.AddComponent<MachineLoadHook>();
+                }
+
+                hook.Configure(slot);
+
+                PrefabUtility.SaveAsPrefabAsset(room, RoomPrefabPath);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(room);
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("[Phase3] Washer load/unload hook built additively on Machine_1.");
+        }
+
+        [MenuItem("Laundry Legends/Phase 3/Validate Machine Hook")]
+        public static void ValidateMachineHook()
+        {
+            var failures = new List<string>();
+            GameObject room = AssetDatabase.LoadAssetAtPath<GameObject>(RoomPrefabPath);
+            if (room == null)
+            {
+                failures.Add($"Missing room prefab: {RoomPrefabPath}");
+            }
+            else
+            {
+                Transform machine = FindChild(room.transform, MachineHookTargetName);
+                if (machine == null)
+                {
+                    failures.Add($"GreyboxRoom has no {MachineHookTargetName} child.");
+                }
+                else
+                {
+                    ValidateMachineGeometry(machine, failures);
+
+                    MachineLoadHook[] hooks = room.GetComponentsInChildren<MachineLoadHook>(true);
+                    if (hooks.Length != 1)
+                    {
+                        failures.Add($"Expected exactly one MachineLoadHook, found {hooks.Length}.");
+                    }
+                    else if (hooks[0].gameObject != machine.gameObject)
+                    {
+                        failures.Add($"MachineLoadHook must be on {MachineHookTargetName}, found on {hooks[0].gameObject.name}.");
+                    }
+                    else
+                    {
+                        MachineLoadHook hook = hooks[0];
+                        if (hook.Slot == null)
+                        {
+                            failures.Add("MachineLoadHook has no CarrySlot.");
+                        }
+                        else
+                        {
+                            Transform drum = machine.Find(DrumSlotName);
+                            if (drum == null || hook.Slot.gameObject != drum.gameObject)
+                            {
+                                failures.Add($"MachineLoadHook slot must be the {MachineHookTargetName}/{DrumSlotName} child.");
+                            }
+
+                            if (!hook.Slot.AcceptsKind(LaundryItemKind.LooseLaundry))
+                            {
+                                failures.Add("Machine slot must accept loose laundry.");
+                            }
+
+                            if (hook.Slot.AcceptsKind(LaundryItemKind.Basket)
+                                || hook.Slot.AcceptsKind(LaundryItemKind.Bag))
+                            {
+                                failures.Add("Machine slot must reject baskets and bags.");
+                            }
+                        }
+                    }
+
+                    CarrySlot[] slots = room.GetComponentsInChildren<CarrySlot>(true);
+                    if (slots.Length != 1)
+                    {
+                        failures.Add($"Expected exactly one machine CarrySlot, found {slots.Length}.");
+                    }
+                }
+            }
+
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(LaundromatScenePath) == null)
+            {
+                failures.Add($"Missing scene: {LaundromatScenePath}");
+            }
+            else
+            {
+                Scene scene = EditorSceneManager.OpenScene(LaundromatScenePath, OpenSceneMode.Single);
+                MachineLoadHook[] sceneHooks = FindSceneComponents<MachineLoadHook>(scene);
+                if (sceneHooks.Length != 1)
+                {
+                    failures.Add($"Laundromat should contain exactly one MachineLoadHook, found {sceneHooks.Length}.");
+                }
+            }
+
+            if (failures.Count > 0)
+            {
+                foreach (string failure in failures)
+                {
+                    Debug.LogError($"[Phase3] {failure}");
+                }
+
+                throw new InvalidOperationException($"Phase 3 machine-hook validation failed with {failures.Count} issue(s).");
+            }
+
+            Debug.Log("[Phase3] Machine-hook validation passed: one washer hook, loose-laundry-only slot, and unchanged machine geometry.");
+        }
+
+        private static void ValidateMachineGeometry(Transform machine, List<string> failures)
+        {
+            Vector3 expectedPosition = new Vector3(-3.15f, 0.55f, 5.25f);
+            Vector3 expectedScale = new Vector3(0.8f, 1.1f, 0.7f);
+
+            if ((machine.localPosition - expectedPosition).sqrMagnitude > 0.0001f)
+            {
+                failures.Add($"{MachineHookTargetName} moved from its authored position: {machine.localPosition}.");
+            }
+
+            if ((machine.localScale - expectedScale).sqrMagnitude > 0.0001f)
+            {
+                failures.Add($"{MachineHookTargetName} was rescaled: {machine.localScale}.");
+            }
+
+            if (machine.GetComponent<Collider>() == null)
+            {
+                failures.Add($"{MachineHookTargetName} lost its collider.");
+            }
+
+            if (machine.Find(DrumSlotName) == null)
+            {
+                failures.Add($"{MachineHookTargetName} has no {DrumSlotName} child.");
+            }
+        }
+
+        private static T[] FindSceneComponents<T>(Scene scene) where T : Component
+        {
+            var found = new List<T>();
+            foreach (GameObject root in scene.GetRootGameObjects())
+            {
+                found.AddRange(root.GetComponentsInChildren<T>(true));
+            }
+
+            return found.ToArray();
+        }
+
+        private static Transform FindChild(Transform root, string name)
+        {
+            if (root.name == name)
+            {
+                return root;
+            }
+
+            for (int i = 0; i < root.childCount; i++)
+            {
+                Transform match = FindChild(root.GetChild(i), name);
+                if (match != null)
+                {
+                    return match;
+                }
+            }
+
+            return null;
         }
 
         private static void BuildBasket(Material material)

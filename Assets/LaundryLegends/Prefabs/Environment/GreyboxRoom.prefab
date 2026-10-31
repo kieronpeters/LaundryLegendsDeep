@@ -1,5 +1,52 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &78441925807162729
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2032556070795913907}
+  - component: {fileID: 976227249060699607}
+  m_Layer: 0
+  m_Name: DrumSlot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2032556070795913907
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78441925807162729}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2453496647497797034}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &976227249060699607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78441925807162729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24481c50676cb224faaa620e7bbf0ecb, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  _anchor: {fileID: 2032556070795913907}
+  _acceptAllKinds: 0
+  _acceptedKinds: 01000000
 --- !u!1 &119079654611208539
 GameObject:
   m_ObjectHideFlags: 0
@@ -6249,6 +6296,7 @@ GameObject:
   - component: {fileID: 7167181615990502293}
   - component: {fileID: 1407794991724378960}
   - component: {fileID: 6548674195841978094}
+  - component: {fileID: 612753587149710778}
   m_Layer: 0
   m_Name: Machine_1
   m_TagString: Untagged
@@ -6268,7 +6316,8 @@ Transform:
   m_LocalPosition: {x: -3.15, y: 0.55, z: 5.25}
   m_LocalScale: {x: 0.8, y: 1.1, z: 0.7}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2032556070795913907}
   m_Father: {fileID: 2187488859163604281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7167181615990502293
@@ -6345,6 +6394,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &612753587149710778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4435942010736907459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2497e8e79aee934e935b2b421d51e10, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  _slot: {fileID: 976227249060699607}
+  _emptyPrompt: Load washer
+  _occupiedPrompt: Take laundry
 --- !u!1 &4585588979941548959
 GameObject:
   m_ObjectHideFlags: 0
