@@ -711,3 +711,39 @@ Phase 2 is complete. Author and approve the Phase 3 task plan before starting in
 ### Next
 
 `LL-P3-004` - add basket, loose-laundry, and bag placeholder prefabs with a small additive scene placement. Do not start `LL-P3-005` until `LL-P3-004` validates.
+
+## 2026-10-31 - LL-P3-004 placeholder laundry item prefabs
+
+**Phase:** 3 - Laundry interaction foundation
+**Task:** LL-P3-004
+**Status:** Complete - build, item validation, navigation validation, compile, EditMode, PlayMode, and log scan passed
+
+### Implemented / performed
+
+- Added `Phase3SetupTool` with idempotent `BuildItems` and `ValidateItems` editor entry points.
+- Added `Basket.prefab`, `LooseLaundry.prefab`, and `Bag.prefab` under `Prefabs/Gameplay/Laundry/` with unique template IDs, colliders, rigidbodies, and existing greybox materials.
+- Added four item instances (one basket, one bag, two loose-laundry) under a new additive `Phase3Items` root in `Laundromat.unity`.
+- Validation checks template-ID uniqueness, kind, washer-loadability, colliders, materials, scene instance counts, and clearance from all seven public routes.
+- Updated `ASSET_INVENTORY.md` with `GAMEPLAY-LAUNDRY-001` and the carry-capable player description.
+- No runtime script, material, package, or project-setting change.
+
+### Checks and evidence
+
+- `Phase3SetupTool.BuildItems` exited `0` (`TestResults/p3-004-build-items.log`, ignored).
+- `Phase3SetupTool.ValidateItems` exited `0` (`TestResults/p3-004-validate-items.log`, ignored).
+- `Phase2SetupTool.ValidatePublicNavigation` exited `0` (`TestResults/p3-004-navigation.log`, ignored).
+- Unity compile exited `0` (`TestResults/p3-004-compile-1.log`, ignored).
+- EditMode: 21/21 passed (`TestResults/p3-004-editmode.xml`, ignored).
+- PlayMode: 27/27 passed (`TestResults/p3-004-playmode.xml`, ignored).
+- All six logs were scanned for errors, exceptions, unsupported physics writes, shader errors, and aborts; clean.
+- Bootstrap validation passed; JSON parsed; `git diff --check` passed.
+- Report: `.orchestrator/reports/2026-10-31-ll-p3-004.md`.
+
+### Not performed
+
+- Prompt UI (`LL-P3-005`) and machine load/unload (`LL-P3-006`).
+- Human visual review of the item placeholders, playtest, player build, and performance measurement.
+
+### Next
+
+`LL-P3-005` - add the interaction prompt UI and controls hint. Do not start `LL-P3-006` until the prompt tests pass.

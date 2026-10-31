@@ -248,6 +248,26 @@ $navigate.ExitCode
 
 It checks seven public routes (entrance-to-counter, central aisle, machine aisle, east circulation, waiting-to-central, central-to-entrance, and counter-to-entrance), critical prop colliders, non-null renderer materials, missing `MonoBehaviour` references, and camera spheres at 1.5 m and 1.7 m at representative waypoints. A blocked route reports the first collider and distance. The same routes and camera samples are covered by `PublicNavigationAndCameraClearanceAreValid` in the PlayMode suite.
 
+### Phase 3 laundry item prefabs and scene placement
+
+Rebuild the placeholder item prefabs and their additive scene placement (idempotent; replaces the `Phase3Items` root only):
+
+```powershell
+$items = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.Phase3SetupTool.BuildItems -logFile `"TestResults\p3-build-items.log`""
+$items.ExitCode
+```
+
+Validate template-ID uniqueness, kind, washer-loadability, colliders, materials, scene instance counts, and clearance from the seven public routes:
+
+```powershell
+$itemCheck = Start-Process -FilePath $unity -Wait -PassThru -ArgumentList `
+  "-batchmode -quit -nographics -projectPath `"$project`" -executeMethod LaundryLegends.Editor.Phase3SetupTool.ValidateItems -logFile `"TestResults\p3-validate-items.log`""
+$itemCheck.ExitCode
+```
+
+Run the Phase 2 navigation validation as well after any item placement change. `ValidateItems` counts one basket, one bag, and two loose-laundry instances; it tolerates extra instances but reports blocked routes.
+
 ### Reproducible batch test sequence
 
 Use `Start-Process -Wait` and a single quoted argument string. Passing an array of arguments can split the project path at its spaces.
