@@ -32,6 +32,10 @@ namespace LaundryLegends.Customers
         [SerializeField] private float _pickupSeconds = 0.5f;
         [SerializeField] private int _price = 40;
         [SerializeField] private float _patienceSeconds = 90f;
+        [SerializeField] private int _tip = 10;
+        [SerializeField] private float _tipWindowSeconds = 60f;
+
+        public int LastTip { get; private set; }
 
         private OrderLedger _ledger;
         private CarrySlot _orderSlot;
@@ -202,6 +206,12 @@ namespace LaundryLegends.Customers
             Enter(CustomerState.Pay);
             if (_ledger.TryPay(_order.OrderId, Time.time))
             {
+                if (waited <= _tipWindowSeconds && _tip > 0)
+                {
+                    LastTip = _tip;
+                    _ledger.Wallet.TryCredit(_tip);
+                }
+
                 Speak(DialogueTrigger.Pickup);
             }
 

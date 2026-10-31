@@ -79,7 +79,8 @@ namespace LaundryLegends.Tests.PlayMode
             CollectionAssert.Contains(states, CustomerState.Pay);
             CollectionAssert.Contains(states, CustomerState.Leave);
 
-            Assert.AreEqual(140, wallet.Money, "Wallet should be credited exactly once.");
+            Assert.AreEqual(150, wallet.Money, "Wallet should be credited once, plus the fast-service tip.");
+            Assert.AreEqual(10, agent.LastTip, "A fast order should tip.");
             Assert.AreEqual(1, ledger.CompletedOrders.Count);
         }
 
