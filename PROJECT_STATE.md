@@ -2,10 +2,10 @@
 
 **Last updated:** 2026-11-01 (Phase 4 closed)
 **Current milestone:** M1 - Playable laundry, **in progress**
-**Current phase:** Phase 4 - Laundry processing, **complete** (commit `cf0d79d`)
-**Next phase:** Phase 5 - Customers and payments, **planned** (`.orchestrator/tasks/phase-05-plan.md`)
+**Current phase:** Phase 5 - Customers and payments, **in progress** (loop working at `f4bb0ef`)
+**Next phase:** Phase 5 completion, then Phase 6
 **Active task:** None
-**Next recommended task:** `LL-P5-001` order model, or the carried-over character-art fix
+**Next recommended task:** customer queue slots + human playtest, then the visual debt list
 
 > **Manager note (2026-11-01).** Sections below are historical and describe the
 > Phase 1-3 state; they are not rewritten wholesale. Current authoritative
