@@ -19,11 +19,19 @@ The intent is to polish Phases 1-3 and create a small NPC set **before Phase 4 g
 
 | Tool | Recommended version | Source | License | Notes |
 |---|---|---|---|---|
-| Blender | **4.5.15 LTS** (supported to July 2027) | https://www.blender.org/download/lts/ | GPL v2+ for the software; artwork created is owned by us | Conservative choice for Unity 6 FBX compatibility. Windows installer about 344 MB. |
+| Blender | **4.5.15 LTS** (supported to July 2027) | https://www.blender.org/download/lts/ | GPL v2+ for the software; artwork created is owned by us | Conservative choice for Unity 6 FBX compatibility. Installed 2026-10-31 at `C:\Users\Asus\AppData\Local\Programs\BlenderFoundation\Blender-4.5.15`. SHA-256 verified against the official checksum. |
 | Blender alternative | 5.2.3 LTS (supported to July 2028) | https://www.blender.org/download/ | Same | Newer, but the FBX/Unity path is less battle-tested for this project. Use only if 4.5 fails. |
 | Unity | 6000.0.64f1 (already installed) | Unity Hub | Existing | No new packages. |
 
-Blender installation is approved by the project owner. The GPL applies to Blender itself, not to `.blend` files or exported meshes; those remain ours.
+Blender installation is approved by the project owner and was completed on 2026-10-31 using the official portable Windows x64 ZIP. The GPL applies to Blender itself, not to `.blend` files or exported meshes; those remain ours.
+
+### Current installation
+
+- Version: Blender 4.5.15 LTS, build 2026-10-22
+- Path: `C:\Users\Asus\AppData\Local\Programs\BlenderFoundation\Blender-4.5.15\blender-4.5.15-windows-x64\blender.exe`
+- Source: `https://download.blender.org/release/Blender4.5/blender-4.5.15-windows-x64.zip`
+- SHA-256: `52dd02fd74877fa08e74b67d7854cf32468a232c02aaa19b6844c91285574f8d` (verified)
+- Portable install: no machine-wide PATH change; invoke by full path.
 
 ## 3. Source and license matrix
 

@@ -954,3 +954,35 @@ Phase 2 is complete. Author and approve the Phase 3 task plan before starting in
 ### Next
 
 `LL-P3-011` - install Blender 4.5 LTS, create the custom basket, import it, preserve the pickup/carry/machine contracts, and capture the result.
+
+## 2026-10-31 - LL-P3-011 Blender install and custom basket
+
+**Phase:** 3 extension - free asset/NPC polish
+**Task:** LL-P3-011
+**Status:** Complete - Blender installed, basket imported, validators and suites pass
+
+### Implemented / performed
+
+- Downloaded Blender 4.5.15 LTS from the official Blender release page and verified the SHA-256.
+- Installed the portable Windows x64 build under the user profile; no PATH or machine setting changed.
+- Added `ArtSource/` with the editable basket, generator script, export, and license notes.
+- Replaced the basket primitive with a 756-triangle open basket and `MAT_Basket`; kept `laundry.basket`, collider, rigidbody, pickup, carry, and washer rules.
+- Added idempotent apply/validate entry points in `BasketAssetSetupTool`.
+- Captured the scene with the new basket and updated the asset inventory.
+
+### Checks and evidence
+
+- Blender 4.5.15 LTS verified; SHA-256 matched the official checksum.
+- Basket generation exited `0` with 756 triangles; Unity apply and basket validation exited `0`.
+- Item validation exited `0`; EditMode 32/32; PlayMode 37 passed, 1 explicit capture test skipped; capture run 1/1.
+- Log scan clean; diff check passed.
+- Report: `.orchestrator/reports/2026-10-31-ll-p3-011.md`.
+
+### Not performed
+
+- Loose laundry, bag, and machine visuals (`LL-P3-012`).
+- NPCs (`LL-P3-013`), human visual review, player build, and performance measurement.
+
+### Next
+
+`LL-P3-012` - custom loose-laundry/bag meshes and washer/dryer front detail.

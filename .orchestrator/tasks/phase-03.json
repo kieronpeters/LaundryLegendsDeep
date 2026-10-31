@@ -3,7 +3,7 @@
   "phase": 3,
   "name": "Laundry interaction foundation",
   "status": "in_progress",
-  "updatedAt": "2026-10-31T09:25:00+08:00",
+  "updatedAt": "2026-10-31T11:10:00+08:00",
   "tasks": [
     {
       "id": "LL-P3-001",
@@ -533,7 +533,7 @@
     {
       "id": "LL-P3-011",
       "title": "Install Blender and build the first polished laundry assets",
-      "status": "ready",
+      "status": "complete",
       "priority": 9,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P3-010"],
@@ -541,9 +541,11 @@
       "scope": [
         "ArtSource/**",
         "Assets/LaundryLegends/Art/**",
+        "Assets/LaundryLegends/Editor/BasketAssetSetupTool.cs",
         "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/**",
         "Assets/LaundryLegends/Tests/**",
         "ASSET_INVENTORY.md",
+        "ASSET_PIPELINE.md",
         ".orchestrator/tasks/phase-03.json",
         ".orchestrator/state.json",
         ".orchestrator/reports/**",
@@ -570,8 +572,108 @@
       "checks": [
         {
           "name": "Blender install and first asset",
-          "status": "pending",
+          "status": "passed",
           "command": "Install Blender; author/export one asset; import and validate; run suites and captures",
+          "evidence": "Blender 4.5.15 LTS installed with verified SHA-256; basket 756 tris exported and imported; basket validation exit 0; item validation exit 0; EditMode 32/32; PlayMode 37 passed plus 1 capture test; capture inspected on 2026-10-31 (TestResults/p3-011-*, ignored)"
+        }
+      ],
+      "result": "Installed Blender 4.5.15 LTS from the official source with a verified SHA-256. Added ArtSource with the editable basket, generator script, export, and license note. The custom 756-triangle basket, MAT_Basket, and FBX replaced the primitive body in Basket.prefab while preserving template ID, collider, rigidbody, pickup, carry, and machine rules. Capture and inventory evidence recorded.",
+      "retryCount": 0,
+      "startedAt": "2026-10-31T09:30:00+08:00",
+      "completedAt": "2026-10-31T11:10:00+08:00"
+    },
+    {
+      "id": "LL-P3-012",
+      "title": "Polish loose laundry, bag, and machine visuals",
+      "status": "ready",
+      "priority": 10,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-011"],
+      "objective": "Replace the remaining primitive laundry props and add readable washer/dryer front detail using the approved Blender pipeline, while preserving every gameplay contract and the existing room geometry.",
+      "scope": [
+        "ArtSource/**",
+        "Assets/LaundryLegends/Art/**",
+        "Assets/LaundryLegends/Editor/BasketAssetSetupTool.cs",
+        "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/**",
+        "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
+        "Assets/LaundryLegends/Tests/**",
+        "ASSET_INVENTORY.md",
+        "ASSET_PIPELINE.md",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/state.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Scripts/**",
+        "Assets/LaundryLegends/Scenes/Laundromat.unity",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "LooseLaundry and Bag prefabs use custom low-poly meshes/materials while keeping template IDs, colliders, rigidbodies, pickup, and washer rules",
+        "Washer/dryer fronts gain additive detail without moving or resizing existing machine colliders or breaking MachineLoadHook on Machine_1",
+        "Poly budgets and material count stay within ASSET_PIPELINE.md",
+        "Asset validation, item validation, machine validation, navigation, suites, and log scan pass",
+        "Updated captures show the new props and machine fronts"
+      ],
+      "checks": [
+        {
+          "name": "Prop and machine visual polish",
+          "status": "pending",
+          "command": "Blender export; Unity import/apply; validators; EditMode/PlayMode; captures",
+          "evidence": "Pending"
+        }
+      ],
+      "result": null,
+      "retryCount": 0,
+      "startedAt": null,
+      "completedAt": null
+    },
+    {
+      "id": "LL-P3-013",
+      "title": "Create three free-licensed NPC archetypes",
+      "status": "planned",
+      "priority": 11,
+      "owner": "ll-unity-dev",
+      "dependsOn": ["LL-P3-012"],
+      "objective": "Add three simple NPC character prefabs from CC0 rigged bases with idle/walk/carry clips, recorded licenses, and no gameplay AI.",
+      "scope": [
+        "ArtSource/**",
+        "Assets/LaundryLegends/Art/**",
+        "Assets/LaundryLegends/Prefabs/Gameplay/NPC/**",
+        "Assets/LaundryLegends/Tests/**",
+        "ASSET_INVENTORY.md",
+        "ASSET_PIPELINE.md",
+        ".orchestrator/tasks/phase-03.json",
+        ".orchestrator/state.json",
+        ".orchestrator/reports/**",
+        "PROJECT_STATE.md",
+        "DEVELOPMENT_LOG.md",
+        "TESTING_GUIDE.md"
+      ],
+      "mustNotTouch": [
+        "Assets/LaundryLegends/Scripts/**",
+        "Assets/LaundryLegends/Scenes/Laundromat.unity",
+        "Assets/LaundryLegends/Prefabs/Environment/**",
+        "Packages/**",
+        "ProjectSettings/**"
+      ],
+      "acceptance": [
+        "Three NPC prefabs exist from CC0 bases with capsule colliders and no gameplay behavior",
+        "Each has a humanoid rig with idle, walk, and carry clips or a documented fallback",
+        "Every base/texture/animation source has a license row and attribution note",
+        "No paid, AI-generated, or unverifiable asset is used",
+        "A scene-independent smoke test or validator confirms prefab structure and animation wiring",
+        "Compile and suites pass; no scene change is required"
+      ],
+      "checks": [
+        {
+          "name": "NPC archetypes",
+          "status": "pending",
+          "command": "Download CC0 bases/animations; build prefabs; validate; suites",
           "evidence": "Pending"
         }
       ],
