@@ -3,7 +3,7 @@
   "phase": 3,
   "name": "Laundry interaction foundation",
   "status": "in_progress",
-  "updatedAt": "2026-10-30T19:12:00+08:00",
+  "updatedAt": "2026-10-31T00:05:00+08:00",
   "tasks": [
     {
       "id": "LL-P3-001",
@@ -107,7 +107,7 @@
     {
       "id": "LL-P3-003",
       "title": "Implement carry state, item identity, and drop/place rules",
-      "status": "ready",
+      "status": "complete",
       "priority": 3,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P3-002"],
@@ -153,20 +153,20 @@
       "checks": [
         {
           "name": "Carry logic and player integration",
-          "status": "pending",
+          "status": "passed",
           "command": "Unity batch compile; EditMode carry-state and identity tests; PlayMode pickup/drop/place and no-stuck tests; full regression suites; log scan",
-          "evidence": "Pending"
+          "evidence": "Compile exit 0; EditMode 21/21 passed; PlayMode 27/27 passed twice; Player validation passed; logs clean on 2026-10-30 (TestResults/p3-003-*, ignored)"
         }
       ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "result": "Carry, item identity, drop/place rules, CarrySlot, hold-anchor prefab setup, and no-stuck handling implemented and tested. One warning about setting velocity on a kinematic body was found and fixed before the final pass.",
+      "retryCount": 1,
+      "startedAt": "2026-10-30T19:13:00+08:00",
+      "completedAt": "2026-10-31T00:05:00+08:00"
     },
     {
       "id": "LL-P3-004",
       "title": "Add basket, loose-laundry, and bag placeholder prefabs",
-      "status": "planned",
+      "status": "ready",
       "priority": 4,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P3-003"],

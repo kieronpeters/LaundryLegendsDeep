@@ -34,10 +34,25 @@ namespace LaundryLegends.Editor
                 Debug.Log($"[PlayerSetup] Keeping existing prefab: {PrefabPath}");
             }
 
+            EnsureCarrySetup();
             ConfigureLaundromatScene();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[PlayerSetup] Player setup complete.");
+        }
+
+        [MenuItem("Laundry Legends/Setup Player Carry")]
+        public static void SetupPlayerCarry()
+        {
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath) == null)
+            {
+                throw new InvalidOperationException($"Missing player prefab: {PrefabPath}");
+            }
+
+            EnsureCarrySetup();
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("[PlayerSetup] Player carry setup complete.");
         }
 
         [MenuItem("Laundry Legends/Validate Player")]
@@ -104,7 +119,7 @@ namespace LaundryLegends.Editor
                 throw new InvalidOperationException($"Player validation failed with {failures.Count} issue(s).");
             }
 
-            Debug.Log("[PlayerSetup] Validation passed: Player prefab, camera, CharacterController, pause, interaction, floor, and light are present; no Input System package.");
+            Debug.Log("[PlayerSetup] Validation passed: Player prefab, camera, CharacterController, pause, interaction, carry anchor, floor, and light are present; no Input System package.");
         }
 
         private static void CreatePlayerPrefab()
@@ -138,6 +153,46 @@ namespace LaundryLegends.Editor
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
             UnityEngine.Object.DestroyImmediate(root);
             Debug.Log($"[PlayerSetup] Created player prefab: {AssetDatabase.GetAssetPath(prefab)}");
+        }
+
+        private static void EnsureCarrySetup()
+        {
+            GameObject contents = PrefabUtility.LoadPrefabContents(PrefabPath);
+            try
+            {
+                CarryController carry = contents.GetComponent<CarryController>();
+                if (carry == null)
+                {
+                    carry = contents.AddComponent<CarryController>();
+                }
+
+                Transform anchor = contents.transform.Find("HoldAnchor");
+                if (anchor == null)
+                {
+                    var anchorObject = new GameObject("HoldAnchor");
+                    anchor = anchorObject.transform;
+                    anchor.SetParent(contents.transform, false);
+                    anchor.localPosition = new Vector3(0.28f, 1.2f, 0.55f);
+                    anchor.localRotation = Quaternion.identity;
+                    anchor.localScale = Vector3.one;
+                }
+
+                var serialized = new SerializedObject(carry);
+                SerializedProperty property = serialized.FindProperty("_holdAnchor");
+                if (property == null)
+                {
+                    throw new InvalidOperationException("Serialized field not found: _holdAnchor on CarryController");
+                }
+
+                property.objectReferenceValue = anchor;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+
+                PrefabUtility.SaveAsPrefabAsset(contents, PrefabPath);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(contents);
+            }
         }
 
         private static void ConfigureLaundromatScene()
@@ -251,6 +306,21 @@ namespace LaundryLegends.Editor
             if (player.GetComponent<PauseController>() == null)
             {
                 failures.Add($"{label}: missing PauseController.");
+            }
+
+            CarryController carry = player.GetComponent<CarryController>();
+            if (carry == null)
+            {
+                failures.Add($"{label}: missing CarryController.");
+            }
+            else if (!carry.HasHoldAnchor)
+            {
+                failures.Add($"{label}: CarryController has no hold anchor.");
+            }
+
+            if (player.transform.Find("HoldAnchor") == null)
+            {
+                failures.Add($"{label}: missing HoldAnchor child.");
             }
 
             Camera camera = player.GetComponentInChildren<Camera>(true);

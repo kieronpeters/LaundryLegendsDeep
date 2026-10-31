@@ -675,3 +675,39 @@ Phase 2 is complete. Author and approve the Phase 3 task plan before starting in
 ### Next
 
 `LL-P3-003` - implement carry state, item identity, and drop/place rules. Do not start `LL-P3-004` until `LL-P3-003` compiles and its tests pass.
+
+## 2026-10-30/31 - LL-P3-003 carry, item identity, and drop/place rules
+
+**Phase:** 3 - Laundry interaction foundation
+**Task:** LL-P3-003
+**Status:** Complete - compile, EditMode, PlayMode, player validation, and log scan passed
+
+### Implemented / performed
+
+- Added `LaundryItemKind` (`Basket`, `LooseLaundry`, `Bag`) and `LaundryItem` with authored `TemplateId`, runtime `InstanceId`, carryability, and washer-loadability.
+- Added `CarryController` to the Player prefab with an explicit `HoldAnchor`; it holds one item, suspends held colliders/rigidbody, restores them on drop, and resolves a wall-aware drop point.
+- Added `CarrySlot` with empty-only, kind-compatible placement and occupant physics stabilization.
+- Added no-stuck handling for destroyed/disabled held items, disabling the controller, blocked drops, and double interaction.
+- Added idempotent `SetupPlayerCarry` and carry checks in `ValidatePlayerSetup`.
+- Added six EditMode rule tests and nine PlayMode carry tests.
+- No scene, item prefab, material, package, or project-setting change.
+
+### Checks and evidence
+
+- Unity compile exited `0`; final log clean (`TestResults/p3-003-compile-3.log`, ignored).
+- EditMode: 21/21 passed (`TestResults/p3-003-editmode.xml`, ignored).
+- PlayMode: 27/27 passed without `-nographics` (`TestResults/p3-003-playmode-2.xml`, ignored).
+- Player validation passed (`TestResults/p3-003-player-validate.log`, ignored).
+- First PlayMode run logged a kinematic-velocity warning; fixed by zeroing velocity before switching the body to kinematic, then reran compile and PlayMode clean.
+- Bootstrap validation passed; JSON parsed; `git diff --check` passed.
+- Report: `.orchestrator/reports/2026-10-30-ll-p3-003.md`.
+
+### Not performed
+
+- Item prefabs, scene placement, and template-ID asset validation (`LL-P3-004`).
+- Prompt UI (`LL-P3-005`) and machine load/unload (`LL-P3-006`).
+- Direct scene-unload-while-holding automation; human carrying review, playtest, player build, and performance measurement.
+
+### Next
+
+`LL-P3-004` - add basket, loose-laundry, and bag placeholder prefabs with a small additive scene placement. Do not start `LL-P3-005` until `LL-P3-004` validates.

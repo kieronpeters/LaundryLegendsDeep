@@ -64,12 +64,12 @@ Use for interaction, machine cycles, order flow, customer flow, and scene smoke 
 
 **Batch-mode timing:** batch PlayMode runs at an uncapped frame rate. A fixed frame count is not a fixed duration. Tests that need movement or elapsed time should accumulate `Time.deltaTime` (for example, a `while (elapsed < 0.1f)` loop) instead of assuming 60 frames per second.
 
-### Current suites (2026-10-30)
+### Current suites (2026-10-31)
 
 | Suite | Tests | Coverage |
 |---|---:|---|
-| EditMode | 15 | `GameState` money/flags/day rules, build-settings order, the failure-reporting probe, and interaction eligibility/disabled/event rules |
-| PlayMode | 18 | scene routing, player movement/look, pause, interaction targeting, prompt/key exposure, `TryInteract` dispatch, target-change notification, ineligible/blocked/out-of-range/paused rejection, greybox traversal, storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, public navigation/camera clearance, wall containment, secret door, scale, and lighting |
+| EditMode | 21 | `GameState` money/flags/day rules, build-settings order, the failure-reporting probe, interaction eligibility/disabled/event rules, item identity/kind/carryability, and carry-slot compatibility/placement |
+| PlayMode | 27 | scene routing, player movement/look, pause, interaction targeting/prompt/key/dispatch/rejection, item pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, greybox traversal, storefront enter/leave, public-zone presence/central-lane clearance, secret-door concealment, public navigation/camera clearance, wall containment, secret door, scale, and lighting |
 
 Counts are a snapshot; use the XML `test-run` totals as the authoritative result.
 
