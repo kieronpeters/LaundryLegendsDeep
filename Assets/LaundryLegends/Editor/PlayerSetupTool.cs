@@ -303,11 +303,15 @@ namespace LaundryLegends.Editor
             Material material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
             if (material == null)
             {
-                material = new Material(Shader.Find("Standard")) { name = "MAT_Hands" };
-                material.color = new Color(0.55f, 0.38f, 0.28f, 1f);
-                material.SetFloat("_Glossiness", 0.2f);
+                material = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = "MAT_Hands" };
                 AssetDatabase.CreateAsset(material, materialPath);
             }
+
+            material.shader = Shader.Find("Universal Render Pipeline/Lit");
+            material.SetColor("_BaseColor", new Color(0.72f, 0.5f, 0.4f, 1f));
+            material.SetFloat("_Smoothness", 0.35f);
+            material.SetFloat("_Metallic", 0f);
+            EditorUtility.SetDirty(material);
 
             GameObject contents = PrefabUtility.LoadPrefabContents(PrefabPath);
             try
@@ -326,7 +330,7 @@ namespace LaundryLegends.Editor
 
                 var instance = (GameObject)PrefabUtility.InstantiatePrefab(model, camera);
                 instance.name = "FirstPersonHands";
-                instance.transform.localPosition = new Vector3(0f, -0.32f, 0.42f);
+                instance.transform.localPosition = Vector3.zero;
                 instance.transform.localRotation = Quaternion.identity;
                 instance.transform.localScale = Vector3.one;
                 foreach (Renderer renderer in instance.GetComponentsInChildren<Renderer>(true))
