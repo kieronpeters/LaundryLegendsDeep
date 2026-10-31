@@ -5,9 +5,12 @@ Editable source files for Laundry Legends assets. This folder is not a Unity run
 ## Layout
 
 - `Blender/` - `.blend` files and generator scripts.
+- `Decals/` - CC0 grunge/decal overlays and paper notices (see `Decals/README.md`).
 - `Exports/` - FBX/glTF exports before or alongside Unity import.
 - `Licenses/` - source URLs, authors, license text, and attribution notes.
 - `References/` - public-domain style references and briefs.
+- `Textures/` - 4K CC0 PBR source sets (ambientCG). See `Textures/README.md`
+  for provenance, verification, and Unity import guidance. Not a Unity folder.
 
 ## First asset
 

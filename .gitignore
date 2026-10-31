@@ -109,6 +109,8 @@ Recordings/
 # ArtSource/Licenses/piper-tts.md.
 Tools/Piper/piper/
 Tools/Piper/voices/
+# Portable MakeHuman install (downloaded app, not source)
+Tools/MakeHuman/
 ArtSource/Downloads/
 
 # Staged working copies and superseded model exports (not shipped)

@@ -108,7 +108,19 @@ namespace LaundryLegends.Customers
             yield return new WaitForSeconds(_queueSeconds);
 
             Enter(CustomerState.HandOff);
-            if (_item != null && _orderSlot != null && _orderSlot.TryPlace(_item))
+            float handoffWait = 0f;
+            while (_item != null && _orderSlot != null && !_orderSlot.TryPlace(_item))
+            {
+                if (handoffWait >= 8f)
+                {
+                    break;
+                }
+
+                handoffWait += Time.deltaTime;
+                yield return null;
+            }
+
+            if (_orderSlot != null && _orderSlot.Occupant == _item)
             {
                 _socket?.Detach();
                 _item.transform.SetParent(_orderSlot.transform, false);
@@ -119,6 +131,14 @@ namespace LaundryLegends.Customers
                 }
 
                 Speak(DialogueTrigger.Counter);
+            }
+            else
+            {
+                // The drop-off stayed busy: leave instead of standing there forever.
+                Enter(CustomerState.Leave);
+                yield return WalkTo(_exitPoint != null ? _exitPoint.position : transform.position);
+                Enter(CustomerState.Done);
+                yield break;
             }
 
             Enter(CustomerState.Waiting);
