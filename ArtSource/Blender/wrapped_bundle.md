@@ -19,9 +19,9 @@ exit 0 while an `AssertionError` had fired, so the exit code alone is not a gate
 
 | Item | Value |
 | --- | --- |
-| Total triangles | **1140** (budget 1200) — cloth 216, film 924 |
+| Total triangles | **1576** (budget 1600) — cloth 304, film 1272 |
 | Non-manifold edges | 0 on both meshes |
-| Size | 0.2969 × 0.2206 × 0.1810 m |
+| Size | 0.3061 × 0.2256 × 0.1890 m |
 | Pivot | base centre at world origin, min Z = 0.0000 |
 | Hierarchy | `WrappedBundle` (empty, scale 1) → `BundleCloth`, `BundleFilm` |
 | Film material | `MAT_BundleFilm`, base (0.88, 0.93, 0.96), roughness 0.06, metallic 0, **alpha 0.24**, IOR 1.45, coat 0.35 |
