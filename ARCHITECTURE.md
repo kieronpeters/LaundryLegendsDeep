@@ -322,7 +322,7 @@ Architecture decisions live in `.orchestrator/decisions/`:
 ## 19. Technical debt and risks
 
 - Unity batch-mode licensing can expire; refresh it in Unity Hub before treating exit `198` as a project defect.
-- The project has compile and test harnesses; the suite is 31 EditMode and 36 PlayMode tests and does not yet cover machine cycles, orders, economy, customers, save/load, or final UI. Editor validators cover item prefabs, scene placement, pickup wiring, and the machine-hook geometry.
+- The project has compile and test harnesses; the suite is 32 EditMode and 37 PlayMode tests plus one explicit capture test and does not yet cover machine cycles, orders, economy, customers, save/load, or final UI. Editor validators cover item prefabs, scene placement, pickup wiring, and the machine-hook geometry.
 - Scene/prefab merge conflicts are the highest collaboration risk; enforce one owner and small commits.
 - Carry is attachment-based in Phase 3; clipping, drop-point validity, and held-item cleanup need automated and human review.
 - Item identity exists before save/load; instance IDs must be serialized in the save phase or they will not survive a reload.

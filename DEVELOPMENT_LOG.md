@@ -888,3 +888,36 @@ Phase 2 is complete. Author and approve the Phase 3 task plan before starting in
 ### Next
 
 `LL-P3-007` - owner retest of drop, then acceptance evidence and report.
+
+## 2026-10-31 - LL-P3-007 Phase 3 acceptance
+
+**Phase:** 3 - Laundry interaction foundation
+**Task:** LL-P3-007
+**Status:** Complete - automated verification and owner-reported review passed
+
+### Implemented / performed
+
+- Ran bootstrap, compile, item/machine/navigation/player validators, EditMode, PlayMode, and log scan.
+- Captured prompt, carry (with `[Q] Drop`), and machine evidence in a non-batch PlayMode run.
+- Recorded the owner's first review finding: the basket could be picked up but not put down.
+- `LL-P3-009` added the `Q` drop key and hint; the owner reopened the project and reported **Pass**.
+- Recorded the owner-reported pass for pickup, carrying, drop, prompt clarity, machine load/unload, and non-blocking minor cosmetic clipping.
+- Phase 3 core acceptance is complete; the approved asset extension continues in `LL-P3-010`/`011`.
+
+### Checks and evidence
+
+- Compile and four validators exited `0` (`TestResults/p3-007-*`, ignored).
+- EditMode: 32/32 passed (`TestResults/p3-007-editmode.xml`, ignored); final drop run 32/32.
+- PlayMode: 37 passed, 1 explicit capture test skipped (`TestResults/p3-007-playmode.xml`, ignored).
+- Capture filtered run passed; `phase3-prompt.png`, `phase3-carry.png`, `phase3-machine.png` inspected.
+- Owner evidence: `.orchestrator/reports/2026-10-31-ll-p3-007-human-verification.md`.
+- Report: `.orchestrator/reports/2026-10-31-ll-p3-007.md`.
+
+### Not performed
+
+- Phase 4 machine cycles, orders, economy, save, and final UI.
+- Asset/NPC polish, which follows in `LL-P3-010`/`011`.
+
+### Next
+
+`LL-P3-010` - research and document the free hybrid Blender + CC0 asset pipeline and the first asset prototype plan.

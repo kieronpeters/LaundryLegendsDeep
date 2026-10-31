@@ -250,8 +250,11 @@ Environment prefabs, materials, scene objects, lighting settings, collision/nav 
 | LL-P3-004 | Add basket, loose-laundry, and bag placeholder prefabs | Complete |
 | LL-P3-005 | Add interaction prompt UI and controls hint | Complete |
 | LL-P3-006 | Add one machine load/unload interaction hook | Complete |
-| LL-P3-007 | Verify Phase 3 acceptance and record evidence | Ready |
+| LL-P3-007 | Verify Phase 3 acceptance and record evidence | Complete |
 | LL-P3-008 | Add pickup interaction for laundry items (repair for acceptance gap) | Complete |
+| LL-P3-009 | Add drop input and drop hint (repair for owner review) | Complete |
+| LL-P3-010 | Research the free hybrid Blender and CC0 asset pipeline | Ready |
+| LL-P3-011 | Install Blender and build the first polished laundry assets | Planned |
 
 ### Acceptance criteria
 

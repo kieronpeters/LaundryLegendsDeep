@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-31 08:35 (UTC+08:00)
+**Last updated:** 2026-10-31 08:45 (UTC+08:00)
 **Current milestone:** M1 - Playable laundry, **in progress**
 **Current phase:** Phase 3 - Laundry interaction foundation, **in progress**
 **Next phase:** Phase 4 - Laundry processing, planned
-**Active task:** None - `LL-P3-009` is complete
-**Next recommended task:** `LL-P3-007` - verify Phase 3 acceptance and record evidence
+**Active task:** None - `LL-P3-007` is complete
+**Next recommended task:** `LL-P3-010` - research the free hybrid Blender and CC0 asset pipeline
 
 ## 1. Verified configuration
 
@@ -75,6 +75,8 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Phase 3 machine hook: `Machine_1` in `GreyboxRoom.prefab` carries one `MachineLoadHook` and an additive `DrumSlot` child with a `CarrySlot` limited to `LooseLaundry`. Loading moves the held loose item into the slot; unloading returns the exact same instance to an empty-handed carrier. Baskets, bags, occupied loads, empty-handed loads, and full-hand unloads are rejected with a `LastResult` message and no ownership change. Machine-hook validation, item validation, Phase 2 navigation, compile, EditMode 26/26, PlayMode 35/35, and the log scan passed on 2026-10-31.
 - Phase 3 item pickup: all three item prefabs carry `LaundryItemInteractable` wired to their `LaundryItem`. Prompts are kind-specific (`Pick up basket`, `Pick up laundry`, `Pick up bag`); a free item is picked up through `CarryController`; held or slotted items are not pickup-eligible, and a second item cannot steal the carried slot. Pickup setup and item validation passed; compile, EditMode 31/31, PlayMode 36/36, and the log scan passed on 2026-10-31.
 - Phase 3 drop input: `CarryController` has a serialized `Q` drop key with a paused-time guard and a `DropKeyLabel`; `InteractionPromptView` shows `[Q] Drop` only while carrying. Player setup serialized the key and carry reference; validation covers both. Owner review had found the basket could be picked up but not put down. Compile, EditMode 32/32, PlayMode 37 passed plus one skipped explicit capture test, and the log scan passed on 2026-10-31.
+- Phase 3 acceptance: automated verification passed and the owner reported pass for pickup, carrying, `Q` drop, prompts, machine load/unload, and no blocking clipping on 2026-10-31. The owner's first review found the missing drop input; `LL-P3-009` repaired it and the owner retested as pass. Minor cosmetic clipping is recorded as non-blocking polish debt. Owner evidence is in `.orchestrator/reports/2026-10-31-ll-p3-007-human-verification.md`.
+- Phase 3 extension approved: hybrid free pipeline using Blender plus CC0 packs (Kenney, Quaternius, Poly Haven, Mixamo, and similar), with asset/NPC polish before Phase 4. `LL-P3-010` is the license/pipeline research task and `LL-P3-011` is the Blender install plus first custom laundry asset.
 - EditMode suite: 32/32 tests passed on 2026-10-31; coverage includes interaction eligibility and item identity, carry compatibility, slot placement rules, machine load/unload rules, item pickup rules, and the drop key.
 - PlayMode suite: 37 tests passed plus one skipped explicit capture test on 2026-10-31; coverage includes prompt/key exposure, `TryInteract` dispatch, rejection cases, pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, the drop hint, scene basket pickup, washer targeting, load/unload identity, rejection without ownership change, and the Phase 2 scene checks.
 - Batch commands, evidence paths, failure-probe steps, and test-assembly isolation documented in `TESTING_GUIDE.md`.
@@ -173,7 +175,12 @@ See `.orchestrator/budgets.json`.
 **Report:** `.orchestrator/reports/2026-10-20-ll-p2-005.md`
 **Result:** Added `ValidatePublicNavigation` and a PlayMode navigation test covering seven public routes, critical-prop colliders, renderer materials, missing references, and 1.5 m/1.7 m camera clearance. Navigation plus all regression validations exited `0`; EditMode passed 10/10; PlayMode passed 12/12.
 
-**Latest run:** `2026-10-31-ll-p3-009` - **complete**
+**Latest run:** `2026-10-31-ll-p3-007` - **complete**
+**Report:** `.orchestrator/reports/2026-10-31-ll-p3-007.md`
+**Human verification:** `.orchestrator/reports/2026-10-31-ll-p3-007-human-verification.md`
+**Result:** Phase 3 acceptance passed: compile, four validators, EditMode 32/32, PlayMode 37 passed with one explicit capture test skipped, captures, and log scan. The owner reported pass for pickup, carrying, `Q` drop, prompt clarity, and machine load/unload after the `LL-P3-009` drop repair. Minor cosmetic clipping is recorded as non-blocking polish debt. Phase 3 core acceptance is complete; the approved asset-pipeline extension continues before Phase 4.
+
+**Previous run:** `2026-10-31-ll-p3-009` - **complete**
 **Report:** `.orchestrator/reports/2026-10-31-ll-p3-009.md`
 **Result:** Added a serialized `Q` drop key and paused-time guard to `CarryController`, plus an IMGUI `[Q] Drop` hint in `InteractionPromptView`. Player setup serialized the drop key and carry reference; validation covers both. Compile, EditMode 32/32, PlayMode 37 passed plus one skipped explicit capture test, and the log scan passed. This closed the owner-review blocker where a picked-up basket could not be put down.
 
@@ -214,7 +221,7 @@ See `.orchestrator/budgets.json`.
 
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, and confirm `LL-P3-009` is complete. There is no active task; `LL-P3-007` is the next ready task. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, `LL-P2-005`, `LL-P2-006`, `LL-P3-001`, `LL-P3-002`, `LL-P3-003`, `LL-P3-004`, `LL-P3-005`, `LL-P3-006`, `LL-P3-008`, or `LL-P3-009`. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, and confirm `LL-P3-007` is complete. There is no active task; `LL-P3-010` is the next ready task. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, `LL-P2-005`, `LL-P2-006`, `LL-P3-001`, `LL-P3-002`, `LL-P3-003`, `LL-P3-004`, `LL-P3-005`, `LL-P3-006`, `LL-P3-008`, `LL-P3-009`, or `LL-P3-007`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 
