@@ -9,7 +9,7 @@
     "renderPipeline": "Built-In Render Pipeline",
     "targetPlatform": "Windows 64-bit"
   },
-  "updatedAt": "2026-10-31T11:10:00+08:00",
+  "updatedAt": "2026-10-31T12:40:00+08:00",
   "currentMilestone": {
     "id": "M1",
     "name": "Playable laundry",
@@ -20,7 +20,7 @@
     "name": "Laundry interaction foundation",
     "status": "in_progress",
     "file": ".orchestrator/tasks/phase-03.json",
-    "completionNote": "Phase 3 core acceptance is complete and owner-reviewed. The approved Phase 3 extension is underway: LL-P3-010 documented the free hybrid Blender + CC0 + Mixamo pipeline, license matrix, and first basket prototype. LL-P3-011 (Blender install and first custom asset) is ready; Phase 4 starts after the extension is reviewed."
+    "completionNote": "Phase 3 core acceptance is complete and owner-reviewed. Asset extension progress: LL-P3-010 pipeline research, LL-P3-011 Blender + custom basket, and LL-P3-012 loose/bag/machine polish are complete. LL-P3-013 creates three CC0 NPC archetypes next; Phase 4 follows after the extension review."
   },
   "nextPhase": {
     "number": 4,
@@ -29,12 +29,12 @@
     "file": ".orchestrator/tasks/phase-04.json"
   },
   "activeTask": null,
-  "lastCompletedTask": "LL-P3-011",
-  "nextTask": "LL-P3-012",
+  "lastCompletedTask": "LL-P3-012",
+  "nextTask": "LL-P3-013",
   "taskCounts": {
-    "complete": 34,
+    "complete": 35,
     "ready": 1,
-    "planned": 1,
+    "planned": 0,
     "pending": 1,
     "inProgress": 0,
     "failed": 0,
@@ -154,35 +154,41 @@
     "note": "Procedural placeholders only: 3 scenes, 5 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
   },
   "lastRun": {
-    "id": "2026-10-31-ll-p3-011",
-    "report": ".orchestrator/reports/2026-10-31-ll-p3-011.md",
+    "id": "2026-10-31-ll-p3-012",
+    "report": ".orchestrator/reports/2026-10-31-ll-p3-012.md",
     "status": "complete",
-    "startedAt": "2026-10-31T09:30:00+08:00",
-    "completedAt": "2026-10-31T11:10:00+08:00",
+    "startedAt": "2026-10-31T11:15:00+08:00",
+    "completedAt": "2026-10-31T12:40:00+08:00",
     "checks": {
-      "blender_install": "4.5.15 LTS, SHA-256 verified",
       "compile": "exit 0",
-      "basket_validation": "passed",
+      "props_validation": "passed",
+      "machine_fronts_validation": "passed",
       "item_validation": "passed",
+      "machine_hook_validation": "passed",
+      "navigation": "passed",
       "editmode": "32/32 passed",
       "playmode": "37 passed, 1 skipped",
+      "captures": "passed",
       "log_scan": "passed"
     },
     "filesChanged": [
-      "ArtSource/README.md",
-      "ArtSource/Blender/create_basket.py",
-      "ArtSource/Blender/LaundryBasket.blend",
-      "ArtSource/Exports/LaundryBasket.fbx",
-      "ArtSource/Licenses/README.md",
-      "Assets/LaundryLegends/Art/Models/LaundryBasket.fbx",
-      "Assets/LaundryLegends/Art/Materials/MAT_Basket.mat",
+      "ArtSource/Blender/create_laundry_props.py",
+      "ArtSource/Blender/LooseLaundry.blend",
+      "ArtSource/Blender/Bag.blend",
+      "ArtSource/Exports/LooseLaundry.fbx",
+      "ArtSource/Exports/Bag.fbx",
+      "Assets/LaundryLegends/Art/Models/LooseLaundry.fbx",
+      "Assets/LaundryLegends/Art/Models/Bag.fbx",
+      "Assets/LaundryLegends/Art/Materials/MAT_LooseLaundry.mat",
+      "Assets/LaundryLegends/Art/Materials/MAT_Bag.mat",
       "Assets/LaundryLegends/Editor/BasketAssetSetupTool.cs",
-      "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/Basket.prefab",
+      "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/LooseLaundry.prefab",
+      "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/Bag.prefab",
+      "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
       "ASSET_INVENTORY.md",
-      "ASSET_PIPELINE.md",
       ".orchestrator/tasks/phase-03.json",
       ".orchestrator/state.json",
-      ".orchestrator/reports/2026-10-31-ll-p3-011.md",
+      ".orchestrator/reports/2026-10-31-ll-p3-012.md",
       "PROJECT_STATE.md",
       "DEVELOPMENT_LOG.md",
       "TESTING_GUIDE.md"
@@ -190,7 +196,7 @@
   },
   "recovery": {
     "procedure": ".orchestrator/recovery/RESUME.md",
-    "resumeTask": "LL-P3-012",
+    "resumeTask": "LL-P3-013",
     "doNotReplay": [
       "LL-P0-001",
       "LL-P0-002",
@@ -225,7 +231,8 @@
       "LL-P3-009",
       "LL-P3-007",
       "LL-P3-010",
-      "LL-P3-011"
+      "LL-P3-011",
+      "LL-P3-012"
     ]
   }
 }

@@ -3,7 +3,7 @@
   "phase": 3,
   "name": "Laundry interaction foundation",
   "status": "in_progress",
-  "updatedAt": "2026-10-31T11:10:00+08:00",
+  "updatedAt": "2026-10-31T12:40:00+08:00",
   "tasks": [
     {
       "id": "LL-P3-001",
@@ -585,7 +585,7 @@
     {
       "id": "LL-P3-012",
       "title": "Polish loose laundry, bag, and machine visuals",
-      "status": "ready",
+      "status": "complete",
       "priority": 10,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P3-011"],
@@ -622,20 +622,20 @@
       "checks": [
         {
           "name": "Prop and machine visual polish",
-          "status": "pending",
+          "status": "passed",
           "command": "Blender export; Unity import/apply; validators; EditMode/PlayMode; captures",
-          "evidence": "Pending"
+          "evidence": "Loose laundry 324 tris and bag 432 tris imported; prop validation exit 0; 24 machine front details validated with hook/geometry intact; item/machine-hook/navigation validators exit 0; EditMode 32/32; PlayMode 37 passed plus 1 capture test; captures inspected on 2026-10-31 (TestResults/p3-012-*, ignored)"
         }
       ],
-      "result": null,
+      "result": "Replaced the loose-laundry and bag primitives with custom Blender meshes and materials, and added 24 additive front details (panel, drawer, coin slot) across the eight machines. Both prop contracts and the MachineLoadHook/room geometry remain intact.",
       "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
+      "startedAt": "2026-10-31T11:15:00+08:00",
+      "completedAt": "2026-10-31T12:40:00+08:00"
     },
     {
       "id": "LL-P3-013",
       "title": "Create three free-licensed NPC archetypes",
-      "status": "planned",
+      "status": "ready",
       "priority": 11,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P3-012"],

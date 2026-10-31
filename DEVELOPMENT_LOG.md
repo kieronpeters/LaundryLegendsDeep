@@ -986,3 +986,32 @@ Phase 2 is complete. Author and approve the Phase 3 task plan before starting in
 ### Next
 
 `LL-P3-012` - custom loose-laundry/bag meshes and washer/dryer front detail.
+
+## 2026-10-31 - LL-P3-012 prop and machine polish
+
+**Phase:** 3 extension - free asset/NPC polish
+**Task:** LL-P3-012
+**Status:** Complete - props and machine fronts applied, validators and suites pass
+
+### Implemented / performed
+
+- Added `create_laundry_props.py` and built a 324-triangle folded loose-laundry bundle and a 432-triangle kraft bag.
+- Imported both with custom materials; preserved `laundry.loose`/`laundry.bag`, colliders, pickup, and washer rules.
+- Added 24 additive front details (panel, drawer, coin slot) to all eight machines; no colliders or geometry changes.
+- Added idempotent apply/validate methods to `BasketAssetSetupTool`.
+- Inspected the refreshed prompt and machine captures.
+
+### Checks and evidence
+
+- Prop and machine-front validation exited `0`; item, machine-hook, and navigation validation exited `0`.
+- EditMode 32/32; PlayMode 37 passed, 1 explicit capture test skipped; capture run 1/1.
+- Log scan clean; diff check passed.
+- Report: `.orchestrator/reports/2026-10-31-ll-p3-012.md`.
+
+### Not performed
+
+- NPCs (`LL-P3-013`), human visual review, player build, performance measurement.
+
+### Next
+
+`LL-P3-013` - three CC0 NPC archetypes with idle/walk/carry clips.

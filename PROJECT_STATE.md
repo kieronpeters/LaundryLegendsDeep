@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-10-31 11:10 (UTC+08:00)
+**Last updated:** 2026-10-31 12:40 (UTC+08:00)
 **Current milestone:** M1 - Playable laundry, **in progress**
 **Current phase:** Phase 3 - Laundry interaction foundation, **in progress**
 **Next phase:** Phase 4 - Laundry processing, planned
-**Active task:** None - `LL-P3-011` is complete
-**Next recommended task:** `LL-P3-012` - polish loose laundry, bag, and machine visuals
+**Active task:** None - `LL-P3-012` is complete
+**Next recommended task:** `LL-P3-013` - create three free-licensed NPC archetypes
 
 ## 1. Verified configuration
 
@@ -79,6 +79,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 - Phase 3 extension approved: hybrid free pipeline using Blender plus CC0 packs (Kenney, Quaternius, Poly Haven, Mixamo, and similar), with asset/NPC polish before Phase 4. `LL-P3-010` is the license/pipeline research task and `LL-P3-011` is the Blender install plus first custom laundry asset.
 - Asset pipeline research: `ASSET_PIPELINE.md` and decision `0006` document Blender 4.5.15 LTS as the recommended tool (5.2.3 LTS fallback), the CC0/free license matrix, technical standards, NPC plan, Phase 1-3 polish backlog, and the first basket prototype. No software was installed and no asset was downloaded in `LL-P3-010`. Blender installation is owner-approved.
 - First custom asset: Blender 4.5.15 LTS is installed from the official ZIP with a verified SHA-256. `ArtSource/` contains the editable `LaundryBasket.blend`, generator script, FBX export, and license note. `Basket.prefab` now uses a 756-triangle basket mesh and `MAT_Basket` with the original template ID, collider, rigidbody, pickup, carry, and machine rules. Basket validation, item validation, EditMode 32/32, PlayMode 37 passed plus one capture test, and the log scan passed on 2026-10-31. Loose laundry and bag remain placeholders.
+- Prop/machine polish: loose laundry is now a 324-triangle folded bundle and the bag a 432-triangle kraft bag, both with custom materials and unchanged gameplay contracts. Eight machines gained 24 additive front details (panel, drawer, coin slot) with no colliders, no geometry change, and the machine hook intact. Props/machine-front validation, item/machine-hook/navigation validation, EditMode 32/32, PlayMode 37 passed plus one capture test, and the log scan passed on 2026-10-31.
 - EditMode suite: 32/32 tests passed on 2026-10-31; coverage includes interaction eligibility and item identity, carry compatibility, slot placement rules, machine load/unload rules, item pickup rules, and the drop key.
 - PlayMode suite: 37 tests passed plus one skipped explicit capture test on 2026-10-31; coverage includes prompt/key exposure, `TryInteract` dispatch, rejection cases, pickup/drop/place, physics restoration, blocked drops, destroyed/disabled held items, double interaction, prompt visibility/label transitions for eligible, ineligible, destroyed, and paused targets, the drop hint, scene basket pickup, washer targeting, load/unload identity, rejection without ownership change, and the Phase 2 scene checks.
 - Batch commands, evidence paths, failure-probe steps, and test-assembly isolation documented in `TESTING_GUIDE.md`.
@@ -177,9 +178,13 @@ See `.orchestrator/budgets.json`.
 **Report:** `.orchestrator/reports/2026-10-20-ll-p2-005.md`
 **Result:** Added `ValidatePublicNavigation` and a PlayMode navigation test covering seven public routes, critical-prop colliders, renderer materials, missing references, and 1.5 m/1.7 m camera clearance. Navigation plus all regression validations exited `0`; EditMode passed 10/10; PlayMode passed 12/12.
 
-**Latest run:** `2026-10-31-ll-p3-011` - **complete**
+**Latest run:** `2026-10-31-ll-p3-012` - **complete**
+**Report:** `.orchestrator/reports/2026-10-31-ll-p3-012.md`
+**Result:** Replaced the loose-laundry and bag primitives with 324- and 432-triangle Blender meshes and custom materials, and added 24 additive front details across the eight machines. Props and machine-front validation, item/machine-hook/navigation validation, EditMode 32/32, PlayMode 37 passed plus one capture test, and the log scan passed. Runtime contracts, machine geometry, and the machine hook are intact.
+
+**Previous run:** `2026-10-31-ll-p3-011` - **complete**
 **Report:** `.orchestrator/reports/2026-10-31-ll-p3-011.md`
-**Result:** Installed Blender 4.5.15 LTS from the official source with a verified SHA-256 and created the first custom basket: a 756-triangle open basket with `MAT_Basket`, editable `.blend`, FBX export, and an idempotent import/validate tool. `Basket.prefab` preserves `laundry.basket`, the BoxCollider, Rigidbody, pickup, carry, and machine rules. Basket validation, item validation, EditMode 32/32, PlayMode 37 passed plus one capture test, and the log scan passed.
+**Result:** Installed Blender 4.5.15 LTS from the official source with a verified SHA-256 and created the first custom basket.
 
 **Previous run:** `2026-10-31-ll-p3-010` - **complete**
 **Report:** `.orchestrator/reports/2026-10-31-asset-pipeline-research.md`
@@ -231,7 +236,7 @@ See `.orchestrator/budgets.json`.
 
 ## 10. Recovery pointer
 
-Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, and confirm `LL-P3-011` is complete. There is no active task; `LL-P3-012` is the next ready task. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, `LL-P2-005`, `LL-P2-006`, `LL-P3-001`, `LL-P3-002`, `LL-P3-003`, `LL-P3-004`, `LL-P3-005`, `LL-P3-006`, `LL-P3-008`, `LL-P3-009`, `LL-P3-007`, `LL-P3-010`, or `LL-P3-011`. If the tree is not clean, follow the recovery procedure before editing.
+Read `.orchestrator/recovery/RESUME.md` and `.orchestrator/state.json`, inspect `git status` and the latest commit, and confirm `LL-P3-012` is complete. There is no active task; `LL-P3-013` is the next ready task. Do not replay `LL-P0-*`, `LL-P1-*`, `LL-P2-001`, `LL-P2-002`, `LL-P2-003`, `LL-P2-004`, `LL-P2-005`, `LL-P2-006`, `LL-P3-001`, `LL-P3-002`, `LL-P3-003`, `LL-P3-004`, `LL-P3-005`, `LL-P3-006`, `LL-P3-008`, `LL-P3-009`, `LL-P3-007`, `LL-P3-010`, `LL-P3-011`, or `LL-P3-012`. If the tree is not clean, follow the recovery procedure before editing.
 
 ## 11. Known technical debt and risks
 

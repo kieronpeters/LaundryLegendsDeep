@@ -255,8 +255,8 @@ Environment prefabs, materials, scene objects, lighting settings, collision/nav 
 | LL-P3-009 | Add drop input and drop hint (repair for owner review) | Complete |
 | LL-P3-010 | Research the free hybrid Blender and CC0 asset pipeline | Complete |
 | LL-P3-011 | Install Blender and build the first polished laundry assets | Complete |
-| LL-P3-012 | Polish loose laundry, bag, and machine visuals | Ready |
-| LL-P3-013 | Create three free-licensed NPC archetypes | Planned |
+| LL-P3-012 | Polish loose laundry, bag, and machine visuals | Complete |
+| LL-P3-013 | Create three free-licensed NPC archetypes | Ready |
 
 ### Acceptance criteria
 
