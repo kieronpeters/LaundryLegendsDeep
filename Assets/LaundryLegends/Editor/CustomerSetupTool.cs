@@ -34,11 +34,26 @@ namespace LaundryLegends.Editor
             Transform counter = Point(lane.transform, "Lane_Counter", new Vector3(-3.3f, 0f, -2.6f));
             Transform exit = Point(lane.transform, "Lane_Exit", new Vector3(0f, 0f, -10.5f));
 
-            var slotObject = new GameObject("CustomerOrderSlot");
-            slotObject.transform.SetParent(lane.transform, false);
-            slotObject.transform.position = new Vector3(-3.3f, 1.1f, -2.5f);
-            CarrySlot slot = slotObject.AddComponent<CarrySlot>();
-            slot.AcceptAllKinds();
+            // Use the staff's real drop-off slot so the wash/dry/fold loop picks
+            // the customer's laundry up without a second pipeline.
+            GameObject dropOff = GameObject.Find("DropOffSlot");
+            CarrySlot slot = dropOff != null ? dropOff.GetComponent<CarrySlot>() : null;
+            if (slot == null)
+            {
+                throw new System.InvalidOperationException("The scene has no DropOffSlot CarrySlot.");
+            }
+
+            // The Phase 4 demo pickup would steal the wrapped bundle from the
+            // real customer, so it is disabled now that orders exist.
+            GameObject regular = GameObject.Find("PhoneRegular");
+            if (regular != null)
+            {
+                var pickup = regular.GetComponent<LaundryLegends.NPC.PickupCustomer>();
+                if (pickup != null)
+                {
+                    pickup.enabled = false;
+                }
+            }
 
             GameObject spawnerObject = GameObject.Find("CustomerSpawner");
             if (spawnerObject == null)

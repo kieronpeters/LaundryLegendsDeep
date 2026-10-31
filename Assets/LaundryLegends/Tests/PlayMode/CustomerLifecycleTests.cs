@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using LaundryLegends.Core;
 using LaundryLegends.Customers;
 using LaundryLegends.Laundry;
+using LaundryLegends.NPC;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -41,19 +42,31 @@ namespace LaundryLegends.Tests.PlayMode
             Assert.IsNotNull(agent, "Spawner should create a customer.");
             agent.SetWalkSpeed(6f);
 
+            // Let the real staff + machine pipeline process the order.
+            var staff = Object.FindFirstObjectByType<LaundryStaff>();
+            if (staff != null)
+            {
+                staff.SetWalkSpeed(8f);
+            }
+
+            var washer = FindHook("Machine_1");
+            var dryer = FindHook("Machine_2");
+            if (washer != null)
+            {
+                washer.SetDuration(0.3f);
+            }
+
+            if (dryer != null)
+            {
+                dryer.SetDuration(0.3f);
+            }
+
             var states = new List<CustomerState>();
             agent.StateEntered += (_, state) => states.Add(state);
 
             float elapsed = 0f;
-            while (elapsed < 20f && agent.State != CustomerState.Done)
+            while (elapsed < 45f && agent.State != CustomerState.Done)
             {
-                if (agent.State == CustomerState.Waiting && agent.Item != null
-                    && agent.Item.Stage != LaundryStage.Wrapped)
-                {
-                    // Stand in for the processing pipeline: mark the order ready.
-                    agent.Item.SetStage(LaundryStage.Wrapped);
-                }
-
                 elapsed += Time.deltaTime;
                 yield return null;
             }
@@ -68,6 +81,12 @@ namespace LaundryLegends.Tests.PlayMode
 
             Assert.AreEqual(140, wallet.Money, "Wallet should be credited exactly once.");
             Assert.AreEqual(1, ledger.CompletedOrders.Count);
+        }
+
+        private static MachineLoadHook FindHook(string name)
+        {
+            GameObject target = GameObject.Find(name);
+            return target != null ? target.GetComponent<MachineLoadHook>() : null;
         }
 
         [UnityTest]

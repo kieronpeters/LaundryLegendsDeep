@@ -43,6 +43,7 @@ namespace LaundryLegends.Customers
         private DialogueVoicePlayer _voice;
         private LaundryItem _item;
         private LaundryOrder _order;
+        private FoldingStation _folding;
 
         public CustomerState State { get; private set; } = CustomerState.Arrive;
 
@@ -83,6 +84,7 @@ namespace LaundryLegends.Customers
             _locomotion = GetComponent<NpcLocomotion>();
             _socket = GetComponent<CarrySocket>();
             _voice = GetComponent<DialogueVoicePlayer>();
+            _folding = UnityEngine.Object.FindFirstObjectByType<FoldingStation>();
         }
 
         private IEnumerator Start()
@@ -168,7 +170,27 @@ namespace LaundryLegends.Customers
             Enter(CustomerState.Collect);
             yield return new WaitForSeconds(_pickupSeconds);
 
-            LaundryItem collected = _orderSlot != null ? _orderSlot.Take() : _item;
+            if (_folding != null)
+            {
+                Vector3 towardRoom = (Vector3.zero - _folding.transform.position);
+                towardRoom.y = 0f;
+                Vector3 stand = _folding.transform.position
+                                + (towardRoom.sqrMagnitude > 0.01f ? towardRoom.normalized : Vector3.back) * 1.4f;
+                stand.y = transform.position.y;
+                yield return WalkTo(stand);
+            }
+
+            LaundryItem collected = _folding != null ? _folding.TakeWrappedItem() : null;
+            if (collected == null && _orderSlot != null)
+            {
+                collected = _orderSlot.Take();
+            }
+
+            if (collected == null)
+            {
+                collected = _item;
+            }
+
             if (collected != null)
             {
                 _ledger.TryCollect(_order.OrderId, Time.time);
