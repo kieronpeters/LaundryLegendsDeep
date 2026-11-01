@@ -30,7 +30,7 @@
     "ethnicity": { "african": 0.02, "asian": 0.7, "caucasian": 0.28 },
     "skin": "data/skins/young_asian_female/young_asian_female.mhmat",
     "clothes": [
-      "data/clothes/female_casualsuit02/female_casualsuit02.mhclo",
+      "data/clothes/female_casualsuit01/female_casualsuit01.mhclo",
       "data/clothes/shoes06/shoes06.mhclo"
     ],
     "hair": "data/hair/ponytail01/ponytail01.mhclo",
