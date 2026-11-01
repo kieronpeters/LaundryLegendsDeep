@@ -187,7 +187,7 @@ namespace LaundryLegends.Arcade
                 return _material;
             }
 
-            if (_screen == null)
+            if (_screen == null || !Application.isPlaying)
             {
                 return null;
             }

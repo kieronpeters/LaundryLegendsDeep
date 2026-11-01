@@ -60,9 +60,18 @@ namespace LaundryLegends.Arcade
 
         private void BindTexture()
         {
-            if (_screen != null && _texture != null)
+            if (_screen == null || _texture == null)
             {
-                _screen.material.mainTexture = _texture;
+                return;
+            }
+
+            // At runtime the screen needs its own material instance; in the editor
+            // (and headless validation) writing sharedMaterial avoids leaking a
+            // material that would otherwise be saved into the scene.
+            Material material = Application.isPlaying ? _screen.material : _screen.sharedMaterial;
+            if (material != null)
+            {
+                material.mainTexture = _texture;
             }
         }
 

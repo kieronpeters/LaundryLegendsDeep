@@ -50,10 +50,10 @@ namespace LaundryLegends.Editor
             Material material = EnsureScreenMaterial();
             screen.GetComponent<Renderer>().sharedMaterial = material;
 
-            var view = instance.GetComponent<MazeGameView>();
+            var view = instance.GetComponent<FightGameView>();
             if (view == null)
             {
-                view = instance.AddComponent<MazeGameView>();
+                view = instance.AddComponent<FightGameView>();
             }
 
             view.Configure(screen.GetComponent<Renderer>());

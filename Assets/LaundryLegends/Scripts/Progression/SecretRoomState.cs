@@ -91,6 +91,21 @@ namespace LaundryLegends.Progression
             return true;
         }
 
+        /// <summary>
+        /// Reveals the room without the clue/order threshold. Used when the player
+        /// buys the room outright; the clues and orders still unlock it for free.
+        /// </summary>
+        public bool ForceReveal()
+        {
+            if (Stage != SecretRoomStage.Hidden)
+            {
+                return false;
+            }
+
+            Stage = SecretRoomStage.Revealed;
+            return true;
+        }
+
         /// <summary>Advances preparation one step: Cleaned, Powered, Repaired, Usable.</summary>
         public bool TryPrepare()
         {

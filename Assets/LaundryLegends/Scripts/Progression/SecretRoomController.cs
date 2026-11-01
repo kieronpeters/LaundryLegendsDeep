@@ -181,9 +181,25 @@ namespace LaundryLegends.Progression
             return true;
         }
 
-        /// <summary>Copyable progress for save data.</summary>
-        public SecretRoomSnapshot Snapshot()
+        /// <summary>
+        /// Opens and prepares the room in one step after the player buys it. The
+        /// clue/order path still exists for players who find it that way instead.
+        /// </summary>
+        public bool UnlockByPurchase()
         {
+            EnsureState();
+            _state.ForceReveal();
+
+            while (_state.TryPrepare())
+            {
+            }
+
+            ApplyVisualState();
+            return Stage == SecretRoomStage.Usable;
+        }
+
+        /// <summary>Copyable progress for save data.</summary>
+        public SecretRoomSnapshot Snapshot()        {
             EnsureState();
             return _state.Snapshot();
         }

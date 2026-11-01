@@ -41,11 +41,14 @@ namespace LaundryLegends.Arcade
         [Tooltip("Install point used as the placement anchor for the cabinet.")]
         [SerializeField] private Transform _placementAnchor;
         [SerializeField, Min(0.1f)] private float _placementRadius = 2.5f;
-        [SerializeField, Min(0)] private int _machineCost = 350;
+        [SerializeField, Min(0)] private int _machineCost = 120;
         [SerializeField, Min(0f)] private float _installSeconds = 2.5f;
 
         [Header("State")]
         [SerializeField] private ArcadeState _state = new ArcadeState();
+
+        [Tooltip("Start already installed and powered, for a machine that ships inside the room.")]
+        [SerializeField] private bool _startActive;
 
         private EconomyService _economy;
         private float _installRemaining;
@@ -184,6 +187,30 @@ namespace LaundryLegends.Arcade
         {
             _machineCost = Mathf.Max(0, cost);
         }
+
+        /// <summary>
+        /// Marks the machine as already installed and powered. Used when the cabinet
+        /// is authored inside the hidden room and only the room has to be unlocked.
+        /// </summary>
+        public void SetStartActive(bool startActive)
+        {
+            _startActive = startActive;
+            EnsureState();
+            if (!startActive || IsInstalled)
+            {
+                return;
+            }
+
+            State.BeginInstall();
+            State.Activate();
+            if (IsActive && _attractMode != null)
+            {
+                _attractMode.SetPowered(true);
+            }
+        }
+
+        /// <summary>True when the machine ships already installed in the room.</summary>
+        public bool StartActive => _startActive;
 
         /// <summary>Test/authoring hook for the installation delay.</summary>
         public void SetInstallSeconds(float seconds)

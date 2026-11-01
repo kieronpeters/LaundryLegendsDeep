@@ -1,4 +1,3 @@
-using System;
 using LaundryLegends.Customers;
 using LaundryLegends.Economy;
 using LaundryLegends.Interaction;
@@ -7,23 +6,22 @@ using UnityEngine;
 namespace LaundryLegends.Arcade
 {
     /// <summary>
-    /// The arcade cabinet: charges one play through the economy service, runs the
-    /// maze game, and reads movement input while a game is active.
+    /// The arcade cabinet. One interaction charges a play and opens the cabinet's
+    /// PLAY/QUIT menu; PLAY starts the fight, QUIT (or five seconds after the
+    /// result) returns to the menu, and quitting hands the player back to the shop.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class ArcadeCabinet : MonoBehaviour, IInteractable
     {
-        [SerializeField] private MazeGameView _view;
+        [SerializeField] private FightGameView _view;
         [SerializeField] private CustomerSpawner _spawner;
         [SerializeField] private ArcadeService _service;
         [SerializeField] private int _cost = 2;
-        [SerializeField] private float _endDelaySeconds = 2f;
-        [SerializeField] private string _prompt = "Play maze game";
+        [SerializeField] private string _prompt = "Play arcade";
 
-        private MazeGame _game;
-        private float _endTimer;
+        private FightSession _session;
 
-        public bool IsPlaying => _game != null && !_game.IsOver;
+        public bool IsPlaying => _session != null;
 
         /// <summary>
         /// False until the machine has been bought and activated. A cabinet with no
@@ -33,11 +31,11 @@ namespace LaundryLegends.Arcade
 
         public int PlaysStarted { get; private set; }
 
-        public MazeGame Game => _game;
+        public FightSession Session => _session;
 
         public int Cost => _cost;
 
-        public void Configure(MazeGameView view, CustomerSpawner spawner)
+        public void Configure(FightGameView view, CustomerSpawner spawner)
         {
             _view = view;
             _spawner = spawner;
@@ -50,7 +48,7 @@ namespace LaundryLegends.Arcade
         }
 
         public string InteractionPrompt => IsPlaying
-            ? "Stop game"
+            ? "Stop arcade"
             : IsUnlocked
                 ? $"{_prompt} (${_cost})"
                 : "Arcade machine (offline)";
@@ -78,8 +76,8 @@ namespace LaundryLegends.Arcade
         }
 
         /// <summary>
-        /// Starts a paid play. Returns false when the play cannot be afforded or the
-        /// machine is not powered; in that case nothing is charged and no game starts.
+        /// Starts a paid play and opens the menu. Returns false when the play cannot
+        /// be afforded or the machine is not powered; nothing is charged then.
         /// </summary>
         public bool TryStart(EconomyService economy, float atSeconds)
         {
@@ -94,20 +92,19 @@ namespace LaundryLegends.Arcade
             }
 
             PlaysStarted += 1;
-            _endTimer = 0f;
-            _game = new MazeGame(new MazeLayout());
+            _session = new FightSession();
             if (_view != null)
             {
-                _view.Show(_game);
+                _view.Show(_session);
             }
 
             return true;
         }
 
+        /// <summary>Closes the session and blanks the screen.</summary>
         public void Stop()
         {
-            _game = null;
-            _endTimer = 0f;
+            _session = null;
             if (_view != null)
             {
                 _view.Hide();
@@ -116,44 +113,73 @@ namespace LaundryLegends.Arcade
 
         private void Update()
         {
-            if (_game == null)
+            if (_session == null)
             {
                 return;
             }
 
-            if (_game.IsOver)
+            _session.Tick(Time.deltaTime);
+
+            if (_session.ExitRequested)
             {
-                _endTimer += Time.deltaTime;
-                if (_endTimer >= _endDelaySeconds)
+                Stop();
+                return;
+            }
+
+            HandleInput(_session);
+        }
+
+        private static void HandleInput(FightSession session)
+        {
+            if (session.Screen == FightScreen.Menu)
+            {
+                if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
                 {
-                    Stop();
+                    session.MoveSelection(-1);
+                }
+                else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    session.MoveSelection(1);
+                }
+
+                if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Return))
+                {
+                    session.Confirm();
                 }
 
                 return;
             }
 
-            _game.Tick(Time.deltaTime);
+            if (session.Screen != FightScreen.Fight)
+            {
+                return;
+            }
 
-            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                _game.TryMovePlayer(Vector2Int.up);
-            }
-            else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                _game.TryMovePlayer(Vector2Int.down);
-            }
-            else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                _game.TryMovePlayer(Vector2Int.left);
+                session.TryFightAction(FightAction.MoveLeft);
             }
             else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
             {
-                _game.TryMovePlayer(Vector2Int.right);
+                session.TryFightAction(FightAction.MoveRight);
+            }
+
+            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                session.TryFightAction(FightAction.Punch);
+            }
+            else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                session.TryFightAction(FightAction.Kick);
+            }
+            else if (Input.GetKeyDown(KeyCode.Space))
+            {
+                session.TryFightAction(FightAction.Block);
             }
 
             if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.Escape))
             {
-                Stop();
+                session.BackToMenu();
             }
         }
     }

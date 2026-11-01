@@ -1,4 +1,4 @@
-using LaundryLegends.Arcade;
+﻿using LaundryLegends.Arcade;
 using LaundryLegends.Customers;
 using LaundryLegends.Player;
 using LaundryLegends.Progression;
@@ -49,6 +49,10 @@ namespace LaundryLegends.Editor
             Renderer screen = ResolveCabinetScreen(cabinet);
             attract.Configure(screen, audio);
 
+            FightGameView fightView = EnsureComponent<FightGameView>(cabinet.gameObject);
+            fightView.Configure(screen);
+            cabinet.Configure(fightView, spawner);
+
             // A small panel beside the cabinet is the purchase point. It needs its own
             // collider so the player's interaction ray can actually hit it.
             GameObject installObject = EnsureChild(cabinet.transform, "InstallPoint");
@@ -84,8 +88,9 @@ namespace LaundryLegends.Editor
             }
 
             service.Configure(room, cabinet, attract, cabinet.transform, spawner);
+            // Reachable after a couple of orders rather than seven: 100 start + 40/order.
+            service.SetMachineCost(120);
             traffic.Configure(service, spawn, cabinet.transform, visitorPrefab);
-
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
 
@@ -215,3 +220,4 @@ namespace LaundryLegends.Editor
         }
     }
 }
+
