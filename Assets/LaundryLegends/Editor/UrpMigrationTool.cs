@@ -354,12 +354,12 @@ namespace LaundryLegends.Editor
                 }
                 else
                 {
-                    light.intensity = 35f;
+                    light.intensity = 12f;
                     light.range = Mathf.Clamp(light.range, 6f, 9f);
                 }
             }
 
-            RenderSettings.ambientLight = new Color(0.32f, 0.33f, 0.36f);
+            RenderSettings.ambientLight = new Color(0.2f, 0.21f, 0.24f);
 
             var profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(ProfilePath);
             if (profile != null)
@@ -367,12 +367,12 @@ namespace LaundryLegends.Editor
                 if (profile.TryGet(out Bloom bloom))
                 {
                     bloom.threshold.Override(1.1f);
-                    bloom.intensity.Override(0.22f);
+                    bloom.intensity.Override(0.12f);
                 }
 
                 if (profile.TryGet(out ColorAdjustments color))
                 {
-                    color.postExposure.Override(-0.9f);
+                    color.postExposure.Override(-1.6f);
                 }
             }
 
@@ -407,4 +407,6 @@ namespace LaundryLegends.Editor
         }
     }
 }
+
+
 
