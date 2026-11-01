@@ -29,6 +29,43 @@ namespace LaundryLegends.Arcade
 
         public Texture2D Texture => _texture;
 
+        /// <summary>Draw the session fullscreen instead of only on the cabinet screen.</summary>
+        public bool Fullscreen { get; set; }
+
+        private void OnGUI()
+        {
+            if (!Fullscreen || _session == null || _texture == null)
+            {
+                return;
+            }
+
+            GUI.color = Color.black;
+            GUI.DrawTexture(new Rect(0f, 0f, UnityEngine.Screen.width, UnityEngine.Screen.height), Texture2D.whiteTexture);
+            GUI.color = Color.white;
+
+            float sourceAspect = (float)Width / Height;
+            float height = UnityEngine.Screen.height * 0.9f;
+            float width = height * sourceAspect;
+            if (width > UnityEngine.Screen.width * 0.9f)
+            {
+                width = UnityEngine.Screen.width * 0.9f;
+                height = width / sourceAspect;
+            }
+
+            var rect = new Rect((UnityEngine.Screen.width - width) * 0.5f, (UnityEngine.Screen.height - height) * 0.5f, width, height);
+            GUI.DrawTexture(rect, _texture, ScaleMode.ScaleToFit, false);
+
+            var hint = new GUIStyle(GUI.skin.label)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                fontSize = 16
+            };
+            GUI.Label(
+                new Rect(0f, UnityEngine.Screen.height - 30f, UnityEngine.Screen.width, 24f),
+                "A / D move    W punch    S kick    Space block    Esc leave",
+                hint);
+        }
+
         public void Configure(Renderer screen)
         {
             _screen = screen;

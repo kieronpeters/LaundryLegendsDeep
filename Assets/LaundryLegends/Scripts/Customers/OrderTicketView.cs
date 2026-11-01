@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using LaundryLegends.Economy;
 using UnityEngine;
+using LaundryLegends.Arcade;
 
 namespace LaundryLegends.Customers
 {
@@ -161,6 +162,11 @@ namespace LaundryLegends.Customers
 
         private void OnGUI()
         {
+            if (ArcadeMode.IsActive)
+            {
+                return;
+            }
+
             if (_spawner == null)
             {
                 return;

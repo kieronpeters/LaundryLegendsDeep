@@ -1,6 +1,7 @@
 using LaundryLegends.Interaction;
 using LaundryLegends.Player;
 using UnityEngine;
+using LaundryLegends.Arcade;
 
 namespace LaundryLegends.UI
 {
@@ -55,6 +56,11 @@ namespace LaundryLegends.UI
 
         private void OnGUI()
         {
+            if (ArcadeMode.IsActive)
+            {
+                return;
+            }
+
             if (Time.timeScale == 0f)
             {
                 return;

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using LaundryLegends.Arcade;
+using LaundryLegends.Customers;
 using LaundryLegends.Interaction;
 using LaundryLegends.Laundry;
 using LaundryLegends.NPC;
@@ -608,6 +610,22 @@ namespace LaundryLegends.Editor
                     new Vector3(12.6f, 1.5f, -3.9f),
                     55f,
                     "street folders poster on the south wall");
+
+                ArcadeCabinet cabinet = Object.FindFirstObjectByType<ArcadeCabinet>(FindObjectsInactive.Include);
+                CustomerSpawner arcadeSpawner = Object.FindFirstObjectByType<CustomerSpawner>();
+                if (cabinet != null && arcadeSpawner != null)
+                {
+                    arcadeSpawner.Economy.TryEarn(10, "Arcade capture credit", Time.time);
+                    cabinet.TryStart(arcadeSpawner.Economy, Time.time);
+                    yield return WaitSeconds(0.3f);
+                    Vector3 cabinetPosition = cabinet.transform.position;
+                    RenderShot(camera, "21-backroom-arcade-play.png",
+                        new Vector3(cabinetPosition.x - 1.8f, 1.35f, cabinetPosition.z),
+                        new Vector3(cabinetPosition.x, 1.2f, cabinetPosition.z),
+                        35f,
+                        "arcade play screen");
+                    cabinet.Stop();
+                }
             }
             else
             {

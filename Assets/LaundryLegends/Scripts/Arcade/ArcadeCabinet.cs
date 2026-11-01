@@ -48,7 +48,7 @@ namespace LaundryLegends.Arcade
         }
 
         public string InteractionPrompt => IsPlaying
-            ? "Stop arcade"
+            ? "Arcade: playing"
             : IsUnlocked
                 ? $"{_prompt} (${_cost})"
                 : "Arcade machine (offline)";
@@ -93,22 +93,31 @@ namespace LaundryLegends.Arcade
 
             PlaysStarted += 1;
             _session = new FightSession();
+
+            // Arcade Paradise flow: one interaction drops you into the game. The
+            // cabinet's PLAY/QUIT menu is skipped; Esc leaves the cabinet.
+            _session.Confirm();
             if (_view != null)
             {
+                _view.Fullscreen = true;
                 _view.Show(_session);
             }
 
+            ArcadeMode.Enter();
             return true;
         }
 
-        /// <summary>Closes the session and blanks the screen.</summary>
+        /// <summary>Closes the session, blanks the screen, and returns to the shop.</summary>
         public void Stop()
         {
             _session = null;
             if (_view != null)
             {
+                _view.Fullscreen = false;
                 _view.Hide();
             }
+
+            ArcadeMode.Exit();
         }
 
         private void Update()
@@ -121,6 +130,17 @@ namespace LaundryLegends.Arcade
             _session.Tick(Time.deltaTime);
 
             if (_session.ExitRequested)
+            {
+                Stop();
+                return;
+            }
+
+            // Leave after the result banner has been held, or whenever the player
+            // presses Esc/Q. The menu is never shown in this flow, so a menu state
+            // means the result hold expired.
+            if (_session.Screen == FightScreen.Menu
+                || Input.GetKeyDown(KeyCode.Escape)
+                || Input.GetKeyDown(KeyCode.Q))
             {
                 Stop();
                 return;
@@ -175,11 +195,6 @@ namespace LaundryLegends.Arcade
             else if (Input.GetKeyDown(KeyCode.Space))
             {
                 session.TryFightAction(FightAction.Block);
-            }
-
-            if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.Escape))
-            {
-                session.BackToMenu();
             }
         }
     }

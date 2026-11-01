@@ -135,6 +135,23 @@ namespace LaundryLegends.Editor
             cabinet.transform.position = new Vector3(x0 + roomWidth - 0.9f, 0f, doorZ);
             GroundToFloor(cabinet.gameObject);
 
+            // The model ships without colliders and the screen quad's collider is
+            // removed, so the interaction ray had nothing to hit. Cover the body.
+            BoxCollider cabinetCollider = cabinet.GetComponent<BoxCollider>();
+            if (cabinetCollider == null)
+            {
+                cabinetCollider = cabinet.gameObject.AddComponent<BoxCollider>();
+            }
+
+            Bounds cabinetBounds = GetObjectBounds(cabinet.gameObject);
+            cabinetCollider.center = cabinet.transform.InverseTransformPoint(cabinetBounds.center);
+            Vector3 scale = cabinet.transform.lossyScale;
+            cabinetCollider.size = new Vector3(
+                cabinetBounds.size.x / Mathf.Max(0.0001f, scale.x),
+                cabinetBounds.size.y / Mathf.Max(0.0001f, scale.y),
+                cabinetBounds.size.z / Mathf.Max(0.0001f, scale.z));
+            cabinetCollider.isTrigger = false;
+
             // The machine ships installed, so the purchase point is retired.
             ArcadeInstallPoint installPoint = Object.FindFirstObjectByType<ArcadeInstallPoint>();
             if (installPoint != null)
@@ -194,6 +211,7 @@ namespace LaundryLegends.Editor
             if (service != null)
             {
                 service.SetStartActive(true);
+                cabinet.SetService(service);
             }
 
             // Visitors must approach the machine from inside the room, not through its wall.
@@ -537,12 +555,12 @@ namespace LaundryLegends.Editor
             return bounds;
         }
 
-        private static void GroundToFloor(GameObject target)
+        private static Bounds GetObjectBounds(GameObject target)
         {
             Renderer[] renderers = target.GetComponentsInChildren<Renderer>(true);
             if (renderers.Length == 0)
             {
-                return;
+                return new Bounds(target.transform.position, Vector3.zero);
             }
 
             Bounds bounds = renderers[0].bounds;
@@ -551,6 +569,12 @@ namespace LaundryLegends.Editor
                 bounds.Encapsulate(renderers[i].bounds);
             }
 
+            return bounds;
+        }
+
+        private static void GroundToFloor(GameObject target)
+        {
+            Bounds bounds = GetObjectBounds(target);
             Vector3 position = target.transform.position;
             target.transform.position = new Vector3(position.x, position.y - bounds.min.y, position.z);
         }
