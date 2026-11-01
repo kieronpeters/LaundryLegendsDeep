@@ -28,6 +28,8 @@ namespace LaundryLegends.Arcade
         public void Configure(Renderer screen)
         {
             _screen = screen;
+            EnsureTexture();
+            BindTexture();
         }
 
         public void Show(MazeGame game)
@@ -35,6 +37,33 @@ namespace LaundryLegends.Arcade
             _game = game;
             EnsureTexture();
             Redraw();
+        }
+
+        /// <summary>
+        /// Stops drawing and clears the screen. Without this a stopped cabinet keeps
+        /// redrawing a frozen maze forever.
+        /// </summary>
+        public void Hide()
+        {
+            _game = null;
+            _nextRefresh = 0f;
+
+            if (_texture == null)
+            {
+                return;
+            }
+
+            Fill(new Color32(8, 10, 20, 255));
+            _texture.SetPixels32(_pixels);
+            _texture.Apply(false);
+        }
+
+        private void BindTexture()
+        {
+            if (_screen != null && _texture != null)
+            {
+                _screen.material.mainTexture = _texture;
+            }
         }
 
         private void Awake()
@@ -57,10 +86,7 @@ namespace LaundryLegends.Arcade
             _pixels = new Color32[Width * Height];
             Fill(new Color32(8, 10, 20, 255));
 
-            if (_screen != null)
-            {
-                _screen.material.mainTexture = _texture;
-            }
+            BindTexture();
         }
 
         private void Update()

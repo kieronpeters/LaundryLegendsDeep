@@ -15,6 +15,7 @@ namespace LaundryLegends.Arcade
     {
         [SerializeField] private MazeGameView _view;
         [SerializeField] private CustomerSpawner _spawner;
+        [SerializeField] private ArcadeService _service;
         [SerializeField] private int _cost = 2;
         [SerializeField] private float _endDelaySeconds = 2f;
         [SerializeField] private string _prompt = "Play maze game";
@@ -23,6 +24,12 @@ namespace LaundryLegends.Arcade
         private float _endTimer;
 
         public bool IsPlaying => _game != null && !_game.IsOver;
+
+        /// <summary>
+        /// False until the machine has been bought and activated. A cabinet with no
+        /// service wired stays unlocked so isolated tests and prefab authoring work.
+        /// </summary>
+        public bool IsUnlocked => _service == null || _service.IsActive;
 
         public int PlaysStarted { get; private set; }
 
@@ -36,15 +43,30 @@ namespace LaundryLegends.Arcade
             _spawner = spawner;
         }
 
-        public string InteractionPrompt => IsPlaying ? "Stop game" : $"{_prompt} (${_cost})";
+        /// <summary>Links the cabinet to the business loop that powers it.</summary>
+        public void SetService(ArcadeService service)
+        {
+            _service = service;
+        }
+
+        public string InteractionPrompt => IsPlaying
+            ? "Stop game"
+            : IsUnlocked
+                ? $"{_prompt} (${_cost})"
+                : "Arcade machine (offline)";
 
         public bool CanInteract(GameObject interactor)
         {
-            return isActiveAndEnabled;
+            return isActiveAndEnabled && IsUnlocked;
         }
 
         public void Interact(GameObject interactor)
         {
+            if (!IsUnlocked)
+            {
+                return;
+            }
+
             if (IsPlaying)
             {
                 Stop();
@@ -56,12 +78,12 @@ namespace LaundryLegends.Arcade
         }
 
         /// <summary>
-        /// Starts a paid play. Returns false when the play cannot be afforded; in
-        /// that case nothing is charged and no game starts.
+        /// Starts a paid play. Returns false when the play cannot be afforded or the
+        /// machine is not powered; in that case nothing is charged and no game starts.
         /// </summary>
         public bool TryStart(EconomyService economy, float atSeconds)
         {
-            if (IsPlaying || economy == null)
+            if (IsPlaying || economy == null || !IsUnlocked)
             {
                 return false;
             }
@@ -86,6 +108,10 @@ namespace LaundryLegends.Arcade
         {
             _game = null;
             _endTimer = 0f;
+            if (_view != null)
+            {
+                _view.Hide();
+            }
         }
 
         private void Update()

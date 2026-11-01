@@ -64,6 +64,7 @@ namespace LaundryLegends.Economy
         private readonly GameState _wallet;
         private readonly List<Transaction> _log = new List<Transaction>();
         private readonly HashSet<string> _purchased = new HashSet<string>(StringComparer.Ordinal);
+        private readonly HashSet<string> _settledIncomes = new HashSet<string>(StringComparer.Ordinal);
         private int _nextId = 1;
 
         public EconomyService(GameState wallet)
@@ -119,6 +120,42 @@ namespace LaundryLegends.Economy
             }
 
             Record(TransactionKind.Expense, amount, reason, atSeconds);
+            return true;
+        }
+
+        /// <summary>
+        /// Credits income under a caller-supplied transaction id at most once.
+        /// A repeated id is rejected before the wallet is touched, so a retried
+        /// arcade visit can never pay twice. The id is released again when the
+        /// credit itself fails.
+        /// </summary>
+        public bool TryEarnOnce(string transactionId, int amount, string reason, float atSeconds)
+        {
+            if (string.IsNullOrWhiteSpace(transactionId) || amount <= 0 || string.IsNullOrWhiteSpace(reason))
+            {
+                return false;
+            }
+
+            if (!_settledIncomes.Add(transactionId))
+            {
+                return false;
+            }
+
+            // The transaction log is the authority: if the id is already recorded the
+            // credit is refused even when the fast set was rebuilt or lost.
+            if (HasRecordedId(transactionId))
+            {
+                _settledIncomes.Remove(transactionId);
+                return false;
+            }
+
+            if (!_wallet.TryCredit(amount))
+            {
+                _settledIncomes.Remove(transactionId);
+                return false;
+            }
+
+            Record(TransactionKind.Income, amount, reason, atSeconds, transactionId);
             return true;
         }
 
@@ -203,9 +240,23 @@ namespace LaundryLegends.Economy
             return best;
         }
 
-        private void Record(TransactionKind kind, int amount, string reason, float atSeconds)
+        private bool HasRecordedId(string transactionId)
         {
-            var transaction = new Transaction($"TXN-{_nextId++:D4}", kind, amount, reason, atSeconds);
+            foreach (Transaction transaction in _log)
+            {
+                if (string.Equals(transaction.Id, transactionId, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void Record(TransactionKind kind, int amount, string reason, float atSeconds, string transactionId = null)
+        {
+            string id = string.IsNullOrWhiteSpace(transactionId) ? $"TXN-{_nextId++:D4}" : transactionId;
+            var transaction = new Transaction(id, kind, amount, reason, atSeconds);
             _log.Add(transaction);
             TransactionRecorded?.Invoke(transaction);
         }
