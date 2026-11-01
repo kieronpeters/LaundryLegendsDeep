@@ -1153,3 +1153,44 @@ Owner playtest, then Phase 9.
 ### Next
 
 Owner verification, then Phase 9 arcade expansion.
+
+## 2026-11-01 - Phase 8 playtest blocker fix
+
+**Phase:** 8 - First arcade machine
+**Run:** `2026-11-01-ll-p8-fix-01`
+**Status:** Complete; owner playtest outstanding
+
+### Fixed
+
+- `CustomerAgent` always ends in `Done`: the order body moved to `RunOrder()`, every exit path goes through `LeaveAndFinish()`, and each walk leg has a 40 s timeout, so a blocked path can no longer freeze the shop. Ticket create/accept/collect/payment failures and abandonments now log instead of failing silently. Patience 90 s -> 180 s, tip window 60 s -> 120 s.
+- `CustomerSpawner` gained a watchdog: a missing, disabled, or `Done` active customer is cleared and the respawn timer re-armed. Spawn failures back off instead of retrying every frame. Spawn and next-customer events are logged.
+- Root cause of the second order abandoning: the decorative ambient street customer dropped its laundry prop into the **real order drop-off**, so the staff washed the decoration ahead of the real order (the drop-off was occupied from t=15 s to t=84 s in the trace). The scene link is cleared, `NpcSceneSetupTool` no longer wires it, and `AmbientNpc` documents the rule.
+- `HiddenRoomPurchasePoint` moved from the thin service panel to the `SecretAccess` group root, so every concealment collider resolves to it. `_sealedDoorCover` is the same group, so paying clears the whole doorway instead of leaving the shelf in it.
+- `OrderTicketView` self-wires a missing spawner and its box grew from 260x110 to 300x290 (the scene value clipped the ticket text).
+
+### Added
+
+- `PlaytestFixTool` (`Repair`/`Validate`) and `PlaytestAuditTool` (read-only wiring audit). Validate now also rejects ambient NPCs wired to the order drop-off.
+- `TwoOrderPaymentTests` (EditMode): two orders credit twice; a duplicate attempt on the first does not block the second.
+- `TwoOrderPlayModeTests`: two real customers through the real staff/machines with production durations and a 1/60 s delta.
+- `PlaytestHudTests`: HUD ticket and prompt live/wired; ticket tracks the live ledger.
+- `ShelfPurchaseTests`: aisle ray resolves to the purchase point; buying clears the doorway.
+
+### Checks and evidence
+
+- EditMode **147/147 passed**, exit 0 (`TestResults/editmode.xml`).
+- PlayMode **57 passed, 0 failed, 1 skipped**, exit 0 (`TestResults/playmode.xml`). The two-order test logged `ORD-0001 Paid`, `ORD-0002 Paid`, wallet 100, 2 payouts.
+- `PlaytestFixTool.Repair` exit 0; `PlaytestFixTool.Validate` exit 0 with every playtest wiring check.
+- No `NullReferenceException`, missing reference, compile error, or assertion-failure lines in either suite log.
+- Player build exit 0: `Build/LaundryLegends.exe`, 196 MB, scenes Bootstrap/MainMenu/Laundromat.
+- Report: `.orchestrator/reports/2026-11-01-phase8-playtest-blockers-fix.md`.
+
+### Not performed
+
+- Owner playtest of the rebuilt build.
+- Manual shelf purchase and back-room entry in the built player.
+- Appliance models and character eyes/teeth/clothing re-export (out of scope by instruction).
+
+### Next
+
+Owner playtest, then the deferred arcade-payoff verification and Phase 9 planning.

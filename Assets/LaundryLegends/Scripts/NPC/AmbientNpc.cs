@@ -21,6 +21,8 @@ namespace LaundryLegends.NPC
         [SerializeField] private AudioClip _enterClip;
         [SerializeField] private AudioClip _leaveClip;
         [SerializeField] private bool _loop = true;
+
+        [Tooltip("Decoration only. Leave unassigned: the order drop-off belongs to real customers, and a decorative prop placed there is washed ahead of their orders.")]
         [SerializeField] private CarrySlot _dropOffSlot;
 
         private int _index;
@@ -181,6 +183,12 @@ namespace LaundryLegends.NPC
             }
         }
 
+        /// <summary>
+        /// Optional decorative drop. The Laundromat scene deliberately leaves
+        /// this unassigned: the ambient customer is scenery, and anything placed
+        /// in the order drop-off is picked up by the staff before a real order,
+        /// which delays or abandons the customer's laundry.
+        /// </summary>
         private void DropCarriedProp()
         {
             if (_dropOffSlot == null || _carriedProp == null || !_carriedProp.activeSelf)

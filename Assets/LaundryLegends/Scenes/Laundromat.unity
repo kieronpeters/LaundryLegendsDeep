@@ -768,7 +768,7 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6203331344768175745, guid: a34b66c1def132b4a9be622d15c93820, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 5666457565766845546, guid: a34b66c1def132b4a9be622d15c93820, type: 3}
       insertIndex: -1
       addedObject: {fileID: 211837630}
   m_SourcePrefab: {fileID: 100100000, guid: a34b66c1def132b4a9be622d15c93820, type: 3}
@@ -785,7 +785,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
 --- !u!1 &211837628 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 6203331344768175745, guid: a34b66c1def132b4a9be622d15c93820, type: 3}
+  m_CorrespondingSourceObject: {fileID: 5666457565766845546, guid: a34b66c1def132b4a9be622d15c93820, type: 3}
   m_PrefabInstance: {fileID: 211837626}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &211837629 stripped
@@ -3776,8 +3776,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spawner: {fileID: 1396600182}
-  _width: 260
-  _height: 110
+  _width: 300
+  _height: 290
 --- !u!4 &1331955264
 Transform:
   m_ObjectHideFlags: 0
@@ -6496,7 +6496,7 @@ MonoBehaviour:
   _enterClip: {fileID: 0}
   _leaveClip: {fileID: 0}
   _loop: 1
-  _dropOffSlot: {fileID: 211837627}
+  _dropOffSlot: {fileID: 0}
 --- !u!82 &2021744371
 AudioSource:
   m_ObjectHideFlags: 0

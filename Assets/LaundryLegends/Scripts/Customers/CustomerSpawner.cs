@@ -147,6 +147,8 @@ namespace LaundryLegends.Customers
                 return null;
             }
 
+            EnsureEconomy();
+
             GameObject instance = Instantiate(_customerPrefab, _streetPoint.position, _streetPoint.rotation);
             instance.name = "OrderCustomer";
 
@@ -173,6 +175,8 @@ namespace LaundryLegends.Customers
             agent.StateEntered += OnCustomerState;
 
             ActiveCustomer = agent;
+            _waitingToRespawn = false;
+            Debug.Log("[CUSTOMER] A customer walked in.");
             return agent;
         }
 
@@ -183,6 +187,7 @@ namespace LaundryLegends.Customers
                 return;
             }
 
+            ActiveCustomer.StateEntered -= OnCustomerState;
             Destroy(ActiveCustomer.gameObject);
             ActiveCustomer = null;
         }
@@ -221,25 +226,61 @@ namespace LaundryLegends.Customers
             agent.StateEntered -= OnCustomerState;
             Destroy(agent.gameObject);
             ActiveCustomer = null;
-            _waitingToRespawn = true;
-            _respawnTimer = _respawnDelay;
+            BeginRespawn();
         }
 
+        /// <summary>Arms the respawn delay. Re-arming restarts the timer.</summary>
+        private void BeginRespawn()
+        {
+            _waitingToRespawn = true;
+            _respawnTimer = Mathf.Max(0f, _respawnDelay);
+            Debug.Log($"[CUSTOMER] Next customer in {_respawnTimer:0.0}s.");
+        }
+
+        /// <summary>
+        /// Serves one customer at a time and never lets a missing or interrupted
+        /// customer stop the shop. If the active customer disappears without
+        /// reaching Done, it is cleared and the respawn timer starts, so the loop
+        /// continues instead of stalling after one order.
+        /// </summary>
         private void Update()
         {
+            if (!_autoStart)
+            {
+                return;
+            }
+
+            if (ActiveCustomer == null)
+            {
+                if (!_waitingToRespawn)
+                {
+                    BeginRespawn();
+                }
+            }
+            else if (!ActiveCustomer.isActiveAndEnabled || ActiveCustomer.State == CustomerState.Done)
+            {
+                Debug.LogWarning("[CUSTOMER] The active customer stopped without reporting Done; clearing it and respawning.");
+                DisposeCurrent();
+                BeginRespawn();
+                return;
+            }
+
             if (!_waitingToRespawn)
             {
                 return;
             }
 
             _respawnTimer -= Time.deltaTime;
-            if (_respawnTimer <= 0f)
+            if (_respawnTimer > 0f)
             {
-                _waitingToRespawn = false;
-                if (_autoStart)
-                {
-                    SpawnNow();
-                }
+                return;
+            }
+
+            _waitingToRespawn = false;
+            if (SpawnNow() == null)
+            {
+                // Missing wiring must not turn into a spawn attempt every frame.
+                BeginRespawn();
             }
         }
     }

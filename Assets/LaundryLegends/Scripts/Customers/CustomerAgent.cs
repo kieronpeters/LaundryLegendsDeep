@@ -31,11 +31,20 @@ namespace LaundryLegends.Customers
         [SerializeField] private float _queueSeconds = 0.6f;
         [SerializeField] private float _pickupSeconds = 0.5f;
         [SerializeField] private int _price = 40;
-        [SerializeField] private float _patienceSeconds = 90f;
+
+        [Tooltip("Seconds a customer waits for the laundry before giving up. A full wash/dry/fold cycle takes about 75 s, so this leaves room for a player using the same machines.")]
+        [SerializeField] private float _patienceSeconds = 180f;
+
+        [Tooltip("One walk leg may not run longer than this. A blocked path skips the leg instead of freezing the order loop.")]
+        [SerializeField] private float _walkTimeoutSeconds = 40f;
+
         [SerializeField] private int _tip = 10;
-        [SerializeField] private float _tipWindowSeconds = 60f;
+        [SerializeField] private float _tipWindowSeconds = 120f;
 
         public int LastTip { get; private set; }
+
+        /// <summary>Seconds this customer will wait for the laundry before abandoning.</summary>
+        public float PatienceSeconds => _patienceSeconds;
 
         private OrderLedger _ledger;
         private CarrySlot _orderSlot;
@@ -48,6 +57,7 @@ namespace LaundryLegends.Customers
         private LaundryItem _item;
         private LaundryOrder _order;
         private FoldingStation _folding;
+        private bool _walkReached;
 
         public CustomerState State { get; private set; } = CustomerState.Arrive;
 
@@ -93,6 +103,20 @@ namespace LaundryLegends.Customers
 
         private IEnumerator Start()
         {
+            yield return RunOrder();
+
+            // The spawner only clears its active customer and respawns when it sees
+            // Done. Every exit path above therefore has to end here, otherwise one
+            // interrupted order freezes the whole shop.
+            Enter(CustomerState.Done);
+        }
+
+        /// <summary>
+        /// The order itself. It may finish early for any number of reasons; the
+        /// caller guarantees the Done state afterwards.
+        /// </summary>
+        private IEnumerator RunOrder()
+        {
             Enter(CustomerState.Arrive);
 
             if (_item != null && _socket != null)
@@ -103,6 +127,13 @@ namespace LaundryLegends.Customers
             Speak(DialogueTrigger.Enter);
             yield return WalkTo(_doorPoint != null ? _doorPoint.position : transform.position);
             yield return WalkTo(_counterPoint != null ? _counterPoint.position : transform.position);
+
+            if (!_walkReached)
+            {
+                Debug.LogWarning($"[ORDER] {name} could not reach the counter; leaving without a ticket.");
+                yield return LeaveAndFinish();
+                yield break;
+            }
 
             Enter(CustomerState.Queue);
             yield return new WaitForSeconds(_queueSeconds);
@@ -124,20 +155,28 @@ namespace LaundryLegends.Customers
             {
                 _socket?.Detach();
                 _item.transform.SetParent(_orderSlot.transform, false);
-                _ledger.TryCreateOrder(_item, _price, Time.time, out _order);
-                if (_order != null)
+                if (!_ledger.TryCreateOrder(_item, _price, Time.time, out _order) || _order == null)
                 {
-                    _ledger.TryAcceptOrder(_order.OrderId, Time.time);
+                    Debug.LogWarning($"[ORDER] Could not open a ticket: {_ledger.LastResult}");
+                    yield return LeaveAndFinish();
+                    yield break;
                 }
 
+                if (!_ledger.TryAcceptOrder(_order.OrderId, Time.time))
+                {
+                    Debug.LogWarning($"[ORDER] Could not accept {_order.OrderId}: {_ledger.LastResult}");
+                    yield return LeaveAndFinish();
+                    yield break;
+                }
+
+                Debug.Log($"[ORDER] {_order.OrderId} accepted at {_price}.");
                 Speak(DialogueTrigger.Counter);
             }
             else
             {
                 // The drop-off stayed busy: leave instead of standing there forever.
-                Enter(CustomerState.Leave);
-                yield return WalkTo(_exitPoint != null ? _exitPoint.position : transform.position);
-                Enter(CustomerState.Done);
+                Debug.LogWarning("[ORDER] The drop-off slot stayed busy; the customer left without a ticket.");
+                yield return LeaveAndFinish();
                 yield break;
             }
 
@@ -148,6 +187,8 @@ namespace LaundryLegends.Customers
             {
                 if (_order == null || _item == null)
                 {
+                    Debug.LogWarning("[ORDER] The order or its laundry disappeared while waiting.");
+                    yield return LeaveAndFinish();
                     yield break;
                 }
 
@@ -185,10 +226,9 @@ namespace LaundryLegends.Customers
 
             if (abandoned)
             {
+                Debug.LogWarning($"[ORDER] {_order.OrderId} abandoned after {waited:0}s without payment.");
                 CleanUpAbandonedItem();
-                Enter(CustomerState.Leave);
-                yield return WalkTo(_exitPoint != null ? _exitPoint.position : transform.position);
-                Enter(CustomerState.Done);
+                yield return LeaveAndFinish();
                 yield break;
             }
 
@@ -216,14 +256,25 @@ namespace LaundryLegends.Customers
                 collected = _item;
             }
 
-            if (collected != null)
+            if (collected == null)
             {
-                _ledger.TryCollect(_order.OrderId, Time.time);
-                if (_socket != null)
-                {
-                    _socket.Attach(collected);
-                }
+                Debug.LogWarning($"[ORDER] {_order.OrderId} has no laundry to collect; leaving unpaid.");
+                yield return LeaveAndFinish();
+                yield break;
             }
+
+            if (!_ledger.TryCollect(_order.OrderId, Time.time))
+            {
+                Debug.LogWarning($"[ORDER] Could not collect {_order.OrderId}: {_ledger.LastResult}");
+                yield return LeaveAndFinish();
+                yield break;
+            }
+
+            if (_socket != null)
+            {
+                _socket.Attach(collected);
+            }
+
             Enter(CustomerState.Pay);
             if (_ledger.TryPay(_order.OrderId, Time.time))
             {
@@ -232,7 +283,12 @@ namespace LaundryLegends.Customers
                     LastTip = _ledger.TryAddTip(_order.OrderId, _tip, Time.time) ? _tip : 0;
                 }
 
+                Debug.Log($"[ORDER] {_order.OrderId} paid {_order.Price}; wallet {_ledger.Wallet.Money}.");
                 Speak(DialogueTrigger.Pickup);
+            }
+            else
+            {
+                Debug.LogError($"[ORDER] Payment failed for {_order.OrderId}: {_ledger.LastResult}");
             }
 
             yield return new WaitForSeconds(_pickupSeconds);
@@ -244,26 +300,53 @@ namespace LaundryLegends.Customers
             }
 
             yield return WalkTo(_exitPoint != null ? _exitPoint.position : transform.position);
-            Enter(CustomerState.Done);
+        }
+
+        /// <summary>Walks out and returns, so the caller can exit the order cleanly.</summary>
+        private IEnumerator LeaveAndFinish()
+        {
+            Enter(CustomerState.Leave);
+            yield return WalkTo(_exitPoint != null ? _exitPoint.position : transform.position);
         }
 
         private IEnumerator WalkTo(Vector3 destination)
         {
+            _walkReached = false;
+            float elapsed = 0f;
+            float limit = Mathf.Max(1f, _walkTimeoutSeconds);
+
             if (_locomotion != null)
             {
                 while (!_locomotion.MoveTowards(destination, _walkSpeed, 0.15f))
                 {
+                    elapsed += Time.deltaTime;
+                    if (elapsed >= limit)
+                    {
+                        Debug.LogWarning($"[ORDER] Walking to {destination} timed out after {limit:0}s.");
+                        yield break;
+                    }
+
                     yield return null;
                 }
 
+                _walkReached = true;
                 yield break;
             }
 
             while (Vector3.Distance(transform.position, destination) > 0.15f)
             {
                 transform.position = Vector3.MoveTowards(transform.position, destination, _walkSpeed * Time.deltaTime);
+                elapsed += Time.deltaTime;
+                if (elapsed >= limit)
+                {
+                    Debug.LogWarning($"[ORDER] Walking to {destination} timed out after {limit:0}s.");
+                    yield break;
+                }
+
                 yield return null;
             }
+
+            _walkReached = true;
         }
 
         /// <summary>

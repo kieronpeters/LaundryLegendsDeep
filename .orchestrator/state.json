@@ -9,7 +9,7 @@
     "renderPipeline": "Universal Render Pipeline 17.0.4",
     "targetPlatform": "Windows 64-bit"
   },
-  "updatedAt": "2026-11-01T17:05:00+08:00",
+  "updatedAt": "2026-11-01T15:40:00+08:00",
   "currentMilestone": {
     "id": "M1",
     "name": "Playable laundry",
@@ -20,7 +20,7 @@
     "name": "First arcade machine",
     "status": "complete-pending-playtest",
     "file": ".orchestrator/reports/2026-11-01-phase8-arcade-business-and-menu-fix.md",
-    "completionNote": "Arcade business loop implemented: install point purchase through EconomyService (single debit), Off->Installing->Active lifecycle, attract mode with emission pulse and generated cue, visitor traffic that pays exactly once per visit, and ArcadeState exposed for future saving. Menu dead-button defect fixed with persistent UnityEvent listeners (the shipped build had m_Calls: []). Menu AudioListener added and the duplicate MainMenuController removed. NPC grey-material regression fixed by restoring MakeHuman textures; first-person hands mounted at measured offset and shown only while carrying. Suites: EditMode 135/135, PlayMode 53 passed / 0 failed / 1 skipped. Owner playtest of the first-machine payoff still outstanding."
+    "completionNote": "Arcade business loop implemented: install point purchase through EconomyService (single debit), Off->Installing->Active lifecycle, attract mode with emission pulse and generated cue, visitor traffic that pays exactly once per visit, and ArcadeState exposed for future saving. Menu dead-button defect fixed with persistent UnityEvent listeners (the shipped build had m_Calls: []). Menu AudioListener added and the duplicate MainMenuController removed. NPC grey-material regression fixed by restoring MakeHuman textures; first-person hands mounted at measured offset and shown only while carrying. Playtest blockers fixed on 2026-11-01: customer lifecycle always reaches Done, spawner watchdog, ambient NPC no longer feeds the order drop-off, shelf purchase moved onto the SecretAccess group. Suites: EditMode 147/147, PlayMode 57 passed / 0 failed / 1 skipped; build exit 0. Owner playtest still outstanding."
   },
   "nextPhase": {
     "number": 9,
@@ -66,9 +66,9 @@
     "checkpointCommit": "da130ddad18b633fb9bad82a3df5107168c91dd0",
     "baselineCommit": "b78218cccfeea741d3d227ffa95e679e9ba92a72",
     "remote": null,
-    "workingTree": "clean after the LL-P3-008 pickup commit; the untracked ProjectSettings/PackageManagerSettings.asset is preserved but not committed",
+    "workingTree": "clean after the Phase 8 playtest blocker fix commit; the untracked ProjectSettings/PackageManagerSettings.asset is preserved but not committed",
     "unityProjectCommit": "e244ba434ace223ff064df52b6a683615d9fb503",
-    "lastCheckpointAt": "2026-10-31T05:20:00+08:00"
+    "lastCheckpointAt": "2026-11-01T15:40:00+08:00"
   },
   "environment": {
     "opencodeCli": "2.0.28",
@@ -154,45 +154,37 @@
     "note": "Procedural placeholders only: 3 scenes, 5 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
   },
   "lastRun": {
-    "id": "2026-10-31-ll-p3-014-016-polish",
-    "report": ".orchestrator/reports/2026-10-31-ll-p3-014-016-polish.md",
-    "status": "complete",
-    "startedAt": "2026-10-31T14:30:00+08:00",
-    "completedAt": "2026-10-31T18:10:00+08:00",
+    "id": "2026-11-01-ll-p8-fix-01",
+    "report": ".orchestrator/reports/2026-11-01-phase8-playtest-blockers-fix.md",
+    "status": "complete-pending-owner-playtest",
+    "startedAt": "2026-11-01T13:00:00+08:00",
+    "completedAt": "2026-11-01T15:40:00+08:00",
     "checks": {
-      "environment_validation": "passed",
-      "signage_validation": "passed",
-      "item_validation": "passed",
-      "machine_hook_validation": "passed",
-      "public_zones": "passed",
-      "navigation": "passed",
-      "player_validation": "passed",
-      "npc_validation": "passed",
-      "editmode": "32/32 passed",
-      "playmode": "37 passed, 1 skipped",
-      "captures": "passed",
-      "log_scan": "passed"
+      "scene_repair": "passed",
+      "scene_validation": "passed",
+      "editmode": "147/147 passed",
+      "playmode": "57 passed, 0 failed, 1 skipped",
+      "two_order_end_to_end": "passed (ORD-0001 Paid, ORD-0002 Paid, wallet 100)",
+      "log_scan": "passed",
+      "player_build": "exit 0, 196 MB"
     },
     "filesChanged": [
-      "ArtSource/Licenses/ambientcg.md",
-      "Assets/LaundryLegends/Art/Textures/Environment/**",
-      "Assets/LaundryLegends/Art/Materials/MAT_FloorTile.mat",
-      "Assets/LaundryLegends/Art/Materials/MAT_WallPaint.mat",
-      "Assets/LaundryLegends/Art/Materials/MAT_CounterWood.mat",
-      "Assets/LaundryLegends/Art/Materials/MAT_Plant.mat",
-      "Assets/LaundryLegends/Art/Materials/MAT_Detergent.mat",
-      "Assets/LaundryLegends/Art/Materials/MAT_NPC_*.mat",
-      "Assets/LaundryLegends/Art/Models/NPC/*.fbx.meta",
-      "Assets/LaundryLegends/Editor/BasketAssetSetupTool.cs",
-      "Assets/LaundryLegends/Editor/NpcAssetSetupTool.cs",
-      "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
-      "ASSET_INVENTORY.md",
-      ".orchestrator/tasks/phase-03.json",
-      ".orchestrator/state.json",
-      ".orchestrator/reports/2026-10-31-ll-p3-014-016-polish.md",
+      "Assets/LaundryLegends/Scripts/Customers/CustomerAgent.cs",
+      "Assets/LaundryLegends/Scripts/Customers/CustomerSpawner.cs",
+      "Assets/LaundryLegends/Scripts/Customers/OrderTicketView.cs",
+      "Assets/LaundryLegends/Scripts/NPC/AmbientNpc.cs",
+      "Assets/LaundryLegends/Editor/NpcSceneSetupTool.cs",
+      "Assets/LaundryLegends/Editor/PlaytestFixTool.cs",
+      "Assets/LaundryLegends/Editor/PlaytestAuditTool.cs",
+      "Assets/LaundryLegends/Scenes/Laundromat.unity",
+      "Assets/LaundryLegends/Tests/EditMode/TwoOrderPaymentTests.cs",
+      "Assets/LaundryLegends/Tests/PlayMode/TwoOrderPlayModeTests.cs",
+      "Assets/LaundryLegends/Tests/PlayMode/PlaytestHudTests.cs",
+      "Assets/LaundryLegends/Tests/PlayMode/ShelfPurchaseTests.cs",
       "PROJECT_STATE.md",
       "DEVELOPMENT_LOG.md",
-      "ROADMAP.md"
+      ".orchestrator/state.json",
+      ".orchestrator/reports/2026-11-01-phase8-playtest-blockers-fix.md"
     ]
   },
   "recovery": {
