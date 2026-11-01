@@ -6,12 +6,12 @@
     {
       "action": "external_directory",
       "resource": "*",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "shell",
       "resource": "*",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "shell",
@@ -116,22 +116,22 @@
     {
       "action": "edit",
       "resource": "Packages/**",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "edit",
       "resource": "ProjectSettings/**",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "read",
       "resource": "*.env",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "read",
       "resource": "*.env.*",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "read",
@@ -326,17 +326,17 @@
     {
       "action": "edit",
       "resource": ".opencode/**",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "edit",
       "resource": ".orchestrator/GUARDRAILS.md",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "edit",
       "resource": "AGENTS.md",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "shell",
@@ -421,42 +421,42 @@
     {
       "action": "shell",
       "resource": "git remote add*",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "shell",
       "resource": "git remote remove*",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "shell",
       "resource": "git remote set-url*",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "shell",
       "resource": "git remote prune*",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "shell",
       "resource": "git merge*",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "shell",
       "resource": "git pull*",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "shell",
       "resource": "git clone*",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "shell",
       "resource": "git gc*",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "shell",
@@ -496,37 +496,37 @@
     {
       "action": "read",
       "resource": "*.pem",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "read",
       "resource": "*.key",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "read",
       "resource": "*.pfx",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "read",
       "resource": "*.keystore",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "read",
       "resource": "*.ulf",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "read",
       "resource": ".git-credentials",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "read",
       "resource": "id_rsa*",
-      "effect": "ask"
+      "effect": "allow"
     },
     {
       "action": "shell",
@@ -662,6 +662,11 @@
       "action": "shell",
       "resource": "git push* --force*",
       "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "winget *",
+      "effect": "allow"
     }
   ],
   "agents": {
