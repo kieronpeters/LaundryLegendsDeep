@@ -241,17 +241,17 @@
     {
       "action": "shell",
       "resource": "pip install*",
-      "effect": "deny"
+      "effect": "allow"
     },
     {
       "action": "shell",
       "resource": "pip3 install*",
-      "effect": "deny"
+      "effect": "allow"
     },
     {
       "action": "shell",
       "resource": "python -m pip install*",
-      "effect": "deny"
+      "effect": "allow"
     },
     {
       "action": "shell",

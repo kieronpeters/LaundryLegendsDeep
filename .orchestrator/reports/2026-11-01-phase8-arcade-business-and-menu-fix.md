@@ -82,3 +82,18 @@ and missing first-person hands.
 ## Recommendation
 
 Close Phase 8 once the owner confirms the payoff, then start Phase 9 (arcade expansion) from `ROADMAP.md`.
+
+## Revision (same day): back room, cabinet game and map
+
+The owner changed the intended shape of Phase 8 after the first pass:
+
+- The **back room is bought for $200**: `HiddenRoomPurchasePoint` clears the shelf, reveals the room and prepares it in one step. The clue/order path still exists for players who find it themselves.
+- A **back room shell was built** at 10.0 x 12.9 m (half the measured shop footprint) with floor, four walls, ceiling and light, under `RoomContent` so it only appears once usable.
+- The **cabinet now lives inside that room** at (19.30, 0, 3.00) and ships already powered (`ArcadeService.SetStartActive`); the arcade purchase point was removed.
+- The cabinet's game is a **PLAY/QUIT menu leading into a versus fight** (`Honda` vs `Bison`, health bars, round clock, knockout), with the result held for five seconds before returning to the menu. QUIT closes the cabinet and hands the player back to the shop.
+  - Implemented as `FightSession` (menu/fight/result flow) and `FightGame` (rules), drawn by `FightGameView` with a built-in 5x7 font so no font asset is needed.
+  - Input: W/S to choose, E to confirm; A/D move, W punch, S kick, Space guard, Q back to the menu.
+- A **map (M)** shows the shop and, once the room is open, the back room with the arcade marked.
+- **IP note:** Honda and Bison are Capcom characters. They are used here only because the owner asked for them in a private build; both must be renamed before any public release.
+
+Known at the time of writing: the fight game renders correctly on the cabinet screen (captures `TestResults/arcade-menu.png`, `arcade-fight.png`, `arcade-result.png`), but the back room has not yet been walked in a build, and the $200 price means a fresh player must complete about three orders first.
