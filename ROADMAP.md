@@ -296,7 +296,7 @@ Interaction scripts, carry scripts, item/basket prefabs, prompt UI placeholder, 
 
 ## Phase 4 — Laundry processing
 
-**Status:** Planned
+**Status:** Complete (laundry processing implemented and covered by EditMode/PlayMode suites)
 **Objective:** Implement washers, dryers, cycle states, folding, completed orders, and a coherent order state machine.
 **Depends on:** Phase 3.
 
@@ -348,7 +348,7 @@ Machine/order scripts, ScriptableObject definitions, placeholder audio/VFX, fold
 
 ## Phase 5 — Customers and payments
 
-**Status:** Planned
+**Status:** Complete (customer order lifecycle and exactly-once payment tested)
 **Objective:** Complete the first playable laundry loop with customer arrival, order handoff, waiting, collection, payment, satisfaction, and repeatable flow.
 **Depends on:** Phase 4.
 
@@ -401,7 +401,7 @@ Customer scripts/prefabs, order ticket UI, payment effects/audio placeholders, t
 
 ## Phase 6 — Business simulation
 
-**Status:** Planned
+**Status:** Complete (economy, upgrades, daily overhead and HUD shipped)
 **Objective:** Add money, prices, operating costs, upgrades, order management, progression, and a simple business summary.
 **Depends on:** Phase 5.
 
@@ -452,7 +452,7 @@ Economy/upgrade scripts, ScriptableObjects, summary UI, tests, placeholder signs
 
 ## Phase 7 — Secret room discovery
 
-**Status:** Planned
+**Status:** Complete (secret room logic and scene wiring, commit e55f2ad)
 **Objective:** Implement discovery, access conditions, reveal sequence, room preparation, and the first usable hidden space.
 **Depends on:** Phase 6.
 

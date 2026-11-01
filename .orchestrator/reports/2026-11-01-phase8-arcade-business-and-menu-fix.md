@@ -97,3 +97,26 @@ The owner changed the intended shape of Phase 8 after the first pass:
 - **IP note:** Honda and Bison are Capcom characters. They are used here only because the owner asked for them in a private build; both must be renamed before any public release.
 
 Known at the time of writing: the fight game renders correctly on the cabinet screen (captures `TestResults/arcade-menu.png`, `arcade-fight.png`, `arcade-result.png`), but the back room has not yet been walked in a build, and the $200 price means a fresh player must complete about three orders first.
+
+
+## 2026-11-01 (later) — furniture clipping, textures, naming and machine cleanup
+
+### Changed
+
+- **NPC furniture clipping fixed**: overlap correction moved from `Update` (where it fought pathing) to `LateUpdate`, acting only on overlaps deeper than 70% of the body radius and capped at 5 cm per frame. Bodies are pushed out of counters and machines after moving, so the customer loop is never blocked.
+- **Textures**: all 74 were already importing at 2048, so GPU memory was never the issue; the 4K *source* files were re-encoded at 2K, removing about 84 MB from the working tree.
+- **Menu background** re-rendered from the current scene, replacing the image that still showed pre-fix grey characters.
+- **Fighters renamed** to CIVIC and BULL; the cabinet view reads names from the session instead of hard-coded strings.
+- **ROADMAP** corrected: phases 4-7 were marked planned although delivered.
+- **Machine cleanup**: Ollama models and app removed (42.0 GB), temp (5.4 GB), recycle bin, and two unused Unity editors (21.8 GB). Free space went from 61.2 GB to 109.7 GB.
+
+### Checks and evidence
+
+- EditMode 145/145; PlayMode 53 passed, 1 skipped (after the clipping change).
+- Build succeeded with 0 errors.
+- Audacity 4.0.1, Krita 6.0.4, LMMS 1.2.2, FFmpeg 9.0.2 verified installed.
+
+### Not performed
+
+- Owner playtest of the back room and cabinet.
+- Visual confirmation that clipping is gone in motion: the tests prove pathing is intact, not appearance.

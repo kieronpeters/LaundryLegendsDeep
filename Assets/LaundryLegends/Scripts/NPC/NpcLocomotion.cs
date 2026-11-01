@@ -21,7 +21,7 @@ namespace LaundryLegends.NPC
         [SerializeField] private LayerMask _obstacleMask = ~0;
 
         [Tooltip("Push the body out of furniture it walks into. Off until NPC pathing tolerates it.")]
-        [SerializeField] private bool _resolveOverlaps;
+        [SerializeField] private bool _resolveOverlaps = true;
 
         private readonly Collider[] _overlaps = new Collider[16];
 
@@ -74,11 +74,20 @@ namespace LaundryLegends.NPC
                 _animator.SetFloat(SpeedHash, Speed01, 0.1f, Time.deltaTime);
                 _animator.SetBool(CarryingHash, _carrying);
             }
+        }
 
-            if (_resolveOverlaps)
+        /// <summary>
+        /// Overlap correction runs after movement, so it can push a body out of
+        /// furniture without ever blocking the path.
+        /// </summary>
+        private void LateUpdate()
+        {
+            if (!_resolveOverlaps)
             {
-                ResolveOverlaps();
+                return;
             }
+
+            ResolveOverlaps();
         }
 
         /// <summary>
@@ -114,12 +123,16 @@ namespace LaundryLegends.NPC
                 Vector3 away = centre - point;
                 away.y = 0f;
                 float distance = away.magnitude;
-                if (distance <= 0.0001f || distance >= _bodyRadius)
+
+                // Correct only meaningful overlaps, and never move far in one frame,
+                // so ordinary walking is unaffected.
+                if (distance <= 0.0001f || distance >= _bodyRadius * 0.7f)
                 {
                     continue;
                 }
 
-                transform.position += away.normalized * (_bodyRadius - distance);
+                float push = Mathf.Min(_bodyRadius - distance, 0.05f);
+                transform.position += away.normalized * push;
             }
         }
 
