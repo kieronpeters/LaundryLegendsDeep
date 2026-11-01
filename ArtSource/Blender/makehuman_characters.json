@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Attendant_Human",
+    "gender": 1.0,
+    "ageYears": 47,
+    "muscle": 0.34,
+    "weight": 0.64,
+    "bodyProportions": 0.5,
+    "heightCm": 177,
+    "ethnicity": { "african": 0.02, "asian": 0.55, "caucasian": 0.43 },
+    "skin": "data/skins/middleage_asian_male/middleage_asian_male.mhmat",
+    "clothes": [
+      "data/clothes/male_casualsuit06/male_casualsuit06.mhclo",
+      "data/clothes/shoes04/shoes04.mhclo"
+    ],
+    "hair": "data/hair/short04/short04.mhclo",
+    "modifiers": {
+      "head/head-scale-horiz-decr-incr": 0.15,
+      "chin/chin-width-decr-incr": 0.1
+    }
+  },
+  {
+    "name": "Customer_Human",
+    "gender": 0.0,
+    "ageYears": 24,
+    "muscle": 0.3,
+    "weight": 0.35,
+    "bodyProportions": 0.45,
+    "heightCm": 161,
+    "ethnicity": { "african": 0.02, "asian": 0.7, "caucasian": 0.28 },
+    "skin": "data/skins/young_asian_female/young_asian_female.mhmat",
+    "clothes": [
+      "data/clothes/female_casualsuit02/female_casualsuit02.mhclo",
+      "data/clothes/shoes06/shoes06.mhclo"
+    ],
+    "hair": "data/hair/ponytail01/ponytail01.mhclo",
+    "modifiers": {
+      "head/head-scale-horiz-decr-incr": -0.1,
+      "chin/chin-width-decr-incr": -0.1
+    }
+  }
+]
