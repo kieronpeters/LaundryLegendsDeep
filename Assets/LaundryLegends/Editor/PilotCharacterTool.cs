@@ -106,6 +106,81 @@ namespace LaundryLegends.Editor
                 animator.applyRootMotion = false;
                 animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
 
+                // Imported materials come in as Standard, which renders magenta in
+                // URP; convert them and use the first valid one as a fallback.
+                Material fallback = null;
+                foreach (Renderer renderer in instance.GetComponentsInChildren<Renderer>(true))
+                {
+                    Material[] materials = renderer.sharedMaterials;
+                    for (int i = 0; i < materials.Length; i++)
+                    {
+                        if (materials[i] == null)
+                        {
+                            continue;
+                        }
+
+                        Material material = materials[i];
+                        if (material.shader == null || material.shader.name == "Standard")
+                        {
+                            Color color = material.HasProperty("_Color") ? material.color : Color.white;
+                            Texture texture = material.HasProperty("_MainTex") ? material.mainTexture : null;
+                            material.shader = Shader.Find("Universal Render Pipeline/Lit");
+                            material.SetColor("_BaseColor", color);
+                            if (texture != null)
+                            {
+                                material.SetTexture("_BaseMap", texture);
+                            }
+
+                            material.SetFloat("_Smoothness", 0.25f);
+                            EditorUtility.SetDirty(material);
+                        }
+
+                        materials[i] = material;
+                        fallback ??= material;
+                    }
+
+                    renderer.sharedMaterials = materials;
+                }
+
+                // MakeHuman exports an unused high-poly base mesh; it renders as a
+                // stray slab and is not part of the visible character.
+                foreach (Transform child in instance.GetComponentsInChildren<Transform>(true))
+                {
+                    if (child.name.IndexOf("high-poly", System.StringComparison.OrdinalIgnoreCase) < 0)
+                    {
+                        continue;
+                    }
+
+                    var renderer = child.GetComponent<Renderer>();
+                    if (renderer != null)
+                    {
+                        renderer.enabled = false;
+                    }
+                }
+
+                if (fallback != null)
+                {
+                    foreach (Renderer renderer in instance.GetComponentsInChildren<Renderer>(true))
+                    {
+                        Material[] materials = renderer.sharedMaterials;
+                        for (int i = 0; i < materials.Length; i++)
+                        {
+                            Material current = materials[i];
+                            bool broken = current == null
+                                || current.shader == null
+                                || string.IsNullOrEmpty(current.shader.name)
+                                || current.shader.name.Contains("InternalErrorShader");
+
+                            if (broken)
+                            {
+                                materials[i] = fallback;
+                            }
+                        }
+
+                        renderer.sharedMaterials = materials;
+                    }
+                }
+
                 NpcPose pose = contents.GetComponentInChildren<NpcPose>(true);
                 if (pose != null)
                 {
