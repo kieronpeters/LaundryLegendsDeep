@@ -22,8 +22,7 @@ namespace LaundryLegends.Editor
 
         [MenuItem("Laundry Legends/Phase 8/Fix NPC Skin and Hands")]
         public static void Fix()
-        {
-            var log = new StringBuilder();
+        {            var log = new StringBuilder();
             log.AppendLine("[APPEARANCE] restore NPC materials");
 
             Material skinAttendant = EnsureMaterial(
@@ -93,6 +92,66 @@ namespace LaundryLegends.Editor
             Debug.Log(log.ToString());
             System.IO.Directory.CreateDirectory("TestResults");
             System.IO.File.WriteAllText("TestResults/appearance-fix.txt", log.ToString());
+        }
+
+        /// <summary>
+        /// Repairs NPC renderers placed in the scene, not just the prefabs: an instance
+        /// keeps its old material overrides after the prefab is fixed, which is how grey
+        /// characters survived the earlier repair.
+        /// </summary>
+        [MenuItem("Laundry Legends/Phase 8/Fix Scene NPC Materials")]
+        public static void FixSceneInstances()
+        {
+            UnityEngine.SceneManagement.Scene scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(
+                "Assets/LaundryLegends/Scenes/Laundromat.unity", UnityEditor.SceneManagement.OpenSceneMode.Single);
+
+            var map = new System.Collections.Generic.Dictionary<string, string>
+            {
+                { "attendant_humanMesh", $"{Materials}/MAT_NPC_Skin_Attendant.mat" },
+                { "customer_humanMesh", $"{Materials}/MAT_NPC_Skin_Customer.mat" },
+                { "shoes04Mesh", $"{Materials}/MAT_NPC_Shoes_Attendant.mat" },
+                { "shoes06Mesh", $"{Materials}/MAT_NPC_Shoes_Customer.mat" },
+                { "short04Mesh", $"{Materials}/MAT_NPC_Hair_Attendant.mat" },
+                { "ponytail01Mesh", $"{Materials}/MAT_NPC_Hair_Customer.mat" },
+                { "female_casualsuit02Mesh", $"{Materials}/MAT_NPC_Suit_Customer.mat" }
+            };
+
+            int changed = 0;
+            foreach (Renderer renderer in Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (!map.TryGetValue(renderer.name, out string materialPath))
+                {
+                    continue;
+                }
+
+                var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+                if (material == null)
+                {
+                    continue;
+                }
+
+                var materials = renderer.sharedMaterials;
+                bool dirty = false;
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    if (materials[i] != material)
+                    {
+                        materials[i] = material;
+                        dirty = true;
+                    }
+                }
+
+                if (dirty)
+                {
+                    renderer.sharedMaterials = materials;
+                    changed++;
+                }
+            }
+
+            UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(scene);
+            UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene);
+            AssetDatabase.SaveAssets();
+            Debug.Log($"[APPEARANCE] scene NPC renderers repaired: {changed}");
         }
 
         private static void Apply(string prefabPath, StringBuilder log, Dictionary<string, Material> byRendererName)
