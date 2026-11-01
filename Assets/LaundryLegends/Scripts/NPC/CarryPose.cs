@@ -14,6 +14,11 @@ namespace LaundryLegends.NPC
     {
         [SerializeField] private NpcLocomotion _locomotion;
         [SerializeField] private float _blendSpeed = 6f;
+
+        /// <summary>Seconds the reach-in pose plays when a carry starts.</summary>
+        [SerializeField] private float _reachSeconds = 0.28f;
+
+        [SerializeField] private float _reachDegrees = 18f;
         [SerializeField] private Vector3 _leftArmEuler = new Vector3(28f, -12f, -58f);
         [SerializeField] private Vector3 _rightArmEuler = new Vector3(28f, 12f, 58f);
         [SerializeField] private Vector3 _leftForeArmEuler = new Vector3(-62f, 0f, -18f);
@@ -24,6 +29,8 @@ namespace LaundryLegends.NPC
         private Transform _leftForeArm;
         private Transform _rightForeArm;
         private float _weight;
+        private float _reachTimer;
+        private bool _wasCarrying;
 
         private void Awake()
         {
@@ -88,14 +95,28 @@ namespace LaundryLegends.NPC
         private void LateUpdate()
         {
             bool carrying = _locomotion != null && _locomotion.Carrying;
-            _weight = Mathf.MoveTowards(_weight, carrying ? 1f : 0f, _blendSpeed * Time.deltaTime);
+            _weight = Mathf.MoveTowards(_weight, carrying ? 1f : 0f, _blendSpeed * Time.deltaTime);            if (carrying && !_wasCarrying)
+            {
+                _reachTimer = _reachSeconds;
+            }
+
+            _wasCarrying = carrying;
+
+            float reach = 0f;
+            if (_reachTimer > 0f)
+            {
+                _reachTimer = Mathf.Max(0f, _reachTimer - Time.deltaTime);
+                float phase = 1f - (_reachTimer / Mathf.Max(0.01f, _reachSeconds));
+                reach = Mathf.Sin(phase * Mathf.PI) * _reachDegrees;
+            }
+
             if (_weight <= 0.0001f)
             {
                 return;
             }
 
-            Apply(_leftArm, _leftArmEuler);
-            Apply(_rightArm, _rightArmEuler);
+            Apply(_leftArm, _leftArmEuler + new Vector3(-reach, 0f, 0f));
+            Apply(_rightArm, _rightArmEuler + new Vector3(-reach, 0f, 0f));
             Apply(_leftForeArm, _leftForeArmEuler);
             Apply(_rightForeArm, _rightForeArmEuler);
         }

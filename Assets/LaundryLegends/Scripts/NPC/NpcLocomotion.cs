@@ -16,6 +16,14 @@ namespace LaundryLegends.NPC
         [SerializeField] private Animator _animator;
         [SerializeField] private float _referenceSpeed = 1.1f;
         [SerializeField] private float _turnDegreesPerSecond = 540f;
+        [SerializeField] private float _bodyRadius = 0.3f;
+        [SerializeField] private float _bodyHeight = 1.6f;
+        [SerializeField] private LayerMask _obstacleMask = ~0;
+
+        [Tooltip("Push the body out of furniture it walks into. Off until NPC pathing tolerates it.")]
+        [SerializeField] private bool _resolveOverlaps;
+
+        private readonly Collider[] _overlaps = new Collider[16];
 
         private Vector3 _lastPosition;
         private bool _carrying;
@@ -65,6 +73,53 @@ namespace LaundryLegends.NPC
             {
                 _animator.SetFloat(SpeedHash, Speed01, 0.1f, Time.deltaTime);
                 _animator.SetBool(CarryingHash, _carrying);
+            }
+
+            if (_resolveOverlaps)
+            {
+                ResolveOverlaps();
+            }
+        }
+
+        /// <summary>
+        /// Pushes the NPC out of any furniture it has walked into. Movement is
+        /// transform driven, so without this the body intersects counters and
+        /// machines. Public so tests can resolve a known overlap directly.
+        /// </summary>
+        public void ResolveOverlaps()
+        {
+            float half = _bodyHeight * 0.5f;
+            Vector3 bottom = transform.position + Vector3.up * (_bodyRadius + 0.05f);
+            Vector3 top = transform.position + Vector3.up * Mathf.Max(_bodyRadius + 0.05f, _bodyHeight - _bodyRadius);
+            int count = Physics.OverlapCapsuleNonAlloc(
+                bottom, top, _bodyRadius, _overlaps, _obstacleMask, QueryTriggerInteraction.Ignore);
+
+            Vector3 centre = transform.position + Vector3.up * half;
+            for (int i = 0; i < count; i++)
+            {
+                Collider other = _overlaps[i];
+                if (other == null || other.transform.IsChildOf(transform))
+                {
+                    continue;
+                }
+
+                Vector3 point = other.ClosestPoint(centre);
+
+                // Ignore the floor; only furniture and walls should push the body out.
+                if (point.y < transform.position.y + 0.25f)
+                {
+                    continue;
+                }
+
+                Vector3 away = centre - point;
+                away.y = 0f;
+                float distance = away.magnitude;
+                if (distance <= 0.0001f || distance >= _bodyRadius)
+                {
+                    continue;
+                }
+
+                transform.position += away.normalized * (_bodyRadius - distance);
             }
         }
 

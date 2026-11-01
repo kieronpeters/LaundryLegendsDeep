@@ -79,6 +79,41 @@
       "effect": "allow"
     },
     {
+      "action": "shell",
+      "resource": "git fetch*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git pull*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git remote*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git clone*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git stash*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git merge*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git mv*",
+      "effect": "allow"
+    },
+    {
       "action": "edit",
       "resource": "Packages/**",
       "effect": "ask"
@@ -106,7 +141,7 @@
     {
       "action": "shell",
       "resource": "git push*",
-      "effect": "deny"
+      "effect": "allow"
     },
     {
       "action": "shell",
@@ -281,6 +316,351 @@
     {
       "action": "shell",
       "resource": "gh *",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": ".git/**",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": ".opencode/**",
+      "effect": "ask"
+    },
+    {
+      "action": "edit",
+      "resource": ".orchestrator/GUARDRAILS.md",
+      "effect": "ask"
+    },
+    {
+      "action": "edit",
+      "resource": "AGENTS.md",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git push* --force*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git push* -f*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git push* --delete*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git push* --all*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git push* --mirror*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git stash drop*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git stash clear*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git tag -d*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git branch -f*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git branch --force*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git commit* --amend*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git commit*--no-verify*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git add -f*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git add --force*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git config core.hooksPath*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git config --global*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git remote add*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git remote remove*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git remote set-url*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git remote prune*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git merge*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git pull*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git clone*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git gc*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git branch -d*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git branch --delete*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git remote -v*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git remote show*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git status*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "Remove-Item Env:*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git stash list*",
+      "effect": "allow"
+    },
+    {
+      "action": "read",
+      "resource": "*.pem",
+      "effect": "ask"
+    },
+    {
+      "action": "read",
+      "resource": "*.key",
+      "effect": "ask"
+    },
+    {
+      "action": "read",
+      "resource": "*.pfx",
+      "effect": "ask"
+    },
+    {
+      "action": "read",
+      "resource": "*.keystore",
+      "effect": "ask"
+    },
+    {
+      "action": "read",
+      "resource": "*.ulf",
+      "effect": "ask"
+    },
+    {
+      "action": "read",
+      "resource": ".git-credentials",
+      "effect": "ask"
+    },
+    {
+      "action": "read",
+      "resource": "id_rsa*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "powershell*validate-bootstrap.ps1*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git clean -n*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git restore --staged*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git rebase --abort*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git rebase --continue*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git merge*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git pull*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git clone*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git gc*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git fetch*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git tag*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git stash*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "Start-Process*Unity.exe*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "Get-ChildItem*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "Get-Content*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "Select-String*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "Test-Path*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "Get-Item*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "Get-Process*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "Measure-Object*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "Get-Date*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "Get-Command*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git tag -d*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git tag --delete*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git stash drop*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git stash clear*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git push* --force*",
       "effect": "deny"
     }
   ],

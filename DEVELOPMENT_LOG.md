@@ -1075,7 +1075,35 @@ Owner review of the NPC capture, then Phase 4 planning. Phase 3 is complete.
 
 Owner review of the final captures, then Phase 4 planning.
 
-## 2026-11-01 — Phase 8 arcade business loop, menu and appearance fixes
+## 2026-11-01 — Back room, cabinet fight game, NPC carry and permissions
+
+### Changed
+
+- Built the back room behind the concealed shelf: a 10.0 x 12.9 m shell (half the measured shop footprint) with floor, four walls, ceiling and light, parented under `RoomContent` so it only appears once usable.
+- `HiddenRoomPurchasePoint`: paying $200 clears the shelf, reveals the room and prepares it in one step; the clue/order path still works for players who find it themselves.
+- The arcade cabinet now lives inside that room, ships already powered, and the player-facing install point was removed.
+- Cabinet game replaced with a versus fighter behind a PLAY/QUIT menu: HONDA vs BISON, health bars, round clock, knockout, five-second result hold, then back to the menu. QUIT closes the cabinet and returns the player to the shop. Original pixel font drawn procedurally, so no font asset.
+- Map on **M** shows the shop and, once revealed, the back room with the arcade marked.
+- NPC carry: `CarrySocket` no longer falls back to the NPC root (the laundry used to sit at the feet) and `CarryPose` now matches MakeHuman bone names as well as Mixamo, so arms fold around the load; a reach-in motion plays when a carry starts.
+- Reverted the CharacterController experiment twice: it stalled customers in the doorway and, in its overlap-push form, blocked the customer loop again. The push-out remains in code behind an off-by-default flag.
+- Permissions: push and pip installs allowed as approved, but force/tag/delete/mirror pushes denied; `.git/**` edits denied; config, guardrails and `AGENTS.md` edits require approval; remote/merge/pull/clone ask; key and licence files ask.
+
+### Checks and evidence
+
+- EditMode 145/145; PlayMode 53 passed, 1 skipped.
+- Player build: `[BUILD] Succeeded ... scenes: Bootstrap, MainMenu, Laundromat`.
+- Cabinet screens captured: `TestResults/arcade-menu.png`, `arcade-fight.png` (PLAY/QUIT and HONDA vs BISON verified by eye).
+
+### Not performed
+
+- Owner playtest of the $200 back room and the cabinet in a build.
+- NPCs still visually intersect furniture; the fix needs navigation, not colliders.
+- Audio not listened to.
+
+### Next
+
+Owner playtest, then Phase 9.
+
 
 ### Changed
 
