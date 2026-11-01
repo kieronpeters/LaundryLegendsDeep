@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -85,6 +85,7 @@ namespace LaundryLegends.Editor
 
             FixHands(log);
             FixNormalMaps(log);
+            FixNpcColliders(log);
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -191,6 +192,45 @@ namespace LaundryLegends.Editor
             }
         }
 
+        /// <summary>
+        /// Reverts the experimental collision-based NPC movement: a Character Controller
+        /// snags customers in the doorway, so the original trigger collider is restored.
+        /// Clipping through furniture needs a navigation solution, not a controller.
+        /// </summary>
+        private static void FixNpcColliders(StringBuilder log)
+        {
+            string[] prefabs =
+            {
+                AttendantPrefab,
+                CustomerPrefab,
+                "Assets/LaundryLegends/Prefabs/Gameplay/NPC/NPC_Regular.prefab"
+            };
+
+            foreach (string path in prefabs)
+            {
+                GameObject contents = PrefabUtility.LoadPrefabContents(path);
+                try
+                {
+                    foreach (CharacterController controller in contents.GetComponentsInChildren<CharacterController>(true))
+                    {
+                        Object.DestroyImmediate(controller);
+                    }
+
+                    foreach (Collider collider in contents.GetComponentsInChildren<Collider>(true))
+                    {
+                        collider.enabled = true;
+                    }
+
+                    PrefabUtility.SaveAsPrefabAsset(contents, path);
+                    log.AppendLine($"[APPEARANCE] colliders restored: {System.IO.Path.GetFileName(path)}");
+                }
+                finally
+                {
+                    PrefabUtility.UnloadPrefabContents(contents);
+                }
+            }
+        }
+
         private static void FixHands(StringBuilder log)
         {
             GameObject contents = PrefabUtility.LoadPrefabContents(PlayerPrefab);
@@ -277,3 +317,6 @@ namespace LaundryLegends.Editor
         }
     }
 }
+
+
+

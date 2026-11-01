@@ -72,7 +72,20 @@ namespace LaundryLegends.NPC
         public bool MoveTowards(Vector3 destination, float speed, float arriveDistance = 0.05f)
         {
             Vector3 flat = new Vector3(destination.x, transform.position.y, destination.z);
-            transform.position = Vector3.MoveTowards(transform.position, flat, Mathf.Max(0f, speed) * Time.deltaTime);
+            Vector3 before = transform.position;
+            Vector3 step = Vector3.MoveTowards(transform.position, flat, Mathf.Max(0f, speed) * Time.deltaTime) - transform.position;
+
+            // A CharacterController makes the NPC collide with counters and machines
+            // instead of walking through them; without one it still moves directly.
+            CharacterController controller = GetComponent<CharacterController>();
+            if (controller != null && controller.enabled)
+            {
+                controller.Move(step);
+            }
+            else
+            {
+                transform.position = before + step;
+            }
 
             Vector3 direction = flat - transform.position;
             if (direction.sqrMagnitude > 0.0001f)

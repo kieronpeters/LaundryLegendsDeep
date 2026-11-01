@@ -29,9 +29,35 @@ namespace LaundryLegends.NPC
 
         public bool IsCarrying => _carried != null;
 
-        public Transform Anchor => _anchor != null ? _anchor : transform;
+        private Transform _fallbackAnchor;
 
-        private Transform ResolvedAnchor => _anchor != null ? _anchor : transform;
+        public Transform Anchor => ResolvedAnchor;
+
+        /// <summary>
+        /// Falls back to a chest-height anchor on the NPC rather than the root, so an
+        /// unauthored socket still holds the laundry in front of the body instead of
+        /// at the feet.
+        /// </summary>
+        private Transform ResolvedAnchor
+        {
+            get
+            {
+                if (_anchor != null)
+                {
+                    return _anchor;
+                }
+
+                if (_fallbackAnchor == null)
+                {
+                    var anchor = new GameObject("CarryAnchor");
+                    anchor.transform.SetParent(transform, false);
+                    anchor.transform.localPosition = new Vector3(0f, 1.15f, 0.3f);
+                    _fallbackAnchor = anchor.transform;
+                }
+
+                return _fallbackAnchor;
+            }
+        }
 
         private void Awake()
         {

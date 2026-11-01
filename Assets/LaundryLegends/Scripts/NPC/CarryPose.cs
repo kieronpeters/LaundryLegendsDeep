@@ -41,19 +41,21 @@ namespace LaundryLegends.NPC
 
             foreach (Transform bone in skinned.bones)
             {
-                if (bone.name.EndsWith("LeftForeArm", System.StringComparison.Ordinal))
+                string name = bone.name;
+
+                if (Matches(name, "LeftForeArm", "forearm01.L", "lowerarm.L", "LowerArm_L", "LeftLowerArm"))
                 {
                     _leftForeArm = bone;
                 }
-                else if (bone.name.EndsWith("RightForeArm", System.StringComparison.Ordinal))
+                else if (Matches(name, "RightForeArm", "forearm01.R", "lowerarm.R", "LowerArm_R", "RightLowerArm"))
                 {
                     _rightForeArm = bone;
                 }
-                else if (bone.name.EndsWith("LeftArm", System.StringComparison.Ordinal))
+                else if (Matches(name, "LeftArm", "upperarm01.L", "upperarm.L", "UpperArm_L", "LeftUpperArm"))
                 {
                     _leftArm = bone;
                 }
-                else if (bone.name.EndsWith("RightArm", System.StringComparison.Ordinal))
+                else if (Matches(name, "RightArm", "upperarm01.R", "upperarm.R", "UpperArm_R", "RightUpperArm"))
                 {
                     _rightArm = bone;
                 }
@@ -63,6 +65,24 @@ namespace LaundryLegends.NPC
             {
                 enabled = false;
             }
+        }
+
+        private static bool Matches(string boneName, string suffix, params string[] alternatives)
+        {
+            if (boneName.EndsWith(suffix, System.StringComparison.Ordinal))
+            {
+                return true;
+            }
+
+            foreach (string alternative in alternatives)
+            {
+                if (boneName.IndexOf(alternative, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void LateUpdate()

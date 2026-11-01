@@ -150,9 +150,15 @@ namespace LaundryLegends.Customers
             GameObject instance = Instantiate(_customerPrefab, _streetPoint.position, _streetPoint.rotation);
             instance.name = "OrderCustomer";
 
-            // The customer must not body-block the player in the doorway.
+            // The customer must not body-block the player in the doorway. A Character
+            // Controller can never be a trigger, so it is left alone.
             foreach (Collider collider in instance.GetComponentsInChildren<Collider>(true))
             {
+                if (collider is CharacterController)
+                {
+                    continue;
+                }
+
                 collider.isTrigger = true;
             }
 
