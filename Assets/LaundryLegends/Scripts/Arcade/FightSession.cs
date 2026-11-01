@@ -38,9 +38,9 @@ namespace LaundryLegends.Arcade
         public float ResultRemaining => Mathf.Max(0f, _resultRemaining);
 
         /// <summary>The player's fighter; the opponent is the computer.</summary>
-        public string PlayerName => "HONDA";
+        public string PlayerName => "CIVIC";
 
-        public string OpponentName => "BISON";
+        public string OpponentName => "BULL";
 
         /// <summary>Moves the menu highlight, wrapping between the two rows.</summary>
         public void MoveSelection(int delta)

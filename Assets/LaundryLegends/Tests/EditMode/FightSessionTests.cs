@@ -1,4 +1,4 @@
-using LaundryLegends.Arcade;
+﻿using LaundryLegends.Arcade;
 using NUnit.Framework;
 
 namespace LaundryLegends.Tests.EditMode
@@ -42,8 +42,8 @@ namespace LaundryLegends.Tests.EditMode
             Assert.IsTrue(session.Confirm());
             Assert.AreEqual(FightScreen.Fight, session.Screen);
             Assert.IsNotNull(session.Game);
-            Assert.AreEqual("HONDA", session.PlayerName);
-            Assert.AreEqual("BISON", session.OpponentName);
+            Assert.AreEqual("CIVIC", session.PlayerName);
+            Assert.AreEqual("BULL", session.OpponentName);
         }
 
         [Test]
@@ -134,3 +134,4 @@ namespace LaundryLegends.Tests.EditMode
         }
     }
 }
+

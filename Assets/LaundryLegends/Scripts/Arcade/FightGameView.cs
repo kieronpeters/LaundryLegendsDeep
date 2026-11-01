@@ -141,8 +141,8 @@ namespace LaundryLegends.Arcade
 
             DrawHealth(24, 44, 180, game.PlayerHealth);
             DrawHealth(Width - 24 - 180, 44, 180, game.OpponentHealth);
-            DrawText("HONDA", 24, 22, 2, new Color32(150, 220, 255, 255));
-            DrawText("BISON", Width - 24 - 60, 22, 2, new Color32(255, 170, 150, 255));
+            DrawText(_session.PlayerName, 24, 22, 2, new Color32(150, 220, 255, 255));
+            DrawText(_session.OpponentName, Width - 24 - (_session.OpponentName.Length * 12), 22, 2, new Color32(255, 170, 150, 255));
 
             int timerWidth = 120;
             int timerX = (Width - timerWidth) / 2;
