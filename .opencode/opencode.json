@@ -667,6 +667,21 @@
       "action": "shell",
       "resource": "winget *",
       "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git push* --force*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git push --force*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git push* -f*",
+      "effect": "allow"
     }
   ],
   "agents": {
