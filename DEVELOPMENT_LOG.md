@@ -1074,3 +1074,30 @@ Owner review of the NPC capture, then Phase 4 planning. Phase 3 is complete.
 ### Next
 
 Owner review of the final captures, then Phase 4 planning.
+
+## 2026-11-01 — Phase 8 arcade business loop, menu and appearance fixes
+
+### Changed
+
+- Arcade business loop: install-point purchase through `EconomyService` (single debit), Off/Installing/Active lifecycle, attract mode (emission pulse + generated cue), visitor traffic with exactly-once income, and a serializable `ArcadeState`.
+- Fixed the shipped menu: `Button.onClick.AddListener` in the editor tool produced an empty serialized call list, so START GAME and EXIT did nothing in a build. Switched to persistent listeners, added the missing `AudioListener`, and removed a duplicate `MainMenuController` root plus the Enter shortcut that double-fired with UI submit.
+- Restored the two grey NPC variants by rebuilding their materials from the existing MakeHuman textures; retired the old skin-tinting pass that stripped them. Normal maps are now imported as normal maps.
+- Mounted the first-person hands using measured mesh bounds and made them visible only while carrying.
+- `ArcadeCabinet.Stop()` now clears the maze view; arcade income records state before crediting and rolls back on rejection.
+- Build tool now builds every enabled scene instead of Laundromat alone, so the player always starts at the menu.
+
+### Checks and evidence
+
+- EditMode 135/135; PlayMode 53 passed, 1 skipped.
+- Player build exit 0; the built player starts at the menu and a single mouse click on START GAME clears it.
+- Scene GUID check: `ArcadeService`, `ArcadeAttractMode`, `ArcadeTraffic`, `ArcadeInstallPoint` each present once in `Laundromat.unity`.
+- Report: `.orchestrator/reports/2026-11-01-phase8-arcade-business-and-menu-fix.md`.
+
+### Not performed
+
+- Owner playtest of the first-machine payoff (phase acceptance criterion).
+- Listening check of menu music and attract cue.
+
+### Next
+
+Owner verification, then Phase 9 arcade expansion.

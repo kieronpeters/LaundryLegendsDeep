@@ -6,27 +6,27 @@
     "type": "3D PC business simulation",
     "engine": "Unity 6.0 LTS",
     "engineVersion": "6000.0.64f1",
-    "renderPipeline": "Built-In Render Pipeline",
+    "renderPipeline": "Universal Render Pipeline 17.0.4",
     "targetPlatform": "Windows 64-bit"
   },
-  "updatedAt": "2026-11-01T03:00:00+08:00",
+  "updatedAt": "2026-11-01T17:05:00+08:00",
   "currentMilestone": {
     "id": "M1",
     "name": "Playable laundry",
     "status": "in_progress"
   },
   "currentPhase": {
-    "number": 5,
-    "name": "Customers and payments",
-    "status": "complete",
-    "file": ".orchestrator/tasks/phase-05-plan.md",
-    "completionNote": "Phase 5 complete. Customer order lifecycle (arrive, queue, handoff, waiting, collect, pay, leave) runs through the real staff wash/dry/wrap pipeline; exactly-once payment with duplicate rejection; patience abandonment with full pipeline cleanup; fast-service tip; wallet HUD with receipt; automatic respawn. Suites: EditMode 67/67, PlayMode 49 passed / 0 failed / 1 skipped. Owner playtest criterion delegated, not claimed. Known gap: single customer at a time, no multi-customer queue."
+    "number": 8,
+    "name": "First arcade machine",
+    "status": "complete-pending-playtest",
+    "file": ".orchestrator/reports/2026-11-01-phase8-arcade-business-and-menu-fix.md",
+    "completionNote": "Arcade business loop implemented: install point purchase through EconomyService (single debit), Off->Installing->Active lifecycle, attract mode with emission pulse and generated cue, visitor traffic that pays exactly once per visit, and ArcadeState exposed for future saving. Menu dead-button defect fixed with persistent UnityEvent listeners (the shipped build had m_Calls: []). Menu AudioListener added and the duplicate MainMenuController removed. NPC grey-material regression fixed by restoring MakeHuman textures; first-person hands mounted at measured offset and shown only while carrying. Suites: EditMode 135/135, PlayMode 53 passed / 0 failed / 1 skipped. Owner playtest of the first-machine payoff still outstanding."
   },
   "nextPhase": {
-    "number": 6,
-    "name": "Planned next phase",
+    "number": 9,
+    "name": "Arcade expansion",
     "status": "planned",
-    "file": ".orchestrator/tasks/phase-05-plan.md"
+    "file": "ROADMAP.md"
   },
   "activeTask": null,
   "lastCompletedTask": "LL-P4-007",
@@ -50,7 +50,7 @@
     "5": "planned",
     "6": "planned",
     "7": "planned",
-    "8": "planned",
+    "8": "complete-pending-playtest",
     "9": "planned",
     "10": "planned",
     "11": "planned",

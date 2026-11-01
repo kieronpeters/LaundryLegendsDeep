@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-11-01 (Phase 4 closed)
+**Last updated:** 2026-11-01 (Phase 8 arcade business loop + menu/build fixes)
 **Current milestone:** M1 - Playable laundry, **in progress**
-**Current phase:** Phase 7 - Secret room discovery, **complete (logic + scene wiring; placeholder art)** (`e55f2ad`)
-**Next phase:** Phase 8 - First arcade machine, **in progress** (maze model + cabinet asset done)
-**Active task:** Arcade gameplay (maze-chase player/ghosts)
-**Next recommended task:** Owner playtest of orders, upgrades, and the secret room
+**Current phase:** Phase 8 - First arcade machine, **complete pending owner playtest** (purchase/install, attract mode, visitor income, maze minigame)
+**Next phase:** Phase 9 - Arcade expansion, **planned**
+**Active task:** Owner playtest of the first-machine payoff
+**Next recommended task:** Human verification of arcade payoff, then Phase 9 planning
 
 > **Manager note (2026-11-01).** Sections below are historical and describe the
 > Phase 1-3 state; they are not rewritten wholesale. Current authoritative
@@ -17,11 +17,11 @@
 | Item | Value | Status |
 |---|---|---|
 | Unity editor | `6000.0.64f1` Unity 6.0 LTS | Project created and batch-verified |
-| Render pipeline | Built-In Render Pipeline | Verified: no custom SRP asset, no URP/HDRP package |
+| Render pipeline | Universal Render Pipeline 17.0.4 (URP assets under `Assets/LaundryLegends/Settings/URP`) | Verified: ACES tonemapping, bloom, grading, vignette volume; all six quality levels assigned |
 | Platform | Windows 64-bit | Windows standalone module installed |
 | Input | Legacy Input Manager (`activeInputHandler: 0`) | Verified in generated settings; no Input System package |
 | Color space | Linear | Approved and persisted 2026-10-19 |
-| Quality / display | Medium preset; windowed 1920×1080, resizable | Approved and persisted 2026-10-19 |
+| Quality / display | Medium preset; fullscreen 1920×1080 (set by the build tool for playtests) | Set 2026-11-01 for owner playtesting |
 | Company / product | `LaundryLegends` / `Laundry Legends` | Approved and persisted 2026-10-19 |
 | Primary model | `opencode/deepseek-v4.1-flash-free` | Verified in model catalog |
 | OpenCode | CLI `2.0.28`, server `2.0.32` | Verified |
@@ -40,7 +40,7 @@
 - **Assemblies:** `LaundryLegends.Runtime`, `LaundryLegends.Editor`, `LaundryLegends.Tests.EditMode`, `LaundryLegends.Tests.PlayMode`. Runtime, editor, and PlayMode test assemblies compile.
 - **Prefabs:** `Prefabs/Gameplay/Player.prefab` with CharacterController, first-person controller, pause controller, interaction raycast, carry controller with a `HoldAnchor` child, IMGUI interaction prompt view, child camera, and AudioListener. `Prefabs/Gameplay/Laundry/` with `Basket.prefab`, `LooseLaundry.prefab`, and `Bag.prefab`, each with a collider, rigidbody, custom Blender mesh/material, and unique template ID. `Prefabs/Gameplay/NPC/` with three CC0 static humanoid archetypes. `Prefabs/Environment/GreyboxRoom.prefab` with room shell, counter, folding table, eight-machine wall (one washer carries the Phase 3 load/unload hook and drum slot, all eight have additive front details), secret door, ceiling point lights, a south storefront (window openings/frames/glass, entrance frame with open glass leaves and threshold, and a minimal exterior ground/backdrop), a south-east waiting area, west-wall storage shelving, a north-west utility alcove with placeholder signage, and a service-panel/rolling-shelf cover in front of the secret door.
 - **Materials:** eleven flat Standard greybox materials under `Art/Materials`, including transparent `Grey_Glass`, emissive `Grey_Sky`, `Grey_Chair`, and `Grey_Sign`; no textures.
-- **Tests:** 10 EditMode tests covering `GameState`, build-settings order, and failure reporting; 12 PlayMode tests covering scene routing, player movement/look/pause/interaction, greybox traversal, storefront enter/leave, public-zone presence/clearance, secret-door concealment, public navigation/camera clearance, wall containment, secret-door closure, scale dimensions, and lighting presence. Test assemblies are isolated from runtime.
+- **Tests:** 135 EditMode and 54 PlayMode tests as of 2026-11-01 (PlayMode 53 passed, 1 intentionally skipped). Coverage includes game state, economy and exactly-once income, orders and payment, machine loading, navigation and containment, secret room, arcade business loop (purchase, attract mode, visitor income), main-menu serialized handlers, and first-person hand visibility. Test assemblies are isolated from runtime.
 - **Folders:** full `Assets/LaundryLegends` feature tree for art, audio, prefabs, scenes, scripts, settings, ScriptableObjects, UI, editor, and tests.
 - **Textures/models/audio:** none; placeholder primitives only.
 - **Unity project files:** `Packages/manifest.json` (34 direct dependencies), `Packages/packages-lock.json` (37 resolved built-in packages), and generated files under `ProjectSettings/`.
