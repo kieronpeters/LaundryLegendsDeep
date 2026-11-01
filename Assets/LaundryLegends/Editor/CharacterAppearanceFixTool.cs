@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -39,8 +39,8 @@ namespace LaundryLegends.Editor
 
             Material suitCustomer = EnsureMaterial(
                 "MAT_NPC_Suit_Customer",
-                $"{NpcTextures}/female_casualsuit02_diffuse.png",
-                $"{NpcTextures}/female_casualsuit02_normal.png",
+                $"{NpcTextures}/female_casualsuit01_diffuse.png",
+                $"{NpcTextures}/female_casualsuit01_normal.png",
                 0.2f);
 
             Material shoesAttendant = EnsureMaterial(
@@ -77,7 +77,7 @@ namespace LaundryLegends.Editor
             Apply(CustomerPrefab, log, new Dictionary<string, Material>
             {
                 { "customer_humanMesh", skinCustomer },
-                { "female_casualsuit02Mesh", suitCustomer },
+                { "female_casualsuit01Mesh", suitCustomer },
                 { "shoes06Mesh", shoesCustomer },
                 { "ponytail01Mesh", hairCustomer }
             });
@@ -113,7 +113,7 @@ namespace LaundryLegends.Editor
                 { "shoes06Mesh", $"{Materials}/MAT_NPC_Shoes_Customer.mat" },
                 { "short04Mesh", $"{Materials}/MAT_NPC_Hair_Attendant.mat" },
                 { "ponytail01Mesh", $"{Materials}/MAT_NPC_Hair_Customer.mat" },
-                { "female_casualsuit02Mesh", $"{Materials}/MAT_NPC_Suit_Customer.mat" }
+                { "female_casualsuit01Mesh", $"{Materials}/MAT_NPC_Suit_Customer.mat" }
             };
 
             int changed = 0;

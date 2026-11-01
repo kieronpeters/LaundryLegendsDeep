@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-11-01 (Phase 8 playtest blocker fix; two orders now complete and pay in production timing)
+**Last updated:** 2026-11-02 (playtest fixes, hidden room, character re-export, visual pass)
 **Current milestone:** M1 - Playable laundry, **in progress**
-**Current phase:** Phase 8 - First arcade machine, **complete pending owner playtest** (playtest blockers fixed; build rebuilt)
+**Current phase:** Phase 8 - First arcade machine, **complete pending owner playtest**
 **Next phase:** Phase 9 - Arcade expansion, **planned**
-**Active task:** Owner playtest of the rebuilt build (two orders, wallet past $200, shelf purchase, back room)
-**Next recommended task:** Human verification of the Phase 8 loop, then Phase 9 planning
+**Active task:** Owner playtest of the rebuilt build (two orders, $300, shelf, back room, arcade)
+**Next recommended task:** Owner playtest, then backlog grooming / Phase 9 planning
 
 > **Manager note (2026-11-01).** Sections below are historical and describe the
 > Phase 1-3 state; they are not rewritten wholesale. Current authoritative
@@ -40,7 +40,7 @@
 - **Assemblies:** `LaundryLegends.Runtime`, `LaundryLegends.Editor`, `LaundryLegends.Tests.EditMode`, `LaundryLegends.Tests.PlayMode`. Runtime, editor, and PlayMode test assemblies compile.
 - **Prefabs:** `Prefabs/Gameplay/Player.prefab` with CharacterController, first-person controller, pause controller, interaction raycast, carry controller with a `HoldAnchor` child, IMGUI interaction prompt view, child camera, and AudioListener. `Prefabs/Gameplay/Laundry/` with `Basket.prefab`, `LooseLaundry.prefab`, and `Bag.prefab`, each with a collider, rigidbody, custom Blender mesh/material, and unique template ID. `Prefabs/Gameplay/NPC/` with three CC0 static humanoid archetypes. `Prefabs/Environment/GreyboxRoom.prefab` with room shell, counter, folding table, eight-machine wall (one washer carries the Phase 3 load/unload hook and drum slot, all eight have additive front details), secret door, ceiling point lights, a south storefront (window openings/frames/glass, entrance frame with open glass leaves and threshold, and a minimal exterior ground/backdrop), a south-east waiting area, west-wall storage shelving, a north-west utility alcove with placeholder signage, and a service-panel/rolling-shelf cover in front of the secret door.
 - **Materials:** eleven flat Standard greybox materials under `Art/Materials`, including transparent `Grey_Glass`, emissive `Grey_Sky`, `Grey_Chair`, and `Grey_Sign`; no textures.
-- **Tests:** 147 EditMode and 58 PlayMode tests as of 2026-11-01 (PlayMode 57 passed, 1 intentionally skipped). Coverage includes game state, economy and exactly-once income, orders and payment, two consecutive paid orders, machine loading, navigation and containment, secret room, shelf purchase reachability, HUD/prompt wiring, arcade business loop (purchase, attract mode, visitor income), main-menu serialized handlers, and first-person hand visibility. Test assemblies are isolated from runtime.
+- **Tests:** 147 EditMode and 59 PlayMode tests as of 2026-11-02 (PlayMode 57 passed, 2 explicit skipped). Coverage includes game state, economy and exactly-once income, orders and payment, two consecutive paid orders, a six-order $300 progression into the back room, machine loading, navigation and containment, secret room, shelf purchase reachability, HUD/prompt wiring and controls legend, arcade business loop, main-menu serialized handlers, and NPC anatomy. Test assemblies are isolated from runtime.
 - **Folders:** full `Assets/LaundryLegends` feature tree for art, audio, prefabs, scenes, scripts, settings, ScriptableObjects, UI, editor, and tests.
 - **Textures/models/audio:** none; placeholder primitives only.
 - **Unity project files:** `Packages/manifest.json` (34 direct dependencies), `Packages/packages-lock.json` (37 resolved built-in packages), and generated files under `ProjectSettings/`.
@@ -160,6 +160,10 @@ The workspace was empty before bootstrap. No user work was overwritten.
 See `.orchestrator/budgets.json`.
 
 ## 9. Last successful development run
+
+**Playtest fixes, hidden room, character re-export:** `2026-11-02-ll-p8-finish` - **complete, pending owner playtest**
+**Report:** `.orchestrator/reports/2026-11-02-playtest-fixes-and-visual-pass.md`
+**Result:** Order loop unblocked (customer/staff waypoints out of counter colliders, staff walk timeout), hidden room rebuilt at the door with a cut east wall, casino carpet, bar, posters and an upright playable cabinet, and the character Clothing fixed at the source: the MakeHuman plugin now applies each garment's `deleteVerts` mask, the customer re-exported in `female_casualsuit01` (tee + jeans), and the material mapping switched. Placeholder first-person hands removed, clutter hidden, controls legend added. EditMode **147/147**, PlayMode **57 passed / 0 failed / 2 explicit skipped**, six-order **$300 progression** passed, build **198 MB / 0 errors**. 20 captures + live build screenshots inspected. Backlog filed in `.orchestrator/BACKLOG.md`.
 
 **Phase 8 playtest blocker fix:** `2026-11-01-ll-p8-fix-01` - **complete, pending owner playtest**
 **Report:** `.orchestrator/reports/2026-11-01-phase8-playtest-blockers-fix.md`

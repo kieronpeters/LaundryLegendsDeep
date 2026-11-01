@@ -56,6 +56,15 @@ namespace LaundryLegends.Tests.PlayMode
                 Object.FindFirstObjectByType<FirstPersonController>(),
                 "The player controller should be in the scene.");
 
+            ControlsHintView controls = Object.FindFirstObjectByType<ControlsHintView>();
+            Assert.IsNotNull(controls, "The HUD needs a controls legend.");
+            Assert.IsTrue(controls.gameObject.activeInHierarchy, "The controls legend object must be active.");
+            Assert.IsTrue(controls.enabled, "The controls legend component must be enabled.");
+            string legend = controls.BuildText();
+            StringAssert.Contains(interactor.InteractKeyLabel, legend, "The legend should show the interact key.");
+            StringAssert.Contains("Pause", legend);
+            StringAssert.Contains("Move", legend);
+
             yield return null;
         }
 

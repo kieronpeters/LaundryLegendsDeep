@@ -2,6 +2,7 @@
 using LaundryLegends.Customers;
 using LaundryLegends.Progression;
 using LaundryLegends.UI;
+using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -55,7 +56,7 @@ namespace LaundryLegends.Editor
 
             // Half the shop's floor area, through the east wall.
             float roomWidth = Mathf.Max(4f, shop.size.x * 0.5f);
-            float roomDepth = Mathf.Max(3f, shop.size.z * 0.6f);
+            float roomDepth = Mathf.Clamp(shop.size.z, 4f, 8f);
             float x0 = shop.max.x + 0.2f;
             float zCentre = shop.center.z;
             float z0 = zCentre - roomDepth * 0.5f;
@@ -71,10 +72,15 @@ namespace LaundryLegends.Editor
             Material floor = AssetDatabase.LoadAssetAtPath<Material>(FloorMaterial);
             Material wall = AssetDatabase.LoadAssetAtPath<Material>(WallMaterial);
             Material ceiling = AssetDatabase.LoadAssetAtPath<Material>(CeilingMaterial);
+            Material carpet = EnsureCasinoCarpet();
 
             // Floor and ceiling.
-            CreateBox(shell.transform, "Floor", new Vector3(x0 + roomWidth * 0.5f, -0.05f, z0 + roomDepth * 0.5f),
+            GameObject floorBox = CreateBox(shell.transform, "Floor", new Vector3(x0 + roomWidth * 0.5f, -0.05f, z0 + roomDepth * 0.5f),
                 new Vector3(roomWidth, 0.1f, roomDepth), floor);
+            if (carpet != null)
+            {
+                floorBox.GetComponent<Renderer>().sharedMaterial = carpet;
+            }
 
             CreateBox(shell.transform, "Ceiling", new Vector3(x0 + roomWidth * 0.5f, height, z0 + roomDepth * 0.5f),
                 new Vector3(roomWidth, 0.1f, roomDepth), ceiling);
@@ -90,15 +96,21 @@ namespace LaundryLegends.Editor
                 new Vector3(roomWidth, height, 0.2f), wall);
 
             const float doorWidth = 1.6f;
-            float doorZ = shelf != null ? shelf.transform.position.z : zCentre;
-            float westSide = roomDepth * 0.5f - doorWidth * 0.5f;
+            GameObject doorLeaf = GameObject.Find("SecretDoor_Foreshadowed");
+            float doorZ = doorLeaf != null
+                ? doorLeaf.transform.position.z
+                : (shelf != null ? shelf.transform.position.z : zCentre);
+            float gapMin = doorZ - doorWidth * 0.5f;
+            float gapMax = doorZ + doorWidth * 0.5f;
+            float southSize = Mathf.Max(0.1f, gapMin - z0);
+            float northSize = Mathf.Max(0.1f, z0 + roomDepth - gapMax);
 
-            CreateBox(shell.transform, "WallWestA", new Vector3(x0, height * 0.5f, z0 + westSide * 0.5f),
-                new Vector3(0.2f, height, westSide), wall);
+            CreateBox(shell.transform, "WallWestA", new Vector3(x0, height * 0.5f, z0 + southSize * 0.5f),
+                new Vector3(0.2f, height, southSize), wall);
 
             CreateBox(shell.transform, "WallWestB",
-                new Vector3(x0, height * 0.5f, z0 + roomDepth - westSide * 0.5f),
-                new Vector3(0.2f, height, westSide), wall);
+                new Vector3(x0, height * 0.5f, gapMax + northSize * 0.5f),
+                new Vector3(0.2f, height, northSize), wall);
 
             var lightObject = new GameObject("BackRoomLight");
             lightObject.transform.SetParent(shell.transform, false);
@@ -109,10 +121,19 @@ namespace LaundryLegends.Editor
             light.intensity = 6f;
             light.color = new Color(1f, 0.95f, 0.86f);
 
+            FurnishRoom(shell.transform, x0, roomWidth, roomDepth, z0, doorZ);
+
             // Cabinet goes inside, against the east wall, facing the door.
+            // Preserve the model's import rotation (like the street props) and
+            // ground it, otherwise the pivot sinks it halfway into the floor.
             cabinet.transform.SetParent(parent, true);
+            GameObject cabinetSource = PrefabUtility.GetCorrespondingObjectFromSource(cabinet.gameObject);
+            Quaternion cabinetImport = cabinetSource != null
+                ? cabinetSource.transform.rotation
+                : Quaternion.identity;
+            cabinet.transform.rotation = Quaternion.Euler(0f, 90f, 0f) * cabinetImport;
             cabinet.transform.position = new Vector3(x0 + roomWidth - 0.9f, 0f, doorZ);
-            cabinet.transform.rotation = Quaternion.Euler(0f, -90f, 0f);
+            GroundToFloor(cabinet.gameObject);
 
             // The machine ships installed, so the purchase point is retired.
             ArcadeInstallPoint installPoint = Object.FindFirstObjectByType<ArcadeInstallPoint>();
@@ -208,10 +229,246 @@ namespace LaundryLegends.Editor
             Debug.Log($"[BACKROOM] room {roomWidth:0.0} x {roomDepth:0.0} m at x={x0:0.0}, cabinet moved to {cabinet.transform.position}, shop {shop.size}");
         }
 
+        /// <summary>
+        /// Measures the shop interior from its floor, not from every renderer.
+        /// The exterior frontage/street stretches the union bounds east and south,
+        /// which used to place the back room metres away from its own door.
+        /// </summary>
         private static Bounds MeasureShop()
         {
+            Transform room = null;
+            foreach (GameObject root in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
+            {
+                foreach (Transform child in root.GetComponentsInChildren<Transform>(true))
+                {
+                    if (child.name == "GreyboxRoom")
+                    {
+                        room = child;
+                        break;
+                    }
+                }
+
+                if (room != null)
+                {
+                    break;
+                }
+            }
+
+            if (room != null)
+            {
+                foreach (Transform child in room.GetComponentsInChildren<Transform>(true))
+                {
+                    if (child.name != "Floor")
+                    {
+                        continue;
+                    }
+
+                    var renderer = child.GetComponent<Renderer>();
+                    if (renderer != null)
+                    {
+                        return renderer.bounds;
+                    }
+                }
+            }
+
             return MeasureShopBounds();
         }
+
+        /// <summary>Casino table, chairs, bar, plant, and two warm wall lights.</summary>
+        private static void FurnishRoom(Transform shell, float x0, float roomWidth, float roomDepth, float z0, float doorZ)
+        {
+            Material wood = AssetDatabase.LoadAssetAtPath<Material>("Assets/LaundryLegends/Art/Materials/MAT_CounterWood.mat");
+            Material plant = AssetDatabase.LoadAssetAtPath<Material>("Assets/LaundryLegends/Art/Materials/MAT_Plant.mat");
+
+            float tableX = x0 + roomWidth * 0.42f;
+            float tableZ = Mathf.Lerp(z0 + 1.6f, doorZ - 1.6f, 0.5f);
+            _ = tableX;
+            _ = tableZ;
+
+            // Bar along the south wall.
+            float barZ = z0 + 0.45f;
+            CreateBox(shell, "Casino_Bar", new Vector3(x0 + roomWidth * 0.62f, 0.55f, barZ),
+                new Vector3(roomWidth * 0.5f, 1.1f, 0.6f), wood);
+            CreateBox(shell, "Casino_BarTop", new Vector3(x0 + roomWidth * 0.62f, 1.13f, barZ),
+                new Vector3(roomWidth * 0.5f + 0.12f, 0.06f, 0.74f), wood);
+
+            // Corner plant.
+            Vector3 plantBase = new Vector3(x0 + 0.7f, 0f, z0 + 0.7f);
+            CreateCylinder(shell, "Casino_PlantPot", plantBase + Vector3.up * 0.22f,
+                new Vector3(0.42f, 0.44f, 0.42f), wood);
+            CreateSphere(shell, "Casino_PlantLeaves", plantBase + Vector3.up * 0.72f,
+                new Vector3(0.7f, 0.55f, 0.7f), plant);
+
+            // Two warm sconces flanking the door inside the room.
+            Sconce(shell, new Vector3(x0 + 0.3f, 2.2f, doorZ - 1.8f));
+            Sconce(shell, new Vector3(x0 + 0.3f, 2.2f, doorZ + 1.8f));
+
+            AddPoster(
+                shell,
+                "Poster_StreetFolders",
+                "Assets/LaundryLegends/Art/Textures/Posters/street_folders_ii.png",
+                new Vector3(x0 + roomWidth * 0.5f, 1.7f, z0 + roomDepth - 0.11f),
+                Quaternion.identity);
+            AddPoster(
+                shell,
+                "Poster_SpinCycle",
+                "Assets/LaundryLegends/Art/Textures/Posters/spin_cycle_showdown.png",
+                new Vector3(x0 + roomWidth * 0.45f, 1.75f, z0 + 0.11f),
+                Quaternion.Euler(0f, 180f, 0f));
+        }
+
+        /// <summary>Places an authored poster texture on a wall-facing quad.</summary>
+        private static void AddPoster(Transform shell, string name, string texturePath, Vector3 position,
+            Quaternion rotation)
+        {
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            if (texture == null)
+            {
+                Debug.LogWarning($"[BACKROOM] Missing poster texture {texturePath}");
+                return;
+            }
+
+            string materialPath = $"Assets/LaundryLegends/Art/Materials/MAT_{name}.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            Shader lit = Shader.Find("Universal Render Pipeline/Lit");
+            if (material == null)
+            {
+                material = new Material(lit) { name = $"MAT_{name}" };
+                AssetDatabase.CreateAsset(material, materialPath);
+            }
+            else
+            {
+                material.shader = lit;
+            }
+
+            material.SetTexture("_BaseMap", texture);
+            material.SetColor("_BaseColor", Color.white);
+            material.SetFloat("_Smoothness", 0.15f);
+            material.SetFloat("_Metallic", 0f);
+            material.EnableKeyword("_EMISSION");
+            material.SetColor("_EmissionColor", new Color(0.22f, 0.22f, 0.22f));
+            EditorUtility.SetDirty(material);
+
+            var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            quad.name = name;
+            Object.DestroyImmediate(quad.GetComponent<Collider>());
+            quad.transform.SetParent(shell, false);
+            quad.transform.position = position;
+            quad.transform.rotation = rotation;
+            quad.transform.localScale = new Vector3(1.05f, 1.6f, 1f);
+            quad.GetComponent<Renderer>().sharedMaterial = material;
+        }
+
+        private static void Sconce(Transform shell, Vector3 position)
+        {
+            var lightObject = new GameObject("Casino_Sconce");
+            lightObject.transform.SetParent(shell, false);
+            lightObject.transform.position = position;
+            Light light = lightObject.AddComponent<Light>();
+            light.type = LightType.Point;
+            light.range = 4.5f;
+            light.intensity = 2.2f;
+            light.color = new Color(1f, 0.78f, 0.52f);
+            light.shadows = LightShadows.None;
+        }
+
+        /// <summary>
+        /// Builds the black casino carpet: a gold diamond lattice with red centres
+        /// on a near-black ground, tiled across the back-room floor.
+        /// </summary>
+        private static Material EnsureCasinoCarpet()
+        {
+            const string folder = "Assets/LaundryLegends/Art/Textures/Environment";
+            const string texturePath = folder + "/casino_carpet.png";
+            const string materialPath = "Assets/LaundryLegends/Art/Materials/MAT_CasinoCarpet.mat";
+
+            System.IO.Directory.CreateDirectory(folder);
+            const int size = 128;
+            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            var pixels = new Color32[size * size];
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    int cx = x % 32;
+                    int cy = y % 32;
+                    int manhattan = Mathf.Abs(cx - 16) + Mathf.Abs(cy - 16);
+                    var colour = new Color32(12, 10, 16, 255);
+                    if (Mathf.Abs(manhattan - 13) <= 1)
+                    {
+                        colour = new Color32(148, 116, 48, 255);
+                    }
+
+                    if (manhattan <= 2)
+                    {
+                        colour = new Color32(122, 18, 30, 255);
+                    }
+
+                    if (cx == 0 || cy == 0)
+                    {
+                        colour = new Color32(32, 26, 24, 255);
+                    }
+
+                    pixels[y * size + x] = colour;
+                }
+            }
+
+            texture.SetPixels32(pixels);
+            texture.Apply();
+            System.IO.File.WriteAllBytes(texturePath, texture.EncodeToPNG());
+            AssetDatabase.ImportAsset(texturePath, ImportAssetOptions.ForceUpdate);
+            var importer = AssetImporter.GetAtPath(texturePath) as TextureImporter;
+            if (importer != null)
+            {
+                importer.wrapMode = TextureWrapMode.Repeat;
+                importer.filterMode = FilterMode.Bilinear;
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                importer.SaveAndReimport();
+            }
+
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            Shader lit = Shader.Find("Universal Render Pipeline/Lit");
+            if (material == null)
+            {
+                material = new Material(lit) { name = "MAT_CasinoCarpet" };
+                AssetDatabase.CreateAsset(material, materialPath);
+            }
+            else
+            {
+                material.shader = lit;
+            }
+
+            material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath));
+            material.SetColor("_BaseColor", Color.white);
+            material.SetFloat("_Smoothness", 0.03f);
+            material.SetFloat("_Metallic", 0f);
+            material.mainTextureScale = new Vector2(6f, 6f);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureCasinoFelt()
+        {
+            const string path = "Assets/LaundryLegends/Art/Materials/MAT_CasinoFelt.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            Shader lit = Shader.Find("Universal Render Pipeline/Lit");
+            if (material == null)
+            {
+                material = new Material(lit) { name = "MAT_CasinoFelt" };
+                AssetDatabase.CreateAsset(material, path);
+            }
+            else
+            {
+                material.shader = lit;
+            }
+
+            material.SetColor("_BaseColor", new Color(0.05f, 0.24f, 0.13f));
+            material.SetFloat("_Smoothness", 0.08f);
+            material.SetFloat("_Metallic", 0f);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
 
         /// <summary>Finds the cabinet's screen renderer from the old view or by name.</summary>
         private static Renderer ResolveScreen(ArcadeCabinet cabinet)
@@ -278,6 +535,57 @@ namespace LaundryLegends.Editor
             }
 
             return bounds;
+        }
+
+        private static void GroundToFloor(GameObject target)
+        {
+            Renderer[] renderers = target.GetComponentsInChildren<Renderer>(true);
+            if (renderers.Length == 0)
+            {
+                return;
+            }
+
+            Bounds bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++)
+            {
+                bounds.Encapsulate(renderers[i].bounds);
+            }
+
+            Vector3 position = target.transform.position;
+            target.transform.position = new Vector3(position.x, position.y - bounds.min.y, position.z);
+        }
+
+        private static GameObject CreateCylinder(Transform parent, string name, Vector3 centre, Vector3 size,
+            Material material)
+        {
+            var cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            cylinder.name = name;
+            cylinder.transform.SetParent(parent, false);
+            cylinder.transform.position = centre;
+            // A Unity cylinder is 2 units tall, so Y is half the requested height.
+            cylinder.transform.localScale = new Vector3(size.x, size.y * 0.5f, size.z);
+            if (material != null)
+            {
+                cylinder.GetComponent<Renderer>().sharedMaterial = material;
+            }
+
+            return cylinder;
+        }
+
+        private static GameObject CreateSphere(Transform parent, string name, Vector3 centre, Vector3 size,
+            Material material)
+        {
+            var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.name = name;
+            sphere.transform.SetParent(parent, false);
+            sphere.transform.position = centre;
+            sphere.transform.localScale = size;
+            if (material != null)
+            {
+                sphere.GetComponent<Renderer>().sharedMaterial = material;
+            }
+
+            return sphere;
         }
 
         private static GameObject CreateBox(Transform parent, string name, Vector3 centre, Vector3 size, Material material)

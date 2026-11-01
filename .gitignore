@@ -121,3 +121,10 @@ ArtSource/Blender/WrappedBundle.blend1
 
 # Blender auto-backups
 *.blend1
+
+# ---------------------------------------------------------------------------
+# Unreal Engine 5 sample (local-only experiment, never opened on this machine)
+# Not part of the Unity project; nothing under Assets/ or Packages/ uses it.
+# Delete UnrealSample/ to remove the sample. See UnrealSample/README.md.
+# ---------------------------------------------------------------------------
+UnrealSample/

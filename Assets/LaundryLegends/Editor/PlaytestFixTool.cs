@@ -41,6 +41,10 @@ namespace LaundryLegends.Editor
             RepairShelfPurchase(report);
             RepairHud(report);
             RepairAmbientDropOff(report);
+            RepairCustomerCounterPoint(report);
+            RepairStaffStandPoint(report);
+            RepairSecretDoorPivot(report);
+            RepairPassageGap(report);
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
@@ -112,10 +116,242 @@ namespace LaundryLegends.Editor
         }
 
         /// <summary>
-        /// The ambient customer is scenery. Anything it places in the order
-        /// drop-off is processed by the staff as the next order, ahead of a real
-        /// customer, so the link is cleared instead of repointed.
+        /// The customer's counter waypoint sat inside the counter's box collider.
+        /// Because NPC overlap correction runs after movement, the body could
+        /// never enter that spot: the customer stalled ~0.3 m short, timed out,
+        /// and left without a ticket. Walk the point out of any furniture along
+        /// the room side until the NPC capsule is clear.
         /// </summary>
+        private static void RepairCustomerCounterPoint(List<string> report)
+        {
+            CustomerSpawner spawner = Object.FindFirstObjectByType<CustomerSpawner>(FindObjectsInactive.Include);
+            if (spawner == null)
+            {
+                report.Add("counter point repair skipped: no CustomerSpawner");
+                return;
+            }
+
+            var serialized = new SerializedObject(spawner);
+            var counterPoint = serialized.FindProperty("_counterPoint").objectReferenceValue as Transform;
+            if (counterPoint == null)
+            {
+                report.Add("counter point repair skipped: _counterPoint is not assigned");
+                return;
+            }
+
+            Vector3 original = counterPoint.position;
+            Vector3 point = original;
+            for (int step = 0; step < 40 && IsCustomerBodyBlocked(point); step++)
+            {
+                point += new Vector3(0f, 0f, 0.05f);
+            }
+
+            if ((point - original).sqrMagnitude > 0.000001f)
+            {
+                counterPoint.position = point;
+                report.Add(
+                    $"customer counter point moved {original.ToString("0.00")} -> {point.ToString("0.00")} " +
+                    "(it sat inside the counter collider)");
+            }
+            else
+            {
+                report.Add("customer counter point was already clear");
+            }
+        }
+
+        private static bool IsCustomerBodyBlocked(Vector3 point)
+        {
+            Vector3 bottom = point + Vector3.up * 0.35f;
+            Vector3 top = point + Vector3.up * 1.3f;
+            return Physics.OverlapCapsuleNonAlloc(
+                       bottom, top, 0.3f, s_bodyProbe, ~0, QueryTriggerInteraction.Ignore) > 0;
+        }
+
+        private static readonly Collider[] s_bodyProbe = new Collider[16];
+
+        /// <summary>
+        /// The drop-off slot sits on the counter, so the staff's old 0.55 m stand
+        /// point fell inside the counter collider. Overlap correction then pinned
+        /// the staff at the counter face and the order never left the counter.
+        /// </summary>
+        private static void RepairStaffStandPoint(List<string> report)
+        {
+            LaundryStaff staff = Object.FindFirstObjectByType<LaundryStaff>(FindObjectsInactive.Include);
+            if (staff == null)
+            {
+                report.Add("staff stand point skipped: no LaundryStaff");
+                return;
+            }
+
+            var serialized = new SerializedObject(staff);
+            SerializedProperty distance = serialized.FindProperty("_dropOffStandDistance");
+            if (distance == null)
+            {
+                report.Add("staff stand point skipped: _dropOffStandDistance missing");
+                return;
+            }
+
+            float before = distance.floatValue;
+            distance.floatValue = Mathf.Max(before, 1.6f);
+
+            SerializedProperty idle = serialized.FindProperty("_idlePoint");
+            string idleNote = string.Empty;
+            if (idle != null)
+            {
+                Vector3 idleBefore = idle.vector3Value;
+                // The old idle point sat inside the counter's shell, so the staff
+                // timed out walking to it after every cycle.
+                if (Mathf.Abs(idleBefore.z + 0.9f) > 0.05f)
+                {
+                    idle.vector3Value = new Vector3(idleBefore.x, idleBefore.y, -0.9f);
+                    idleNote = $", idle point {idleBefore.ToString("0.00")} -> {idle.vector3Value.ToString("0.00")}";
+                }
+            }
+
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            report.Add($"staff drop-off stand distance {before:0.00} -> {distance.floatValue:0.00}{idleNote}");
+        }
+
+        /// <summary>
+        /// The sealed door rotates around its own origin (the leaf centre), so
+        /// opening it swung across the passage. Reparenting into a hinge does not
+        /// survive the room prefab, so the controller instead rotates the leaf
+        /// around a local hinge point on its south edge.
+        /// </summary>
+        private static void RepairSecretDoorPivot(List<string> report)
+        {
+            SecretRoomController room = Object.FindFirstObjectByType<SecretRoomController>(FindObjectsInactive.Include);
+            if (room == null)
+            {
+                report.Add("secret door skipped: no SecretRoomController");
+                return;
+            }
+
+            var serialized = new SerializedObject(room);
+            SerializedProperty doorProperty = serialized.FindProperty("_sealedDoor");
+            var door = doorProperty.objectReferenceValue as GameObject;
+
+            if (door != null && door.name == "SecretDoorHinge")
+            {
+                var leaf = GameObject.Find("SecretDoor_Foreshadowed");
+                if (leaf != null)
+                {
+                    doorProperty.objectReferenceValue = leaf;
+                    report.Add("restored _sealedDoor to the leaf (a hinge reparent does not survive the room prefab)");
+                }
+            }
+
+            var strayHinge = GameObject.Find("SecretDoorHinge");
+            if (strayHinge != null)
+            {
+                Object.DestroyImmediate(strayHinge);
+                report.Add("removed the unused SecretDoorHinge object");
+            }
+
+            SerializedProperty hinge = serialized.FindProperty("_doorHingeLocal");
+            if (hinge != null && hinge.vector3Value.z < 0.5f)
+            {
+                hinge.vector3Value = new Vector3(0f, 0f, 0.6f);
+                report.Add("door hinge point moved to the leaf's north edge");
+            }
+
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>
+        /// Cuts the shop's east wall where the back-room doorway is. The back
+        /// room shell already has a 1.6 m gap in its west wall, but the shop wall
+        /// behind the decorative door was solid, so the passage never opened.
+        /// </summary>
+        private static void RepairPassageGap(List<string> report)
+        {
+            Transform wall = GameObject.Find("Wall_East") != null ? GameObject.Find("Wall_East").transform : null;
+            if (wall == null)
+            {
+                report.Add("passage gap skipped: Wall_East not found");
+                return;
+            }
+
+            var renderer = wall.GetComponent<Renderer>();
+            Bounds bounds = GetBounds(wall.gameObject);
+            const float gapMin = 2.2f;
+            const float gapMax = 3.8f;
+            const float gapTop = 2.4f;
+            Material material = renderer != null ? renderer.sharedMaterial : null;
+
+            if (bounds.max.z <= gapMin + 0.05f)
+            {
+                report.Add("passage gap already cut");
+            }
+            else
+            {
+                float southSize = gapMin - bounds.min.z;
+
+                // Keep the original object as the south segment.
+                wall.position = new Vector3(bounds.center.x, bounds.center.y, bounds.min.z + southSize * 0.5f);
+                wall.localScale = new Vector3(bounds.size.x, bounds.size.y, southSize);
+
+                CreateWallSegment(
+                    wall,
+                    "Wall_East_North",
+                    new Vector3(bounds.center.x, bounds.center.y, (gapMax + bounds.max.z) * 0.5f),
+                    new Vector3(bounds.size.x, bounds.size.y, bounds.max.z - gapMax),
+                    material);
+                CreateWallSegment(
+                    wall,
+                    "Wall_East_Header",
+                    new Vector3(bounds.center.x, (gapTop + bounds.max.y) * 0.5f, (gapMin + gapMax) * 0.5f),
+                    new Vector3(bounds.size.x, bounds.max.y - gapTop, gapMax - gapMin),
+                    material);
+
+                report.Add($"cut a {gapMax - gapMin:0.0} m doorway in Wall_East at z={gapMin:0.0}..{gapMax:0.0}");
+            }
+
+            // The shop floor ends at the wall and the back-room floor starts
+            // behind it, leaving a seam the player drops through. Bridge it.
+            if (GameObject.Find("BackRoomThreshold") == null)
+            {
+                CreateWallSegment(
+                    wall,
+                    "BackRoomThreshold",
+                    new Vector3(bounds.center.x, -0.03f, (gapMin + gapMax) * 0.5f),
+                    new Vector3(0.6f, 0.06f, gapMax - gapMin),
+                    material);
+                report.Add("bridged the shop/back-room floor seam with BackRoomThreshold");
+            }
+        }
+
+        private static void CreateWallSegment(Transform sibling, string name, Vector3 position, Vector3 size,
+            Material material)
+        {
+            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube.name = name;
+            cube.transform.SetParent(sibling.parent, false);
+            cube.transform.position = position;
+            cube.transform.localScale = size;
+            if (material != null)
+            {
+                cube.GetComponent<Renderer>().sharedMaterial = material;
+            }
+        }
+
+        private static Bounds GetBounds(GameObject target)
+        {
+            Renderer[] renderers = target.GetComponentsInChildren<Renderer>(true);
+            if (renderers.Length == 0)
+            {
+                return new Bounds(target.transform.position, Vector3.zero);
+            }
+
+            Bounds bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++)
+            {
+                bounds.Encapsulate(renderers[i].bounds);
+            }
+
+            return bounds;
+        }
+
         private static void RepairAmbientDropOff(List<string> report)
         {
             int cleared = 0;
@@ -198,6 +434,18 @@ namespace LaundryLegends.Editor
                 }
 
                 checkedItems.Add("customer spawner");
+
+                var counterPoint = serialized.FindProperty("_counterPoint").objectReferenceValue as Transform;
+                Require(counterPoint != null, "CustomerSpawner._counterPoint is not assigned.", failures);
+                if (counterPoint != null)
+                {
+                    Require(
+                        !IsCustomerBodyBlocked(counterPoint.position),
+                        $"The customer counter point {counterPoint.position.ToString("0.00")} is inside furniture; " +
+                        "the customer can never stand there.",
+                        failures);
+                    checkedItems.Add("customer counter point clear");
+                }
             }
 
             Require(GameObject.Find("DropOffSlot") != null,
@@ -222,6 +470,16 @@ namespace LaundryLegends.Editor
 
             LaundryStaff staff = Object.FindFirstObjectByType<LaundryStaff>(FindObjectsInactive.Include);
             Require(staff != null && staff.isActiveAndEnabled, "LaundryStaff is missing or disabled.", failures);
+            if (staff != null)
+            {
+                var staffSerialized = new SerializedObject(staff);
+                SerializedProperty standDistance = staffSerialized.FindProperty("_dropOffStandDistance");
+                Require(
+                    standDistance != null && standDistance.floatValue >= 1.5f,
+                    "The staff drop-off stand point is too close to the counter; overlap correction will pin the staff.",
+                    failures);
+            }
+
             checkedItems.Add("staff drop-off");
 
             // Back-room purchase.
@@ -269,6 +527,36 @@ namespace LaundryLegends.Editor
                     Require(cover != null && cover == purchase.gameObject,
                         "The sealed-door cover is not the shelf, so paying would not clear the doorway.", failures);
                     checkedItems.Add("shelf clears the doorway");
+
+                    var sealedDoor = serializedRoom.FindProperty("_sealedDoor").objectReferenceValue as GameObject;
+                    Require(
+                        sealedDoor != null && sealedDoor.name == "SecretDoor_Foreshadowed",
+                        "The sealed door reference points at the wrong object.",
+                        failures);
+
+                    SerializedProperty hinge = serializedRoom.FindProperty("_doorHingeLocal");
+                    Require(
+                        hinge != null && hinge.vector3Value.z >= 0.5f,
+                        "The sealed door hinge point is not on the leaf edge, so opening it would swing across the passage.",
+                        failures);
+                    checkedItems.Add("secret door hinged clear of the passage");
+
+                    Physics.SyncTransforms();
+                    bool wallBlocks = false;
+                    foreach (RaycastHit passageHit in Physics.RaycastAll(
+                                 new Ray(new Vector3(6.3f, 1.2f, 3.0f), Vector3.right),
+                                 2.5f,
+                                 ~0,
+                                 QueryTriggerInteraction.Ignore))
+                    {
+                        if (passageHit.collider != null && passageHit.collider.name == "Wall_East")
+                        {
+                            wallBlocks = true;
+                        }
+                    }
+
+                    Require(!wallBlocks, "The shop's east wall still blocks the back-room doorway.", failures);
+                    checkedItems.Add("back-room passage open");
                 }
             }
 

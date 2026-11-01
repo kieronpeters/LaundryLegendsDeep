@@ -36,6 +36,9 @@ namespace LaundryLegends.Progression
         [Tooltip("Local Y rotation applied to the door leaf when it opens.")]
         [SerializeField] private float _doorOpenAngle = 90f;
 
+        [Tooltip("Hinge point in the door's local space. The default puts it on the north edge so the leaf swings against the wall instead of across the doorway.")]
+        [SerializeField] private Vector3 _doorHingeLocal = new Vector3(0f, 0f, 0.6f);
+
         [Tooltip("Service panel or shelf covering the door; disabled once revealed.")]
         [SerializeField] private GameObject _sealedDoorCover;
 
@@ -59,6 +62,7 @@ namespace LaundryLegends.Progression
 
         private SecretRoomState _state;
         private Quaternion _closedDoorRotation;
+        private Vector3 _closedDoorPosition;
         private bool _hasClosedDoorRotation;
 
         /// <summary>Clues collected so far.</summary>
@@ -242,7 +246,8 @@ namespace LaundryLegends.Progression
                 return;
             }
 
-            _closedDoorRotation = _sealedDoor.transform.localRotation;
+            _closedDoorPosition = _sealedDoor.transform.position;
+            _closedDoorRotation = _sealedDoor.transform.rotation;
             _hasClosedDoorRotation = true;
         }
 
@@ -286,9 +291,20 @@ namespace LaundryLegends.Progression
             }
 
             CaptureClosedDoorRotation();
-            _sealedDoor.transform.localRotation = open
-                ? _closedDoorRotation * Quaternion.Euler(0f, _doorOpenAngle, 0f)
-                : _closedDoorRotation;
+            Transform leaf = _sealedDoor.transform;
+            if (!open)
+            {
+                leaf.SetPositionAndRotation(_closedDoorPosition, _closedDoorRotation);
+                return;
+            }
+
+            // Rotate around the hinge, not the leaf's centre. A centre pivot
+            // swings the door across the passage and blocks the player.
+            Vector3 pivot = _closedDoorPosition + _closedDoorRotation * _doorHingeLocal;
+            Quaternion delta = Quaternion.Euler(0f, _doorOpenAngle, 0f);
+            leaf.SetPositionAndRotation(
+                pivot + delta * (_closedDoorPosition - pivot),
+                delta * _closedDoorRotation);
         }
 
         private static void SetActive(GameObject target, bool active)

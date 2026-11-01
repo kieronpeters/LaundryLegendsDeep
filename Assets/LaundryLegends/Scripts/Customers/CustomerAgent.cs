@@ -59,6 +59,13 @@ namespace LaundryLegends.Customers
         private FoldingStation _folding;
         private bool _walkReached;
 
+        // The room center and the doorway are clear of the counter, the door
+        // leaves, and the player spawn. Straight lines between the entrance and
+        // the counter graze furniture, and overlap correction can pin an NPC in
+        // the collider shell, so every route passes through these points.
+        private static readonly Vector3 InteriorWaypoint = new Vector3(0f, 0f, -0.6f);
+        private static readonly Vector3 DoorwayWaypoint = new Vector3(1f, 0f, -4.3f);
+
         public CustomerState State { get; private set; } = CustomerState.Arrive;
 
         public LaundryOrder Order => _order;
@@ -126,6 +133,7 @@ namespace LaundryLegends.Customers
 
             Speak(DialogueTrigger.Enter);
             yield return WalkTo(_doorPoint != null ? _doorPoint.position : transform.position);
+            yield return WalkTo(InteriorWaypoint);
             yield return WalkTo(_counterPoint != null ? _counterPoint.position : transform.position);
 
             if (!_walkReached)
@@ -240,7 +248,7 @@ namespace LaundryLegends.Customers
                 Vector3 towardRoom = (Vector3.zero - _folding.transform.position);
                 towardRoom.y = 0f;
                 Vector3 stand = _folding.transform.position
-                                + (towardRoom.sqrMagnitude > 0.01f ? towardRoom.normalized : Vector3.back) * 1.4f;
+                                + (towardRoom.sqrMagnitude > 0.01f ? towardRoom.normalized : Vector3.back) * 2f;
                 stand.y = transform.position.y;
                 yield return WalkTo(stand);
             }
@@ -299,13 +307,25 @@ namespace LaundryLegends.Customers
                 collected.gameObject.SetActive(false);
             }
 
-            yield return WalkTo(_exitPoint != null ? _exitPoint.position : transform.position);
+            yield return WalkOut();
         }
 
         /// <summary>Walks out and returns, so the caller can exit the order cleanly.</summary>
         private IEnumerator LeaveAndFinish()
         {
             Enter(CustomerState.Leave);
+            yield return WalkOut();
+        }
+
+        /// <summary>
+        /// Exit route: through the room center, beside the player spawn, and out
+        /// of the doorway. A direct line from the folding table or the counter
+        /// clips a door leaf and can stall the NPC against it.
+        /// </summary>
+        private IEnumerator WalkOut()
+        {
+            yield return WalkTo(InteriorWaypoint);
+            yield return WalkTo(DoorwayWaypoint);
             yield return WalkTo(_exitPoint != null ? _exitPoint.position : transform.position);
         }
 

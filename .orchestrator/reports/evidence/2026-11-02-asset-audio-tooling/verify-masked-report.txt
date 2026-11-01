@@ -1,0 +1,88 @@
+=== MakeHuman pilot FBX round-trip verify ===
+blender      : 4.5.15 LTS
+fbx          : C:\Users\Asus\AppData\Local\Temp\opencode\lh-mh-verify\Verify_Masked.fbx (1558060 bytes)
+
+--- objects ---
+total objects: 6
+  MakeHuman default skeleton   type=ARMATURE parent=-
+  verify_maskedMesh            type=MESH     parent=MakeHuman default skeleton
+  ponytail01Mesh               type=MESH     parent=MakeHuman default skeleton
+  female_casualsuit01Mesh      type=MESH     parent=MakeHuman default skeleton
+  high-polyMesh                type=MESH     parent=MakeHuman default skeleton
+  shoes06Mesh                  type=MESH     parent=MakeHuman default skeleton
+
+--- armature ---
+armature 'MakeHuman default skeleton': 163 bones
+first 15 bone names: root, spine05, spine04, spine03, spine02, breast.L, breast.R, spine01, clavicle.L, shoulder01.L, upperarm01.L, upperarm02.L, lowerarm01.L, lowerarm02.L, wrist.L
+all bone names (163): root, spine05, spine04, spine03, spine02, breast.L, breast.R, spine01, clavicle.L, shoulder01.L, upperarm01.L, upperarm02.L, lowerarm01.L, lowerarm02.L, wrist.L, finger1-1.L, finger1-2.L, finger1-3.L, metacarpal1.L, finger2-1.L, finger2-2.L, finger2-3.L, metacarpal2.L, finger3-1.L, finger3-2.L, finger3-3.L, metacarpal3.L, finger4-1.L, finger4-2.L, finger4-3.L, metacarpal4.L, finger5-1.L, finger5-2.L, finger5-3.L, clavicle.R, shoulder01.R, upperarm01.R, upperarm02.R, lowerarm01.R, lowerarm02.R, wrist.R, finger1-1.R, finger1-2.R, finger1-3.R, metacarpal1.R, finger2-1.R, finger2-2.R, finger2-3.R, metacarpal2.R, finger3-1.R, finger3-2.R, finger3-3.R, metacarpal3.R, finger4-1.R, finger4-2.R, finger4-3.R, metacarpal4.R, finger5-1.R, finger5-2.R, finger5-3.R, neck01, neck02, neck03, head, jaw, special04, oris02, oris01, oris06.L, oris07.L, oris06.R, oris07.R, tongue00, tongue01, tongue02, tongue03, tongue04, tongue07.L, tongue07.R, tongue06.L, tongue06.R, tongue05.L, tongue05.R, levator02.L, levator03.L, levator04.L, levator05.L, levator02.R, levator03.R, levator04.R, levator05.R, special01, oris04.L, oris03.L, oris04.R, oris03.R, oris06, oris05, special03, levator06.L, levator06.R, special06.L, special05.L, eye.L, orbicularis03.L, orbicularis04.L, special06.R, special05.R, eye.R, orbicularis03.R, orbicularis04.R, temporalis01.L, oculi02.L, oculi01.L, temporalis01.R, oculi02.R, oculi01.R, temporalis02.L, risorius02.L, risorius03.L, temporalis02.R, risorius02.R, risorius03.R, pelvis.L, upperleg01.L, upperleg02.L, lowerleg01.L, lowerleg02.L, foot.L, toe1-1.L, toe1-2.L, toe2-1.L, toe2-2.L, toe2-3.L, toe3-1.L, toe3-2.L, toe3-3.L, toe4-1.L, toe4-2.L, toe4-3.L, toe5-1.L, toe5-2.L, toe5-3.L, pelvis.R, upperleg01.R, upperleg02.R, lowerleg01.R, lowerleg02.R, foot.R, toe1-1.R, toe1-2.R, toe2-1.R, toe2-2.R, toe2-3.R, toe3-1.R, toe3-2.R, toe3-3.R, toe4-1.R, toe4-2.R, toe4-3.R, toe5-1.R, toe5-2.R, toe5-3.R
+is humanoid-ish root bones: root
+
+--- mesh ---
+mesh 'verify_maskedMesh': verts=8550 tris=17012 vgroups=81 weighted_verts=8550 shape_keys=False
+mesh 'ponytail01Mesh': verts=3718 tris=5352 vgroups=17 weighted_verts=3718 shape_keys=False
+mesh 'female_casualsuit01Mesh': verts=2197 tris=4236 vgroups=34 weighted_verts=2197 shape_keys=False
+mesh 'high-polyMesh': verts=1064 tris=2040 vgroups=6 weighted_verts=1064 shape_keys=False
+mesh 'shoes06Mesh': verts=1594 tris=3064 vgroups=34 weighted_verts=1594 shape_keys=False
+total verts=17123  total tris=31704
+  vertex groups on 'verify_maskedMesh': 81 (8550/8550 verts have weight)
+  vertex groups on 'ponytail01Mesh': 17 (3718/3718 verts have weight)
+  vertex groups on 'female_casualsuit01Mesh': 34 (2197/2197 verts have weight)
+  vertex groups on 'high-polyMesh': 6 (1064/1064 verts have weight)
+  vertex groups on 'shoes06Mesh': 34 (1594/1594 verts have weight)
+  armature modifiers on 'verify_maskedMesh': [('MakeHuman default skeleton', 'MakeHuman default skeleton')]
+  armature modifiers on 'ponytail01Mesh': [('MakeHuman default skeleton', 'MakeHuman default skeleton')]
+  armature modifiers on 'female_casualsuit01Mesh': [('MakeHuman default skeleton', 'MakeHuman default skeleton')]
+  armature modifiers on 'high-polyMesh': [('MakeHuman default skeleton', 'MakeHuman default skeleton')]
+  armature modifiers on 'shoes06Mesh': [('MakeHuman default skeleton', 'MakeHuman default skeleton')]
+
+--- object transforms (FBX import orientation) ---
+  MakeHuman default skeleton loc=(0.000, 0.000, 0.000) rot_deg=(90.0, -0.0, 0.0) scale=(0.100, 0.100, 0.100)
+  verify_maskedMesh          loc=(0.000, 0.000, 0.000) rot_deg=(0.0, -0.0, 0.0) scale=(1.000, 1.000, 1.000)
+  ponytail01Mesh             loc=(0.000, 0.000, 0.000) rot_deg=(0.0, -0.0, 0.0) scale=(1.000, 1.000, 1.000)
+  female_casualsuit01Mesh    loc=(0.000, 0.000, 0.000) rot_deg=(0.0, -0.0, 0.0) scale=(1.000, 1.000, 1.000)
+  high-polyMesh              loc=(0.000, 0.000, 0.000) rot_deg=(0.0, -0.0, 0.0) scale=(1.000, 1.000, 1.000)
+  shoes06Mesh                loc=(0.000, 0.000, 0.000) rot_deg=(0.0, -0.0, 0.0) scale=(1.000, 1.000, 1.000)
+
+--- per-mesh evaluated world bounds (metres) ---
+  verify_maskedMesh          z 0.8658 .. 1.6122  (h=0.7464)  x -0.491..0.491  y -0.300..0.043
+  ponytail01Mesh             z 1.2555 .. 1.6196  (h=0.3640)  x -0.076..0.074  y -0.128..0.117
+  female_casualsuit01Mesh    z 0.0821 .. 1.3760  (h=1.2939)  x -0.267..0.264  y -0.153..0.089
+  high-polyMesh              z 1.4926 .. 1.5215  (h=0.0289)  x -0.045..0.045  y -0.130..-0.108
+  shoes06Mesh                z -0.0103 .. 0.2158  (h=0.2261)  x -0.228..0.228  y -0.208..0.032
+
+--- world bounds (metres, Z-up) ---
+min = (-0.4911, -0.2995, -0.0103)
+max = (0.4911, 0.1169, 1.6196)
+HEIGHT = 1.6298 m
+width(X) = 0.9822  depth(Y) = 0.4164
+height in range 1.6-1.9 m: YES
+
+--- key bone positions (world, metres) ---
+  root         head=(-0.000, 0.060, 0.847) tail=(-0.000, -1.085, 0.854)
+  head         head=(-0.000, -0.041, 1.474) tail=(-0.000, 0.020, 3.288)
+  wrist.L      head=(0.424, -0.163, 0.989) tail=(0.436, -0.191, 0.970)
+  foot.L       head=(0.163, -0.025, 0.070) tail=(0.169, -0.141, 0.008)
+  upperleg01.L head=(0.099, -0.017, 0.836) tail=(0.102, -0.038, 0.760)
+  upperarm01.L head=(0.152, -0.020, 1.286) tail=(0.204, -0.019, 1.230)
+  arm droop below shoulder level: 44.0 deg (A-pose)
+
+--- materials & textures ---
+material count: 5
+  female_casualsuit01          images=[('C:\\Users\\Asus\\AppData\\Local\\Temp\\opencode\\lh-mh-verify\\textures\\female_casualsuit01_diffuse.png', True, 2048, 2048), ('C:\\Users\\Asus\\AppData\\Local\\Temp\\opencode\\lh-mh-verify\\textures\\female_casualsuit01_diffuse.png', True, 2048, 2048), ('C:\\Users\\Asus\\AppData\\Local\\Temp\\opencode\\lh-mh-verify\\textures\\female_casualsuit01_normal.png', True, 4096, 4096)]
+  high-poly                    images=[('C:\\Users\\Asus\\AppData\\Local\\Temp\\opencode\\lh-mh-verify\\textures\\brown_eye.png', True, 1024, 1024), ('C:\\Users\\Asus\\AppData\\Local\\Temp\\opencode\\lh-mh-verify\\textures\\brown_eye.png', True, 1024, 1024)]
+  ponytail01                   images=[('C:\\Users\\Asus\\AppData\\Local\\Temp\\opencode\\lh-mh-verify\\textures\\ponytail01_diffuse.png', True, 2048, 2048), ('C:\\Users\\Asus\\AppData\\Local\\Temp\\opencode\\lh-mh-verify\\textures\\ponytail01_diffuse.png', True, 2048, 2048)]
+  shoes06                      images=[('C:\\Users\\Asus\\AppData\\Local\\Temp\\opencode\\lh-mh-verify\\textures\\shoes06_diffuse.png', True, 1024, 1024), ('C:\\Users\\Asus\\AppData\\Local\\Temp\\opencode\\lh-mh-verify\\textures\\shoes06_diffuse.png', True, 1024, 1024)]
+  verify_masked                images=[('C:\\Users\\Asus\\AppData\\Local\\Temp\\opencode\\lh-mh-verify\\textures\\young_lightskinned_female_diffuse3.png', True, 2048, 2048), ('C:\\Users\\Asus\\AppData\\Local\\Temp\\opencode\\lh-mh-verify\\textures\\young_lightskinned_female_diffuse3.png', True, 2048, 2048)]
+missing texture files: none
+
+--- material slots per mesh ---
+  verify_maskedMesh            slots=1 -> ['verify_masked']
+  ponytail01Mesh               slots=1 -> ['ponytail01']
+  female_casualsuit01Mesh      slots=1 -> ['female_casualsuit01']
+  high-polyMesh                slots=1 -> ['high-poly']
+  shoes06Mesh                  slots=1 -> ['shoes06']
+
+--- renders ---
+rendered C:\Users\Asus\AppData\Local\Temp\opencode\lh-mh-verify\render5\Verify_front.png
+rendered C:\Users\Asus\AppData\Local\Temp\opencode\lh-mh-verify\render5\Verify_three_quarter.png
+saved C:\Users\Asus\AppData\Local\Temp\opencode\lh-mh-verify\render5\Pilot_Human_verify.blend

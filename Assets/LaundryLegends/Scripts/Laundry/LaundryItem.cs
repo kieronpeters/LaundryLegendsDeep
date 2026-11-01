@@ -79,9 +79,13 @@ namespace LaundryLegends.Laundry
                     _wrappedVisual = Instantiate(_wrappedVisualPrefab);
                     _wrappedVisual.name = "WrappedVisual";
                     _wrappedVisual.transform.SetParent(transform, false);
-                    _wrappedVisual.transform.localPosition = Vector3.zero;
-                    _wrappedVisual.transform.localRotation = Quaternion.identity;
+
+                    // Keep the prefab's own root rotation: the bundle model imports
+                    // with a -90 degree X axis conversion, and zeroing it laid the
+                    // bundle flat and half-sunk into the folding table.
+                    _wrappedVisual.transform.localRotation = _wrappedVisualPrefab.transform.localRotation;
                     _wrappedVisual.transform.localScale = Vector3.one;
+                    _wrappedVisual.transform.localPosition = Vector3.zero;
                 }
 
                 if (_wrappedVisual == null)
@@ -94,6 +98,7 @@ namespace LaundryLegends.Laundry
                 if (_wrappedVisual != null)
                 {
                     _wrappedVisual.SetActive(true);
+                    GroundVisual(_wrappedVisual);
                 }
 
                 return;
@@ -111,6 +116,45 @@ namespace LaundryLegends.Laundry
                     renderer.enabled = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// Lifts the wrapped visual so its lowest rendered point rests on the
+        /// item pivot instead of sinking halfway into the folding table.
+        /// </summary>
+        private void GroundVisual(GameObject visual)
+        {
+            Bounds local = new Bounds();
+            bool hasBounds = false;
+            foreach (Renderer renderer in visual.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null)
+                {
+                    continue;
+                }
+
+                Bounds world = renderer.bounds;
+                Vector3 min = transform.InverseTransformPoint(world.min);
+                Vector3 max = transform.InverseTransformPoint(world.max);
+                var candidate = new Bounds((min + max) * 0.5f, max - min);
+                if (!hasBounds)
+                {
+                    local = candidate;
+                    hasBounds = true;
+                }
+                else
+                {
+                    local.Encapsulate(candidate);
+                }
+            }
+
+            if (!hasBounds || local.size.y <= 0.0001f)
+            {
+                return;
+            }
+
+            Vector3 offset = visual.transform.localPosition;
+            visual.transform.localPosition = new Vector3(offset.x, offset.y - local.min.y, offset.z);
         }
 
         /// <summary>
