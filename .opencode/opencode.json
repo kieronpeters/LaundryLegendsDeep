@@ -682,6 +682,11 @@
       "action": "shell",
       "resource": "git push* -f*",
       "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "gh *",
+      "effect": "allow"
     }
   ],
   "agents": {
