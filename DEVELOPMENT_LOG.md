@@ -1104,6 +1104,30 @@ Owner review of the final captures, then Phase 4 planning.
 
 Owner playtest, then Phase 9.
 
+## 2026-11-01 — Tooling, repository size and cleanup
+
+### Changed
+
+- Research report written for tools and assets (`.orchestrator/reports/2026-11-01-tools-and-assets-research.md`): six tools totalling 456 MB recommended, no 4K "blockbuster" target on a 4 GB GPU (2K textures with 4K only on the floor), Sketchfab has no CC0 arcade/laundromat models, GameTextures' free tier is non-commercial.
+- Duplicate asset copies removed: 49 tracked files (byte-identical MD5 to a surviving `Assets` copy) plus untracked duplicates under `ArtSource/Downloads`.
+- History rewritten with `git-filter-repo` to drop those paths. **Measured outcome: the pack did not shrink (582 MiB before and after)** because Git already stores identical content once. The duplicates were wasting disk, not repository space. The real weight is ~340 MB of unique 4K PBR maps, music, and animation FBX.
+- Backup bundle kept at `Desktop/LaundryLegends-backup-20261101-1837.bundle` (582 MB).
+- FFmpeg 9.0.2 installed via winget. Audacity, Krita and LMMS installers downloaded to `Downloads` for manual installation; the automated routes failed on a stuck Windows Installer transaction (error 1618) and a truncated KDE download.
+- Cleanup: 52 items removed, 1,073 MB freed (failed portable extracts, duplicate source packs, stray test scenes).
+
+### Checks and evidence
+
+- EditMode 145/145; PlayMode 53 passed, 1 skipped.
+- Build `[BUILD] Succeeded ... scenes: Bootstrap, MainMenu, Laundromat`.
+- `phase-8` pushed to `github.com/kieronpeters/LaundryLegendsDeep`.
+
+### Not performed
+
+- Audacity/Krita/LMMS installation (owner installing from Downloads).
+- Playtest of the back room and cabinet.
+- Texture downscale to 2K, the change that would actually shrink the repository.
+
+
 
 ### Changed
 
