@@ -294,10 +294,16 @@ namespace LaundryLegends.Progression
             Transform leaf = _sealedDoor.transform;
 
             // The open leaf is decoration; its collider would still narrow the
-            // doorway. Only a closed door blocks the passage.
+            // doorway. Only a closed door blocks the passage. Hide the leaf
+            // renderer too, so the opening is visually clear.
             foreach (Collider collider in leaf.GetComponentsInChildren<Collider>(true))
             {
                 collider.enabled = !open;
+            }
+
+            foreach (Renderer renderer in leaf.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.enabled = !open;
             }
 
             if (!open)

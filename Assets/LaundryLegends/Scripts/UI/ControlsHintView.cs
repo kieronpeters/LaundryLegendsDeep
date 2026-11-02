@@ -50,7 +50,7 @@ namespace LaundryLegends.UI
                 "Mouse  Look\n" +
                 $"{interact}      Pick up / interact\n" +
                 $"{drop}      Drop carried item\n" +
-                "U      Buy next upgrade\n" +
+                "U      Purchases\n" +
                 "Esc    Pause";
         }
 

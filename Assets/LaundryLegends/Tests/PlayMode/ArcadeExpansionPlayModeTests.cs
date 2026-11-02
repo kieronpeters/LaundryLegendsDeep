@@ -2,6 +2,7 @@ using System.Collections;
 using LaundryLegends.Arcade;
 using LaundryLegends.Customers;
 using LaundryLegends.Progression;
+using LaundryLegends.UI;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -32,12 +33,14 @@ namespace LaundryLegends.Tests.PlayMode
             CustomerSpawner spawner = Object.FindFirstObjectByType<CustomerSpawner>();
             ArcadePanelView panel = Object.FindFirstObjectByType<ArcadePanelView>();
             LaundryReputation reputation = Object.FindFirstObjectByType<LaundryReputation>();
+            PurchaseMenuView menu = Object.FindFirstObjectByType<PurchaseMenuView>();
 
             Assert.IsNotNull(service, "The scene needs the arcade service.");
             Assert.IsNotNull(room, "The scene needs the secret room controller.");
             Assert.IsNotNull(spawner, "The scene needs the customer spawner for economy.");
             Assert.IsNotNull(panel, "The Phase 9 HUD panel should be in the scene.");
             Assert.IsNotNull(reputation, "The Phase 9 reputation tracker should be in the scene.");
+            Assert.IsNotNull(menu, "The U purchase menu should be in the scene.");
             Assert.IsNotNull(panel.Service, "The HUD must be wired to the arcade service.");
             Assert.IsNotNull(panel.Reputation, "The HUD must have a reputation source.");
             Assert.IsNotNull(service.Reputation, "The service must be wired to the reputation tracker.");
@@ -51,6 +54,8 @@ namespace LaundryLegends.Tests.PlayMode
             Assert.AreEqual(5, service.SlotCount, "The room should have the starter plus four authored slots.");
             Assert.AreEqual(3, service.Capacity, "Three anchors should be open before the expansion.");
             Assert.IsTrue(service.IsSlotActive(0), "The shipped cabinet should be powered.");
+            StringAssert.Contains("Machine: Racer", menu.BuildText(), "The U menu should list the second machine.");
+            StringAssert.Contains("Arcade expansion bay", menu.BuildText(), "The U menu should list the expansion.");
 
             GameObject bay = FindInactive("ExpansionBay");
             GameObject seal = FindInactive("ExpansionSeal");
@@ -61,10 +66,8 @@ namespace LaundryLegends.Tests.PlayMode
 
             Assert.IsTrue(spawner.Economy.TryEarn(5000, "Phase 9 scene test credit", Time.time));
 
-            ArcadeInstallPoint second = FindInstallPoint(1);
-            Assert.IsNotNull(second, "The second machine needs an install point.");
-            Assert.IsTrue(second.CanInteract(null));
-            second.Interact(null);
+            Assert.AreEqual(ArcadeInstallResult.Success, service.TryInstall(1, Time.time),
+                "The service should buy the second machine.");
             if (!service.IsSlotActive(1))
             {
                 service.TryActivateSlot(1);
@@ -87,19 +90,28 @@ namespace LaundryLegends.Tests.PlayMode
             Assert.IsNotNull(neonDecor, "The neon decor object should exist, disabled.");
             Assert.IsFalse(neonDecor.activeSelf);
             int beforeUpgrade = spawner.Economy.Balance;
-            Assert.IsTrue(neonKiosk.CanInteract(null));
-            neonKiosk.Interact(null);
+            Assert.IsTrue(service.TryBuyUpgrade(neonKiosk.Upgrade, Time.time), "The menu should buy the upgrade once.");
             yield return null;
             Assert.IsTrue(service.HasUpgrade("arcade.upgrade.neon"), "The kiosk should buy the upgrade once.");
             Assert.IsTrue(neonDecor.activeSelf, "Buying the upgrade should reveal its decor.");
             Assert.Less(spawner.Economy.Balance, beforeUpgrade, "The upgrade should debit exactly once.");
             Assert.Greater(service.IncomeMultiplier, 1f, "The upgrade should raise the income multiplier.");
 
-            ArcadeExpansionPoint expansion = Object.FindFirstObjectByType<ArcadeExpansionPoint>(FindObjectsInactive.Include);
-            Assert.IsNotNull(expansion, "The scene needs an expansion purchase point.");
-            Assert.IsTrue(expansion.CanInteract(null));
-            expansion.Interact(null);
+            ArcadeUpgradePoint carpetKiosk = FindUpgradePoint("arcade.upgrade.carpet");
+            GameObject rugDecor = FindInactive("Decor_ArcadeRug");
+            Assert.IsNotNull(carpetKiosk, "The scene needs the carpet upgrade kiosk.");
+            Assert.IsNotNull(rugDecor, "The carpet decor should exist, disabled.");
+            Assert.IsTrue(rugDecor.transform.IsChildOf(bay.transform), "The carpet must live in the expansion bay.");
+            int beforeCarpet = spawner.Economy.Balance;
+            Assert.IsFalse(service.TryBuyUpgrade(carpetKiosk.Upgrade, Time.time),
+                "The carpet must be locked before the expansion.");
+            Assert.AreEqual(beforeCarpet, spawner.Economy.Balance, "A locked carpet must not debit.");
+
+            Assert.IsTrue(service.TryExpand(Time.time), "The menu should buy the expansion.");
             yield return null;
+            Assert.IsTrue(service.TryBuyUpgrade(carpetKiosk.Upgrade, Time.time), "The carpet should unlock after expansion.");
+            yield return null;
+            Assert.IsTrue(rugDecor.activeSelf, "The carpet should appear in the new bay.");
 
             Assert.IsTrue(service.IsExpanded, "The expansion purchase should register.");
             Assert.IsTrue(bay.activeSelf, "The extension must become visible.");
@@ -116,9 +128,8 @@ namespace LaundryLegends.Tests.PlayMode
                 "A downward ray in the bay should hit the floor.");
             Assert.AreEqual(bayFloor.GetComponent<Collider>(), hit.collider, "The bay floor should be walkable.");
 
-            ArcadeInstallPoint bayMachine = FindInstallPoint(3);
-            Assert.IsNotNull(bayMachine, "The expansion should expose a fourth machine anchor.");
-            bayMachine.Interact(null);
+            Assert.AreEqual(ArcadeInstallResult.Success, service.TryInstall(3, Time.time),
+                "The expansion should expose a fourth machine anchor.");
             if (!service.IsSlotActive(3))
             {
                 service.TryActivateSlot(3);
@@ -160,27 +171,13 @@ namespace LaundryLegends.Tests.PlayMode
             return null;
         }
 
-        private static ArcadeInstallPoint FindInstallPoint(int slotIndex)
-        {
-            foreach (ArcadeInstallPoint point in Object.FindObjectsByType<ArcadeInstallPoint>(
-                         FindObjectsInactive.Include, FindObjectsSortMode.None))
-            {
-                if (point.SlotIndex == slotIndex && point.gameObject.activeInHierarchy)
-                {
-                    return point;
-                }
-            }
-
-            return null;
-        }
-
         private static ArcadeUpgradePoint FindUpgradePoint(string upgradeId)
         {
             foreach (ArcadeUpgradePoint point in Object.FindObjectsByType<ArcadeUpgradePoint>(
                          FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 ArcadeUpgradeDefinition upgrade = point.Upgrade;
-                if (upgrade != null && upgrade.Id == upgradeId && point.gameObject.activeInHierarchy)
+                if (upgrade != null && upgrade.Id == upgradeId)
                 {
                     return point;
                 }

@@ -911,6 +911,12 @@ namespace LaundryLegends.Arcade
                 return false;
             }
 
+            if (upgrade.RequiresExpansion && !IsExpanded)
+            {
+                LastResult = "Build the arcade expansion first";
+                return false;
+            }
+
             EconomyService economy = ResolveEconomy();
             if (economy == null)
             {
@@ -987,6 +993,11 @@ namespace LaundryLegends.Arcade
             if (!IsRoomReady)
             {
                 return "room not ready";
+            }
+
+            if (upgrade.RequiresExpansion && !IsExpanded)
+            {
+                return "needs expansion";
             }
 
             EconomyService economy = ResolveEconomy();

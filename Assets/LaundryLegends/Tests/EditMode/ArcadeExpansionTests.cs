@@ -407,6 +407,31 @@ namespace LaundryLegends.Tests.EditMode
         }
 
         [Test]
+        public void ExpansionOnlyUpgradeCannotBeBoughtBeforeTheBayOpens()
+        {
+            SecretRoomController room = CreateRoom();
+            ArcadeService service = CreateService(room, 1000, out EconomyService economy, out _);
+            var upgrade = ScriptableObject.CreateInstance<ArcadeUpgradeDefinition>();
+            upgrade.Configure(
+                "arcade.upgrade.carpet",
+                "Arcade carpet",
+                120,
+                1.1f,
+                1.1f,
+                null,
+                true);
+
+            int before = economy.Balance;
+            Assert.IsFalse(service.TryBuyUpgrade(upgrade, 0f));
+            Assert.AreEqual(before, economy.Balance, "A gated upgrade must not debit before the bay exists.");
+            Assert.AreEqual("needs expansion", service.DescribeUpgradeBlocker(upgrade));
+
+            service.SetExpansionBay(null, null, 300);
+            Assert.IsTrue(service.TryExpand(0f));
+            Assert.IsTrue(service.TryBuyUpgrade(upgrade, 0f), "The carpet should unlock after the expansion.");
+        }
+
+        [Test]
         public void LongSessionLinksLaundryReputationTrafficIncomeSecondMachineAndExpansion()
         {
             SecretRoomController room = CreateRoom();

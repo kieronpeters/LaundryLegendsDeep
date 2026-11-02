@@ -1,3 +1,4 @@
+using LaundryLegends.UI;
 using UnityEngine;
 
 namespace LaundryLegends.Player
@@ -17,6 +18,11 @@ namespace LaundryLegends.Player
 
         private void Update()
         {
+            if (PurchaseMenuView.IsOpen || PurchaseMenuView.ClosedThisFrame)
+            {
+                return;
+            }
+
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 if (IsPaused)

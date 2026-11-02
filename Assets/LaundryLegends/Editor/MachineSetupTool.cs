@@ -24,6 +24,17 @@ namespace LaundryLegends.Editor
             GameObject room = PrefabUtility.LoadPrefabContents(RoomPrefabPath);
             try
             {
+                Material drumMaterial = EnsureMaterial(
+                    "Assets/LaundryLegends/Art/Materials/MAT_Drum.mat",
+                    "MAT_Drum",
+                    new Color(0.06f, 0.065f, 0.075f, 1f),
+                    0.45f);
+                Material clothesMaterial = EnsureMaterial(
+                    "Assets/LaundryLegends/Art/Materials/MAT_DrumClothes.mat",
+                    "MAT_DrumClothes",
+                    new Color(0.72f, 0.78f, 0.9f, 1f),
+                    0.1f);
+
                 for (int i = 1; i <= MachineCount; i++)
                 {
                     Transform machine = FindChild(room.transform, $"Machine_{i}");
@@ -51,6 +62,7 @@ namespace LaundryLegends.Editor
 
                     hook.Configure(slot, kind);
                     hook.enabled = true;
+                    EnsureDrum(machine, hook, drumMaterial, clothesMaterial);
                 }
 
                 PrefabUtility.SaveAsPrefabAsset(room, RoomPrefabPath);
@@ -114,6 +126,11 @@ namespace LaundryLegends.Editor
                     failures.Add($"Machine_{i}'s load slot has no CarrySlot.");
                 }
 
+                if (hook.DrumVisual == null)
+                {
+                    failures.Add($"Machine_{i} has no rotating drum visual.");
+                }
+
                 if (expected == MachineKind.Washer) washers++;
                 else dryers++;
             }
@@ -175,6 +192,80 @@ namespace LaundryLegends.Editor
                 property.objectReferenceValue = anchor;
                 serialized.ApplyModifiedPropertiesWithoutUndo();
             }
+        }
+
+        private static void EnsureDrum(
+            Transform machine,
+            MachineLoadHook hook,
+            Material drumMaterial,
+            Material clothesMaterial)
+        {
+            Transform drum = machine.Find("DrumVisual");
+            if (drum == null)
+            {
+                var drumObject = new GameObject("DrumVisual");
+                drum = drumObject.transform;
+                drum.SetParent(machine, false);
+                drum.localPosition = new Vector3(0f, 0.02f, -0.36f);
+                drum.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                drum.localScale = Vector3.one;
+            }
+
+            Transform face = drum.Find("DrumFace");
+            if (face == null)
+            {
+                GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                cylinder.name = "DrumFace";
+                cylinder.transform.SetParent(drum, false);
+                cylinder.transform.localPosition = Vector3.zero;
+                cylinder.transform.localRotation = Quaternion.identity;
+                cylinder.transform.localScale = new Vector3(0.38f, 0.02f, 0.38f);
+                UnityEngine.Object.DestroyImmediate(cylinder.GetComponent<Collider>());
+                cylinder.GetComponent<Renderer>().sharedMaterial = drumMaterial;
+            }
+
+            EnsureDrumCloth(drum, "DrumClothA", new Vector3(0.08f, 0.07f, 0.03f), clothesMaterial);
+            EnsureDrumCloth(drum, "DrumClothB", new Vector3(-0.07f, 0.03f, 0.03f), clothesMaterial);
+            EnsureDrumCloth(drum, "DrumClothC", new Vector3(0.01f, -0.08f, 0.03f), clothesMaterial);
+            hook.SetDrumVisual(drum);
+        }
+
+        private static void EnsureDrumCloth(Transform drum, string name, Vector3 localPosition, Material material)
+        {
+            if (drum.Find(name) != null)
+            {
+                return;
+            }
+
+            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube.name = name;
+            cube.transform.SetParent(drum, false);
+            cube.transform.localPosition = localPosition;
+            cube.transform.localRotation = Quaternion.identity;
+            cube.transform.localScale = new Vector3(0.1f, 0.08f, 0.04f);
+            UnityEngine.Object.DestroyImmediate(cube.GetComponent<Collider>());
+            cube.GetComponent<Renderer>().sharedMaterial = material;
+        }
+
+        private static Material EnsureMaterial(string path, string name, Color colour, float smoothness)
+        {
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            Shader lit = Shader.Find("Universal Render Pipeline/Lit");
+            if (material == null)
+            {
+                material = new Material(lit) { name = name };
+                AssetDatabase.CreateAsset(material, path);
+            }
+            else
+            {
+                material.shader = lit;
+            }
+
+            material.SetColor("_BaseColor", colour);
+            material.SetFloat("_Smoothness", smoothness);
+            material.SetFloat("_Metallic", 0f);
+            EditorUtility.SetDirty(material);
+            return material;
         }
 
         private static Transform FindChild(Transform root, string name)

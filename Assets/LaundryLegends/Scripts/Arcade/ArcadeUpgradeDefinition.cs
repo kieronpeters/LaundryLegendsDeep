@@ -15,6 +15,7 @@ namespace LaundryLegends.Arcade
         [SerializeField, Min(0.1f)] private float _incomeMultiplier = 1.1f;
         [SerializeField, Min(0.1f)] private float _trafficMultiplier = 1f;
         [SerializeField] private GameObject _decorObject;
+        [SerializeField] private bool _requiresExpansion;
 
         public string Id => _id;
         public string DisplayName => _displayName;
@@ -23,13 +24,17 @@ namespace LaundryLegends.Arcade
         public float TrafficMultiplier => _trafficMultiplier;
         public GameObject DecorObject => _decorObject;
 
+        /// <summary>True when the upgrade can only be bought after the bay opens.</summary>
+        public bool RequiresExpansion => _requiresExpansion;
+
         public void Configure(
             string id,
             string displayName,
             int cost,
             float incomeMultiplier,
             float trafficMultiplier,
-            GameObject decorObject = null)
+            GameObject decorObject = null,
+            bool requiresExpansion = false)
         {
             _id = id;
             _displayName = displayName;
@@ -37,6 +42,7 @@ namespace LaundryLegends.Arcade
             _incomeMultiplier = Mathf.Max(0.1f, incomeMultiplier);
             _trafficMultiplier = Mathf.Max(0.1f, trafficMultiplier);
             _decorObject = decorObject;
+            _requiresExpansion = requiresExpansion;
         }
     }
 }

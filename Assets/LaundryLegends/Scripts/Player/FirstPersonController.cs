@@ -1,3 +1,4 @@
+using LaundryLegends.UI;
 using UnityEngine;
 
 namespace LaundryLegends.Player
@@ -36,6 +37,11 @@ namespace LaundryLegends.Player
         private void Update()
         {
             if (_pauseController != null && _pauseController.IsPaused)
+            {
+                return;
+            }
+
+            if (PurchaseMenuView.IsOpen)
             {
                 return;
             }

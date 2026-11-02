@@ -138,6 +138,13 @@ namespace LaundryLegends.Customers
             return next != null && _economy.TryPurchase(next, Time.time);
         }
 
+        /// <summary>Buys a specific laundry upgrade from the purchase menu.</summary>
+        public bool TryPurchaseUpgrade(UpgradeDefinition upgrade)
+        {
+            EnsureEconomy();
+            return upgrade != null && _economy.TryPurchase(upgrade, Time.time);
+        }
+
         private void OnUpgradePurchased(UpgradeDefinition upgrade)
         {
             ApplyUpgrade(upgrade);

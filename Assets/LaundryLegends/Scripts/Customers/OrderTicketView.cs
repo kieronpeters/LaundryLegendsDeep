@@ -139,8 +139,6 @@ namespace LaundryLegends.Customers
 
         private void Update()
         {
-            UpdatePurchaseInput();
-
             if (_spawner == null)
             {
                 return;
@@ -191,16 +189,6 @@ namespace LaundryLegends.Customers
             {
                 GUI.Label(new Rect(28f, 248f, _width - 24f, 24f), _receipt);
             }
-        }
-
-        private void UpdatePurchaseInput()
-        {
-            if (_spawner == null || !Input.GetKeyDown(KeyCode.U))
-            {
-                return;
-            }
-
-            _spawner.TryPurchaseNextUpgrade();
         }
     }
 }

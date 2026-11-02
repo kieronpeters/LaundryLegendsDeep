@@ -26,6 +26,7 @@ namespace LaundryLegends.Arcade
         [SerializeField, Min(0.1f)] private float _inlineIncomeMultiplier = 1f;
         [SerializeField, Min(0.1f)] private float _inlineTrafficMultiplier = 1f;
         [SerializeField] private GameObject _inlineDecor;
+        [SerializeField] private bool _inlineRequiresExpansion;
 
         private ArcadeUpgradeDefinition _runtimeUpgrade;
 
@@ -55,7 +56,8 @@ namespace LaundryLegends.Arcade
                         _inlineCost,
                         _inlineIncomeMultiplier,
                         _inlineTrafficMultiplier,
-                        _inlineDecor);
+                        _inlineDecor,
+                        _inlineRequiresExpansion);
                 }
 
                 return _runtimeUpgrade;
@@ -98,7 +100,8 @@ namespace LaundryLegends.Arcade
             float incomeMultiplier,
             float trafficMultiplier,
             GameObject decor,
-            string prompt = null)
+            string prompt = null,
+            bool requiresExpansion = false)
         {
             _service = service;
             _upgrade = null;
@@ -108,6 +111,7 @@ namespace LaundryLegends.Arcade
             _inlineIncomeMultiplier = Mathf.Max(0.1f, incomeMultiplier);
             _inlineTrafficMultiplier = Mathf.Max(0.1f, trafficMultiplier);
             _inlineDecor = decor;
+            _inlineRequiresExpansion = requiresExpansion;
             _runtimeUpgrade = null;
             if (!string.IsNullOrWhiteSpace(prompt))
             {

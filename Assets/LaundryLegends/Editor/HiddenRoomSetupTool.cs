@@ -271,9 +271,9 @@ namespace LaundryLegends.Editor
                     lane = laneObject.transform;
                 }
 
-                var visitorPrefab =
-                    AssetDatabase.LoadAssetAtPath<GameObject>("Assets/LaundryLegends/Prefabs/Gameplay/NPC/NPC_Customer.prefab");
-                traffic.Configure(service, lane, cabinet.transform, visitorPrefab);
+                // The review fix removed the female visitor that clipped into the
+                // hidden-room wall; the placeholder body keeps traffic visible.
+                traffic.Configure(service, lane, cabinet.transform, null);
                 traffic.SetInterval(20f);
             }
 
@@ -361,8 +361,8 @@ namespace LaundryLegends.Editor
                 shell,
                 "Poster_StreetFolders",
                 "Assets/LaundryLegends/Art/Textures/Posters/street_folders_ii.png",
-                new Vector3(x0 + roomWidth * 0.5f, 1.7f, z0 + roomDepth - 0.11f),
-                Quaternion.identity);
+                new Vector3(x0 + roomWidth * 0.28f, 1.7f, z0 + 0.11f),
+                Quaternion.Euler(0f, 180f, 0f));
             AddPoster(
                 shell,
                 "Poster_SpinCycle",
@@ -706,6 +706,13 @@ namespace LaundryLegends.Editor
                 new Vector3(cx, 0.02f, southZ),
                 new Vector3(openingWidth, 0.04f, 0.35f), floor);
 
+            AddPoster(
+                bay.transform,
+                "Poster_RacerRiot",
+                "Assets/LaundryLegends/Art/Textures/Posters/racer_riot.png",
+                new Vector3(cx, 1.7f, southZ + bayDepth - 0.11f),
+                Quaternion.identity);
+
             var lightObject = new GameObject("BayLight");
             lightObject.transform.SetParent(bay.transform, false);
             lightObject.transform.position = new Vector3(cx, height - 0.4f, southZ + bayDepth * 0.5f);
@@ -819,8 +826,8 @@ namespace LaundryLegends.Editor
                 new Vector3(0.3f, 0.5f, 0.25f), wood, Quaternion.identity);
 
             GameObject rugDecor = CreateDecorObject(
-                shell, "Decor_ArcadeRug",
-                new Vector3(x0 + roomWidth * 0.5f, 0.03f, doorZ + 1.2f),
+                expansionBay.transform, "Decor_ArcadeRug",
+                new Vector3(x0 + roomWidth * 0.5f, 0.03f, z0 + roomDepth + 2f),
                 new Vector3(2.6f, 0.05f, 1.6f), felt, Quaternion.identity);
 
             float southZ = z0 + roomDepth;
@@ -830,21 +837,22 @@ namespace LaundryLegends.Editor
             CreateUpgradeKiosk(shell, "UpgradeKiosk_Neon",
                 new Vector3(x0 + roomWidth * 0.42f, 0f, z0 + 1.4f), wood, service,
                 "arcade.upgrade.neon", "Neon sign", 150, 1.1f, 1f, neonDecor,
-                "Buy neon sign");
+                "Buy neon sign", false);
             CreateUpgradeKiosk(shell, "UpgradeKiosk_Speakers",
                 new Vector3(x0 + roomWidth * 0.58f, 0f, z0 + 1.4f), wood, service,
                 "arcade.upgrade.speakers", "Better speakers", 200, 1f, 1.2f, speakersRoot,
-                "Buy speakers");
+                "Buy speakers", false);
             CreateUpgradeKiosk(shell, "UpgradeKiosk_Carpet",
                 new Vector3(x0 + roomWidth * 0.5f, 0f, z0 + 2.6f), wood, service,
                 "arcade.upgrade.carpet", "Arcade carpet", 120, 1.1f, 1.1f, rugDecor,
-                "Buy arcade carpet");
+                "Buy arcade carpet", true);
 
             GameObject expansionKiosk = CreateBox(shell, "ExpansionPoint",
                 new Vector3(x0 + 0.9f, 0.55f, southZ - 0.9f),
                 new Vector3(0.8f, 1.1f, 0.5f), wood);
             var expansionPoint = expansionKiosk.AddComponent<ArcadeExpansionPoint>();
             expansionPoint.SetService(service);
+            expansionKiosk.SetActive(false);
 
             Vector3 roomCentre = new Vector3(cx, 0f, z0 + roomDepth * 0.5f);
             CreateExtraMachineSlot(
@@ -915,6 +923,12 @@ namespace LaundryLegends.Editor
             Quaternion rotation)
         {
             GameObject decor = CreateBox(parent, name, centre, size, material);
+            Collider collider = decor.GetComponent<Collider>();
+            if (collider != null)
+            {
+                Object.DestroyImmediate(collider);
+            }
+
             decor.transform.rotation = rotation;
             decor.SetActive(false);
             return decor;
@@ -932,7 +946,8 @@ namespace LaundryLegends.Editor
             float incomeMultiplier,
             float trafficMultiplier,
             GameObject decor,
-            string prompt)
+            string prompt,
+            bool requiresExpansion)
         {
             GameObject kiosk = CreateBox(
                 parent,
@@ -942,7 +957,8 @@ namespace LaundryLegends.Editor
                 material);
             var point = kiosk.AddComponent<ArcadeUpgradePoint>();
             point.ConfigureInline(
-                service, id, displayName, cost, incomeMultiplier, trafficMultiplier, decor, prompt);
+                service, id, displayName, cost, incomeMultiplier, trafficMultiplier, decor, prompt, requiresExpansion);
+            kiosk.SetActive(false);
         }
 
         /// <summary>
@@ -1033,6 +1049,7 @@ namespace LaundryLegends.Editor
             cabinetObject.SetActive(false);
 
             service.AddSlot(anchor.transform, install, definition, cabinetObject, attract);
+            install.SetActive(false);
         }
 
         private static GameObject CreateBox(Transform parent, string name, Vector3 centre, Vector3 size, Material material)

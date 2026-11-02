@@ -159,32 +159,74 @@ namespace LaundryLegends.Laundry
         private GameObject CreateParcelVisual()
         {
             var root = new GameObject("Parcel");
-            AddParcelBox(
+            var cloth = new Color(0.82f, 0.78f, 0.70f, 1f);
+            var fold = new Color(0.74f, 0.70f, 0.63f, 1f);
+            var tie = new Color(0.18f, 0.38f, 0.72f, 1f);
+
+            AddParcelPrimitive(
                 root.transform,
                 "ParcelCloth",
-                new Vector3(0.34f, 0.20f, 0.28f),
-                new Color(0.78f, 0.82f, 0.88f, 1f),
-                0.12f,
+                PrimitiveType.Sphere,
+                Vector3.zero,
+                new Vector3(0.34f, 0.22f, 0.30f),
+                cloth,
+                0.08f,
                 true);
-            AddParcelBox(
+            AddParcelPrimitive(
+                root.transform,
+                "ParcelFold",
+                PrimitiveType.Sphere,
+                new Vector3(0.06f, 0.04f, 0.02f),
+                new Vector3(0.24f, 0.15f, 0.21f),
+                fold,
+                0.08f,
+                true);
+            AddParcelPrimitive(
+                root.transform,
+                "ParcelTie",
+                PrimitiveType.Cube,
+                new Vector3(0f, 0.12f, 0f),
+                new Vector3(0.32f, 0.03f, 0.06f),
+                tie,
+                0.2f,
+                true);
+            AddParcelPrimitive(
+                root.transform,
+                "ParcelKnot",
+                PrimitiveType.Sphere,
+                new Vector3(0f, 0.15f, 0.02f),
+                new Vector3(0.09f, 0.07f, 0.09f),
+                tie,
+                0.2f,
+                true);
+            AddParcelPrimitive(
                 root.transform,
                 "ParcelFilm",
-                new Vector3(0.38f, 0.24f, 0.32f),
-                new Color(0.85f, 0.92f, 1f, 0.22f),
-                0.55f,
+                PrimitiveType.Sphere,
+                Vector3.zero,
+                new Vector3(0.39f, 0.28f, 0.35f),
+                new Color(0.85f, 0.92f, 1f, 0.18f),
+                0.65f,
                 false);
             return root;
         }
 
-        private static void AddParcelBox(Transform parent, string name, Vector3 size, Color colour,
-            float smoothness, bool opaque)
+        private static void AddParcelPrimitive(
+            Transform parent,
+            string name,
+            PrimitiveType type,
+            Vector3 localPosition,
+            Vector3 scale,
+            Color colour,
+            float smoothness,
+            bool opaque)
         {
-            var box = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            box.name = name;
-            Destroy(box.GetComponent<Collider>());
-            box.transform.SetParent(parent, false);
-            box.transform.localPosition = Vector3.zero;
-            box.transform.localScale = size;
+            var primitive = GameObject.CreatePrimitive(type);
+            primitive.name = name;
+            Destroy(primitive.GetComponent<Collider>());
+            primitive.transform.SetParent(parent, false);
+            primitive.transform.localPosition = localPosition;
+            primitive.transform.localScale = scale;
 
             var material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
             material.SetColor("_BaseColor", colour);
@@ -202,7 +244,7 @@ namespace LaundryLegends.Laundry
                 material.renderQueue = 3000;
             }
 
-            box.GetComponent<Renderer>().sharedMaterial = material;
+            primitive.GetComponent<Renderer>().sharedMaterial = material;
         }
 
         /// <summary>Stable prefab-template identifier, unique per prefab asset.</summary>
