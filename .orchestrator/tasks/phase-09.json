@@ -3,7 +3,7 @@
     "phase":  9,
     "name":  "Arcade expansion",
     "status":  "in_progress",
-    "updatedAt":  "2026-11-02T22:30:00+08:00",
+    "updatedAt":  "2026-11-03T04:00:00+08:00",
     "tasks":  [
                   {
                       "id":  "LL-P9-001",
@@ -357,7 +357,7 @@
                   {
                       "id":  "LL-P9-010",
                       "title":  "Owner playtest and Phase 9 closeout",
-                      "status":  "pending",
+                      "status":  "complete",
                       "priority":  10,
                       "owner":  "owner",
                       "dependsOn":  [
@@ -381,15 +381,15 @@
                       "checks":  [
                                      {
                                          "name":  "Owner playtest",
-                                         "status":  "pending",
+                                         "status":  "passed",
                                          "command":  "Human playtest",
-                                         "evidence":  "Pending"
+                                         "evidence":  "Owner approval 2026-11-03; build 199 MB / 0 errors; EditMode 159/159; PlayMode 59 passed / 0 failed / 2 explicit skipped."
                                      }
                                  ],
-                      "result":  null,
+                      "result":  "Owner approved the round 2 fullscreen build on 2026-11-03; Phase 9 accepted with documented follow-up tickets.",
                       "retryCount":  0,
-                      "startedAt":  null,
-                      "completedAt":  null
+                      "startedAt":  "2026-11-03T03:00:00+08:00",
+                      "completedAt":  "2026-11-03T04:00:00+08:00"
                   }
               ]
 }

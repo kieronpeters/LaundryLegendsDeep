@@ -1369,3 +1369,14 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 - Machines: 4 washers/4 dryers valid; drums assigned.
 - EditMode 159/159; PlayMode 59 passed / 0 failed / 2 explicit skipped; build 199 MB / 0 errors.
 - Follow-ups: LL-B-011 (menu bay labels), LL-A-006 (cabinet side art), LL-F-010 (different games per machine), LL-F-009 (male-customer voice).
+
+## 2026-11-03 - Phase 9 owner approval and closeout
+
+**Phase:** 9 - Arcade expansion
+**Status:** Complete. Owner approved the round 2 fullscreen build on 2026-11-03.
+
+- Phase 9 acceptance satisfied: 5 arcade slots, reputation-fed traffic/income, walkable expansion bay, combined economy, owner-verified dual-business loop.
+- Evidence: EditMode 159/159, PlayMode 59 passed / 0 failed / 2 explicit skipped, machine wall 4 washers/4 dryers, build 199 MB / 0 errors.
+- Known follow-ups ticketed: LL-B-009, LL-B-010, LL-A-005, LL-A-006, LL-F-009, LL-F-010, LL-B-011, LL-B-008.
+- Branch `phase-9`; tag `phase-9-complete`; merge request to `main` opened.
+- Phase 10 (business operations) is next; partial work remains on local `phase-10-wip`.
