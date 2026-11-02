@@ -98,8 +98,7 @@ namespace LaundryLegends.Editor
 
                     GameObject source = i % 2 == 1 ? washer : dryer;
                     var instance = (GameObject)PrefabUtility.InstantiatePrefab(source, machine);
-                    instance.name = "ApplianceModel";
-                    instance.transform.localPosition = Vector3.zero;
+                    instance.name = "ApplianceModel";                    instance.transform.localPosition = Vector3.zero;
                     instance.transform.localRotation = Quaternion.Euler(0f, 180f, 0f) * source.transform.rotation;
                     Vector3 scale = machine.localScale;
                     instance.transform.localScale = new Vector3(
@@ -109,6 +108,7 @@ namespace LaundryLegends.Editor
 
                     ConvertMaterials(instance, i);
                     UpdateInteractionCollider(machine, instance);
+                    RebindDrum(machine, instance, i);
                 }
 
                 PrefabUtility.SaveAsPrefabAsset(room, RoomPrefabPath);
@@ -163,6 +163,26 @@ namespace LaundryLegends.Editor
             }
 
             Debug.Log($"[APPLIANCE] Validation passed: {models} detailed models, {urpMaterials} URP material slots.");
+        }
+
+        /// <summary>
+        /// The legacy synthetic drum (and its floating cloth cubes) is replaced by
+        /// the detailed model's own drum mesh so nothing hangs in front of the door.
+        /// </summary>
+        private static void RebindDrum(Transform machine, GameObject instance, int index)
+        {
+            Transform legacy = machine.Find("DrumVisual");
+            if (legacy != null)
+            {
+                Object.DestroyImmediate(legacy.gameObject);
+            }
+
+            var hook = machine.GetComponent<LaundryLegends.Laundry.MachineLoadHook>();
+            Transform drum = instance.transform.Find(index % 2 == 1 ? "Washer_Drum" : "Dryer_Drum");
+            if (hook != null && drum != null)
+            {
+                hook.SetDrumVisual(drum);
+            }
         }
 
         /// <summary>

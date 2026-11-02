@@ -119,6 +119,18 @@ Fixed in the same pass (verified 2026-11-04):
 
 Target: **Phase 13 hardening**. `LL-B-016`, `LL-A-007`, `LL-B-017` and `LL-B-018` are addressed; `LL-B-019`-`LL-B-025` remain.
 
+## Phase 16 bug-fix pass (2026-11-04, `phase-16-bug-fixes`)
+
+| Ticket | Outcome |
+|---|---|
+| LL-B-019 | Rack slots moved from y=1.30 to y=1.12 so markers/parcels sit on the counter top instead of floating above it. |
+| LL-B-020 | Removed the legacy synthetic `DrumVisual` (and its floating cloth cubes); the hook now rotates the detailed model's own `Washer_Drum`/`Dryer_Drum` mesh. |
+| LL-B-022 | Pause overlay now dims the scene and carries Master/Music/Effects sliders plus reset. |
+| LL-B-025 | Player spawn moved to `(-1.8, 0.1, -4.4)`, off the customer door/central lane. |
+
+Still open: `LL-B-021` stray counter boxes, `LL-B-023` bills layout, `LL-B-024` shop map, plus per-machine arcade save ownership and performance profiling.
+
+
 ## Open-issue pass (2026-11-04, branch `phase-10-12`)
 
 Resolved in this pass:

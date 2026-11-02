@@ -1491,3 +1491,12 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 - Phase 16 baseline: EditMode 169/169, PlayMode 69 passed / 0 failed / 2 skipped, build 212 MB / 0 errors.
 
 **Open for the bug-fix branch:** LL-B-019 to LL-B-025 and the older P2/P3 items; per-machine arcade save ownership; performance profiling and release candidate.
+
+## 2026-11-04 - Phase 16 bug-fix pass
+
+- LL-B-019: order rack slots lowered onto the counter top (y 1.30 -> 1.12).
+- LL-B-020: removed the legacy synthetic DrumVisual/cloth cubes; the detailed FBX drum mesh now rotates.
+- LL-B-022: pause overlay dims the scene and exposes Master/Music/Effects sliders and reset.
+- LL-B-025: player spawn moved to (-1.8, 0.1, -4.4) to clear the customer lane.
+- Verification: PlayMode 69 passed / 0 failed / 2 skipped; build 212 MB / 0 errors.
+- Remaining: LL-B-021, LL-B-023, LL-B-024, per-machine arcade save ownership, performance profiling.
