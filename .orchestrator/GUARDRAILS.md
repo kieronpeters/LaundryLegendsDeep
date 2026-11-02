@@ -118,9 +118,49 @@ After a crash, timeout, model change, or new session:
 
 ## 12. Reporting
 
-Every task produces the worker report defined in `AGENT_GUIDE.md` and `.orchestrator/tasks/README.md`. Include exact files, checks, evidence, unrun checks, risks, approvals, and the next task.
+Every task produces the worker report defined in `AGENT_GUIDE.md` and `.orchestrator/tasks/README.md`. Include exact files, checks, evidence, unrun checks, risks, approvals, and the next task. Record every deferred defect on the report's "Deferred defects" line.
 
-## 13. Authority
+## 13. Review triage and deferred work
+
+A phase is complete when every acceptance criterion has evidence, not when every rough edge is polished. A review finding may therefore be deferred to a backlog ticket when it is genuinely cosmetic. Deferring is never a substitute for a missing acceptance criterion.
+
+### 13.1 May be deferred (ticket instead of fix now)
+
+Defer only when **all** of these are true:
+
+1. It does not block, weaken, or contradict a stated acceptance criterion.
+2. Money, progression, and save state still reconcile: no double-pay, no negative balance, no unrecoverable state.
+3. The player can still complete the end-to-end loop the phase delivers.
+4. It is not misleading: no wrong prompt text, no invisible-but-interactable object, no HUD value that lies.
+5. There is no crash, soft-lock, or measurable performance regression.
+
+Typical examples: placeholder model proportions, unpolished lighting, a prop that clips slightly, non-final textures, minor animation jank that does not prevent input.
+
+### 13.2 Must be fixed now (blocker)
+
+Do not defer a finding that:
+
+- Makes a new feature unreachable, unplayable, or unverifiable.
+- Breaks an existing test or previously accepted behaviour (that is a regression, not debt).
+- Prevents the player from understanding or recovering the loop.
+- Fails the phase's human-judgement criterion (for example "coherent and fun"): unreadable feedback, invisible effects, or a link between systems that the player cannot perceive is part of that criterion, not cosmetic debt.
+
+### 13.3 Ticket requirements
+
+Every deferred finding gets a backlog entry (`.orchestrator/BACKLOG.md`) with:
+
+- A stable ticket ID and severity: `cosmetic`, `minor`, or `major`.
+- A one-line reproduction or location plus evidence (capture path or screenshot).
+- The target phase, and whether it is a blocker for that phase.
+- Whether it needs art, audio, or tooling that is not currently verified.
+
+The phase report and closeout note state the count explicitly, for example: "Phase 9 complete with 3 deferred cosmetic tickets; none affect acceptance."
+
+### 13.4 Closeout wording
+
+Never describe deferred work as finished, integrated, or final. Say "complete with documented debt" and link the tickets. A phase with an unresolved blocker cannot close.
+
+## 14. Authority
 
 If instructions conflict:
 

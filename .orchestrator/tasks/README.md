@@ -68,9 +68,20 @@ Every task returns:
 - Tests not performed:
 - Git checkpoint/commit:
 - Review outcome:
+- Deferred defects (ticket ID, severity, target phase):
 - Known risks/limitations:
 - Approval required:
 - Recommended next task:
 ```
+
+## Review outcomes
+
+Review findings use the triage rules in `.orchestrator/GUARDRAILS.md` section 13:
+
+- `fixed` - resolved in this task and re-checked.
+- `deferred` - cosmetic and non-blocking; a backlog ticket exists and is cited on the report.
+- `blocker` - blocks an acceptance criterion, an existing test, or the playable loop; the phase cannot close until it is fixed.
+
+A phase closes only when every acceptance criterion has evidence. Deferred cosmetic work is allowed; an unrecorded or unticketed deferral is not.
 
 Durable reports go in `.orchestrator/reports/`. A report is evidence, not a substitute for it.
