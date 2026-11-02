@@ -30,6 +30,8 @@ namespace LaundryLegends.NPC
         private FoldingStation _folding;
         private CarrySlot _dropOff;
         private CarrySlot _originSlot;
+        private int _washerCursor;
+        private int _dryerCursor;
         private NpcLocomotion _locomotion;
         private CarrySocket _socket;
 
@@ -530,14 +532,26 @@ namespace LaundryLegends.NPC
             }
         }
 
-        private static MachineLoadHook FindMachine(MachineKind kind, bool requireEmpty)
+        /// <summary>
+        /// Picks the next eligible machine of a kind, starting after the last one
+        /// used so the staff cycles through all four washers and four dryers
+        /// instead of always reusing the leftmost unit.
+        /// </summary>
+        private MachineLoadHook FindMachine(MachineKind kind, bool requireEmpty)
         {
             MachineLoadHook[] hooks = Object.FindObjectsByType<MachineLoadHook>(FindObjectsSortMode.None);
             System.Array.Sort(hooks, (a, b) => string.CompareOrdinal(a.gameObject.name, b.gameObject.name));
-
-            MachineLoadHook fallback = null;
-            foreach (MachineLoadHook hook in hooks)
+            if (hooks.Length == 0)
             {
+                return null;
+            }
+
+            int cursor = kind == MachineKind.Washer ? _washerCursor : _dryerCursor;
+            MachineLoadHook fallback = null;
+            for (int step = 0; step < hooks.Length; step++)
+            {
+                int index = (cursor + step) % hooks.Length;
+                MachineLoadHook hook = hooks[index];
                 if (hook == null || !hook.isActiveAndEnabled || hook.Kind != kind)
                 {
                     continue;
@@ -545,6 +559,16 @@ namespace LaundryLegends.NPC
 
                 if (!requireEmpty || hook.State == MachineState.Empty)
                 {
+                    int next = (index + 1) % hooks.Length;
+                    if (kind == MachineKind.Washer)
+                    {
+                        _washerCursor = next;
+                    }
+                    else
+                    {
+                        _dryerCursor = next;
+                    }
+
                     return hook;
                 }
 

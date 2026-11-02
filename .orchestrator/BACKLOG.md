@@ -78,14 +78,15 @@ Resolved in this branch, with evidence in `TestResults/phase12/` and the final s
 | LL-B-014 | Drum clothes now sit in the detailed glass door and the drum assembly rotates while a cycle runs; the synthetic dark face was removed. | `Phase12SceneTests.EveryMachineHasDetailedModelAndTurnsItsDrum` (angle > 45°) |
 | LL-B-015 | Full-bay 6x4 m casino-lattice carpet replaces the small rug; still gated to the expansion + carpet purchase and parented inside the bay. | `12-bay-carpet.png`, `12-bay-entry.png` |
 | LL-A-006 | Double-sided Racer Riot / Spin Cycle Showdown art added to every cabinet side; the bay poster moved off the expansion seal. | `12-cabinet-side.png`, `12-bay-poster.png` |
+| LL-B-010 | Staff now cycles through washers and dryers with a per-kind cursor instead of always reusing the leftmost unit. | `LaundryStaff.FindMachine`; `LaundryLoopTests` |
+| LL-B-011 | Duplicate U-menu rows fixed: repeated machine names get a `(#slot)` suffix. | `12/menu-u-2.png`; `ArcadeExpansionPlayModeTests` uniqueness assert |
 
 Partially resolved (ticket stays open):
 
 - LL-A-004: the carpet is now authored art; the neon sign and speakers are still primitives.
 - LL-B-008: bay captures now exist (`12-bay-entry`, `12-bay-carpet`, `12-bay-poster`, `12-cabinet-side`); the IMGUI HUD overlap at 1920x1080 still needs a layout pass.
-- LL-B-011: confirmed in `menu-u.png` - Racer and Puzzle still appear twice (shop anchor and bay anchor).
 
-Still open: LL-B-010 (staff machine rotation), LL-F-010 (per-machine game variety), LL-B-011, LL-B-003, LL-B-002, LL-B-007, LL-A-001, LL-A-002, LL-A-003.
+Still open: LL-F-010 (per-machine game variety - the maze game exists but is not wired to a cabinet), LL-B-003, LL-B-002, LL-B-007, LL-A-001, LL-A-002, LL-A-003.
 
 ## Resolved in the 2026-11-02 stabilization pass
 

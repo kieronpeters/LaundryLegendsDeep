@@ -1421,7 +1421,7 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 
 **Phase 12 - visual art**
 - Generated `WasherDetailed.fbx` (13,300 tris) and `DryerDetailed.fbx` (14,144 tris) in Blender 4.5.15; replaced all eight visuals and converted 100 material slots to URP/Lit.
-- Preserved the FBX 270° X root rotation and added 180° yaw; machines now stand upright with the glass door facing the room.
+- Preserved the FBX 270ï¿½ X root rotation and added 180ï¿½ yaw; machines now stand upright with the glass door facing the room.
 - Drum clothes rotate while a cycle runs; the synthetic dark drum face was removed.
 - Full-bay 6x4 m casino-lattice carpet replaces the small rug; it stays gated to the expansion and carpet purchase and is parented inside `ExpansionBay`.
 - Cabinet side art on both faces; Racer Riot poster in the bay; Street Folders poster off the expansion wall; post-unlock doorway verified clear.
@@ -1431,4 +1431,6 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 - Build 200 MB / 0 errors.
 - Captures: `TestResults/phase12/machine-wall-4.png`, `12-bay-entry.png`, `12-bay-carpet.png`, `12-bay-poster.png`, `12-cabinet-side.png`, `12-secret-door.png`, `12-waiting-area.png`, `menu-u.png`, `menu-b.png`.
 
-**Still open:** authored carry/load/fold/handoff clips, `LL-F-010` per-machine arcade variety, `LL-B-010` staff machine rotation, `LL-B-011` duplicate U-menu labels, `LL-A-004` neon/speaker polish.
+**Still open:** authored carry/load/fold/handoff clips, `LL-F-010` per-machine arcade variety (the maze game exists but is not wired to a cabinet), and `LL-A-004` neon/speaker polish.
+
+**Also fixed on this branch:** `LL-B-010` staff now rotates through washers and dryers, and `LL-B-011` duplicate U-menu machine rows now carry a `(#slot)` suffix.

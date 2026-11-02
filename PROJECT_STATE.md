@@ -21,7 +21,7 @@
 - **Phase 11 (characters/voice):** phone regular moved out of the chair debris; ambient route ends at `Waypoint_Waiting` with a 20 s leg timeout; staff dialogue and voice removed; `NPC_OrderCustomer` uses the male DropOff/Norman clips and subtitles. The only staff voice set is female Cori, so the literal "male staff clips" request was adapted rather than copied.
 - **Phase 12 (art):** `WasherDetailed.fbx` / `DryerDetailed.fbx` (13.3k / 14.1k tris) replace all eight machine visuals with 100 URP material slots; drum clothes rotate while a cycle runs; full-bay 6x4 m casino-lattice carpet replaces the rug, gated to the expansion + carpet purchase; cabinet side art and a bay game poster; the post-unlock doorway reads clearly.
 - **Tests:** `BusinessOperationsTests`, `BusinessSceneTests` and `Phase12SceneTests` added; the queue tests isolate auto-spawn with `SetAutoStart(false)`. `OrderStallDiagnosticTests` completes an order with the player in the back room.
-- **Known gaps:** no authored carry/load/fold/handoff clips (CC0 pack only ships idle/walk); per-machine arcade variety (`LL-F-010`), staff machine rotation (`LL-B-010`), duplicate U-menu labels (`LL-B-011`), and neon/speaker polish (`LL-A-004`) remain open.
+- **Known gaps:** no authored carry/load/fold/handoff clips (CC0 pack only ships idle/walk); per-machine arcade variety (`LL-F-010`; the maze game exists but is not wired to a cabinet), and neon/speaker polish (`LL-A-004`) remain open. `LL-B-010` (staff rotation) and `LL-B-011` (duplicate U-menu labels) are fixed on this branch.
 
 ## 1. Verified configuration
 

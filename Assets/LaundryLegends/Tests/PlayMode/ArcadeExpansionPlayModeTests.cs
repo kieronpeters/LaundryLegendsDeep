@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using LaundryLegends.Arcade;
 using LaundryLegends.Customers;
 using LaundryLegends.Progression;
@@ -56,6 +57,10 @@ namespace LaundryLegends.Tests.PlayMode
             Assert.IsTrue(service.IsSlotActive(0), "The shipped cabinet should be powered.");
             StringAssert.Contains("Machine: Racer", menu.BuildText(), "The U menu should list the second machine.");
             StringAssert.Contains("Arcade expansion bay", menu.BuildText(), "The U menu should list the expansion.");
+
+            var distinctLabels = new HashSet<string>(menu.EntryLabels);
+            Assert.AreEqual(menu.EntryLabels.Count, distinctLabels.Count,
+                "Every purchase row must have a unique label; bay anchors reuse shop definitions.");
 
             GameObject bay = FindInactive("ExpansionBay");
             GameObject seal = FindInactive("ExpansionSeal");
