@@ -17,7 +17,7 @@ holding area for work that belongs earlier.
 | Phase 12 - audio | (none open) | Audio tickets close with the audio phase. |
 | Phase 13 - save/progression | `LL-F-005`, `LL-B-005` | Save and board metadata work lands with the save phase. |
 | Phase 15 - QA/polish | `LL-B-002`, `LL-B-006`, `LL-F-002`, `LL-F-003`, `LL-T-003`, `LL-T-004`, `LL-T-005` | Must be fixed or explicitly accepted/deferred before Phase 16. |
-| Post-1.0 (P3 opportunity) | `LL-F-004` | Park with a written reason; list in release known-issues. |
+| Post-1.0 (P3 opportunity) | `LL-F-004`, `LL-F-007` | Park with a written reason; list in release known-issues. |
 
 **Phase 15 gate:** no open P0/P1; every P2 fixed or owner-accepted; every P3 either fixed or explicitly deferred to post-1.0. See `.orchestrator/GUARDRAILS.md` section 13.5.
 
@@ -37,6 +37,7 @@ holding area for work that belongs earlier.
 | LL-F-004 | feature | P3 | Unreal sample parity check | `UnrealSample/` has a ready project + `build_laundromat_scene.py`; install UE5 on a capable machine and run it to compare the scene. | `.orchestrator/reports/2026-11-02-unreal-sample.md` |
 | LL-F-005 | feature | P3 | Save/load arcade state | Phase 8 acceptance says arcade state persists once saving exists. Add arcade + room state to the save payload. | ROADMAP Phase 8 |
 | LL-F-006 | feature | P2 | Fighter visual upgrade toward SF2 | The cabinet fight is a readable 512x384 pixel homage with blocky fighters. Improve with sprite-style limbs and idle/punch/kick/hit poses, parallax background, portrait boxes, round pips, FIGHT/KO banners, hit sparks and screen shake. True SF2 fidelity needs imported sprite art (AI image credits or a licensed/free pack); the current renderer is procedural. | `FightGameView.cs`, `FightGame.cs`; owner request 2026-11-02 |
+| LL-F-007 | feature | P3 | Post-release Unreal vertical slice | After the Unity release is frozen, evaluate an Unreal Engine 5 vertical slice built from the shipped design and assets (FBX, textures, audio, animation, balance) plus the existing `UnrealSample/build_laundromat_scene.py`. This is a remake/sample, not a code port; it needs a decision record, a scoped slice, and a machine that meets UE5 specs. Keep `UnrealSample/` as the starting point. | conversation 2026-11-02; `UnrealSample/README.md` |
 | LL-T-001 | tech-debt | P2 | `CharacterAppearanceFixTool` hard-codes outfit names | It was switched to `female_casualsuit01`; make the material mapping data-driven from the FBX renderer names so a re-export cannot silently keep an old suit. | `Editor/CharacterAppearanceFixTool.cs` |
 | LL-T-002 | tech-debt | P2 | MakeHuman export needs a one-time bootstrap | `settings.ini` (55 bytes, UTF-8 no BOM) and the plugin copy are required; document it in `ASSET_PIPELINE.md` or auto-create it in `makehuman_npc_run.ps1`. | `ArtSource/Downloads/MakeHuman/userhome` |
 | LL-T-003 | tech-debt | P3 | Scene repair tools mutate the scene in place | `PlaytestFixTool`, `VisualPolishTool`, `HiddenRoomSetupTool` are idempotent but write the scene; add a dry-run/validate-only switch and a single "run all" entry point. | `Editor/*FixTool.cs` |
