@@ -1,5 +1,6 @@
 using System.IO;
 using LaundryLegends.Arcade;
+using LaundryLegends.Interaction;
 using LaundryLegends.Progression;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -49,6 +50,81 @@ namespace LaundryLegends.Editor
                 if (machine != null)
                 {
                     Debug.Log($"[P12-PLAYER] machine pos={machine.transform.position} forward={machine.transform.forward}");
+                }
+            }
+        }
+
+        [MenuItem("Laundry Legends/Phase 16/Fix Player Spawn")]
+        public static void FixPlayerSpawn()
+        {
+            Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            var player = Object.FindFirstObjectByType<LaundryLegends.Player.FirstPersonController>();
+            if (player == null)
+            {
+                Debug.LogError("[P16] No player in the scene.");
+                return;
+            }
+
+            player.transform.position = new Vector3(-1.8f, 0.1f, -4.4f);
+            player.transform.rotation = Quaternion.identity;
+            Debug.Log($"[P16] Player spawn moved to {player.transform.position} to clear the customer lane.");
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+        }
+
+        [MenuItem("Laundry Legends/Phase 16/Probe Placement")]
+        public static void ProbePlacement()
+        {
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+
+            var rack = Object.FindFirstObjectByType<LaundryLegends.Business.DropOffRack>(
+                FindObjectsInactive.Include);
+            if (rack != null)
+            {
+                for (int i = 0; i < rack.Slots.Count; i++)
+                {
+                    CarrySlot slot = rack.Slots[i];
+                    if (slot != null)
+                    {
+                        Debug.Log($"[P16-RACK] {slot.name} pos={slot.transform.position} " +
+                                  $"occupant={(slot.Occupant != null ? slot.Occupant.name : "empty")}");
+                    }
+                }
+            }
+
+            GameObject counter = GameObject.Find("Counter");
+            if (counter != null)
+            {
+                foreach (Renderer renderer in counter.GetComponentsInChildren<Renderer>(true))
+                {
+                    Debug.Log($"[P16-COUNTER] {renderer.name} bounds={renderer.bounds}");
+                }
+            }
+
+            var player = Object.FindFirstObjectByType<LaundryLegends.Player.FirstPersonController>();
+            if (player != null)
+            {
+                Debug.Log($"[P16-PLAYER] {player.name} pos={player.transform.position} rot={player.transform.eulerAngles}");
+            }
+
+            foreach (Renderer renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                Bounds bounds = renderer.bounds;
+                if (bounds.max.y > 0.55f)
+                {
+                    continue;
+                }
+
+                if (bounds.center.z > 4.2f && bounds.center.z < 5.4f)
+                {
+                    Debug.Log($"[P16-LOW-MACHINE] {renderer.name} center={bounds.center} size={bounds.size} " +
+                              $"mat={(renderer.sharedMaterial != null ? renderer.sharedMaterial.name : "null")}");
+                }
+                else if (bounds.center.x > -6f && bounds.center.x < -1f
+                         && bounds.center.z > -4f && bounds.center.z < -1f)
+                {
+                    Debug.Log($"[P16-LOW-COUNTER] {renderer.name} center={bounds.center} size={bounds.size} " +
+                              $"mat={(renderer.sharedMaterial != null ? renderer.sharedMaterial.name : "null")}");
                 }
             }
         }

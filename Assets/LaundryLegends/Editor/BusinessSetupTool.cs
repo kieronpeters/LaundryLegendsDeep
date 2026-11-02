@@ -165,8 +165,8 @@ namespace LaundryLegends.Editor
                 var slotObject = new GameObject($"OrderSlot_{i:00}");
                 slotObject.transform.SetParent(rackRoot.transform, true);
                 Vector3 world = counter != null
-                    ? counter.position + counter.right * ((i - (OrderSlots - 1) * 0.5f) * 0.28f) + Vector3.up * 0.75f
-                    : new Vector3(-4.5f + (i - (OrderSlots - 1) * 0.5f) * 0.28f, 1.3f, -2.5f);
+                    ? counter.position + counter.right * ((i - (OrderSlots - 1) * 0.5f) * 0.28f) + Vector3.up * 0.57f
+                    : new Vector3(-4.5f + (i - (OrderSlots - 1) * 0.5f) * 0.28f, 1.12f, -2.5f);
                 slotObject.transform.position = world;
                 slotObject.transform.rotation = counter != null ? counter.rotation : Quaternion.identity;
                 slotObject.transform.localScale = Vector3.one;
