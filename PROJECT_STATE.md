@@ -125,6 +125,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 ## 7. Git state
 
 - Branch: `main`
+- Phase 8 completion tag: `phase-8-complete` (`ddf82639b992c1e1285a6a955ea9037c70c437d9`); `main` fast-forwarded to the same commit on 2026-11-02 (PR #1 merged into `phase-8` first)
 - Bootstrap checkpoint tag: `bootstrap-v0.1` (`da130ddad18b633fb9bad82a3df5107168c91dd0`)
 - Baseline commit: `b78218cccfeea741d3d227ffa95e679e9ba92a72` (`chore: bootstrap Laundry Legends development system`)
 - Bootstrap close-out commit: `ab511d7d945307d55308f0e880f695ddecece7fc`

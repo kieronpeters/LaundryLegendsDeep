@@ -62,13 +62,13 @@
   },
   "git": {
     "branch": "main",
-    "checkpointTag": "bootstrap-v0.1",
-    "checkpointCommit": "da130ddad18b633fb9bad82a3df5107168c91dd0",
+    "checkpointTag": "phase-8-complete",
+    "checkpointCommit": "ddf82639b992c1e1285a6a955ea9037c70c437d9",
     "baselineCommit": "b78218cccfeea741d3d227ffa95e679e9ba92a72",
     "remote": null,
-    "workingTree": "clean after the Phase 8 playtest blocker fix commit; the untracked ProjectSettings/PackageManagerSettings.asset is preserved but not committed",
+    "workingTree": "clean; main = phase-8 = phase-8-complete at ddf8263 (Phase 8 merged and tagged 2026-11-02)",
     "unityProjectCommit": "e244ba434ace223ff064df52b6a683615d9fb503",
-    "lastCheckpointAt": "2026-11-01T15:40:00+08:00"
+    "lastCheckpointAt": "2026-11-02T20:45:00+08:00"
   },
   "environment": {
     "opencodeCli": "2.0.28",
