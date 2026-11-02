@@ -1,12 +1,12 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-11-04 (Phases 10-12 implemented on `phase-10-12`; awaiting owner review)
-**Current milestone:** M4 - Operations and M5 - Presentation, in progress on the combined branch
+**Last updated:** 2026-11-04 (Phases 10-12 merged to `main`; owner review pending)
+**Current milestone:** M4 - Operations and M5 - Presentation, merged on `main`
 **Current phase:** Phase 10 - Business operations, **implemented**; Phases 11 and 12, **partially implemented**
 **Next phase:** Phase 13 - Audio and presentation, **planned**
-**Active task:** None - combined Phase 10-12 branch is ready for review
-**Next recommended task:** Owner playtest of the combined branch, then close remaining Phase 11/12 items (`LL-F-010`, `LL-B-010`, `LL-B-011`, `LL-A-004`)
-**Review checkpoint:** Phase 9 merged to `main` at `1978451` (PR #2); tag `phase-9-complete`; combined work on `phase-10-12`.
+**Active task:** None - `main` contains the combined Phase 10-12 work
+**Next recommended task:** Owner playtest of `main` (PR #3 at `73dba2e`), then close remaining Phase 11/12 items
+**Review checkpoint:** PR #3 merged to `main` at `73dba2e`; Phase 9 tag `phase-9-complete` unchanged.
 **Post-approval tickets:** `LL-B-012`, `LL-B-013`, `LL-A-005`, `LL-B-014`, `LL-B-015`, `LL-B-009` and `LL-F-009` are addressed in this branch; see `.orchestrator/BACKLOG.md` for evidence.
 
 > **Manager note (2026-11-01).** Sections below are historical and describe the

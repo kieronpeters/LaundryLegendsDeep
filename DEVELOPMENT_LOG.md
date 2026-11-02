@@ -1453,3 +1453,11 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 **Evidence:** EditMode 164/164; PlayMode 68 total, 66 passed, 0 failed, 2 explicit skips; build 212 MB / 0 errors. Captures: `arcade-maze.png`, `arcade-fight-turbo.png`, `12-cabinet-front.png`, `12-vending.png`, `hud-layout.png`.
 
 **Still deferred:** `LL-F-001`/`LL-B-005` (board/API), `LL-B-006` (external MCP focus), `LL-F-004`/`LL-F-007` (Unreal), `LL-F-005` (Phase 14 save), `LL-T-003`/`LL-T-005` (P3 tool refactors), `LL-A-001` (hands).
+
+## 2026-11-04 - PR #3 merged to main
+
+- `phase-10-12` opened as PR #3 and merged into `main` with a merge commit at `73dba2e`.
+- Local `main` fast-forwarded to `origin/main`; working tree clean.
+- Branch `phase-10-12` and its commits (`5e93cbb`, `9ada561`, `537dd88`, `74f8875`) remain for history.
+- Verified before merge: EditMode 164/164, PlayMode 66 passed / 0 failed / 2 skipped, build 212 MB / 0 errors.
+- Phase 10-12 remain `in_progress` in the phase board pending the owner playtest; deferred tickets are recorded in `.orchestrator/BACKLOG.md`.
