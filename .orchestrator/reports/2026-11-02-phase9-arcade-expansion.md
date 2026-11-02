@@ -3,7 +3,7 @@
 **Date:** 2026-11-02
 **Phase:** 9 — Arcade expansion
 **Status:** Automated implementation complete; **owner playtest (LL-P9-010) pending**
-**Commit:** `5881945` on `phase-9`
+**Commit:** `5881945` (implementation) and `b8e66ad` (self-review fixes) on `phase-9`
 **Build:** `Build/LaundryLegends.exe` (198 MB, 0 build errors)
 **Decision:** `.orchestrator/decisions/0012-phase-9-arcade-expansion.md`
 
@@ -85,8 +85,8 @@ upkeep, a visible expansion bay, and milestone feedback.
 |---|---|---|
 | Script compile (batch) | Passed, exit 0 | `Logs/phase9-compile.log` |
 | Scene builder | Passed, exit 0; `[BACKROOM]` layout logged | `Logs/phase9-scene.log` |
-| EditMode suite | **158 / 158 passed** | `TestResults/phase9-editmode-6.xml` |
-| PlayMode suite | **59 passed, 0 failed, 2 explicit skipped** | `TestResults/phase9-playmode-3.xml` |
+| EditMode suite | **158 / 158 passed** | `TestResults/phase9-editmode-7.xml` |
+| PlayMode suite | **59 passed, 0 failed, 2 explicit skipped** | `TestResults/phase9-playmode-4.xml` |
 | Explicit $300 progression | **1 / 1 passed** | `TestResults/phase9-progression.xml` |
 | Windows build | **Succeeded, 198 MB, 0 errors** | `Logs/phase9-build.log`, `Build/LaundryLegends.exe` |
 | Scene wiring (PlayMode) | 5 slots, capacity 3, second machine playable, upgrade kiosk, expansion bay, floor raycast, HUD text | `ArcadeExpansionPlayModeTests` |
@@ -100,6 +100,26 @@ upkeep, a visible expansion bay, and milestone feedback.
   directory in this run. Owner manual launch is the next check.
 - **Owner dual-business playtest:** pending (LL-P9-010).
 - **Save/load:** out of scope for Phase 9.
+
+## Self-review fixes (`b8e66ad`)
+
+- **Purchase pedestal blocked the bought cabinet.** The install-point box sat
+  1.15 m in front of the anchor and stayed after purchase, between the player and
+  the cabinet. It is now hidden when the slot activates; `IsReachable` uses the
+  anchor only, so capacity is unaffected.
+- **Extra cabinets' attract modes never stopped when played.** Each extra slot's
+  `ArcadeAttractMode` now follows its own power and busy state every frame.
+- **The expansion kiosk stood in the middle of the new doorway.** Moved to the
+  south-west corner so the 2.4 m opening is clear.
+- **Scene rebuild could select the wrong cabinet.** It now uses
+  `service.GetSlotCabinet(0)` instead of the first cabinet found, which previously
+  could be an inactive extra clone that was then destroyed with the shell.
+- **Reputation decay looped per point.** It now applies the whole elapsed decay in
+  one step, so a large simulated delta cannot stall a test.
+- **Inline upgrade definitions leaked.** The kiosk releases its runtime
+  ScriptableObject on destroy.
+- Added PlayMode assertions that the service, spawner and HUD all share the same
+  reputation tracker.
 
 ## Known risks and limitations
 
