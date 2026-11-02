@@ -123,9 +123,9 @@ namespace LaundryLegends.Editor
                 else dryers++;
             }
 
-            if (washers != 1 || dryers != 1)
+            if (washers != 4 || dryers != 4)
             {
-                throw new InvalidOperationException($"Expected one washer and one dryer, found {washers}/{dryers}.");
+                throw new InvalidOperationException($"Expected four washers and four dryers, found {washers}/{dryers}.");
             }
 
             FoldingStation folding = room.GetComponentInChildren<FoldingStation>(true);

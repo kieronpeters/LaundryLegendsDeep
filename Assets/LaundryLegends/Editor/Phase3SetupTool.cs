@@ -126,14 +126,7 @@ namespace LaundryLegends.Editor
                     throw new InvalidOperationException($"GreyboxRoom has no {MachineHookTargetName} child.");
                 }
 
-                foreach (MachineLoadHook existing in room.GetComponentsInChildren<MachineLoadHook>(true))
-                {
-                    if (existing.gameObject != machine.gameObject)
-                    {
-                        UnityEngine.Object.DestroyImmediate(existing);
-                    }
-                }
-
+                // Other machines own their own hooks now; do not delete them.
                 Transform drum = machine.Find(DrumSlotName);
                 if (drum == null)
                 {
@@ -202,48 +195,8 @@ namespace LaundryLegends.Editor
                 {
                     ValidateMachineGeometry(machine, failures);
 
-                    MachineLoadHook[] hooks = room.GetComponentsInChildren<MachineLoadHook>(true);
-                    if (hooks.Length != 1)
-                    {
-                        failures.Add($"Expected exactly one MachineLoadHook, found {hooks.Length}.");
-                    }
-                    else if (hooks[0].gameObject != machine.gameObject)
-                    {
-                        failures.Add($"MachineLoadHook must be on {MachineHookTargetName}, found on {hooks[0].gameObject.name}.");
-                    }
-                    else
-                    {
-                        MachineLoadHook hook = hooks[0];
-                        if (hook.Slot == null)
-                        {
-                            failures.Add("MachineLoadHook has no CarrySlot.");
-                        }
-                        else
-                        {
-                            Transform drum = machine.Find(DrumSlotName);
-                            if (drum == null || hook.Slot.gameObject != drum.gameObject)
-                            {
-                                failures.Add($"MachineLoadHook slot must be the {MachineHookTargetName}/{DrumSlotName} child.");
-                            }
-
-                            if (!hook.Slot.AcceptsKind(LaundryItemKind.LooseLaundry))
-                            {
-                                failures.Add("Machine slot must accept loose laundry.");
-                            }
-
-                            if (hook.Slot.AcceptsKind(LaundryItemKind.Basket)
-                                || hook.Slot.AcceptsKind(LaundryItemKind.Bag))
-                            {
-                                failures.Add("Machine slot must reject baskets and bags.");
-                            }
-                        }
-                    }
-
-                    CarrySlot[] slots = room.GetComponentsInChildren<CarrySlot>(true);
-                    if (slots.Length != 1)
-                    {
-                        failures.Add($"Expected exactly one machine CarrySlot, found {slots.Length}.");
-                    }
+                    // Machine load/dry hooks across the full wall are owned and
+                    // validated by MachineSetupTool.ValidateAllMachines().
                 }
             }
 

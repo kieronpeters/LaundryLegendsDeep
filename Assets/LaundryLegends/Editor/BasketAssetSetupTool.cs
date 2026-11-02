@@ -282,11 +282,7 @@ namespace LaundryLegends.Editor
                     }
                 }
 
-                MachineLoadHook[] hooks = room.GetComponentsInChildren<MachineLoadHook>(true);
-                if (hooks.Length != 1 || hooks[0].gameObject.name != "Machine_1")
-                {
-                    failures.Add("MachineLoadHook must remain exactly once on Machine_1.");
-                }
+                // Machine hooks are validated by MachineSetupTool.ValidateAllMachines().
 
                 Transform machineOne = FindChild(room.transform, "Machine_1");
                 if (machineOne == null
@@ -611,11 +607,7 @@ namespace LaundryLegends.Editor
                     }
                 }
 
-                MachineLoadHook[] hooks = room.GetComponentsInChildren<MachineLoadHook>(true);
-                if (hooks.Length != 1 || hooks[0].gameObject.name != "Machine_1")
-                {
-                    failures.Add("MachineLoadHook must remain exactly once on Machine_1.");
-                }
+                // Machine hooks are validated by MachineSetupTool.ValidateAllMachines().
             }
 
             if (failures.Count > 0)
@@ -789,11 +781,7 @@ namespace LaundryLegends.Editor
                     failures.Add($"Expected 8 appliance models, found {models}.");
                 }
 
-                MachineLoadHook[] hooks = room.GetComponentsInChildren<MachineLoadHook>(true);
-                if (hooks.Length != 1 || hooks[0].gameObject.name != "Machine_1")
-                {
-                    failures.Add("MachineLoadHook must remain exactly once on Machine_1.");
-                }
+                // Machine hooks are validated by MachineSetupTool.ValidateAllMachines().
             }
 
             if (failures.Count > 0)

@@ -131,8 +131,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _anchor: {fileID: 2032556070795913907}
-  _acceptAllKinds: 0
-  _acceptedKinds: 01000000
+  _acceptAllKinds: 1
+  _acceptedKinds: 
 --- !u!1 &98790557908160864
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,6 +435,53 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &231119371424431590
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4405703213075995802}
+  - component: {fileID: 8277939084967374794}
+  m_Layer: 0
+  m_Name: DrumSlot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4405703213075995802
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231119371424431590}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6465532901824160952}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8277939084967374794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231119371424431590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24481c50676cb224faaa620e7bbf0ecb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _anchor: {fileID: 4405703213075995802}
+  _acceptAllKinds: 1
+  _acceptedKinds: 
 --- !u!1 &233208350684494319
 GameObject:
   m_ObjectHideFlags: 0
@@ -7714,6 +7761,7 @@ GameObject:
   - component: {fileID: 5675208744359065240}
   - component: {fileID: 749829937255049501}
   - component: {fileID: 3546497777814405880}
+  - component: {fileID: 883897850031485201}
   m_Layer: 0
   m_Name: Machine_4
   m_TagString: Untagged
@@ -7735,6 +7783,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1210853412147331889}
+  - {fileID: 4319463013802819055}
   m_Father: {fileID: 2187488859163604281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5675208744359065240
@@ -7811,6 +7860,24 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &883897850031485201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3036400815950012520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2497e8e79aee934e935b2b421d51e10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _slot: {fileID: 4994342406128223854}
+  _kind: 1
+  _washerDuration: 20
+  _dryerDuration: 25
+  _emptyPrompt: Load washer
+  _occupiedPrompt: Take laundry
 --- !u!1 &3194877682921956772
 GameObject:
   m_ObjectHideFlags: 0
@@ -10262,6 +10329,53 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &4214017996698112911
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1654551746544126659}
+  - component: {fileID: 8665851206239038062}
+  m_Layer: 0
+  m_Name: DrumSlot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1654551746544126659
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4214017996698112911}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1428830999605064959}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8665851206239038062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4214017996698112911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24481c50676cb224faaa620e7bbf0ecb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _anchor: {fileID: 1654551746544126659}
+  _acceptAllKinds: 1
+  _acceptedKinds: 
 --- !u!1 &4229255907093458378
 GameObject:
   m_ObjectHideFlags: 0
@@ -10274,6 +10388,7 @@ GameObject:
   - component: {fileID: 8241408747533617003}
   - component: {fileID: 8384375426554996560}
   - component: {fileID: 4280802600038256081}
+  - component: {fileID: 7040757807388968018}
   m_Layer: 0
   m_Name: Machine_3
   m_TagString: Untagged
@@ -10295,6 +10410,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4614970894116528806}
+  - {fileID: 3109443441490591671}
   m_Father: {fileID: 2187488859163604281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8241408747533617003
@@ -10371,6 +10487,24 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7040757807388968018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4229255907093458378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2497e8e79aee934e935b2b421d51e10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _slot: {fileID: 7631927289207125115}
+  _kind: 0
+  _washerDuration: 20
+  _dryerDuration: 25
+  _emptyPrompt: Load washer
+  _occupiedPrompt: Take laundry
 --- !u!1 &4232561332653738409
 GameObject:
   m_ObjectHideFlags: 0
@@ -11104,6 +11238,53 @@ MonoBehaviour:
   _dryerDuration: 25
   _emptyPrompt: Load washer
   _occupiedPrompt: Take laundry
+--- !u!1 &4473912840876702594
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3109443441490591671}
+  - component: {fileID: 7631927289207125115}
+  m_Layer: 0
+  m_Name: DrumSlot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3109443441490591671
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4473912840876702594}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5678727632291674099}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7631927289207125115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4473912840876702594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24481c50676cb224faaa620e7bbf0ecb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _anchor: {fileID: 3109443441490591671}
+  _acceptAllKinds: 1
+  _acceptedKinds: 
 --- !u!1 &4596650678127862669
 GameObject:
   m_ObjectHideFlags: 0
@@ -14175,6 +14356,7 @@ GameObject:
   - component: {fileID: 6028025052616395794}
   - component: {fileID: 3788105616494143996}
   - component: {fileID: 524613715980610051}
+  - component: {fileID: 1127359147930937801}
   m_Layer: 0
   m_Name: Machine_8
   m_TagString: Untagged
@@ -14196,6 +14378,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7898738148047067339}
+  - {fileID: 4880463218111455599}
   m_Father: {fileID: 2187488859163604281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6028025052616395794
@@ -14272,6 +14455,24 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1127359147930937801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5671985565573341097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2497e8e79aee934e935b2b421d51e10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _slot: {fileID: 6585260100127035720}
+  _kind: 1
+  _washerDuration: 20
+  _dryerDuration: 25
+  _emptyPrompt: Load washer
+  _occupiedPrompt: Take laundry
 --- !u!1 &5696740228804820763
 GameObject:
   m_ObjectHideFlags: 0
@@ -15053,6 +15254,7 @@ GameObject:
   - component: {fileID: 2797960785346811589}
   - component: {fileID: 7319160877548948046}
   - component: {fileID: 2610263149571660093}
+  - component: {fileID: 6586581980688428881}
   m_Layer: 0
   m_Name: Machine_6
   m_TagString: Untagged
@@ -15074,6 +15276,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7626131594634401704}
+  - {fileID: 5178374438824993040}
   m_Father: {fileID: 2187488859163604281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2797960785346811589
@@ -15150,6 +15353,24 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6586581980688428881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6083768513162299892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2497e8e79aee934e935b2b421d51e10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _slot: {fileID: 335548028653506349}
+  _kind: 1
+  _washerDuration: 20
+  _dryerDuration: 25
+  _emptyPrompt: Load washer
+  _occupiedPrompt: Take laundry
 --- !u!1 &6093077955862713563
 GameObject:
   m_ObjectHideFlags: 0
@@ -16434,6 +16655,7 @@ GameObject:
   - component: {fileID: 6768913496893433426}
   - component: {fileID: 7177009013404645996}
   - component: {fileID: 4933952946938629755}
+  - component: {fileID: 5857420666769145559}
   m_Layer: 0
   m_Name: Machine_7
   m_TagString: Untagged
@@ -16455,6 +16677,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7893117055391705261}
+  - {fileID: 1654551746544126659}
   m_Father: {fileID: 2187488859163604281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6768913496893433426
@@ -16531,6 +16754,24 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5857420666769145559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6393224306905404919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2497e8e79aee934e935b2b421d51e10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _slot: {fileID: 8665851206239038062}
+  _kind: 0
+  _washerDuration: 20
+  _dryerDuration: 25
+  _emptyPrompt: Load washer
+  _occupiedPrompt: Take laundry
 --- !u!1 &6413444266932312953
 GameObject:
   m_ObjectHideFlags: 0
@@ -18993,6 +19234,53 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7017538475376968043
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4319463013802819055}
+  - component: {fileID: 4994342406128223854}
+  m_Layer: 0
+  m_Name: DryerSlot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4319463013802819055
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7017538475376968043}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.4, z: -0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1173584063976652038}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4994342406128223854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7017538475376968043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24481c50676cb224faaa620e7bbf0ecb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _anchor: {fileID: 4319463013802819055}
+  _acceptAllKinds: 1
+  _acceptedKinds: 
 --- !u!1 &7023506361775388537
 GameObject:
   m_ObjectHideFlags: 0
@@ -20296,6 +20584,53 @@ Transform:
   - {fileID: 581759391233151168}
   m_Father: {fileID: 2187488859163604281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7519529257060560059
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4880463218111455599}
+  - component: {fileID: 6585260100127035720}
+  m_Layer: 0
+  m_Name: DryerSlot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4880463218111455599
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7519529257060560059}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.4, z: -0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3633873496581246247}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6585260100127035720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7519529257060560059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24481c50676cb224faaa620e7bbf0ecb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _anchor: {fileID: 4880463218111455599}
+  _acceptAllKinds: 1
+  _acceptedKinds: 
 --- !u!1 &7536162217232612910
 GameObject:
   m_ObjectHideFlags: 0
@@ -20550,6 +20885,7 @@ GameObject:
   - component: {fileID: 7926716467998315701}
   - component: {fileID: 5083138883344970284}
   - component: {fileID: 1869041568575796752}
+  - component: {fileID: 4481129669474333021}
   m_Layer: 0
   m_Name: Machine_5
   m_TagString: Untagged
@@ -20571,6 +20907,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4511923232574757596}
+  - {fileID: 4405703213075995802}
   m_Father: {fileID: 2187488859163604281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7926716467998315701
@@ -20647,6 +20984,24 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4481129669474333021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7607694803715751201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2497e8e79aee934e935b2b421d51e10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _slot: {fileID: 8277939084967374794}
+  _kind: 0
+  _washerDuration: 20
+  _dryerDuration: 25
+  _emptyPrompt: Load washer
+  _occupiedPrompt: Take laundry
 --- !u!1 &7632824441468532885
 GameObject:
   m_ObjectHideFlags: 0
@@ -20738,7 +21093,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24481c50676cb224faaa620e7bbf0ecb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _anchor: {fileID: 0}
+  _anchor: {fileID: 1043113026614514892}
   _acceptAllKinds: 1
   _acceptedKinds: 
 --- !u!1 &7741718674585924270
@@ -22197,6 +22552,53 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &8204203359520210354
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5178374438824993040}
+  - component: {fileID: 335548028653506349}
+  m_Layer: 0
+  m_Name: DryerSlot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5178374438824993040
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8204203359520210354}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.4, z: -0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7071402242323713592}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &335548028653506349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8204203359520210354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24481c50676cb224faaa620e7bbf0ecb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _anchor: {fileID: 5178374438824993040}
+  _acceptAllKinds: 1
+  _acceptedKinds: 
 --- !u!1 &8228319965913962696
 GameObject:
   m_ObjectHideFlags: 0
