@@ -9,22 +9,22 @@
                     "renderPipeline":  "Universal Render Pipeline 17.0.4",
                     "targetPlatform":  "Windows 64-bit"
                 },
-    "updatedAt":  "2026-11-03T04:00:00+08:00",
+    "updatedAt":  "2026-11-03T05:00:00+08:00",
     "currentMilestone":  {
                              "id":  "M1",
                              "name":  "Playable laundry",
                              "status":  "in_progress"
                          },
     "currentPhase":  {
-                         "number":  9,
-                         "name":  "Arcade expansion",
-                         "status":  "complete",
-                         "file":  ".orchestrator/decisions/0012-phase-9-arcade-expansion.md",
-                         "completionNote":  "Phase 9 implemented on the phase-9 branch: data-driven machine catalogue, multi-slot ArcadeService (slot 0 keeps the Phase 8 API), four extra anchors (three open, two sealed in the expansion bay), three upgrade kiosks with income/traffic multipliers and decor, laundry reputation (paid/tip/abandon/decay) feeding traffic and income, 120 s upkeep, a visible walkable expansion bay (capacity 3 -\u003e 5), five one-time milestones and an IMGUI arcade HUD. Automated evidence: EditMode 158/158, PlayMode 59 passed / 0 failed / 2 explicit skipped, explicit  progression 1/1, Windows build 198 MB / 0 errors at Build/LaundryLegends.exe. Owner playtest (LL-P9-010) remains the only open acceptance gate. Machine-wall fix (8d86fef): all eight appliances now have load/dry hooks (4 washers, 4 dryers) and the staff dispatches to any free unit; Phase 10 order queue is 10 active. Review round 2 (806d1e1): U purchase menu replaces the ground pedestals, carpet gated to and placed in the expansion bay, posters moved/added, open door leaf hidden, parcel bundle, rotating drums, hidden-room visitor removed, male order customer, silent staff. EditMode 159/159; PlayMode 59/0/2; build 199 MB/0 errors. Owner approved the round 2 fullscreen build on 2026-11-03. Phase 9 complete with follow-up tickets: LL-B-009 (ambient counter), LL-B-010 (staff machine choice), LL-A-005/006 (machine/cabinet art), LL-F-009/010 (voice, game variety), LL-B-011 (menu labels), LL-B-008 (visual review)."
+                         "number":  10,
+                         "name":  "Business operations and order flow",
+                         "status":  "ready",
+                         "file":  ".orchestrator/decisions/0013-phase-10-business-operations.md",
+                         "completionNote":  "Branch phase-10 created from main 1978451. Decision 0013 accepted: 10 active orders, consumable shelves with stock blocking, ready-order shelf, 24-hour clock and 30-day bills. LL-P10-002 (business clock) is ready."
                      },
     "nextPhase":  {
-                      "number":  10,
-                      "name":  "Business operations and order flow",
+                      "number":  11,
+                      "name":  "Characters and animation",
                       "status":  "planned",
                       "file":  "ROADMAP.md"
                   },
@@ -33,8 +33,8 @@
     "nextTask":  "LL-P10-002",
     "taskCounts":  {
                        "complete":  65,
-                       "ready":  0,
-                       "planned":  9,
+                       "ready":  1,
+                       "planned":  8,
                        "pending":  0,
                        "inProgress":  0,
                        "failed":  0,
@@ -52,7 +52,7 @@
                           "7":  "complete",
                           "8":  "complete",
                           "9":  "complete",
-                          "10":  "planned",
+                          "10":  "ready",
                           "11":  "planned",
                           "12":  "planned",
                           "13":  "planned",
@@ -62,14 +62,14 @@
                           "17":  "planned"
                       },
     "git":  {
-                "branch":  "phase-9",
+                "branch":  "phase-10",
                 "checkpointTag":  "phase-9-complete",
-                "checkpointCommit":  "1d71e77",
+                "checkpointCommit":  "197845151b6608b68446821cdbfb3aa432ae863e",
                 "baselineCommit":  "b78218cccfeea741d3d227ffa95e679e9ba92a72",
                 "remote":  null,
-                "workingTree":  "post-approval tickets committed; approved build unchanged",
+                "workingTree":  "clean after Phase 10 branch setup",
                 "unityProjectCommit":  "e244ba434ace223ff064df52b6a683615d9fb503",
-                "lastCheckpointAt":  "2026-11-03T04:00:00+08:00"
+                "lastCheckpointAt":  "2026-11-03T05:00:00+08:00"
             },
     "environment":  {
                         "opencodeCli":  "2.0.28",
@@ -163,23 +163,22 @@
                    "note":  "Procedural placeholders only: 3 scenes, 5 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
                },
     "lastRun":  {
-                    "id":  "2026-11-03-ll-p9-closeout",
-                    "report":  ".orchestrator/reports/2026-11-03-phase9-owner-approval.md",
+                    "id":  "2026-11-03-ll-p9-merge-p10-branch",
+                    "report":  ".orchestrator/reports/2026-11-03-phase9-merge-and-phase10-start.md",
                     "status":  "complete",
-                    "startedAt":  "2026-11-03T03:00:00+08:00",
-                    "completedAt":  "2026-11-03T04:00:00+08:00",
+                    "startedAt":  "2026-11-03T04:30:00+08:00",
+                    "completedAt":  "2026-11-03T05:00:00+08:00",
                     "checks":  {
-                                   "owner_playtest":  "approved 2026-11-03",
-                                   "editmode":  "159/159 passed",
-                                   "playmode":  "59 passed, 0 failed, 2 explicit skipped",
-                                   "build":  "199 MB, 0 errors",
-                                   "known_debt":  "LL-B-009, LL-B-010, LL-A-005, LL-A-006, LL-F-009, LL-F-010, LL-B-011, LL-B-008",
-                                   "post_approval_tickets":  "LL-B-012 (P1), LL-B-013, LL-A-005, LL-B-014, LL-B-015"
+                                   "pr_merge":  "PR #2 merged at 1978451",
+                                   "main":  "fast-forwarded to 1978451",
+                                   "phase10_branch":  "phase-10 created and pushed",
+                                   "phase10_ready":  "LL-P10-002 ready",
+                                   "approved_build":  "199 MB / 0 errors; owner approved"
                                },
                     "filesChanged":  [
-                                         ".orchestrator/tasks/phase-09.json",
                                          ".orchestrator/state.json",
-                                         ".orchestrator/reports/2026-11-03-phase9-owner-approval.md",
+                                         ".orchestrator/tasks/phase-10.json",
+                                         ".orchestrator/reports/2026-11-03-phase9-merge-and-phase10-start.md",
                                          "PROJECT_STATE.md",
                                          "ROADMAP.md",
                                          "DEVELOPMENT_LOG.md"

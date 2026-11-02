@@ -555,7 +555,7 @@ Arcade machine prefab/definition, arcade scripts, lights/audio placeholders, inc
 
 ## Phase 9 — Arcade expansion
 
-**Status:** Complete (2026-11-03) - owner approved the round 2 fullscreen build; automated checks green; follow-up tickets recorded. Merge request to `main` open.
+**Status:** Complete (2026-11-03) - owner approved the round 2 fullscreen build; automated checks green; follow-up tickets recorded. Merged to `main` via PR #2 at `1978451`.
 **Objective:** Add machines, upgrades, room expansion, decoration, improved income, progression, and meaningful laundry/arcade links.
 **Depends on:** Phase 8.
 
@@ -607,7 +607,7 @@ Arcade definitions/prefabs, decoration props, expansion geometry, balance data, 
 
 ## Phase 10 - Business operations and order flow
 
-**Status:** Planned - decision 0013 accepted; LL-P10-001 complete, LL-P10-002 ready after LL-P9-010.
+**Status:** Ready (2026-11-03) - branch `phase-10` created from `main`; LL-P10-001 complete, LL-P10-002 ready to start.
 **Objective:** Turn the laundry into a stock-and-cash business: consumable shelves, a ten-order queue with a ready-order shelf, and a 24-hour calendar with recurring utility and rent bills.
 **Depends on:** Phases 5 and 9.
 

@@ -1,250 +1,396 @@
 {
-  "schemaVersion": 1,
-  "phase": 10,
-  "name": "Business operations and order flow",
-  "status": "planned",
-  "updatedAt": "2026-11-02T23:40:00+08:00",
-  "tasks": [
-    {
-      "id": "LL-P10-001",
-      "title": "Lock the business clock, stock, queue and billing contracts",
-      "status": "complete",
-      "priority": 1,
-      "owner": "build",
-      "dependsOn": ["LL-P9-010"],
-      "objective": "Define the consumables, order queue, ready shelf, 24-hour clock, 30-day bills and balance before implementation.",
-      "scope": [".orchestrator/decisions/**", ".orchestrator/tasks/phase-10.json", ".orchestrator/state.json", "ROADMAP.md", "PROJECT_STATE.md"],
-      "mustNotTouch": ["Assets/**", "Packages/**", "ProjectSettings/**"],
-      "acceptance": [
-        "Consumable items, costs and capacities are explicit",
-        "Consumption and out-of-stock blocking rules are defined",
-        "Ten active orders and ten ready orders are defined",
-        "Clock, billing cadence, grace and late-fee rules are defined",
-        "Task order and acceptance mapping are recorded"
-      ],
-      "checks": [
-        {"name": "Contract review", "status": "passed", "command": "Write decision 0013 and phase-10 tasks", "evidence": ".orchestrator/decisions/0013-phase-10-business-operations.md"}
-      ],
-      "result": "Decision 0013 accepted; ten tasks recorded.",
-      "retryCount": 0,
-      "startedAt": "2026-11-02T23:30:00+08:00",
-      "completedAt": "2026-11-02T23:40:00+08:00"
-    },
-    {
-      "id": "LL-P10-002",
-      "title": "Add the business clock and day counter",
-      "status": "planned",
-      "priority": 2,
-      "owner": "ll-unity-dev",
-      "dependsOn": ["LL-P10-001"],
-      "objective": "Provide a serializable Day 1+ 24-hour clock with real-time advance, deterministic advance and a skip-to-next-day action.",
-      "scope": ["Assets/LaundryLegends/Scripts/Business/**", "Assets/LaundryLegends/Tests/**", "Assets/LaundryLegends/Scenes/Laundromat.unity"],
-      "mustNotTouch": ["Assets/LaundryLegends/Scripts/Arcade/**", "Assets/LaundryLegends/Scripts/Progression/SecretRoomController.cs"],
-      "acceptance": [
-        "Clock starts at Day 1 08:00 and rolls over at 24:00",
-        "Tick and AdvanceMinutes are deterministic in tests",
-        "SkipToNextDay reaches 08:00 the following day",
-        "Clock state is serializable"
-      ],
-      "checks": [
-        {"name": "Clock rollover", "status": "pending", "command": "EditMode clock tests", "evidence": "Pending"}
-      ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
-    },
-    {
-      "id": "LL-P10-003",
-      "title": "Add consumable shelves, restock purchases and stock state",
-      "status": "planned",
-      "priority": 3,
-      "owner": "ll-unity-dev",
-      "dependsOn": ["LL-P10-001"],
-      "objective": "Add detergent, fragrance and plastic shelves with capacity 10, one-unit purchases at a fixed cost, and visible stock.",
-      "scope": ["Assets/LaundryLegends/Scripts/Business/**", "Assets/LaundryLegends/ScriptableObjects/Business/**", "Assets/LaundryLegends/Editor/*SetupTool.cs", "Assets/LaundryLegends/Scenes/Laundromat.unity", "Assets/LaundryLegends/Tests/**"],
-      "mustNotTouch": ["Assets/LaundryLegends/Scripts/Economy/EconomyService.cs"],
-      "acceptance": [
-        "One shelf exists per consumable and holds at most 10",
-        "Each interaction buys exactly one unit through EconomyService",
-        "A full shelf rejects the purchase without spending",
-        "Stock survives in serializable state"
-      ],
-      "checks": [
-        {"name": "Stock purchase", "status": "pending", "command": "EditMode/PlayMode shelf tests", "evidence": "Pending"}
-      ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
-    },
-    {
-      "id": "LL-P10-004",
-      "title": "Consume stock in processing and block empty stages",
-      "status": "planned",
-      "priority": 4,
-      "owner": "ll-unity-dev",
-      "dependsOn": ["LL-P10-002", "LL-P10-003"],
-      "objective": "Make wash consume detergent, dry consume fragrance and wrap consume plastic; an empty shelf blocks the stage with a clear reason.",
-      "scope": ["Assets/LaundryLegends/Scripts/Business/**", "Assets/LaundryLegends/Scripts/Laundry/**", "Assets/LaundryLegends/Tests/**"],
-      "mustNotTouch": ["Assets/LaundryLegends/Scripts/Economy/EconomyService.cs"],
-      "acceptance": [
-        "Each stage consumes exactly one unit",
-        "An empty shelf blocks the stage and leaves the item unchanged",
-        "Restocking immediately unblocks the stage",
-        "The blocker is visible in the ticket or prompt"
-      ],
-      "checks": [
-        {"name": "Stock blocking", "status": "pending", "command": "EditMode processing/stock tests", "evidence": "Pending"}
-      ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
-    },
-    {
-      "id": "LL-P10-005",
-      "title": "Raise the order queue to ten active orders",
-      "status": "planned",
-      "priority": 5,
-      "owner": "ll-unity-dev",
-      "dependsOn": ["LL-P10-002", "LL-P10-003"],
-      "objective": "Let up to ten orders be active at once with their own drop-off slots and customers, without breaking the single-order path.",
-      "scope": ["Assets/LaundryLegends/Scripts/Customers/**", "Assets/LaundryLegends/Scripts/Business/**", "Assets/LaundryLegends/Scenes/Laundromat.unity", "Assets/LaundryLegends/Tests/**"],
-      "mustNotTouch": ["Assets/LaundryLegends/Scripts/Progression/SecretRoomController.cs"],
-      "acceptance": [
-        "Ten orders can be registered and active together",
-        "Customers do not overwrite each other's tickets or items",
-        "The single-order flow still works",
-        "The queue rejects a sixth active order with a clear reason"
-      ],
-      "checks": [
-        {"name": "Ten active orders", "status": "pending", "command": "EditMode/PlayMode queue tests", "evidence": "Pending"}
-      ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
-    },
-    {
-      "id": "LL-P10-006",
-      "title": "Add the ready-order shelf and ticket pickup",
-      "status": "planned",
-      "priority": 6,
-      "owner": "ll-unity-dev",
-      "dependsOn": ["LL-P10-005"],
-      "objective": "Move wrapped parcels to a ten-slot ready shelf, let multiple orders be ready, and have the matching customer collect and pay by ticket.",
-      "scope": ["Assets/LaundryLegends/Scripts/Customers/**", "Assets/LaundryLegends/Scripts/Business/**", "Assets/LaundryLegends/Scenes/Laundromat.unity", "Assets/LaundryLegends/Tests/**"],
-      "mustNotTouch": ["Assets/LaundryLegends/Scripts/Economy/EconomyService.cs"],
-      "acceptance": [
-        "Up to ten wrapped orders can wait on the shelf",
-        "Multiple orders can be ready simultaneously",
-        "Each ticket pays exactly once when collected",
-        "A full shelf blocks wrapping with a clear reason"
-      ],
-      "checks": [
-        {"name": "Ready shelf + pickup", "status": "pending", "command": "EditMode/PlayMode ready-shelf tests", "evidence": "Pending"}
-      ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
-    },
-    {
-      "id": "LL-P10-007",
-      "title": "Add 30-day rent and utility billing with a bills menu",
-      "status": "planned",
-      "priority": 7,
-      "owner": "ll-unity-dev",
-      "dependsOn": ["LL-P10-002"],
-      "objective": "Generate an itemized rent/electricity/water bill every 30 days, allow payment from a menu, and keep an unaffordable bill recoverable.",
-      "scope": ["Assets/LaundryLegends/Scripts/Business/**", "Assets/LaundryLegends/Scripts/UI/**", "Assets/LaundryLegends/Tests/**"],
-      "mustNotTouch": ["Assets/LaundryLegends/Scripts/Economy/EconomyService.cs"],
-      "acceptance": [
-        "A bill is generated at day 30 and every 30 days after",
-        "Rent, electricity and water are separate line items",
-        "Paying debits once and closes the bill",
-        "An unaffordable bill stays open; the wallet never goes negative",
-        "A 10% late fee applies once after three days"
-      ],
-      "checks": [
-        {"name": "Bill generation/payment", "status": "pending", "command": "EditMode billing tests", "evidence": "Pending"}
-      ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
-    },
-    {
-      "id": "LL-P10-008",
-      "title": "Surface clock, stock, queue and bills in the HUD",
-      "status": "planned",
-      "priority": 8,
-      "owner": "ll-unity-dev",
-      "dependsOn": ["LL-P10-003", "LL-P10-005", "LL-P10-007"],
-      "objective": "Make the business state readable without opening the scene: day/time, stock counts, active/ready orders and the next bill.",
-      "scope": ["Assets/LaundryLegends/Scripts/UI/**", "Assets/LaundryLegends/Scripts/Business/**", "Assets/LaundryLegends/Tests/**"],
-      "mustNotTouch": ["Assets/LaundryLegends/Scripts/Economy/EconomyService.cs"],
-      "acceptance": [
-        "HUD shows day/time, stock per item, active/ready counts and next bill",
-        "Bills menu opens and closes with a key",
-        "HUD stays hidden during the arcade session and pause",
-        "Text is readable at 1920x1080"
-      ],
-      "checks": [
-        {"name": "HUD readability", "status": "pending", "command": "PlayMode HUD test; capture", "evidence": "Pending"}
-      ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
-    },
-    {
-      "id": "LL-P10-009",
-      "title": "Balance and verify the combined stock/queue/bill loop",
-      "status": "planned",
-      "priority": 9,
-      "owner": "ll-qa",
-      "dependsOn": ["LL-P10-004", "LL-P10-006", "LL-P10-007", "LL-P10-008"],
-      "objective": "Prove the loop scales, stays recoverable and cannot duplicate money across ten orders, stock and bills.",
-      "scope": ["Assets/LaundryLegends/Tests/**", ".orchestrator/reports/**"],
-      "mustNotTouch": ["Assets/LaundryLegends/Scripts/**"],
-      "acceptance": [
-        "Long session: stock -> ten orders -> ready shelf -> payments -> 30-day bill",
-        "Stock-out and bill-out states are recoverable",
-        "Exactly-once payment still holds",
-        "Suite totals and balance placeholders are recorded"
-      ],
-      "checks": [
-        {"name": "Long business run", "status": "pending", "command": "EditMode + PlayMode suites; clock-advanced scenario", "evidence": "Pending"}
-      ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
-    },
-    {
-      "id": "LL-P10-010",
-      "title": "Owner playtest and Phase 10 closeout",
-      "status": "planned",
-      "priority": 10,
-      "owner": "owner",
-      "dependsOn": ["LL-P10-009"],
-      "objective": "Verify the stock, queue, ready shelf and bill loop is coherent and recoverable, then record completion.",
-      "scope": [".orchestrator/**", "ROADMAP.md", "PROJECT_STATE.md", "DEVELOPMENT_LOG.md"],
-      "mustNotTouch": ["Assets/**"],
-      "acceptance": [
-        "Owner plays a session that runs out of stock and pays a bill",
-        "Result recorded in a report",
-        "Phase 10 marked complete and tagged"
-      ],
-      "checks": [
-        {"name": "Owner playtest", "status": "pending", "command": "Human playtest", "evidence": "Pending"}
-      ],
-      "result": null,
-      "retryCount": 0,
-      "startedAt": null,
-      "completedAt": null
-    }
-  ]
+    "schemaVersion":  1,
+    "phase":  10,
+    "name":  "Business operations and order flow",
+    "status":  "ready",
+    "updatedAt":  "2026-11-03T05:00:00+08:00",
+    "tasks":  [
+                  {
+                      "id":  "LL-P10-001",
+                      "title":  "Lock the business clock, stock, queue and billing contracts",
+                      "status":  "complete",
+                      "priority":  1,
+                      "owner":  "build",
+                      "dependsOn":  [
+                                        "LL-P9-010"
+                                    ],
+                      "objective":  "Define the consumables, order queue, ready shelf, 24-hour clock, 30-day bills and balance before implementation.",
+                      "scope":  [
+                                    ".orchestrator/decisions/**",
+                                    ".orchestrator/tasks/phase-10.json",
+                                    ".orchestrator/state.json",
+                                    "ROADMAP.md",
+                                    "PROJECT_STATE.md"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/**",
+                                           "Packages/**",
+                                           "ProjectSettings/**"
+                                       ],
+                      "acceptance":  [
+                                         "Consumable items, costs and capacities are explicit",
+                                         "Consumption and out-of-stock blocking rules are defined",
+                                         "Ten active orders and ten ready orders are defined",
+                                         "Clock, billing cadence, grace and late-fee rules are defined",
+                                         "Task order and acceptance mapping are recorded"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Contract review",
+                                         "status":  "passed",
+                                         "command":  "Write decision 0013 and phase-10 tasks",
+                                         "evidence":  ".orchestrator/decisions/0013-phase-10-business-operations.md"
+                                     }
+                                 ],
+                      "result":  "Decision 0013 accepted; ten tasks recorded.",
+                      "retryCount":  0,
+                      "startedAt":  "2026-11-02T23:30:00+08:00",
+                      "completedAt":  "2026-11-02T23:40:00+08:00"
+                  },
+                  {
+                      "id":  "LL-P10-002",
+                      "title":  "Add the business clock and day counter",
+                      "status":  "ready",
+                      "priority":  2,
+                      "owner":  "ll-unity-dev",
+                      "dependsOn":  [
+                                        "LL-P10-001"
+                                    ],
+                      "objective":  "Provide a serializable Day 1+ 24-hour clock with real-time advance, deterministic advance and a skip-to-next-day action.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Scripts/Business/**",
+                                    "Assets/LaundryLegends/Tests/**",
+                                    "Assets/LaundryLegends/Scenes/Laundromat.unity"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/Arcade/**",
+                                           "Assets/LaundryLegends/Scripts/Progression/SecretRoomController.cs"
+                                       ],
+                      "acceptance":  [
+                                         "Clock starts at Day 1 08:00 and rolls over at 24:00",
+                                         "Tick and AdvanceMinutes are deterministic in tests",
+                                         "SkipToNextDay reaches 08:00 the following day",
+                                         "Clock state is serializable"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Clock rollover",
+                                         "status":  "pending",
+                                         "command":  "EditMode clock tests",
+                                         "evidence":  "Pending"
+                                     }
+                                 ],
+                      "result":  null,
+                      "retryCount":  0,
+                      "startedAt":  null,
+                      "completedAt":  null
+                  },
+                  {
+                      "id":  "LL-P10-003",
+                      "title":  "Add consumable shelves, restock purchases and stock state",
+                      "status":  "planned",
+                      "priority":  3,
+                      "owner":  "ll-unity-dev",
+                      "dependsOn":  [
+                                        "LL-P10-001"
+                                    ],
+                      "objective":  "Add detergent, fragrance and plastic shelves with capacity 10, one-unit purchases at a fixed cost, and visible stock.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Scripts/Business/**",
+                                    "Assets/LaundryLegends/ScriptableObjects/Business/**",
+                                    "Assets/LaundryLegends/Editor/*SetupTool.cs",
+                                    "Assets/LaundryLegends/Scenes/Laundromat.unity",
+                                    "Assets/LaundryLegends/Tests/**"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/Economy/EconomyService.cs"
+                                       ],
+                      "acceptance":  [
+                                         "One shelf exists per consumable and holds at most 10",
+                                         "Each interaction buys exactly one unit through EconomyService",
+                                         "A full shelf rejects the purchase without spending",
+                                         "Stock survives in serializable state"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Stock purchase",
+                                         "status":  "pending",
+                                         "command":  "EditMode/PlayMode shelf tests",
+                                         "evidence":  "Pending"
+                                     }
+                                 ],
+                      "result":  null,
+                      "retryCount":  0,
+                      "startedAt":  null,
+                      "completedAt":  null
+                  },
+                  {
+                      "id":  "LL-P10-004",
+                      "title":  "Consume stock in processing and block empty stages",
+                      "status":  "planned",
+                      "priority":  4,
+                      "owner":  "ll-unity-dev",
+                      "dependsOn":  [
+                                        "LL-P10-002",
+                                        "LL-P10-003"
+                                    ],
+                      "objective":  "Make wash consume detergent, dry consume fragrance and wrap consume plastic; an empty shelf blocks the stage with a clear reason.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Scripts/Business/**",
+                                    "Assets/LaundryLegends/Scripts/Laundry/**",
+                                    "Assets/LaundryLegends/Tests/**"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/Economy/EconomyService.cs"
+                                       ],
+                      "acceptance":  [
+                                         "Each stage consumes exactly one unit",
+                                         "An empty shelf blocks the stage and leaves the item unchanged",
+                                         "Restocking immediately unblocks the stage",
+                                         "The blocker is visible in the ticket or prompt"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Stock blocking",
+                                         "status":  "pending",
+                                         "command":  "EditMode processing/stock tests",
+                                         "evidence":  "Pending"
+                                     }
+                                 ],
+                      "result":  null,
+                      "retryCount":  0,
+                      "startedAt":  null,
+                      "completedAt":  null
+                  },
+                  {
+                      "id":  "LL-P10-005",
+                      "title":  "Raise the order queue to ten active orders",
+                      "status":  "planned",
+                      "priority":  5,
+                      "owner":  "ll-unity-dev",
+                      "dependsOn":  [
+                                        "LL-P10-002",
+                                        "LL-P10-003"
+                                    ],
+                      "objective":  "Let up to ten orders be active at once with their own drop-off slots and customers, without breaking the single-order path.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Scripts/Customers/**",
+                                    "Assets/LaundryLegends/Scripts/Business/**",
+                                    "Assets/LaundryLegends/Scenes/Laundromat.unity",
+                                    "Assets/LaundryLegends/Tests/**"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/Progression/SecretRoomController.cs"
+                                       ],
+                      "acceptance":  [
+                                         "Ten orders can be registered and active together",
+                                         "Customers do not overwrite each other\u0027s tickets or items",
+                                         "The single-order flow still works",
+                                         "The queue rejects a sixth active order with a clear reason"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Ten active orders",
+                                         "status":  "pending",
+                                         "command":  "EditMode/PlayMode queue tests",
+                                         "evidence":  "Pending"
+                                     }
+                                 ],
+                      "result":  null,
+                      "retryCount":  0,
+                      "startedAt":  null,
+                      "completedAt":  null
+                  },
+                  {
+                      "id":  "LL-P10-006",
+                      "title":  "Add the ready-order shelf and ticket pickup",
+                      "status":  "planned",
+                      "priority":  6,
+                      "owner":  "ll-unity-dev",
+                      "dependsOn":  [
+                                        "LL-P10-005"
+                                    ],
+                      "objective":  "Move wrapped parcels to a ten-slot ready shelf, let multiple orders be ready, and have the matching customer collect and pay by ticket.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Scripts/Customers/**",
+                                    "Assets/LaundryLegends/Scripts/Business/**",
+                                    "Assets/LaundryLegends/Scenes/Laundromat.unity",
+                                    "Assets/LaundryLegends/Tests/**"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/Economy/EconomyService.cs"
+                                       ],
+                      "acceptance":  [
+                                         "Up to ten wrapped orders can wait on the shelf",
+                                         "Multiple orders can be ready simultaneously",
+                                         "Each ticket pays exactly once when collected",
+                                         "A full shelf blocks wrapping with a clear reason"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Ready shelf + pickup",
+                                         "status":  "pending",
+                                         "command":  "EditMode/PlayMode ready-shelf tests",
+                                         "evidence":  "Pending"
+                                     }
+                                 ],
+                      "result":  null,
+                      "retryCount":  0,
+                      "startedAt":  null,
+                      "completedAt":  null
+                  },
+                  {
+                      "id":  "LL-P10-007",
+                      "title":  "Add 30-day rent and utility billing with a bills menu",
+                      "status":  "planned",
+                      "priority":  7,
+                      "owner":  "ll-unity-dev",
+                      "dependsOn":  [
+                                        "LL-P10-002"
+                                    ],
+                      "objective":  "Generate an itemized rent/electricity/water bill every 30 days, allow payment from a menu, and keep an unaffordable bill recoverable.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Scripts/Business/**",
+                                    "Assets/LaundryLegends/Scripts/UI/**",
+                                    "Assets/LaundryLegends/Tests/**"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/Economy/EconomyService.cs"
+                                       ],
+                      "acceptance":  [
+                                         "A bill is generated at day 30 and every 30 days after",
+                                         "Rent, electricity and water are separate line items",
+                                         "Paying debits once and closes the bill",
+                                         "An unaffordable bill stays open; the wallet never goes negative",
+                                         "A 10% late fee applies once after three days"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Bill generation/payment",
+                                         "status":  "pending",
+                                         "command":  "EditMode billing tests",
+                                         "evidence":  "Pending"
+                                     }
+                                 ],
+                      "result":  null,
+                      "retryCount":  0,
+                      "startedAt":  null,
+                      "completedAt":  null
+                  },
+                  {
+                      "id":  "LL-P10-008",
+                      "title":  "Surface clock, stock, queue and bills in the HUD",
+                      "status":  "planned",
+                      "priority":  8,
+                      "owner":  "ll-unity-dev",
+                      "dependsOn":  [
+                                        "LL-P10-003",
+                                        "LL-P10-005",
+                                        "LL-P10-007"
+                                    ],
+                      "objective":  "Make the business state readable without opening the scene: day/time, stock counts, active/ready orders and the next bill.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Scripts/UI/**",
+                                    "Assets/LaundryLegends/Scripts/Business/**",
+                                    "Assets/LaundryLegends/Tests/**"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/Economy/EconomyService.cs"
+                                       ],
+                      "acceptance":  [
+                                         "HUD shows day/time, stock per item, active/ready counts and next bill",
+                                         "Bills menu opens and closes with a key",
+                                         "HUD stays hidden during the arcade session and pause",
+                                         "Text is readable at 1920x1080"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "HUD readability",
+                                         "status":  "pending",
+                                         "command":  "PlayMode HUD test; capture",
+                                         "evidence":  "Pending"
+                                     }
+                                 ],
+                      "result":  null,
+                      "retryCount":  0,
+                      "startedAt":  null,
+                      "completedAt":  null
+                  },
+                  {
+                      "id":  "LL-P10-009",
+                      "title":  "Balance and verify the combined stock/queue/bill loop",
+                      "status":  "planned",
+                      "priority":  9,
+                      "owner":  "ll-qa",
+                      "dependsOn":  [
+                                        "LL-P10-004",
+                                        "LL-P10-006",
+                                        "LL-P10-007",
+                                        "LL-P10-008"
+                                    ],
+                      "objective":  "Prove the loop scales, stays recoverable and cannot duplicate money across ten orders, stock and bills.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Tests/**",
+                                    ".orchestrator/reports/**"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/**"
+                                       ],
+                      "acceptance":  [
+                                         "Long session: stock -\u003e ten orders -\u003e ready shelf -\u003e payments -\u003e 30-day bill",
+                                         "Stock-out and bill-out states are recoverable",
+                                         "Exactly-once payment still holds",
+                                         "Suite totals and balance placeholders are recorded"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Long business run",
+                                         "status":  "pending",
+                                         "command":  "EditMode + PlayMode suites; clock-advanced scenario",
+                                         "evidence":  "Pending"
+                                     }
+                                 ],
+                      "result":  null,
+                      "retryCount":  0,
+                      "startedAt":  null,
+                      "completedAt":  null
+                  },
+                  {
+                      "id":  "LL-P10-010",
+                      "title":  "Owner playtest and Phase 10 closeout",
+                      "status":  "planned",
+                      "priority":  10,
+                      "owner":  "owner",
+                      "dependsOn":  [
+                                        "LL-P10-009"
+                                    ],
+                      "objective":  "Verify the stock, queue, ready shelf and bill loop is coherent and recoverable, then record completion.",
+                      "scope":  [
+                                    ".orchestrator/**",
+                                    "ROADMAP.md",
+                                    "PROJECT_STATE.md",
+                                    "DEVELOPMENT_LOG.md"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/**"
+                                       ],
+                      "acceptance":  [
+                                         "Owner plays a session that runs out of stock and pays a bill",
+                                         "Result recorded in a report",
+                                         "Phase 10 marked complete and tagged"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Owner playtest",
+                                         "status":  "pending",
+                                         "command":  "Human playtest",
+                                         "evidence":  "Pending"
+                                     }
+                                 ],
+                      "result":  null,
+                      "retryCount":  0,
+                      "startedAt":  null,
+                      "completedAt":  null
+                  }
+              ]
 }

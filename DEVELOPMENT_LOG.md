@@ -1392,3 +1392,12 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 - `LL-B-014`: dryer drum clothes do not tumble (target Phase 12).
 - `LL-B-015`: expansion carpet is a small rug; needs a full-bay bar/casino pattern (target Phase 12).
 - Experimental audit/drum changes preserved on local `phase-9-postapproval-wip`; no code changes in the approved build.
+
+## 2026-11-03 - Phase 9 merged; Phase 10 branch ready
+
+- PR #2 (`phase-9` -> `main`) merged at `1978451`; `main` fast-forwarded.
+- Tag `phase-9-complete` remains on `eb6f5d7`.
+- `phase-10` created from `main` and pushed; phase status ready.
+- Decision 0013 and phase-10 tasks are present. LL-P10-002 (business clock) is the next ready task.
+- Local WIP preserved: `phase-10-wip` (97897a2) and `phase-9-postapproval-wip` (344f942), not merged.
+- Post-approval tickets remain: LL-B-012 (P1), LL-B-013, LL-A-005, LL-B-014, LL-B-015.
