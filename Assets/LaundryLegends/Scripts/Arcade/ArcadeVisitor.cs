@@ -13,7 +13,7 @@ namespace LaundryLegends.Arcade
     }
 
     /// <summary>
-    /// One arcade customer: walks to the machine, plays for a bounded time, pays
+    /// One arcade customer: walks to its machine, plays for a bounded time, pays
     /// one visit's income, then leaves. The visit id is created once when play
     /// starts and passed to <see cref="ArcadeService"/>, so a retried payment can
     /// never credit twice.
@@ -28,6 +28,7 @@ namespace LaundryLegends.Arcade
         [SerializeField, Min(0.1f)] private float _playSeconds = 6f;
         [SerializeField, Min(0.1f)] private float _speed = 1.4f;
         [SerializeField, Min(0.1f)] private float _arriveDistance = 1.1f;
+        [SerializeField, Min(0)] private int _slotIndex;
 
         private NpcLocomotion _locomotion;
         private float _playTimer;
@@ -44,6 +45,8 @@ namespace LaundryLegends.Arcade
 
         public int Income => _income;
 
+        public int SlotIndex => _slotIndex;
+
         public void Configure(
             ArcadeService service,
             Transform cabinet,
@@ -52,12 +55,25 @@ namespace LaundryLegends.Arcade
             float playSeconds = 6f,
             float speed = 1.4f)
         {
+            Configure(service, cabinet, exitPoint, income, playSeconds, speed, 0);
+        }
+
+        public void Configure(
+            ArcadeService service,
+            Transform cabinet,
+            Vector3 exitPoint,
+            int income,
+            float playSeconds,
+            float speed,
+            int slotIndex)
+        {
             _service = service;
             _cabinet = cabinet;
             _exitPoint = exitPoint;
             _income = Mathf.Max(0, income);
             _playSeconds = Mathf.Max(0.1f, playSeconds);
             _speed = Mathf.Max(0.1f, speed);
+            _slotIndex = Mathf.Max(0, slotIndex);
         }
 
         private void Awake()
@@ -109,14 +125,14 @@ namespace LaundryLegends.Arcade
 
         private void BeginPlay()
         {
-            if (_service == null || !_service.IsActive)
+            if (_service == null || !_service.IsSlotActive(_slotIndex))
             {
                 // The machine went offline before this visitor arrived.
                 State = ArcadeVisitorState.Leaving;
                 return;
             }
 
-            VisitId = _service.CreateVisitId();
+            VisitId = _service.CreateVisitId(_slotIndex);
             _playTimer = 0f;
             State = ArcadeVisitorState.Playing;
         }
@@ -125,7 +141,7 @@ namespace LaundryLegends.Arcade
         {
             if (_service != null && !string.IsNullOrEmpty(VisitId))
             {
-                WasPaid = _service.TryCollectVisitIncome(VisitId, _income, Time.time);
+                WasPaid = _service.TryCollectVisitIncome(_slotIndex, VisitId, _income, Time.time);
             }
 
             State = ArcadeVisitorState.Leaving;

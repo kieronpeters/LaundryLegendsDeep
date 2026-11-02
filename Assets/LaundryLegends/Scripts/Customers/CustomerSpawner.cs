@@ -1,3 +1,4 @@
+using LaundryLegends.Arcade;
 using LaundryLegends.Core;
 using LaundryLegends.Economy;
 using LaundryLegends.Interaction;
@@ -24,6 +25,7 @@ namespace LaundryLegends.Customers
         [SerializeField] private float _respawnDelay = 4f;
         [SerializeField] private bool _autoStart = true;
         [SerializeField] private int _price = 40;
+        [SerializeField] private LaundryReputation _reputation;
 
         private OrderLedger _ledger;
         private EconomyService _economy;
@@ -46,10 +48,31 @@ namespace LaundryLegends.Customers
 
         public IReadOnlyList<UpgradeDefinition> Upgrades => _upgrades;
 
+        /// <summary>Laundry reputation fed by paid orders, tips and abandons.</summary>
+        public LaundryReputation Reputation
+        {
+            get
+            {
+                if (_reputation == null)
+                {
+                    _reputation = FindFirstObjectByType<LaundryReputation>();
+                }
+
+                return _reputation;
+            }
+        }
+
+        public void SetReputation(LaundryReputation reputation)
+        {
+            _reputation = reputation;
+            WireReputation();
+        }
+
         public void Initialize(OrderLedger ledger, bool autoStart)
         {
             _ledger = ledger;
             _autoStart = autoStart;
+            WireReputation();
         }
 
         public void SetRespawnDelay(float seconds)
@@ -96,6 +119,15 @@ namespace LaundryLegends.Customers
 
             _economy.UpgradePurchased += OnUpgradePurchased;
             ApplyOwnedUpgrades();
+            WireReputation();
+        }
+
+        private void WireReputation()
+        {
+            if (_ledger != null && Reputation != null)
+            {
+                _ledger.SetReputation(Reputation);
+            }
         }
 
         /// <summary>Buys the cheapest unowned upgrade from the catalogue.</summary>

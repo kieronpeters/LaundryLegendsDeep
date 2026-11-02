@@ -33,6 +33,13 @@ namespace LaundryLegends.Editor
             var spawner = Object.FindFirstObjectByType<CustomerSpawner>();
             var service = Object.FindFirstObjectByType<ArcadeService>(FindObjectsInactive.Include);
 
+            if (service != null)
+            {
+                // The shell is rebuilt below; drop references to the old slots so a
+                // re-run cannot leave the service pointing at destroyed anchors.
+                service.ClearExtraMachines();
+            }
+
             if (room == null || cabinet == null)
             {
                 Debug.LogError($"[BACKROOM] room={room != null} cabinet={cabinet != null}");
@@ -92,8 +99,7 @@ namespace LaundryLegends.Editor
             CreateBox(shell.transform, "WallNorth", new Vector3(x0 + roomWidth * 0.5f, height * 0.5f, z0),
                 new Vector3(roomWidth, height, 0.2f), wall);
 
-            CreateBox(shell.transform, "WallSouth", new Vector3(x0 + roomWidth * 0.5f, height * 0.5f, z0 + roomDepth),
-                new Vector3(roomWidth, height, 0.2f), wall);
+            // WallSouth is split around the expansion opening by BuildExpansionBay.
 
             const float doorWidth = 1.6f;
             GameObject doorLeaf = GameObject.Find("SecretDoor_Foreshadowed");
@@ -122,6 +128,18 @@ namespace LaundryLegends.Editor
             light.color = new Color(1f, 0.95f, 0.86f);
 
             FurnishRoom(shell.transform, x0, roomWidth, roomDepth, z0, doorZ);
+
+            GameObject expansionBay = BuildExpansionBay(
+                shell.transform,
+                x0,
+                roomWidth,
+                roomDepth,
+                z0,
+                height,
+                floor,
+                wall,
+                ceiling,
+                out GameObject expansionSeal);
 
             // Cabinet goes inside, against the east wall, facing the door.
             // Preserve the model's import rotation (like the street props) and
@@ -212,6 +230,21 @@ namespace LaundryLegends.Editor
             {
                 service.SetStartActive(true);
                 cabinet.SetService(service);
+
+                ConfigurePhase9(
+                    service,
+                    cabinet,
+                    spawner,
+                    shell.transform,
+                    expansionBay,
+                    expansionSeal,
+                    x0,
+                    roomWidth,
+                    roomDepth,
+                    z0,
+                    doorZ,
+                    height,
+                    wall);
             }
 
             // Visitors must approach the machine from inside the room, not through its wall.
@@ -239,6 +272,7 @@ namespace LaundryLegends.Editor
                 var visitorPrefab =
                     AssetDatabase.LoadAssetAtPath<GameObject>("Assets/LaundryLegends/Prefabs/Gameplay/NPC/NPC_Customer.prefab");
                 traffic.Configure(service, lane, cabinet.transform, visitorPrefab);
+                traffic.SetInterval(20f);
             }
 
             EditorSceneManager.MarkSceneDirty(scene);
@@ -610,6 +644,393 @@ namespace LaundryLegends.Editor
             }
 
             return sphere;
+        }
+
+        /// <summary>
+        /// Builds the sealed second bay south of the room. The south wall is split
+        /// around a 2.4 m opening, a removable panel seals it, and the bay root is
+        /// disabled until <see cref="ArcadeService.TryExpand"/> buys it.
+        /// </summary>
+        private static GameObject BuildExpansionBay(
+            Transform shell,
+            float x0,
+            float roomWidth,
+            float roomDepth,
+            float z0,
+            float height,
+            Material floor,
+            Material wall,
+            Material ceiling,
+            out GameObject seal)
+        {
+            float southZ = z0 + roomDepth;
+            float bayWidth = Mathf.Max(3.2f, Mathf.Min(6f, roomWidth - 1f));
+            const float bayDepth = 4f;
+            float cx = x0 + roomWidth * 0.5f;
+            float openingWidth = Mathf.Min(2.4f, bayWidth - 1.2f);
+
+            float sideWidth = Mathf.Max(0.1f, (roomWidth - openingWidth) * 0.5f);
+            CreateBox(shell, "WallSouthA",
+                new Vector3(x0 + sideWidth * 0.5f, height * 0.5f, southZ),
+                new Vector3(sideWidth, height, 0.2f), wall);
+            CreateBox(shell, "WallSouthB",
+                new Vector3(x0 + roomWidth - sideWidth * 0.5f, height * 0.5f, southZ),
+                new Vector3(sideWidth, height, 0.2f), wall);
+
+            seal = CreateBox(shell, "ExpansionSeal",
+                new Vector3(cx, height * 0.5f, southZ),
+                new Vector3(openingWidth, height, 0.2f), wall);
+
+            var bay = new GameObject("ExpansionBay");
+            bay.transform.SetParent(shell, false);
+            bay.SetActive(false);
+
+            CreateBox(bay.transform, "BayFloor",
+                new Vector3(cx, -0.05f, southZ + bayDepth * 0.5f),
+                new Vector3(bayWidth, 0.1f, bayDepth), floor);
+            CreateBox(bay.transform, "BayCeiling",
+                new Vector3(cx, height, southZ + bayDepth * 0.5f),
+                new Vector3(bayWidth, 0.1f, bayDepth), ceiling);
+            CreateBox(bay.transform, "BayWallEast",
+                new Vector3(cx + bayWidth * 0.5f, height * 0.5f, southZ + bayDepth * 0.5f),
+                new Vector3(0.2f, height, bayDepth), wall);
+            CreateBox(bay.transform, "BayWallWest",
+                new Vector3(cx - bayWidth * 0.5f, height * 0.5f, southZ + bayDepth * 0.5f),
+                new Vector3(0.2f, height, bayDepth), wall);
+            CreateBox(bay.transform, "BayWallSouth",
+                new Vector3(cx, height * 0.5f, southZ + bayDepth),
+                new Vector3(bayWidth, height, 0.2f), wall);
+            CreateBox(bay.transform, "BayThreshold",
+                new Vector3(cx, 0.02f, southZ),
+                new Vector3(openingWidth, 0.04f, 0.35f), floor);
+
+            var lightObject = new GameObject("BayLight");
+            lightObject.transform.SetParent(bay.transform, false);
+            lightObject.transform.position = new Vector3(cx, height - 0.4f, southZ + bayDepth * 0.5f);
+            Light light = lightObject.AddComponent<Light>();
+            light.type = LightType.Point;
+            light.range = Mathf.Max(bayWidth, bayDepth) + 2f;
+            light.intensity = 5.5f;
+            light.color = new Color(0.92f, 0.88f, 1f);
+
+            return bay;
+        }
+
+        /// <summary>
+        /// Adds the Phase 9 business layer: machine definitions, extra anchors,
+        /// upgrade kiosks and decor, reputation, HUD and the expansion point.
+        /// </summary>
+        private static void ConfigurePhase9(
+            ArcadeService service,
+            ArcadeCabinet starter,
+            CustomerSpawner spawner,
+            Transform shell,
+            GameObject expansionBay,
+            GameObject expansionSeal,
+            float x0,
+            float roomWidth,
+            float roomDepth,
+            float z0,
+            float doorZ,
+            float height,
+            Material wall)
+        {
+            const string folder = "Assets/LaundryLegends/ScriptableObjects/Arcade";
+            if (!AssetDatabase.IsValidFolder(folder))
+            {
+                System.IO.Directory.CreateDirectory(folder);
+                AssetDatabase.Refresh();
+            }
+
+            ArcadeMachineDefinition fighter = EnsureMachineDefinition(
+                folder + "/ArcadeMachine_Fighter.asset",
+                "arcade.fighter", "Fighter", 120, 3, 1f);
+            ArcadeMachineDefinition racer = EnsureMachineDefinition(
+                folder + "/ArcadeMachine_Racer.asset",
+                "arcade.racer", "Racer", 250, 5, 1.4f);
+            ArcadeMachineDefinition puzzle = EnsureMachineDefinition(
+                folder + "/ArcadeMachine_Puzzle.asset",
+                "arcade.puzzle", "Puzzle", 400, 8, 1.8f);
+            service.SetStarterDefinition(fighter);
+            service.SetExpansionBay(expansionBay, expansionSeal, 300);
+            service.SetUpkeep(120f, 1);
+
+            GameObject business = GameObject.Find("ArcadeBusiness");
+            if (business == null)
+            {
+                business = shell.gameObject;
+            }
+
+            LaundryReputation reputation = business.GetComponent<LaundryReputation>();
+            if (reputation == null)
+            {
+                reputation = business.AddComponent<LaundryReputation>();
+            }
+
+            reputation.SetValue(20);
+            service.SetReputation(reputation);
+            if (spawner != null)
+            {
+                spawner.SetReputation(reputation);
+            }
+
+            ArcadePanelView panel = business.GetComponent<ArcadePanelView>();
+            if (panel == null)
+            {
+                panel = business.AddComponent<ArcadePanelView>();
+            }
+
+            panel.Configure(service, reputation);
+
+            Material wood = AssetDatabase.LoadAssetAtPath<Material>(
+                "Assets/LaundryLegends/Art/Materials/MAT_CounterWood.mat");
+            if (wood == null)
+            {
+                wood = wall;
+            }
+
+            Material felt = AssetDatabase.LoadAssetAtPath<Material>(
+                "Assets/LaundryLegends/Art/Materials/MAT_CasinoFelt.mat");
+            if (felt == null)
+            {
+                felt = wall;
+            }
+
+            Material neon = EnsureEmissiveMaterial(
+                "Assets/LaundryLegends/Art/Materials/MAT_ArcadeNeon.mat",
+                new Color(0.08f, 0.8f, 1f),
+                3f);
+
+            GameObject neonDecor = CreateDecorObject(
+                shell, "Decor_NeonSign",
+                new Vector3(x0 + roomWidth - 0.35f, 2.35f, doorZ),
+                new Vector3(0.08f, 0.35f, 1.4f), neon, Quaternion.identity);
+
+            var speakersRoot = new GameObject("Decor_Speakers");
+            speakersRoot.transform.SetParent(shell, false);
+            speakersRoot.SetActive(false);
+            CreateDecorObject(speakersRoot.transform, "SpeakerWest",
+                new Vector3(x0 + roomWidth * 0.18f, 2.1f, z0 + 0.18f),
+                new Vector3(0.3f, 0.5f, 0.25f), wood, Quaternion.identity);
+            CreateDecorObject(speakersRoot.transform, "SpeakerEast",
+                new Vector3(x0 + roomWidth * 0.23f, 2.1f, z0 + 0.18f),
+                new Vector3(0.3f, 0.5f, 0.25f), wood, Quaternion.identity);
+
+            GameObject rugDecor = CreateDecorObject(
+                shell, "Decor_ArcadeRug",
+                new Vector3(x0 + roomWidth * 0.5f, 0.03f, doorZ + 1.2f),
+                new Vector3(2.6f, 0.05f, 1.6f), felt, Quaternion.identity);
+
+            float southZ = z0 + roomDepth;
+            float cx = x0 + roomWidth * 0.5f;
+            float bayWidth = Mathf.Max(3.2f, Mathf.Min(6f, roomWidth - 1f));
+
+            CreateUpgradeKiosk(shell, "UpgradeKiosk_Neon",
+                new Vector3(x0 + roomWidth * 0.42f, 0f, z0 + 1.4f), wood, service,
+                "arcade.upgrade.neon", "Neon sign", 150, 1.1f, 1f, neonDecor,
+                "Buy neon sign");
+            CreateUpgradeKiosk(shell, "UpgradeKiosk_Speakers",
+                new Vector3(x0 + roomWidth * 0.58f, 0f, z0 + 1.4f), wood, service,
+                "arcade.upgrade.speakers", "Better speakers", 200, 1f, 1.2f, speakersRoot,
+                "Buy speakers");
+            CreateUpgradeKiosk(shell, "UpgradeKiosk_Carpet",
+                new Vector3(x0 + roomWidth * 0.5f, 0f, z0 + 2.6f), wood, service,
+                "arcade.upgrade.carpet", "Arcade carpet", 120, 1.1f, 1.1f, rugDecor,
+                "Buy arcade carpet");
+
+            GameObject expansionKiosk = CreateBox(shell, "ExpansionPoint",
+                new Vector3(cx, 0.55f, southZ - 0.9f),
+                new Vector3(0.8f, 1.1f, 0.5f), wood);
+            var expansionPoint = expansionKiosk.AddComponent<ArcadeExpansionPoint>();
+            expansionPoint.SetService(service);
+
+            Vector3 roomCentre = new Vector3(cx, 0f, z0 + roomDepth * 0.5f);
+            CreateExtraMachineSlot(
+                service, shell, starter, spawner, racer, "Racer", 1,
+                new Vector3(x0 + roomWidth * 0.26f, 0f, z0 + 0.95f), 180f, roomCentre, wood);
+            CreateExtraMachineSlot(
+                service, shell, starter, spawner, puzzle, "Puzzle", 2,
+                new Vector3(x0 + roomWidth * 0.78f, 0f, southZ - 0.95f), 0f, roomCentre, wood);
+
+            float bayZ = southZ + 2f;
+            Vector3 bayRoomCentre = new Vector3(cx, 0f, southZ);
+            CreateExtraMachineSlot(
+                service, expansionBay.transform, starter, spawner, racer, "BayRacer", 3,
+                new Vector3(cx - bayWidth * 0.22f, 0f, bayZ), 0f, bayRoomCentre, wood);
+            CreateExtraMachineSlot(
+                service, expansionBay.transform, starter, spawner, puzzle, "BayPuzzle", 4,
+                new Vector3(cx + bayWidth * 0.22f, 0f, bayZ), 0f, bayRoomCentre, wood);
+        }
+
+        private static ArcadeMachineDefinition EnsureMachineDefinition(
+            string path,
+            string id,
+            string displayName,
+            int cost,
+            int baseIncome,
+            float attractWeight)
+        {
+            var definition = AssetDatabase.LoadAssetAtPath<ArcadeMachineDefinition>(path);
+            if (definition == null)
+            {
+                definition = ScriptableObject.CreateInstance<ArcadeMachineDefinition>();
+                AssetDatabase.CreateAsset(definition, path);
+            }
+
+            definition.Configure(id, displayName, cost, baseIncome, attractWeight);
+            EditorUtility.SetDirty(definition);
+            return definition;
+        }
+
+        private static Material EnsureEmissiveMaterial(string path, Color color, float intensity)
+        {
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            Shader lit = Shader.Find("Universal Render Pipeline/Lit");
+            if (material == null)
+            {
+                material = new Material(lit) { name = System.IO.Path.GetFileNameWithoutExtension(path) };
+                AssetDatabase.CreateAsset(material, path);
+            }
+            else
+            {
+                material.shader = lit;
+            }
+
+            material.SetColor("_BaseColor", color);
+            material.EnableKeyword("_EMISSION");
+            material.SetColor("_EmissionColor", color * Mathf.Max(0f, intensity));
+            material.SetFloat("_Smoothness", 0.2f);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static GameObject CreateDecorObject(
+            Transform parent,
+            string name,
+            Vector3 centre,
+            Vector3 size,
+            Material material,
+            Quaternion rotation)
+        {
+            GameObject decor = CreateBox(parent, name, centre, size, material);
+            decor.transform.rotation = rotation;
+            decor.SetActive(false);
+            return decor;
+        }
+
+        private static void CreateUpgradeKiosk(
+            Transform parent,
+            string name,
+            Vector3 floorPosition,
+            Material material,
+            ArcadeService service,
+            string id,
+            string displayName,
+            int cost,
+            float incomeMultiplier,
+            float trafficMultiplier,
+            GameObject decor,
+            string prompt)
+        {
+            GameObject kiosk = CreateBox(
+                parent,
+                name,
+                floorPosition + Vector3.up * 0.55f,
+                new Vector3(0.55f, 1.1f, 0.45f),
+                material);
+            var point = kiosk.AddComponent<ArcadeUpgradePoint>();
+            point.ConfigureInline(
+                service, id, displayName, cost, incomeMultiplier, trafficMultiplier, decor, prompt);
+        }
+
+        /// <summary>
+        /// Duplicates the shipped cabinet for one extra slot, places it at its
+        /// anchor and leaves it inactive until the slot is bought.
+        /// </summary>
+        private static void CreateExtraMachineSlot(
+            ArcadeService service,
+            Transform parent,
+            ArcadeCabinet starter,
+            CustomerSpawner spawner,
+            ArcadeMachineDefinition definition,
+            string label,
+            int expectedSlot,
+            Vector3 position,
+            float yaw,
+            Vector3 roomCentre,
+            Material kioskMaterial)
+        {
+            int slotIndex = service.SlotCount;
+            if (slotIndex != expectedSlot)
+            {
+                Debug.LogWarning($"[BACKROOM] Slot order drift: {label} expected {expectedSlot}, got {slotIndex}.");
+            }
+
+            var anchor = new GameObject($"Anchor_{label}");
+            anchor.transform.SetParent(parent, false);
+            anchor.transform.position = position;
+            anchor.transform.rotation = Quaternion.Euler(0f, yaw, 0f);
+
+            Vector3 towardRoom = roomCentre - position;
+            towardRoom.y = 0f;
+            if (towardRoom.sqrMagnitude < 0.01f)
+            {
+                towardRoom = Vector3.forward;
+            }
+
+            towardRoom.Normalize();
+            GameObject install = CreateBox(
+                parent,
+                $"Install_{label}",
+                position + towardRoom * 1.15f + Vector3.up * 0.55f,
+                new Vector3(0.6f, 1.1f, 0.45f),
+                kioskMaterial);
+            install.transform.rotation = Quaternion.LookRotation(towardRoom, Vector3.up);
+            install.AddComponent<ArcadeInstallPoint>();
+
+            GameObject cabinetObject = Object.Instantiate(starter.gameObject);
+            cabinetObject.name = $"ArcadeCabinet_{label}";
+            cabinetObject.transform.SetParent(parent, true);
+
+            // The starter is already rotated 90 degrees from its imported pose.
+            Quaternion importRotation = starter.transform.rotation * Quaternion.Euler(0f, -90f, 0f);
+            cabinetObject.transform.rotation = Quaternion.Euler(0f, yaw, 0f) * importRotation;
+            cabinetObject.transform.position = position;
+            GroundToFloor(cabinetObject);
+
+            ArcadeCabinet cabinet = cabinetObject.GetComponent<ArcadeCabinet>();
+            if (cabinet == null)
+            {
+                cabinet = cabinetObject.AddComponent<ArcadeCabinet>();
+            }
+
+            Renderer screen = ResolveScreen(cabinet);
+            FightGameView view = cabinetObject.GetComponent<FightGameView>();
+            if (view == null)
+            {
+                view = cabinetObject.AddComponent<FightGameView>();
+            }
+
+            view.Configure(screen);
+            cabinet.Configure(view, spawner);
+            cabinet.SetService(service, slotIndex);
+
+            ArcadeAttractMode attract = cabinetObject.GetComponent<ArcadeAttractMode>();
+            if (attract == null)
+            {
+                attract = cabinetObject.AddComponent<ArcadeAttractMode>();
+            }
+
+            AudioSource audio = cabinetObject.GetComponent<AudioSource>();
+            if (audio == null)
+            {
+                audio = cabinetObject.AddComponent<AudioSource>();
+            }
+
+            attract.Configure(screen, audio);
+            cabinetObject.SetActive(false);
+
+            service.AddSlot(anchor.transform, install, definition, cabinetObject, attract);
         }
 
         private static GameObject CreateBox(Transform parent, string name, Vector3 centre, Vector3 size, Material material)
