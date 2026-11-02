@@ -9,7 +9,7 @@
                     "renderPipeline":  "Universal Render Pipeline 17.0.4",
                     "targetPlatform":  "Windows 64-bit"
                 },
-    "updatedAt":  "2026-11-03T01:20:00+08:00",
+    "updatedAt":  "2026-11-03T03:00:00+08:00",
     "currentMilestone":  {
                              "id":  "M1",
                              "name":  "Playable laundry",
@@ -20,7 +20,7 @@
                          "name":  "Arcade expansion",
                          "status":  "in_progress",
                          "file":  ".orchestrator/decisions/0012-phase-9-arcade-expansion.md",
-                         "completionNote":  "Phase 9 implemented on the phase-9 branch: data-driven machine catalogue, multi-slot ArcadeService (slot 0 keeps the Phase 8 API), four extra anchors (three open, two sealed in the expansion bay), three upgrade kiosks with income/traffic multipliers and decor, laundry reputation (paid/tip/abandon/decay) feeding traffic and income, 120 s upkeep, a visible walkable expansion bay (capacity 3 -\u003e 5), five one-time milestones and an IMGUI arcade HUD. Automated evidence: EditMode 158/158, PlayMode 59 passed / 0 failed / 2 explicit skipped, explicit  progression 1/1, Windows build 198 MB / 0 errors at Build/LaundryLegends.exe. Owner playtest (LL-P9-010) remains the only open acceptance gate. Machine-wall fix (8d86fef): all eight appliances now have load/dry hooks (4 washers, 4 dryers) and the staff dispatches to any free unit; Phase 10 order queue is 10 active."
+                         "completionNote":  "Phase 9 implemented on the phase-9 branch: data-driven machine catalogue, multi-slot ArcadeService (slot 0 keeps the Phase 8 API), four extra anchors (three open, two sealed in the expansion bay), three upgrade kiosks with income/traffic multipliers and decor, laundry reputation (paid/tip/abandon/decay) feeding traffic and income, 120 s upkeep, a visible walkable expansion bay (capacity 3 -\u003e 5), five one-time milestones and an IMGUI arcade HUD. Automated evidence: EditMode 158/158, PlayMode 59 passed / 0 failed / 2 explicit skipped, explicit  progression 1/1, Windows build 198 MB / 0 errors at Build/LaundryLegends.exe. Owner playtest (LL-P9-010) remains the only open acceptance gate. Machine-wall fix (8d86fef): all eight appliances now have load/dry hooks (4 washers, 4 dryers) and the staff dispatches to any free unit; Phase 10 order queue is 10 active. Review round 2 (806d1e1): U purchase menu replaces the ground pedestals, carpet gated to and placed in the expansion bay, posters moved/added, open door leaf hidden, parcel bundle, rotating drums, hidden-room visitor removed, male order customer, silent staff. EditMode 159/159; PlayMode 59/0/2; build 199 MB/0 errors."
                      },
     "nextPhase":  {
                       "number":  10,
@@ -67,7 +67,7 @@
                 "checkpointCommit":  "ddf82639b992c1e1285a6a955ea9037c70c437d9",
                 "baselineCommit":  "b78218cccfeea741d3d227ffa95e679e9ba92a72",
                 "remote":  null,
-                "workingTree":  "clean after the review checkpoint; Phase 10 partial work preserved on local phase-10-wip (97897a2), not on phase-9",
+                "workingTree":  "clean after the review-round-2 commit; owner walkthrough pending",
                 "unityProjectCommit":  "e244ba434ace223ff064df52b6a683615d9fb503",
                 "lastCheckpointAt":  "2026-11-03T01:20:00+08:00"
             },
@@ -163,26 +163,30 @@
                    "note":  "Procedural placeholders only: 3 scenes, 5 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
                },
     "lastRun":  {
-                    "id":  "2026-11-02-ll-p9-machine-wall",
-                    "report":  ".orchestrator/reports/2026-11-02-machine-wall-fix.md",
+                    "id":  "2026-11-03-ll-p9-review-round2",
+                    "report":  ".orchestrator/reports/2026-11-02-phase9-arcade-expansion.md",
                     "status":  "complete",
-                    "startedAt":  "2026-11-03T00:10:00+08:00",
-                    "completedAt":  "2026-11-03T00:45:00+08:00",
+                    "startedAt":  "2026-11-03T01:30:00+08:00",
+                    "completedAt":  "2026-11-03T03:00:00+08:00",
                     "checks":  {
-                                   "machine_validation":  "4 washers + 4 dryers, each with a load slot",
-                                   "editmode":  "158/158 passed",
+                                   "editmode":  "159/159 passed",
                                    "playmode":  "59 passed, 0 failed, 2 explicit skipped",
-                                   "build":  "198 MB, 0 errors",
-                                   "owner_playtest":  "pending",
-                                   "progression_review":  "1/1 passed on the clean phase-9 branch"
+                                   "machine_validation":  "4 washers + 4 dryers",
+                                   "build":  "199 MB, 0 errors",
+                                   "menu_capture":  "TestResults/review2/02-purchase-menu.png",
+                                   "owner_walkthrough":  "pending"
                                },
                     "filesChanged":  [
-                                         "Assets/LaundryLegends/Scripts/NPC/LaundryStaff.cs",
-                                         "Assets/LaundryLegends/Editor/MachineSetupTool.cs",
-                                         "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab",
-                                         "Assets/LaundryLegends/Editor/Phase3SetupTool.cs",
-                                         "Assets/LaundryLegends/Editor/Phase4SetupTool.cs",
-                                         "Assets/LaundryLegends/Editor/BasketAssetSetupTool.cs"
+                                         "Assets/LaundryLegends/Scripts/UI/PurchaseMenuView.cs",
+                                         "Assets/LaundryLegends/Scripts/Arcade/ArcadeService.cs",
+                                         "Assets/LaundryLegends/Scripts/Arcade/ArcadeUpgradeDefinition.cs",
+                                         "Assets/LaundryLegends/Scripts/Laundry/LaundryItem.cs",
+                                         "Assets/LaundryLegends/Scripts/Laundry/MachineLoadHook.cs",
+                                         "Assets/LaundryLegends/Scripts/Progression/SecretRoomController.cs",
+                                         "Assets/LaundryLegends/Editor/HiddenRoomSetupTool.cs",
+                                         "Assets/LaundryLegends/Editor/ReviewFixTool.cs",
+                                         "Assets/LaundryLegends/Scenes/Laundromat.unity",
+                                         "Assets/LaundryLegends/Prefabs/Environment/GreyboxRoom.prefab"
                                      ]
                 },
     "recovery":  {

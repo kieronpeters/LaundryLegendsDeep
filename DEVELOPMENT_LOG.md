@@ -1359,3 +1359,13 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 - Re-ran the explicit $300 progression on the clean branch: 1/1 passed.
 - Phase 10 implementation was started after the review request and has been moved off `phase-9` to the local `phase-10-wip` branch (commit 97897a2). It is incomplete: no scene wiring, UI, LaundryStaff rack handling, or tests yet. Do not review it as Phase 9.
 - `phase-9` remains at the reviewed implementation + machine-wall fix; no Phase 10 gameplay code is present.
+
+## 2026-11-03 - Review round 2 fixes
+
+**Phase:** 9 - review follow-up
+**Status:** Implemented and built; owner walkthrough pending.
+
+- U purchase menu replaces the ground pedestals; carpet gated to the expansion and moved into the bay; posters moved/added; secret-door leaf hidden; parcel bundle; rotating drums; hidden-room visitor removed, male order customer, silent staff.
+- Machines: 4 washers/4 dryers valid; drums assigned.
+- EditMode 159/159; PlayMode 59 passed / 0 failed / 2 explicit skipped; build 199 MB / 0 errors.
+- Follow-ups: LL-B-011 (menu bay labels), LL-A-006 (cabinet side art), LL-F-010 (different games per machine), LL-F-009 (male-customer voice).
