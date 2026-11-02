@@ -20,7 +20,7 @@
                          "name":  "Business operations and order flow",
                          "status":  "in_progress",
                          "file":  ".orchestrator/decisions/0013-phase-10-business-operations.md",
-                         "completionNote":  "Implemented on phase-10-12: 10-order queue, 10-slot rack, three 10-capacity shelves (5 starting units), stock blocking, 24-hour clock with N day skip, 30-day bills and HUD. Automated suites green; owner playtest (LL-P10-010) is the only open task."
+                         "completionNote":  "Merged to main via PR #3 at 73dba2e. Ten-order queue, 10-slot rack, three 10-capacity shelves (5 starting units), stock blocking, 24-hour clock with N day skip, 30-day bills and HUD. Automated suites green; owner playtest (LL-P10-010) is the only open task."
                      },
     "nextPhase":  {
                       "number":  13,

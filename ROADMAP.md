@@ -607,7 +607,7 @@ Arcade definitions/prefabs, decoration props, expansion geometry, balance data, 
 
 ## Phase 10 - Business operations and order flow
 
-**Status:** Implemented on branch `phase-10-12` (2026-11-04) - awaiting owner playtest. EditMode 164/164; PlayMode 64 passed / 0 failed / 2 explicit skips.
+**Status:** Implemented and merged to `main` via PR #3 at `73dba2e` (2026-11-04) - awaiting owner playtest. EditMode 164/164; PlayMode 66 passed / 0 failed / 2 explicit skips.
 **Objective:** Turn the laundry into a stock-and-cash business: consumable shelves, a ten-order queue with a ready-order shelf, and a 24-hour calendar with recurring utility and rent bills.
 **Depends on:** Phases 5 and 9.
 
@@ -666,7 +666,7 @@ Arcade definitions/prefabs, decoration props, expansion geometry, balance data, 
 
 ## Phase 11 - Characters and animation
 
-**Status:** Partially implemented on branch `phase-10-12` (2026-11-04) - awaiting owner review. Landed: phone-regular placement, ambient waiting route with leg timeout, silent staff, male-voiced order customer, idle/walk readings, and Load/Fold/Handoff animator states using the existing CC0 gesture takes. Still open: an authored carry cycle (carry remains procedural via `CarryPose`).
+**Status:** Partially implemented and merged to `main` via PR #3 at `73dba2e` (2026-11-04) - awaiting owner review. Landed: phone-regular placement, ambient waiting route with leg timeout, silent staff, male-voiced order customer, idle/walk readings, and Load/Fold/Handoff animator states using the existing CC0 gesture takes. Still open: an authored carry cycle (carry remains procedural via `CarryPose`).
 **Objective:** Develop necessary player, customer, and other character assets, animations, movement, interactions, and visual feedback.
 **Depends on:** Phases 5, 9 and 10 (stable loops and the business layer).
 
@@ -717,7 +717,7 @@ Character models/rigs/animations, animator controllers, prefabs, materials, inve
 
 ## Phase 12 - Visual art and environment
 
-**Status:** Partially implemented on branch `phase-10-12` (2026-11-04) - awaiting owner review. Landed: eight detailed appliance models, tumbling drum clothes, full-bay gated carpet, cabinet side art, per-machine cabinet themes and game variety (fight vs maze), emissive marquee lights, neon tubes/speakers, vending machines, two new posters at 2x resolution, bay game poster, and a clear post-unlock doorway. Still open: first-person hands and authored sprite art for the fighter.
+**Status:** Partially implemented and merged to `main` via PR #3 at `73dba2e` (2026-11-04) - awaiting owner review. Landed: eight detailed appliance models, tumbling drum clothes, full-bay gated carpet, cabinet side art, per-machine cabinet themes and game variety (fight vs maze), emissive marquee lights, neon tubes/speakers, vending machines, two new posters at 2x resolution, bay game poster, and a clear post-unlock doorway. Still open: first-person hands and authored sprite art for the fighter.
 **Objective:** Improve models, materials, textures, lighting, signage, room identity, cozy laundry atmosphere, and colorful arcade.
 **Depends on:** Phases 2, 5, 7, 8, 9, 10 and 11.
 
