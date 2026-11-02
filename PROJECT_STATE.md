@@ -3,7 +3,7 @@
 **Last updated:** 2026-11-02 (Phase 9 implementation complete; owner playtest pending)
 **Current milestone:** M1 - Playable laundry, **in progress**
 **Current phase:** Phase 9 - Arcade expansion, **in progress**
-**Next phase:** Phase 10 - TBD by roadmap review, **planned**
+**Next phase:** Phase 10 - Business operations and order flow, **planned**
 **Active task:** LL-P9-010 - owner playtest and Phase 9 closeout
 **Next recommended task:** Run `Build/LaundryLegends.exe` and verify the dual-business loop (see `.orchestrator/reports/2026-11-02-phase9-arcade-expansion.md`)
 
@@ -52,7 +52,7 @@ The workspace was empty before bootstrap. No user work was overwritten.
 
 - Git repository initialized on `main` with Unity-aware `.gitignore`.
 - Required project documentation created.
-- Phase roadmap covering Phases 0–16.
+- Phase roadmap covering Phases 0-17.
 - Persistent orchestration state, task queue, budgets, recovery procedure, decision records, and run reports.
 - Project-local OpenCode model, permissions, agents, and slash commands.
 - Bootstrap validation tooling.

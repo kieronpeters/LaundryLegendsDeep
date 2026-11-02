@@ -12,7 +12,7 @@
                       "priority":  1,
                       "owner":  "build",
                       "dependsOn":  [
-                                        "LL-P8-010"
+
                                     ],
                       "objective":  "Define the machine catalogue, multi-slot ownership, upgrade effects, reputation-to-traffic formula, upkeep, expansion, milestones, and the task order before implementation.",
                       "scope":  [

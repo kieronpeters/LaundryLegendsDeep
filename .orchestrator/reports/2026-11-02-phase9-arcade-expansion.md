@@ -139,9 +139,9 @@ upkeep, a visible expansion bay, and milestone feedback.
 
 | Ticket | Severity | Target | Summary |
 |---|---|---|---|
-| `LL-A-003` | P2 | Phase 11 | Extra cabinets reuse the Fighter model/screen; author Racer/Puzzle visuals. |
-| `LL-A-004` | P2 | Phase 11 | Arcade upgrade decor is placeholder primitive geometry. |
-| `LL-B-008` | P2 | Phase 15 | Capture/visual review of the expansion bay, kiosks and HUD at 1080p. |
+| `LL-A-003` | P2 | Phase 12 | Extra cabinets reuse the Fighter model/screen; author Racer/Puzzle visuals. |
+| `LL-A-004` | P2 | Phase 12 | Arcade upgrade decor is placeholder primitive geometry. |
+| `LL-B-008` | P2 | Phase 16 | Capture/visual review of the expansion bay, kiosks and HUD at 1080p. |
 
 None block the Phase 9 acceptance criteria; they are recorded per guardrails 13.
 

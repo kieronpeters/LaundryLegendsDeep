@@ -1305,3 +1305,24 @@ LL-P9-002: machine catalogue + multi-slot service, keeping all Phase 8 tests gre
 ### Next
 
 LL-P9-010: owner runs Build/LaundryLegends.exe, plays the dual-business loop, and records the result.
+
+## 2026-11-02 - Phase 10 added: business operations and order flow
+
+**Phase:** 10 - Business operations and order flow (new; old phases 10-16 renumbered 11-17).
+**Status:** Planned; contracts accepted, implementation waits on the Phase 9 owner playtest.
+
+### Added
+
+- Decision  013: a serializable 24-hour BusinessClock (Day 1+, skip-to-next-day), consumable definitions and one shelf per item (detergent/fragrance/plastic, capacity 10, one unit per purchase), stock consumption in wash/dry/wrap with out-of-stock blocking, five active orders, a ten-slot ready-order shelf, and a 30-day itemized rent/electricity/water bill with a bills menu.
+- Balance placeholders: detergent , fragrance , plastic ; rent , electricity , water  per 30 days; 10% late fee after 3 days; 1 real second = 1 game minute.
+- phase-10.json with ten tasks; LL-P10-001 complete, LL-P10-002-010 planned.
+- Backlog umbrella LL-F-008; future art/audio/save/QA targets renumbered to Phases 12/13/14/16.
+
+### Tooling
+
+- alidate-bootstrap.ps1 now accepts main or a phase-N branch, matching the phase-branch workflow.
+- Removed the stale LL-P8-010 dependency from the Phase 9 plan; validation passes.
+
+### Next
+
+Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 10 is the active phase.

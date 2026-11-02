@@ -9,7 +9,7 @@
                     "renderPipeline":  "Universal Render Pipeline 17.0.4",
                     "targetPlatform":  "Windows 64-bit"
                 },
-    "updatedAt":  "2026-11-02T22:30:00+08:00",
+    "updatedAt":  "2026-11-02T23:45:00+08:00",
     "currentMilestone":  {
                              "id":  "M1",
                              "name":  "Playable laundry",
@@ -24,7 +24,7 @@
                      },
     "nextPhase":  {
                       "number":  10,
-                      "name":  "TBD by roadmap review",
+                      "name":  "Business operations and order flow",
                       "status":  "planned",
                       "file":  "ROADMAP.md"
                   },
@@ -32,9 +32,9 @@
     "lastCompletedTask":  "LL-P9-009",
     "nextTask":  "LL-P9-010",
     "taskCounts":  {
-                       "complete":  63,
+                       "complete":  64,
                        "ready":  0,
-                       "planned":  0,
+                       "planned":  9,
                        "pending":  1,
                        "inProgress":  0,
                        "failed":  0,
@@ -45,11 +45,11 @@
                           "0":  "complete",
                           "1":  "complete",
                           "2":  "complete",
-                          "3":  "in_progress",
+                          "3":  "complete",
                           "4":  "complete",
-                          "5":  "planned",
-                          "6":  "planned",
-                          "7":  "planned",
+                          "5":  "complete",
+                          "6":  "complete",
+                          "7":  "complete",
                           "8":  "complete",
                           "9":  "in_progress",
                           "10":  "planned",
@@ -58,7 +58,8 @@
                           "13":  "planned",
                           "14":  "planned",
                           "15":  "planned",
-                          "16":  "planned"
+                          "16":  "planned",
+                          "17":  "planned"
                       },
     "git":  {
                 "branch":  "phase-9",
@@ -66,7 +67,7 @@
                 "checkpointCommit":  "ddf82639b992c1e1285a6a955ea9037c70c437d9",
                 "baselineCommit":  "b78218cccfeea741d3d227ffa95e679e9ba92a72",
                 "remote":  null,
-                "workingTree":  "clean after fccff1b; Build/LaundryLegends.exe rebuilt at 198 MB / 0 errors",
+                "workingTree":  "phase-10 plan staged; Phase 9 owner playtest still pending",
                 "unityProjectCommit":  "e244ba434ace223ff064df52b6a683615d9fb503",
                 "lastCheckpointAt":  "2026-11-02T23:05:00+08:00"
             },

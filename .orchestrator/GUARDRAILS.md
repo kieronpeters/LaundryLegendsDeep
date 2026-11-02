@@ -162,11 +162,11 @@ Never describe deferred work as finished, integrated, or final. Say "complete wi
 
 ### 13.5 Backlog gate before release
 
-Phase 15 owns the final defect drain. Phase 16 verifies a frozen candidate and must not absorb unfinished gameplay, art, or audio work.
+Phase 16 owns the final defect drain. Phase 17 verifies a frozen candidate and must not absorb unfinished gameplay, art, or audio work.
 
 - Close a ticket in its target phase; do not roll it forward silently.
-- At Phase 15 exit: no P0/P1 bug remains open; every P2 is fixed or accepted in writing by the owner; every remaining P3 is explicitly deferred to post-1.0 with a reason and listed in the known-issues/release notes.
-- A release blocker found in Phase 16 is fixed narrowly, the gate is re-checked, and the build is rebuilt. General backlog work does not resume there.
+- At Phase 16 exit: no P0/P1 bug remains open; every P2 is fixed or accepted in writing by the owner; every remaining P3 is explicitly deferred to post-1.0 with a reason and listed in the known-issues/release notes.
+- A release blocker found in Phase 17 is fixed narrowly, the gate is re-checked, and the build is rebuilt. General backlog work does not resume there.
 - "All tickets addressed" means every ticket that affects the shipped game. P3 opportunities outside release scope may be parked, but never omitted from the record.
 
 ## 14. Authority
