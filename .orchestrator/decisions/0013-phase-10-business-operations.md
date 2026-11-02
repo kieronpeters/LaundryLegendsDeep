@@ -15,7 +15,7 @@ The owner's requirements:
 
 - Separate shelves for consumables, 10 per item, one unit per purchase at a fixed cost.
 - Running out blocks processing until the player restocks.
-- Up to 5 new orders at once; more than one order can be ready.
+- Up to 10 new orders at once; more than one order can be ready.
 - A separate shelf for ready orders.
 - A 24-hour clock, Day 1 onward, with a bill every 30 days for rent, electricity and water.
 - Bills are paid from a menu.
@@ -107,7 +107,7 @@ Initial items:
 
 ### Order queue and ready shelf
 
-- Up to **5 active orders** at once (configurable).
+- Up to **10 active orders** at once (configurable).
 - Up to **10 wrapped orders** on the ready shelf.
 - Each active order has its own drop-off slot and ticket. Customers can wait
   concurrently; the player is not forced to finish one order before another starts.
@@ -128,7 +128,7 @@ Initial items:
 |---|---|
 | Detergent / Fragrance / Plastic | $2 / $3 / $1 per unit |
 | Shelf capacity | 10 |
-| Active orders | 5 |
+| Active orders | 10 |
 | Ready shelf | 10 |
 | Rent / Electricity / Water | $250 / $90 / $60 per 30 days |
 | Late fee | 10% after 3 days |
@@ -140,7 +140,7 @@ Initial items:
 2. `LL-P10-002` business clock and day counter.
 3. `LL-P10-003` consumable definitions, shelves, restock, stock HUD.
 4. `LL-P10-004` consumption and out-of-stock blocking.
-5. `LL-P10-005` five-order queue and concurrent customers.
+5. `LL-P10-005` ten-order queue and concurrent customers.
 6. `LL-P10-006` ready-order shelf and ticket pickup.
 7. `LL-P10-007` 30-day billing and bills menu.
 8. `LL-P10-008` HUD for clock, stock, queue and bills.
@@ -152,7 +152,7 @@ Initial items:
 | Phase 10 criterion | Task evidence |
 |---|---|
 | Stock blocks processing and is recoverable | 003/004 |
-| Five active orders, multiple ready | 005/006 |
+| Ten active orders, multiple ready | 005/006 |
 | 30-day itemized bill, payable from a menu | 007 |
 | No negative balance / recoverable bill | 007/009 |
 | Clock advances and can skip days | 002 |

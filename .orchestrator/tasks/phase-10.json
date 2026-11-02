@@ -18,7 +18,7 @@
       "acceptance": [
         "Consumable items, costs and capacities are explicit",
         "Consumption and out-of-stock blocking rules are defined",
-        "Five active orders and ten ready orders are defined",
+        "Ten active orders and ten ready orders are defined",
         "Clock, billing cadence, grace and late-fee rules are defined",
         "Task order and acceptance mapping are recorded"
       ],
@@ -104,22 +104,22 @@
     },
     {
       "id": "LL-P10-005",
-      "title": "Raise the order queue to five active orders",
+      "title": "Raise the order queue to ten active orders",
       "status": "planned",
       "priority": 5,
       "owner": "ll-unity-dev",
       "dependsOn": ["LL-P10-002", "LL-P10-003"],
-      "objective": "Let up to five orders be active at once with their own drop-off slots and customers, without breaking the single-order path.",
+      "objective": "Let up to ten orders be active at once with their own drop-off slots and customers, without breaking the single-order path.",
       "scope": ["Assets/LaundryLegends/Scripts/Customers/**", "Assets/LaundryLegends/Scripts/Business/**", "Assets/LaundryLegends/Scenes/Laundromat.unity", "Assets/LaundryLegends/Tests/**"],
       "mustNotTouch": ["Assets/LaundryLegends/Scripts/Progression/SecretRoomController.cs"],
       "acceptance": [
-        "Five orders can be registered and active together",
+        "Ten orders can be registered and active together",
         "Customers do not overwrite each other's tickets or items",
         "The single-order flow still works",
         "The queue rejects a sixth active order with a clear reason"
       ],
       "checks": [
-        {"name": "Five active orders", "status": "pending", "command": "EditMode/PlayMode queue tests", "evidence": "Pending"}
+        {"name": "Ten active orders", "status": "pending", "command": "EditMode/PlayMode queue tests", "evidence": "Pending"}
       ],
       "result": null,
       "retryCount": 0,
@@ -206,11 +206,11 @@
       "priority": 9,
       "owner": "ll-qa",
       "dependsOn": ["LL-P10-004", "LL-P10-006", "LL-P10-007", "LL-P10-008"],
-      "objective": "Prove the loop scales, stays recoverable and cannot duplicate money across five orders, stock and bills.",
+      "objective": "Prove the loop scales, stays recoverable and cannot duplicate money across ten orders, stock and bills.",
       "scope": ["Assets/LaundryLegends/Tests/**", ".orchestrator/reports/**"],
       "mustNotTouch": ["Assets/LaundryLegends/Scripts/**"],
       "acceptance": [
-        "Long session: stock -> five orders -> ready shelf -> payments -> 30-day bill",
+        "Long session: stock -> ten orders -> ready shelf -> payments -> 30-day bill",
         "Stock-out and bill-out states are recoverable",
         "Exactly-once payment still holds",
         "Suite totals and balance placeholders are recorded"

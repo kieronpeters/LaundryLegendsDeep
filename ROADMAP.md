@@ -608,14 +608,14 @@ Arcade definitions/prefabs, decoration props, expansion geometry, balance data, 
 ## Phase 10 - Business operations and order flow
 
 **Status:** Planned - decision 0013 accepted; LL-P10-001 complete, LL-P10-002 ready after LL-P9-010.
-**Objective:** Turn the laundry into a stock-and-cash business: consumable shelves, a five-order queue with a ready-order shelf, and a 24-hour calendar with recurring utility and rent bills.
+**Objective:** Turn the laundry into a stock-and-cash business: consumable shelves, a ten-order queue with a ready-order shelf, and a 24-hour calendar with recurring utility and rent bills.
 **Depends on:** Phases 5 and 9.
 
 ### Deliverables
 
 - Consumable definitions and one shelf per item (detergent, fragrance, plastic), capacity 10 each, fixed unit cost, one unit per purchase.
 - Stock consumption in wash, dry and wrap; an empty shelf blocks that stage with a clear reason.
-- Order queue of up to 5 active orders; a ready-order shelf of up to 10 wrapped orders; customers collect by ticket.
+- Order queue of up to 10 active orders; a ready-order shelf of up to 10 wrapped orders; customers collect by ticket.
 - Business clock from Day 1 onward with a 24-hour display and a skip-to-next-day action.
 - Utility/rent billing every 30 in-game days, with an itemized bill and a payable menu.
 - HUD for stock, queue, clock and bills.
@@ -626,7 +626,7 @@ Arcade definitions/prefabs, decoration props, expansion geometry, balance data, 
 - Add the business clock and day counter.
 - Add consumable definitions, shelves, purchase/restock and stock HUD.
 - Consume stock in processing and block out-of-stock stages.
-- Raise the order queue to five active orders with concurrent customers.
+- Raise the order queue to ten active orders with concurrent customers.
 - Add the ready-order shelf and ticket pickup.
 - Add the 30-day billing service and bills menu.
 - Surface stock, queue, clock and bills in the HUD.
@@ -636,7 +636,7 @@ Arcade definitions/prefabs, decoration props, expansion geometry, balance data, 
 ### Acceptance criteria
 
 - Running out of a consumable blocks the relevant stage and is recoverable by buying stock.
-- Five orders can be active at once, and multiple orders can be ready and waiting on the shelf.
+- Ten orders can be active at once, and multiple orders can be ready and waiting on the shelf.
 - A bill is generated every 30 in-game days with separate rent, electricity and water lines, and can be paid from a menu.
 - An unaffordable bill never makes the wallet negative; the late-payment rule is documented and recoverable.
 - The clock advances during play and can be skipped to the next day for testing.

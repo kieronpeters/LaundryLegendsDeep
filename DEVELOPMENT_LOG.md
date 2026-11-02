@@ -1326,3 +1326,27 @@ LL-P9-010: owner runs Build/LaundryLegends.exe, plays the dual-business loop, an
 ### Next
 
 Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 10 is the active phase.
+
+## 2026-11-02 - Machine-wall fix and Phase 10 queue size
+
+**Phase:** 9 follow-up / Phase 10 contract
+**Status:** Fixed; build rebuilt; owner playtest pending.
+**Commit:** 8d86fef.
+
+### Fixed
+
+- Only Machine_1/2 had MachineLoadHook; the other six appliances were decorative, and LaundryStaff hard-coded those two names.
+- Wired all eight machines: 4 washers (1/3/5/7) and 4 dryers (2/4/6/8), each with a load slot and hook.
+- LaundryStaff now sorts hooks and uses the first free unit of the required kind, so any machine can serve an order and the player can occupy one without stalling the staff.
+- Updated the old Phase 3/4/appliance validators so they no longer assert a single-hook prototype.
+- Phase 10 active-order queue raised from 5 to 10 (ready shelf remains 10).
+
+### Verification
+
+- Machine validation: 4 washers + 4 dryers, each with a slot.
+- EditMode 158/158; PlayMode 59 passed / 0 failed / 2 explicit skipped; build 198 MB / 0 errors.
+- Not run: owner walk-the-wall check in the shipped build.
+
+### Deferred
+
+- LL-A-005: washer/dryer realism pass, target Phase 12.
