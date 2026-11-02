@@ -284,6 +284,16 @@ def _run(app):
     # or the bare feet render straight through the shoes.
     try:
         human.maskFaces()
+        # maskFaces only hides the static helper/joint faces. Apply each garment's
+        # own deleteVerts mask too, or the naked body keeps rendering under the
+        # clothes and z-fights through close-fitting garments (skin "tears").
+        import numpy as _np
+        vertsMask = _np.ones(human.meshData.getVertexCount(), dtype=bool)
+        for pxy in human.clothesProxies.values():
+            dv = getattr(pxy, "deleteVerts", None)
+            if dv is not None and _np.any(dv):
+                vertsMask[dv] = False
+        human.changeVertexMask(vertsMask)
         masked = int(sum(1 for m in human.meshData.face_mask if not m))
         say("face mask recomputed: %d body faces hidden" % masked)
     except Exception:

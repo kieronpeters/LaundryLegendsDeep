@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-11-01 (Phase 8 arcade business loop + menu/build fixes)
+**Last updated:** 2026-11-02 (Phase 8 complete: fullscreen arcade session verified by owner)
 **Current milestone:** M1 - Playable laundry, **in progress**
-**Current phase:** Phase 8 - First arcade machine, **complete pending owner playtest** (purchase/install, attract mode, visitor income, maze minigame)
+**Current phase:** Phase 8 - First arcade machine, **complete**
 **Next phase:** Phase 9 - Arcade expansion, **planned**
-**Active task:** Owner playtest of the first-machine payoff
-**Next recommended task:** Human verification of arcade payoff, then Phase 9 planning
+**Active task:** Backlog grooming and Phase 9 planning
+**Next recommended task:** Groom `.orchestrator/BACKLOG.md`, then Phase 9 breakdown
 
 > **Manager note (2026-11-01).** Sections below are historical and describe the
 > Phase 1-3 state; they are not rewritten wholesale. Current authoritative
@@ -40,7 +40,7 @@
 - **Assemblies:** `LaundryLegends.Runtime`, `LaundryLegends.Editor`, `LaundryLegends.Tests.EditMode`, `LaundryLegends.Tests.PlayMode`. Runtime, editor, and PlayMode test assemblies compile.
 - **Prefabs:** `Prefabs/Gameplay/Player.prefab` with CharacterController, first-person controller, pause controller, interaction raycast, carry controller with a `HoldAnchor` child, IMGUI interaction prompt view, child camera, and AudioListener. `Prefabs/Gameplay/Laundry/` with `Basket.prefab`, `LooseLaundry.prefab`, and `Bag.prefab`, each with a collider, rigidbody, custom Blender mesh/material, and unique template ID. `Prefabs/Gameplay/NPC/` with three CC0 static humanoid archetypes. `Prefabs/Environment/GreyboxRoom.prefab` with room shell, counter, folding table, eight-machine wall (one washer carries the Phase 3 load/unload hook and drum slot, all eight have additive front details), secret door, ceiling point lights, a south storefront (window openings/frames/glass, entrance frame with open glass leaves and threshold, and a minimal exterior ground/backdrop), a south-east waiting area, west-wall storage shelving, a north-west utility alcove with placeholder signage, and a service-panel/rolling-shelf cover in front of the secret door.
 - **Materials:** eleven flat Standard greybox materials under `Art/Materials`, including transparent `Grey_Glass`, emissive `Grey_Sky`, `Grey_Chair`, and `Grey_Sign`; no textures.
-- **Tests:** 135 EditMode and 54 PlayMode tests as of 2026-11-01 (PlayMode 53 passed, 1 intentionally skipped). Coverage includes game state, economy and exactly-once income, orders and payment, machine loading, navigation and containment, secret room, arcade business loop (purchase, attract mode, visitor income), main-menu serialized handlers, and first-person hand visibility. Test assemblies are isolated from runtime.
+- **Tests:** 147 EditMode and 59 PlayMode tests as of 2026-11-02 (PlayMode 57 passed, 2 explicit skipped). Coverage includes game state, economy and exactly-once income, orders and payment, two consecutive paid orders, a six-order $300 progression into the back room, machine loading, navigation and containment, secret room, shelf purchase reachability, HUD/prompt wiring and controls legend, arcade business loop, main-menu serialized handlers, and NPC anatomy. Test assemblies are isolated from runtime.
 - **Folders:** full `Assets/LaundryLegends` feature tree for art, audio, prefabs, scenes, scripts, settings, ScriptableObjects, UI, editor, and tests.
 - **Textures/models/audio:** none; placeholder primitives only.
 - **Unity project files:** `Packages/manifest.json` (34 direct dependencies), `Packages/packages-lock.json` (37 resolved built-in packages), and generated files under `ProjectSettings/`.
@@ -160,6 +160,18 @@ The workspace was empty before bootstrap. No user work was overwritten.
 See `.orchestrator/budgets.json`.
 
 ## 9. Last successful development run
+
+**Phase 8 complete - fullscreen arcade session:** `2026-11-02-ll-p8-arcade` - **complete, owner verified**
+**Report:** `.orchestrator/reports/2026-11-02-playtest-fixes-and-visual-pass.md`
+**Result:** Cabinet interaction unblocked (it had no collider) and the cabinet now cuts to a fullscreen fight: one interaction starts a paid play, freezes the player and shop HUD, frees the cursor; Esc/Q leaves and the result hold returns to the shop. Owner played it and confirmed the payoff works. EditMode **147/147**, PlayMode **58 passed / 0 failed / 2 skipped**, build **198 MB / 0 errors**. Phase 8 acceptance is satisfied; the fighter visual upgrade is filed as backlog (`LL-F-006`).
+
+**Playtest fixes, hidden room, character re-export:** `2026-11-02-ll-p8-finish` - **complete**
+**Report:** `.orchestrator/reports/2026-11-02-playtest-fixes-and-visual-pass.md`
+**Result:** Order loop unblocked (customer/staff waypoints out of counter colliders, staff walk timeout), hidden room rebuilt at the door with a cut east wall, casino carpet, bar, posters and an upright playable cabinet, and the character Clothing fixed at the source: the MakeHuman plugin now applies each garment's `deleteVerts` mask, the customer re-exported in `female_casualsuit01` (tee + jeans), and the material mapping switched. Placeholder first-person hands removed, clutter hidden, controls legend added. EditMode **147/147**, PlayMode **57 passed / 0 failed / 2 explicit skipped**, six-order **$300 progression** passed, build **198 MB / 0 errors**. 20 captures + live build screenshots inspected. Backlog filed in `.orchestrator/BACKLOG.md`.
+
+**Phase 8 playtest blocker fix:** `2026-11-01-ll-p8-fix-01` - **complete, pending owner playtest**
+**Report:** `.orchestrator/reports/2026-11-01-phase8-playtest-blockers-fix.md`
+**Result:** Fixed the four owner-reported blockers without touching character/appliance art or `NpcLocomotion.ResolveOverlaps`. `CustomerAgent` now always reaches `Done` (walk timeouts, explicit failure logs, patience 180 s), `CustomerSpawner` watches for a lost customer and respawns, the purchase point moved onto the `SecretAccess` group (reachable, and paying clears the whole doorway), and the decorative ambient NPC no longer drops its prop into the real order drop-off (that prop was consuming a full wash/dry cycle ahead of the customer and is why order two abandoned). New tests: two consecutive paid orders (EditMode + PlayMode at production timing), HUD/prompt wiring, shelf reachability. EditMode **147/147**, PlayMode **57 passed / 0 failed / 1 skipped**, scene repair + validation exit 0, build exit 0 (`Build/LaundryLegends.exe`, 196 MB). Two orders completed and paid in the test run (`ORD-0001 Paid`, `ORD-0002 Paid`, wallet 100).
 
 **Last successful run:** `2026-10-20-ll-p1-008`
 **Report:** `.orchestrator/reports/2026-10-20-ll-p1-008.md`

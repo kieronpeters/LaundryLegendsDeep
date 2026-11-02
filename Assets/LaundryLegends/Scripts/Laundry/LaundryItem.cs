@@ -74,9 +74,11 @@ namespace LaundryLegends.Laundry
                     }
                 }
 
-                if (_wrappedVisual == null && _wrappedVisualPrefab != null)
+                if (_wrappedVisual == null)
                 {
-                    _wrappedVisual = Instantiate(_wrappedVisualPrefab);
+                    // The authored bundle is a flat sheet; a small cloth parcel
+                    // reads as wrapped laundry on the table and in the staff's arms.
+                    _wrappedVisual = CreateParcelVisual();
                     _wrappedVisual.name = "WrappedVisual";
                     _wrappedVisual.transform.SetParent(transform, false);
                     _wrappedVisual.transform.localPosition = Vector3.zero;
@@ -84,16 +86,10 @@ namespace LaundryLegends.Laundry
                     _wrappedVisual.transform.localScale = Vector3.one;
                 }
 
-                if (_wrappedVisual == null)
-                {
-                    // Items built at runtime (tests, spawned props) have no authored
-                    // bundle reference, so keep a simple transparent wrap visible.
-                    _wrappedVisual = CreateFallbackWrap();
-                }
-
                 if (_wrappedVisual != null)
                 {
                     _wrappedVisual.SetActive(true);
+                    GroundVisual(_wrappedVisual);
                 }
 
                 return;
@@ -114,29 +110,99 @@ namespace LaundryLegends.Laundry
         }
 
         /// <summary>
+        /// Lifts the wrapped visual so its lowest rendered point rests on the
+        /// item pivot instead of sinking halfway into the folding table.
+        /// </summary>
+        private void GroundVisual(GameObject visual)
+        {
+            Bounds local = new Bounds();
+            bool hasBounds = false;
+            foreach (Renderer renderer in visual.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null)
+                {
+                    continue;
+                }
+
+                Bounds world = renderer.bounds;
+                Vector3 min = transform.InverseTransformPoint(world.min);
+                Vector3 max = transform.InverseTransformPoint(world.max);
+                var candidate = new Bounds((min + max) * 0.5f, max - min);
+                if (!hasBounds)
+                {
+                    local = candidate;
+                    hasBounds = true;
+                }
+                else
+                {
+                    local.Encapsulate(candidate);
+                }
+            }
+
+            if (!hasBounds || local.size.y <= 0.0001f)
+            {
+                return;
+            }
+
+            Vector3 offset = visual.transform.localPosition;
+            visual.transform.localPosition = new Vector3(offset.x, offset.y - local.min.y, offset.z);
+        }
+
+        /// <summary>
         /// Minimal transparent wrap for items that have no authored bundle
         /// prefab (runtime-built items in tests and spawned props).
         /// </summary>
-        private GameObject CreateFallbackWrap()
+        /// <summary>
+        /// A small cloth parcel in a clear film bag. The authored bundle mesh is a
+        /// flat sheet that reads as paper; this reads as wrapped laundry.
+        /// </summary>
+        private GameObject CreateParcelVisual()
         {
-            var plastic = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            plastic.name = "PlasticWrap";
-            Destroy(plastic.GetComponent<Collider>());
-            plastic.transform.SetParent(transform, false);
-            plastic.transform.localPosition = new Vector3(0f, 0.1f, 0f);
-            plastic.transform.localScale = new Vector3(0.38f, 0.24f, 0.32f);
+            var root = new GameObject("Parcel");
+            AddParcelBox(
+                root.transform,
+                "ParcelCloth",
+                new Vector3(0.34f, 0.20f, 0.28f),
+                new Color(0.78f, 0.82f, 0.88f, 1f),
+                0.12f,
+                true);
+            AddParcelBox(
+                root.transform,
+                "ParcelFilm",
+                new Vector3(0.38f, 0.24f, 0.32f),
+                new Color(0.85f, 0.92f, 1f, 0.22f),
+                0.55f,
+                false);
+            return root;
+        }
 
-            var material = new Material(Shader.Find("Standard"));
-            material.color = new Color(0.75f, 0.92f, 1f, 0.28f);
-            material.SetFloat("_Mode", 3f);
-            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            material.SetInt("_ZWrite", 0);
-            material.DisableKeyword("_ALPHATEST_ON");
-            material.EnableKeyword("_ALPHABLEND_ON");
-            material.renderQueue = 3000;
-            plastic.GetComponent<Renderer>().sharedMaterial = material;
-            return plastic;
+        private static void AddParcelBox(Transform parent, string name, Vector3 size, Color colour,
+            float smoothness, bool opaque)
+        {
+            var box = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            box.name = name;
+            Destroy(box.GetComponent<Collider>());
+            box.transform.SetParent(parent, false);
+            box.transform.localPosition = Vector3.zero;
+            box.transform.localScale = size;
+
+            var material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            material.SetColor("_BaseColor", colour);
+            material.SetFloat("_Smoothness", smoothness);
+            material.SetFloat("_Metallic", 0f);
+            if (!opaque)
+            {
+                material.SetFloat("_Surface", 1f);
+                material.SetFloat("_Blend", 0f);
+                material.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                material.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                material.SetFloat("_ZWrite", 0f);
+                material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                material.DisableKeyword("_ALPHATEST_ON");
+                material.renderQueue = 3000;
+            }
+
+            box.GetComponent<Renderer>().sharedMaterial = material;
         }
 
         /// <summary>Stable prefab-template identifier, unique per prefab asset.</summary>

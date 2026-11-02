@@ -106,11 +106,10 @@ namespace LaundryLegends.Editor
                 "I will be back before the end of the year.",
                 "Please check this stain if you can.");
 
-            GameObject dropOffObject = GameObject.Find("DropOffSlot");
-            if (dropOffObject != null)
-            {
-                loop.ConfigureDropOff(dropOffObject.GetComponent<CarrySlot>());
-            }
+            // No drop-off wiring on purpose. The ambient customer is scenery: the
+            // staff treats anything in the order drop-off as the next order, so a
+            // decorative prop placed there delays a real customer's laundry past
+            // its patience. The prop stays in the NPC's hands and leaves with it.
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);

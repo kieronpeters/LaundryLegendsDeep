@@ -17,9 +17,11 @@ namespace LaundryLegends.NPC
         [SerializeField] private float _walkSpeed = 1.1f;
         [SerializeField] private float _standDistance = 0.85f;
         [SerializeField] private float _foldStandDistance = 2f;
-        [SerializeField] private float _dropOffStandDistance = 0.55f;
+
+        [Tooltip("Distance from the drop-off slot to the staff's stand point. The slot sits on the counter, so this must clear the counter's collider or overlap correction pins the staff short of it.")]
+        [SerializeField] private float _dropOffStandDistance = 1.6f;
         [SerializeField] private float _carryLiftSeconds = 0.45f;
-        [SerializeField] private Vector3 _idlePoint = new Vector3(-4.6f, 0f, -1.9f);
+        [SerializeField] private Vector3 _idlePoint = new Vector3(-4.6f, 0f, -0.9f);
 
         private MachineLoadHook _washer;
         private MachineLoadHook _dryer;
@@ -163,10 +165,21 @@ namespace LaundryLegends.NPC
 
         private IEnumerator WalkTo(Vector3 destination)
         {
+            float elapsed = 0f;
+            const float limit = 20f;
+
             if (_locomotion != null)
             {
                 while (!_locomotion.MoveTowards(destination, _walkSpeed))
                 {
+                    elapsed += Time.deltaTime;
+                    if (elapsed >= limit)
+                    {
+                        // A blocked stand point must not freeze the whole staff loop.
+                        Debug.LogWarning($"[Staff] Walking to {destination} timed out after {limit:0}s; retrying the station.");
+                        yield break;
+                    }
+
                     yield return null;
                 }
 
@@ -180,6 +193,13 @@ namespace LaundryLegends.NPC
                 if (new Vector2(direction.x, direction.z).sqrMagnitude > 0.0001f)
                 {
                     transform.rotation = Quaternion.LookRotation(new Vector3(direction.x, 0f, direction.z));
+                }
+
+                elapsed += Time.deltaTime;
+                if (elapsed >= limit)
+                {
+                    Debug.LogWarning($"[Staff] Walking to {destination} timed out after {limit:0}s; retrying the station.");
+                    yield break;
                 }
 
                 yield return null;

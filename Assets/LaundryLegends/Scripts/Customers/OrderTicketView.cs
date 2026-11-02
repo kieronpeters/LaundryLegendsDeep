@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using LaundryLegends.Economy;
 using UnityEngine;
+using LaundryLegends.Arcade;
 
 namespace LaundryLegends.Customers
 {
@@ -14,8 +15,8 @@ namespace LaundryLegends.Customers
     public sealed class OrderTicketView : MonoBehaviour
     {
         [SerializeField] private CustomerSpawner _spawner;
-        [SerializeField] private float _width = 260f;
-        [SerializeField] private float _height = 280f;
+        [SerializeField] private float _width = 300f;
+        [SerializeField] private float _height = 290f;
 
         private string _receipt = string.Empty;
         private string _lastResult = string.Empty;
@@ -26,6 +27,18 @@ namespace LaundryLegends.Customers
         public void Configure(CustomerSpawner spawner)
         {
             _spawner = spawner;
+        }
+
+        private void Awake()
+        {
+            if (_spawner == null)
+            {
+                _spawner = FindFirstObjectByType<CustomerSpawner>();
+                if (_spawner != null)
+                {
+                    Debug.Log("[HUD] Order ticket had no spawner; wired itself to the scene's CustomerSpawner.");
+                }
+            }
         }
 
         /// <summary>Builds the ticket text for the ledger's active orders.</summary>
@@ -149,6 +162,11 @@ namespace LaundryLegends.Customers
 
         private void OnGUI()
         {
+            if (ArcadeMode.IsActive)
+            {
+                return;
+            }
+
             if (_spawner == null)
             {
                 return;

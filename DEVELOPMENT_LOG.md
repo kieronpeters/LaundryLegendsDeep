@@ -1153,3 +1153,103 @@ Owner playtest, then Phase 9.
 ### Next
 
 Owner verification, then Phase 9 arcade expansion.
+
+## 2026-11-01 - Phase 8 playtest blocker fix
+
+**Phase:** 8 - First arcade machine
+**Run:** `2026-11-01-ll-p8-fix-01`
+**Status:** Complete; owner playtest outstanding
+
+### Fixed
+
+- `CustomerAgent` always ends in `Done`: the order body moved to `RunOrder()`, every exit path goes through `LeaveAndFinish()`, and each walk leg has a 40 s timeout, so a blocked path can no longer freeze the shop. Ticket create/accept/collect/payment failures and abandonments now log instead of failing silently. Patience 90 s -> 180 s, tip window 60 s -> 120 s.
+- `CustomerSpawner` gained a watchdog: a missing, disabled, or `Done` active customer is cleared and the respawn timer re-armed. Spawn failures back off instead of retrying every frame. Spawn and next-customer events are logged.
+- Root cause of the second order abandoning: the decorative ambient street customer dropped its laundry prop into the **real order drop-off**, so the staff washed the decoration ahead of the real order (the drop-off was occupied from t=15 s to t=84 s in the trace). The scene link is cleared, `NpcSceneSetupTool` no longer wires it, and `AmbientNpc` documents the rule.
+- `HiddenRoomPurchasePoint` moved from the thin service panel to the `SecretAccess` group root, so every concealment collider resolves to it. `_sealedDoorCover` is the same group, so paying clears the whole doorway instead of leaving the shelf in it.
+- `OrderTicketView` self-wires a missing spawner and its box grew from 260x110 to 300x290 (the scene value clipped the ticket text).
+
+### Added
+
+- `PlaytestFixTool` (`Repair`/`Validate`) and `PlaytestAuditTool` (read-only wiring audit). Validate now also rejects ambient NPCs wired to the order drop-off.
+- `TwoOrderPaymentTests` (EditMode): two orders credit twice; a duplicate attempt on the first does not block the second.
+- `TwoOrderPlayModeTests`: two real customers through the real staff/machines with production durations and a 1/60 s delta.
+- `PlaytestHudTests`: HUD ticket and prompt live/wired; ticket tracks the live ledger.
+- `ShelfPurchaseTests`: aisle ray resolves to the purchase point; buying clears the doorway.
+
+### Checks and evidence
+
+- EditMode **147/147 passed**, exit 0 (`TestResults/editmode.xml`).
+- PlayMode **57 passed, 0 failed, 1 skipped**, exit 0 (`TestResults/playmode.xml`). The two-order test logged `ORD-0001 Paid`, `ORD-0002 Paid`, wallet 100, 2 payouts.
+- `PlaytestFixTool.Repair` exit 0; `PlaytestFixTool.Validate` exit 0 with every playtest wiring check.
+- No `NullReferenceException`, missing reference, compile error, or assertion-failure lines in either suite log.
+- Player build exit 0: `Build/LaundryLegends.exe`, 196 MB, scenes Bootstrap/MainMenu/Laundromat.
+- Report: `.orchestrator/reports/2026-11-01-phase8-playtest-blockers-fix.md`.
+
+### Not performed
+
+- Owner playtest of the rebuilt build.
+- Manual shelf purchase and back-room entry in the built player.
+- Appliance models and character eyes/teeth/clothing re-export (out of scope by instruction).
+
+### Next
+
+Owner playtest, then the deferred arcade-payoff verification and Phase 9 planning.
+
+## 2026-11-02 - Playtest fixes, hidden room, and character re-export
+
+**Phase:** 8 - First arcade machine
+**Status:** code/scene/tests/build complete; owner playtest outstanding
+
+### Fixed
+
+- Order loop: customer counter waypoint and staff drop-off/idle points were inside the counter collider, so overlap correction pinned both NPCs. Moved them clear, routed customers through room/doorway waypoints, added a 20 s staff walk timeout, and raised the fold stand to 2 m.
+- Hidden room was built in the wrong place (frontage skewed the measured shop bounds; the west-wall gap was centred on the shelf root at the origin). It is now 8x8 m at x=8.2, centred on the door, with a cut in the shop's east wall and a floor threshold.
+- Cabinet was lying in the floor: the import rotation was being discarded. It now preserves the prefab root rotation, is grounded, and faces the door.
+- Clothing: the MakeHuman export never masked the body under garments. Patched the plugin to apply each garment's deleteVerts mask, re-exported the customer in `female_casualsuit01` (tee + jeans) and the attendant in `male_casualsuit06`, and switched the material mapping.
+- Removed the placeholder first-person hands and hid 13 clutter/placeholder objects.
+- Added the controls legend to the HUD.
+
+### Added
+
+- Casino back room: generated black/gold carpet, bar, plant, sconces, and two wordplay posters (`tools/make-posters.ps1`).
+- `PlaytestFixTool`, `VisualPolishTool`, `VisualAuditTool`, `VisualProbeTool`, `CounterProbeTool`, `ModestClothingPostprocessor` (retired after the source fix).
+- `ProgressionPlayModeTests`: six production-timing orders -> $300 -> shelf -> walk into the back room.
+- `tools/game-vision/game-vision.ps1`: window capture, clicks, keys, relative mouse; README.
+- Subagent reports: computer-use tooling, asset/audio tooling, Unity vs Unreal, Unreal sample.
+- `.orchestrator/BACKLOG.md` with self-filed tickets.
+
+### Checks and evidence
+
+- EditMode **147/147**; PlayMode **57 passed / 0 failed / 2 explicit skipped**.
+- Progression **1/1 passed** (wallet 0 -> 300, 6 paid orders).
+- Repair/Validate exit 0; build exit 0 (198 MB, 0 errors).
+- 20 captures, 0 invalid frames; live build captured at the menu and in game.
+- Reports: `.orchestrator/reports/2026-11-02-playtest-fixes-and-visual-pass.md` and the four subagent reports.
+
+### Not performed
+
+- Owner playtest of the machine payoff; audio listening checks; Unreal engine install/run.
+
+### Next
+
+Owner playtest, then Phase 9 planning or backlog grooming.
+
+## 2026-11-02 - Phase 8 complete: fullscreen arcade session
+
+**Phase:** 8 - First arcade machine
+**Status:** Complete; owner verified the payoff.
+
+### Fixed / added
+
+- The cabinet had no collider, so it could not be interacted with. Added a BoxCollider sized from its render bounds and wired the service.
+- Interacting now cuts to a fullscreen fight (Arcade Paradise flow): the player, HUD, prompt and pause are disabled, the cursor is freed, and a paid play starts the fight immediately. Esc/Q leaves; the result hold returns to the shop automatically. Added `ArcadeMode` for control restore and updated the HUD views to hide during the session.
+- Updated the cabinet EditMode test and added `ArcadeCabinetInteractTests` (targeting, fight start, player freeze, restore).
+
+### Checks
+
+- EditMode **147/147**; PlayMode **58 passed / 0 failed / 2 skipped**; build **exit 0, 198 MB**.
+- Owner playtest: cabinet interaction and fullscreen fight work; payoff confirmed.
+
+### Next
+
+Phase 9 planning; backlog grooming (`LL-F-006` fighter visual upgrade, `LL-B-003` doorway clearance, etc.).

@@ -1,6 +1,7 @@
 using LaundryLegends.Interaction;
 using LaundryLegends.Player;
 using UnityEngine;
+using LaundryLegends.Arcade;
 
 namespace LaundryLegends.UI
 {
@@ -126,6 +127,11 @@ namespace LaundryLegends.UI
         }
         private void OnGUI()
         {
+            if (ArcadeMode.IsActive)
+            {
+                return;
+            }
+
             if (IsVisible && !string.IsNullOrEmpty(CurrentLabel))
             {
                 const float width = 360f;

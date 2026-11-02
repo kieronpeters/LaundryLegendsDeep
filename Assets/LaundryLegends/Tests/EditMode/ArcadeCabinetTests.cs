@@ -96,7 +96,7 @@ namespace LaundryLegends.Tests.EditMode
         }
 
         [Test]
-        public void FightMenuIsDrawnOnTheCabinetScreenAndClearedWhenStopped()
+        public void FightIsDrawnOnTheCabinetScreenAndClearedWhenStopped()
         {
             var screen = Track(GameObject.CreatePrimitive(PrimitiveType.Quad));
             var viewObject = Track(new GameObject("View"));
@@ -109,7 +109,10 @@ namespace LaundryLegends.Tests.EditMode
 
             var economy = new EconomyService(new GameState(50));
             Assert.IsTrue(cabinet.TryStart(economy, 0f));
-            Assert.AreEqual(FightScreen.Menu, cabinet.Session.Screen, "A play should open the PLAY/QUIT menu.");
+            Assert.AreEqual(
+                FightScreen.Fight,
+                cabinet.Session.Screen,
+                "A play should drop straight into the fight (Arcade Paradise flow).");
 
             Texture2D texture = view.Texture;
             Assert.IsNotNull(texture, "Starting a play should create the screen texture.");

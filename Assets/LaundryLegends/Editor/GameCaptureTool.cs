@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using LaundryLegends.Arcade;
+using LaundryLegends.Customers;
 using LaundryLegends.Interaction;
 using LaundryLegends.Laundry;
 using LaundryLegends.NPC;
 using LaundryLegends.Player;
+using LaundryLegends.Progression;
 using LaundryLegends.UI;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -523,6 +526,111 @@ namespace LaundryLegends.Editor
             // the screen, so it cannot appear in a RenderTexture capture; this
             // ScreenCapture shot is the only evidence that the prompt renders.
             yield return CaptureUiCheck(camera);
+
+            // 10-15 - visual QA close-ups for the owner-reported prop and door
+            // defects. These are static/posed subjects, so they run after the
+            // gameplay shots settle.
+            RenderShot(camera, "10-entrance-inside.png",
+                new Vector3(0f, 1.60f, -1.20f),
+                new Vector3(0f, 1.20f, -5.60f),
+                55f,
+                "entrance and door leaves from inside");
+            RenderShot(camera, "11-entrance-outside.png",
+                new Vector3(0f, 1.70f, -9.00f),
+                new Vector3(0f, 1.40f, -6.00f),
+                45f,
+                "entrance and door leaves from the street");
+            RenderShot(camera, "12-street-lamp.png",
+                new Vector3(-4.40f, 3.40f, -11.50f),
+                new Vector3(-5.20f, 2.20f, -7.85f),
+                55f,
+                "street lamp A from the street");
+            RenderShot(camera, "13-street-plant.png",
+                new Vector3(3.30f, 1.50f, -9.60f),
+                new Vector3(3.30f, 0.50f, -6.85f),
+                55f,
+                "potted plant by the entrance from the street");
+            RenderShot(camera, "14-counter-sign.png",
+                new Vector3(-3.60f, 1.62f, -0.60f),
+                new Vector3(-4.50f, 1.35f, -2.98f),
+                40f,
+                "counter sign from the player side");
+
+            AmbientNpc ambientCustomer = null;
+            foreach (AmbientNpc npc in Object.FindObjectsByType<AmbientNpc>(FindObjectsSortMode.None))
+            {
+                ambientCustomer = npc;
+                break;
+            }
+
+            if (ambientCustomer != null)
+            {
+                Vector3 customerCamera;
+                Vector3 customerLook;
+                PlaceAroundActor(ambientCustomer.transform, 2.0f, 0.9f, 1.2f,
+                    out customerCamera, out customerLook);
+                RenderShot(camera, "15-customer-outfit.png", customerCamera, customerLook, 40f,
+                    $"ambient customer '{ambientCustomer.name}' outfit");
+            }
+            else
+            {
+                Note("WARN no ambient customer for the outfit shot");
+            }
+
+            // 16-18 - back room. Reveal it for the shots, then render the carpet,
+            // furniture, and cabinet from inside.
+            SecretRoomController backRoom = Object.FindFirstObjectByType<SecretRoomController>();
+            if (backRoom != null)
+            {
+                backRoom.UnlockByPurchase();
+                yield return WaitSeconds(0.4f);
+
+                RenderShot(camera, "16-backroom-wide.png",
+                    new Vector3(9.2f, 1.75f, 2.4f),
+                    new Vector3(13.6f, 0.9f, -0.6f),
+                    65f,
+                    "back room wide view");
+                RenderShot(camera, "17-backroom-floor.png",
+                    new Vector3(9.4f, 2.0f, 0.6f),
+                    new Vector3(12.4f, 0.0f, -0.9f),
+                    58f,
+                    "casino carpet and table");
+                RenderShot(camera, "18-backroom-cabinet.png",
+                    new Vector3(11.4f, 1.6f, 1.6f),
+                    new Vector3(15.2f, 1.1f, 0.0f),
+                    55f,
+                    "arcade cabinet in the back room");
+                RenderShot(camera, "19-backroom-cabinet-front.png",
+                    new Vector3(9.2f, 1.7f, 3.0f),
+                    new Vector3(15.0f, 1.1f, 3.0f),
+                    55f,
+                    "arcade cabinet from the door");
+                RenderShot(camera, "20-backroom-poster-street.png",
+                    new Vector3(13.0f, 1.7f, 2.0f),
+                    new Vector3(12.6f, 1.5f, -3.9f),
+                    55f,
+                    "street folders poster on the south wall");
+
+                ArcadeCabinet cabinet = Object.FindFirstObjectByType<ArcadeCabinet>(FindObjectsInactive.Include);
+                CustomerSpawner arcadeSpawner = Object.FindFirstObjectByType<CustomerSpawner>();
+                if (cabinet != null && arcadeSpawner != null)
+                {
+                    arcadeSpawner.Economy.TryEarn(10, "Arcade capture credit", Time.time);
+                    cabinet.TryStart(arcadeSpawner.Economy, Time.time);
+                    yield return WaitSeconds(0.3f);
+                    Vector3 cabinetPosition = cabinet.transform.position;
+                    RenderShot(camera, "21-backroom-arcade-play.png",
+                        new Vector3(cabinetPosition.x - 1.8f, 1.35f, cabinetPosition.z),
+                        new Vector3(cabinetPosition.x, 1.2f, cabinetPosition.z),
+                        35f,
+                        "arcade play screen");
+                    cabinet.Stop();
+                }
+            }
+            else
+            {
+                Note("WARN no SecretRoomController for the back-room shots");
+            }
 
             Note($"invalidFrames={s_invalidFrames.Count}");
             if (s_invalidFrames.Count > 0)

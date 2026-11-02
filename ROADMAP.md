@@ -502,7 +502,7 @@ Secret-room scripts, room prefabs/materials, lighting, clue props, progression f
 
 ## Phase 8 — First arcade machine
 
-**Status:** Complete pending owner playtest (2026-11-01). Purchase/install, activation, attract mode, visitor traffic and exactly-once arcade income are implemented; the owner must still confirm the payoff reads clearly.
+**Status:** Complete (2026-11-02). Purchase/install, activation, attract mode, visitor traffic, exactly-once arcade income, and the fullscreen cabinet session are implemented; the owner played the cabinet and confirmed the payoff reads clearly.
 **Objective:** Implement purchasing, placement/installation, activation, customer attraction, machine usage, and arcade income.
 **Depends on:** Phase 7.
 

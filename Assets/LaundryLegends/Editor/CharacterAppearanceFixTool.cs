@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -37,10 +37,11 @@ namespace LaundryLegends.Editor
                 null,
                 0.28f);
 
+            string suitBase = FindSuitBaseName(CustomerPrefab);
             Material suitCustomer = EnsureMaterial(
                 "MAT_NPC_Suit_Customer",
-                $"{NpcTextures}/female_casualsuit02_diffuse.png",
-                $"{NpcTextures}/female_casualsuit02_normal.png",
+                $"{NpcTextures}/{suitBase}_diffuse.png",
+                $"{NpcTextures}/{suitBase}_normal.png",
                 0.2f);
 
             Material shoesAttendant = EnsureMaterial(
@@ -77,7 +78,7 @@ namespace LaundryLegends.Editor
             Apply(CustomerPrefab, log, new Dictionary<string, Material>
             {
                 { "customer_humanMesh", skinCustomer },
-                { "female_casualsuit02Mesh", suitCustomer },
+                { $"{suitBase}Mesh", suitCustomer },
                 { "shoes06Mesh", shoesCustomer },
                 { "ponytail01Mesh", hairCustomer }
             });
@@ -113,7 +114,7 @@ namespace LaundryLegends.Editor
                 { "shoes06Mesh", $"{Materials}/MAT_NPC_Shoes_Customer.mat" },
                 { "short04Mesh", $"{Materials}/MAT_NPC_Hair_Attendant.mat" },
                 { "ponytail01Mesh", $"{Materials}/MAT_NPC_Hair_Customer.mat" },
-                { "female_casualsuit02Mesh", $"{Materials}/MAT_NPC_Suit_Customer.mat" }
+                { $"{FindSuitBaseName(CustomerPrefab)}Mesh", $"{Materials}/MAT_NPC_Suit_Customer.mat" }
             };
 
             int changed = 0;
@@ -182,6 +183,37 @@ namespace LaundryLegends.Editor
             {
                 PrefabUtility.UnloadPrefabContents(contents);
             }
+        }
+
+        /// <summary>
+        /// The suit renderer's base name from the prefab, so a re-export that
+        /// changes the outfit cannot silently keep the old material. Prefers a
+        /// renderer whose name contains "casualsuit".
+        /// </summary>
+        private static string FindSuitBaseName(string prefabPath)
+        {
+            GameObject contents = PrefabUtility.LoadPrefabContents(prefabPath);
+            try
+            {
+                foreach (Renderer renderer in contents.GetComponentsInChildren<Renderer>(true))
+                {
+                    if (renderer.name.IndexOf("casualsuit", System.StringComparison.OrdinalIgnoreCase) < 0)
+                    {
+                        continue;
+                    }
+
+                    string name = renderer.name;
+                    return name.EndsWith("Mesh", System.StringComparison.Ordinal)
+                        ? name.Substring(0, name.Length - 4)
+                        : name;
+                }
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(contents);
+            }
+
+            return "female_casualsuit01";
         }
 
         private static Material EnsureMaterial(string name, string diffusePath, string normalPath, float smoothness)

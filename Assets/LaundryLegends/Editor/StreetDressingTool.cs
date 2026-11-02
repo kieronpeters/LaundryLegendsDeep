@@ -59,10 +59,14 @@ namespace LaundryLegends.Editor
         private static void Lamp(Transform parent, string name, Vector3 position)
         {
             GameObject lamp = Place(parent, "StreetLamp.fbx", name, position, 0f, false);
+            Bounds lampBounds = GetBounds(lamp);
 
             var lightObject = new GameObject($"{name}_Light");
-            lightObject.transform.SetParent(lamp.transform, false);
-            lightObject.transform.localPosition = new Vector3(0f, 4.3f, 0.5f);
+            lightObject.transform.SetParent(parent, false);
+            lightObject.transform.position = new Vector3(
+                lampBounds.center.x,
+                lampBounds.max.y - 0.25f,
+                lampBounds.center.z);
             Light light = lightObject.AddComponent<Light>();
             light.type = LightType.Point;
             light.range = 8f;
@@ -71,6 +75,12 @@ namespace LaundryLegends.Editor
             light.shadows = LightShadows.None;
         }
 
+        /// <summary>
+        /// Instantiates an authored model and keeps its import rotation. Every
+        /// street FBX imports with a -90 degree X root (Z-up source), so replacing
+        /// the instance rotation with a yaw alone laid the props on the pavement.
+        /// The instance is then grounded by its render bounds instead of its pivot.
+        /// </summary>
         private static GameObject Place(
             Transform parent,
             string file,
@@ -88,9 +98,45 @@ namespace LaundryLegends.Editor
 
             var instance = (GameObject)PrefabUtility.InstantiatePrefab(model, parent);
             instance.name = name;
-            instance.transform.position = position;
-            instance.transform.rotation = Quaternion.Euler(0f, yRotation, 0f);
+
+            Quaternion importRotation = instance.transform.localRotation;
+            instance.transform.localRotation = Quaternion.Euler(0f, yRotation, 0f) * importRotation;
+            instance.transform.localPosition = position;
+            Ground(instance, position.y);
             return instance;
+        }
+
+        /// <summary>Moves the instance up or down so its lowest rendered point sits at groundY.</summary>
+        private static void Ground(GameObject instance, float groundY)
+        {
+            Bounds bounds = GetBounds(instance);
+            if (bounds.size.y <= 0.0001f)
+            {
+                return;
+            }
+
+            Vector3 position = instance.transform.position;
+            instance.transform.position = new Vector3(
+                position.x,
+                position.y + (groundY - bounds.min.y),
+                position.z);
+        }
+
+        private static Bounds GetBounds(GameObject instance)
+        {
+            Renderer[] renderers = instance.GetComponentsInChildren<Renderer>(true);
+            if (renderers.Length == 0)
+            {
+                return new Bounds(instance.transform.position, Vector3.zero);
+            }
+
+            Bounds bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++)
+            {
+                bounds.Encapsulate(renderers[i].bounds);
+            }
+
+            return bounds;
         }
 
         private static void FixGroundGloss()
