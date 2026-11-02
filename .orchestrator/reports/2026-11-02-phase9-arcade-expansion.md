@@ -87,7 +87,7 @@ upkeep, a visible expansion bay, and milestone feedback.
 | Scene builder | Passed, exit 0; `[BACKROOM]` layout logged | `Logs/phase9-scene.log` |
 | EditMode suite | **158 / 158 passed** | `TestResults/phase9-editmode-7.xml` |
 | PlayMode suite | **59 passed, 0 failed, 2 explicit skipped** | `TestResults/phase9-playmode-4.xml` |
-| Explicit $300 progression | **1 / 1 passed** | `TestResults/phase9-progression.xml` |
+| Explicit $300 progression | **1 / 1 passed** | `TestResults/phase9-progression-2.xml` |
 | Windows build | **Succeeded, 198 MB, 0 errors** | `Logs/phase9-build.log`, `Build/LaundryLegends.exe` |
 | Scene wiring (PlayMode) | 5 slots, capacity 3, second machine playable, upgrade kiosk, expansion bay, floor raycast, HUD text | `ArcadeExpansionPlayModeTests` |
 | Combined economy (EditMode) | 9 laundry orders -> reputation 54 -> traffic -> slot income -> second machine -> expansion; wallet/ledger reconcile | `LongSessionLinksLaundryReputationTrafficIncomeSecondMachineAndExpansion` |
