@@ -1461,3 +1461,33 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 - Branch `phase-10-12` and its commits (`5e93cbb`, `9ada561`, `537dd88`, `74f8875`) remain for history.
 - Verified before merge: EditMode 164/164, PlayMode 66 passed / 0 failed / 2 skipped, build 212 MB / 0 errors.
 - Phase 10-12 remain `in_progress` in the phase board pending the owner playtest; deferred tickets are recorded in `.orchestrator/BACKLOG.md`.
+
+## 2026-11-04 - Live playtest and hardening tickets
+
+- Built and drove the 212 MB `main` build on the desktop: menu, shop, machine wall, counter, U/B/M/Esc/N, day 36, bills and late fee.
+- Logged 11 defects as `LL-B-016`..`LL-B-024` and `LL-A-007`/`LL-A-008` in `.orchestrator/BACKLOG.md`.
+- Release blockers: missing machine interaction prompt (`LL-B-016`), T-pose carry (`LL-A-007`), unreadable U menu layout (`LL-B-017`), and the stock/order economy soft-lock (`LL-B-018`).
+- Session evidence and the not-reached list are in `.orchestrator/reports/2026-11-04-live-playtest.md`.
+- No code changes; branch `phase-13-16` remains at the `main` baseline.
+
+## 2026-11-04 - Phase 13 audio
+
+**Branch:** `phase-13-16`
+
+- Decision 0014: Master/Music/Effects buses persisted in PlayerPrefs, applied to the listener and the `GameAudio` sources.
+- `ProceduralSfx` generates click/pickup/place/machine start/done/wrap/cash/error/bell/coin cues plus laundry and arcade ambience loops.
+- `GameAudio` auto-creates, survives scene loads, owns one-shot SFX and crossfades the two ambience beds when `ArcadeMode` is active.
+- Hooks added to interaction, machine start/finish, folding/wrap, order payment and arcade coin-in.
+- Pause menu now dims the screen and exposes Master/Music/Effects sliders plus reset.
+
+**Verification:** EditMode 166/166; PlayMode 69 passed / 0 failed / 2 skipped; compile 0 errors.
+
+## 2026-11-04 - Phase 14 save/load and phase 13-16 checkpoint
+
+- Decision 0015: versioned JSON save at `Application.persistentDataPath/laundry-legends.save.json`, atomic `.tmp` write, corrupt/missing file falls back to a new game.
+- Persists wallet, clock day/minute, three stock counts, reputation, room unlock, arcade expansion and audio settings. Transient customers/orders/machines are recreated on load.
+- Added `GameState.RestoreMoney`, `EconomyService.RestoreBalance`, `ArcadeService.RestoreExpansion`, `SaveData`, `SaveService`, `SaveBootstrap` (autosave 60 s + on quit, skipped in batch mode).
+- Phase 15 tuning: stock 10/10/10, 20 s respawn, bills 200/70/50, next-goal HUD.
+- Phase 16 baseline: EditMode 169/169, PlayMode 69 passed / 0 failed / 2 skipped, build 212 MB / 0 errors.
+
+**Open for the bug-fix branch:** LL-B-019 to LL-B-025 and the older P2/P3 items; per-machine arcade save ownership; performance profiling and release candidate.

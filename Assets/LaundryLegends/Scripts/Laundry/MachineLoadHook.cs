@@ -1,4 +1,5 @@
 using System;
+using LaundryLegends.Audio;
 using System.Collections.Generic;
 using LaundryLegends.Business;
 using LaundryLegends.Interaction;
@@ -122,6 +123,7 @@ namespace LaundryLegends.Laundry
                 _state = MachineState.Complete;
                 LastResult = _kind == MachineKind.Washer ? "Wash complete" : "Dry complete";
                 SetLoadedItemVisible(true);
+                GameAudio.Play(Sfx.MachineDone);
                 LaundryItem item = LoadedItem;
                 if (item != null)
                 {
@@ -200,6 +202,7 @@ namespace LaundryLegends.Laundry
             _elapsed = 0f;
             SetLoadedItemVisible(false);
             LastResult = _kind == MachineKind.Washer ? "Wash started" : "Dry started";
+            GameAudio.Play(Sfx.MachineStart);
             return true;
         }
 
@@ -212,6 +215,7 @@ namespace LaundryLegends.Laundry
                 _state = MachineState.Complete;
                 LastResult = _kind == MachineKind.Washer ? "Wash complete" : "Dry complete";
                 SetLoadedItemVisible(true);
+                GameAudio.Play(Sfx.MachineDone);
             }
         }
 

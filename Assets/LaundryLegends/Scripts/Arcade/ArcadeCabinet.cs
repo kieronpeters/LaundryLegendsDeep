@@ -1,3 +1,4 @@
+using LaundryLegends.Audio;
 using LaundryLegends.Customers;
 using LaundryLegends.Economy;
 using LaundryLegends.Interaction;
@@ -136,6 +137,7 @@ namespace LaundryLegends.Arcade
             }
 
             PlaysStarted += 1;
+            GameAudio.Play(Sfx.Coin);
 
             if (_gameKind == ArcadeGameKind.Maze)
             {

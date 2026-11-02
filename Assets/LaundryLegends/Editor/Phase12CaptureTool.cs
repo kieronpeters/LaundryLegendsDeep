@@ -20,6 +20,103 @@ namespace LaundryLegends.Editor
         private const int Width = 1280;
         private const int Height = 720;
 
+        [MenuItem("Laundry Legends/Phase 12/Probe Player Interaction")]
+        public static void ProbePlayerInteraction()
+        {
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            var interactor = Object.FindFirstObjectByType<LaundryLegends.Interaction.PlayerInteractor>();
+            if (interactor == null)
+            {
+                Debug.LogError("[P12-PLAYER] no PlayerInteractor");
+                return;
+            }
+
+            var serialized = new SerializedObject(interactor);
+            SerializedProperty cameraProperty = serialized.FindProperty("_camera");
+            SerializedProperty rangeProperty = serialized.FindProperty("_range");
+            SerializedProperty maskProperty = serialized.FindProperty("_interactionMask");
+            var camera = cameraProperty != null ? cameraProperty.objectReferenceValue as Camera : null;
+            Debug.Log($"[P12-PLAYER] interactor on {interactor.gameObject.name} enabled={interactor.enabled} " +
+                      $"camera={(camera != null ? camera.name : "null")} " +
+                      $"cameraEnabled={(camera != null && camera.enabled)} " +
+                      $"range={(rangeProperty != null ? rangeProperty.floatValue : -1)} " +
+                      $"mask={(maskProperty != null ? maskProperty.intValue : 0)} main={(Camera.main != null ? Camera.main.name : "null")}");
+
+            if (camera != null)
+            {
+                Debug.Log($"[P12-PLAYER] camera pos={camera.transform.position} forward={camera.transform.forward}");
+                var machine = GameObject.Find("Machine_1");
+                if (machine != null)
+                {
+                    Debug.Log($"[P12-PLAYER] machine pos={machine.transform.position} forward={machine.transform.forward}");
+                }
+            }
+        }
+
+        [MenuItem("Laundry Legends/Phase 12/Probe Machines")]
+        public static void ProbeMachines()
+        {
+            Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            for (int i = 1; i <= 8; i++)
+            {
+                GameObject machine = GameObject.Find($"Machine_{i}");
+                if (machine == null)
+                {
+                    Debug.LogWarning($"[P12-MACHINE] Machine_{i} missing");
+                    continue;
+                }
+
+                var hook = machine.GetComponent<LaundryLegends.Laundry.MachineLoadHook>();
+                string slot = "none";
+                if (hook != null)
+                {
+                    var serialized = new SerializedObject(hook);
+                    SerializedProperty slotProperty = serialized.FindProperty("_slot");
+                    slot = slotProperty != null && slotProperty.objectReferenceValue != null
+                        ? slotProperty.objectReferenceValue.name
+                        : "null";
+                }
+
+                string colliders = string.Empty;
+                foreach (Collider collider in machine.GetComponentsInChildren<Collider>(true))
+                {
+                    colliders += $"{collider.GetType().Name}({collider.gameObject.name},enabled={collider.enabled}) ";
+                }
+
+                Debug.Log($"[P12-MACHINE] {machine.name} active={machine.activeInHierarchy} layer={machine.layer} " +
+                          $"hook={(hook != null ? hook.enabled.ToString() : "missing")} slot={slot} colliders=[{colliders.Trim()}]");
+
+                Vector3 origin = machine.transform.position + machine.transform.forward * -1.4f + Vector3.up * 1.2f;
+                Vector3 target = machine.transform.position + Vector3.up * 1.1f;
+                Vector3 direction = (target - origin).normalized;
+                bool hit = Physics.Raycast(origin, direction, out RaycastHit info, 4f);
+                Debug.Log($"[P12-MACHINE] ray {origin} -> {target} hit={hit} " +
+                          $"{(hit ? info.collider.gameObject.name + " at " + info.distance.ToString("0.00") : "nothing")}");
+            }
+
+            GameObject detailsRoot = GameObject.Find("MachineFrontDetails");
+            if (detailsRoot != null)
+            {
+                foreach (Renderer renderer in detailsRoot.GetComponentsInChildren<Renderer>(true))
+                {
+                    string material = renderer.sharedMaterial != null ? renderer.sharedMaterial.name : "<null>";
+                    Debug.Log($"[P12-DETAIL] {renderer.transform.name} pos={renderer.transform.position} " +
+                              $"scale={renderer.transform.lossyScale} mat={material}");
+                }
+            }
+
+            GameObject firstMachine = GameObject.Find("Machine_1");
+            if (firstMachine != null)
+            {
+                foreach (Renderer renderer in firstMachine.GetComponentsInChildren<Renderer>(true))
+                {
+                    string material = renderer.sharedMaterial != null ? renderer.sharedMaterial.name : "<null>";
+                    Debug.Log($"[P12-CHILD] {renderer.transform.name} pos={renderer.transform.position} " +
+                              $"scale={renderer.transform.lossyScale} mat={material}");
+                }
+            }
+        }
+
         [MenuItem("Laundry Legends/Phase 12/Probe Arcade Cabinet")]
         public static void ProbeCabinet()
         {

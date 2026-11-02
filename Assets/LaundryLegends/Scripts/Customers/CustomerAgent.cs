@@ -1,4 +1,5 @@
 using System;
+using LaundryLegends.Audio;
 using System.Collections;
 using LaundryLegends.Interaction;
 using LaundryLegends.Laundry;
@@ -295,6 +296,7 @@ namespace LaundryLegends.Customers
                 }
 
                 Debug.Log($"[ORDER] {_order.OrderId} paid {_order.Price}; wallet {_ledger.Wallet.Money}.");
+                GameAudio.Play(Sfx.Cash);
                 Speak(DialogueTrigger.Pickup);
             }
             else

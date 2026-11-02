@@ -76,6 +76,12 @@ namespace LaundryLegends.Economy
 
         public int Balance => _wallet.Money;
 
+        /// <summary>Save/load restore of the wallet balance.</summary>
+        public void RestoreBalance(int amount)
+        {
+            _wallet.RestoreMoney(amount);
+        }
+
         public IReadOnlyList<Transaction> Transactions => _log;
 
         public event Action<Transaction> TransactionRecorded;

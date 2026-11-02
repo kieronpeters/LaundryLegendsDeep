@@ -314,6 +314,26 @@ namespace LaundryLegends.Arcade
 
         public bool IsExpanded => _expansionPurchased;
 
+        /// <summary>Save/load restore of the bay purchase without charging again.</summary>
+        public void RestoreExpansion(bool expanded)
+        {
+            if (!expanded || _expansionPurchased)
+            {
+                return;
+            }
+
+            _expansionPurchased = true;
+            if (_expansionSeal != null)
+            {
+                _expansionSeal.SetActive(false);
+            }
+
+            if (_expansionBay != null)
+            {
+                _expansionBay.SetActive(true);
+            }
+        }
+
         public int ExpansionCost => _expansionCost;
 
         public int ExpansionShortfall

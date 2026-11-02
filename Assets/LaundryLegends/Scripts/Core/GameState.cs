@@ -24,6 +24,12 @@ namespace LaundryLegends.Core
 
         public int Money { get; private set; }
 
+        /// <summary>Save/load restore; this is the only path that sets money directly.</summary>
+        public void RestoreMoney(int amount)
+        {
+            Money = Math.Max(0, amount);
+        }
+
         public int Day { get; private set; } = 1;
 
         public float TimeOfDayHours { get; private set; } = 8f;

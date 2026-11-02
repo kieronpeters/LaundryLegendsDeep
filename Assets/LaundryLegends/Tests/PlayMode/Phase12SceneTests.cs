@@ -88,6 +88,24 @@ namespace LaundryLegends.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator MachineCollidersCoverEyeHeight()
+        {
+            for (int i = 1; i <= 8; i++)
+            {
+                GameObject machine = GameObject.Find($"Machine_{i}");
+                Assert.IsNotNull(machine, $"Machine_{i} is missing.");
+                var collider = machine.GetComponent<BoxCollider>();
+                Assert.IsNotNull(collider, $"Machine_{i} needs a BoxCollider for interaction.");
+                Assert.GreaterOrEqual(collider.bounds.max.y, 1.55f,
+                    $"Machine_{i} collider stops at {collider.bounds.max.y:0.00}; the eye-level ray passes over it.");
+                Assert.GreaterOrEqual(collider.bounds.size.y, 1.5f,
+                    $"Machine_{i} collider is too short for the detailed model.");
+            }
+
+            yield return null;
+        }
+
+        [UnityTest]
         public IEnumerator ExpansionBayStaysSealedUntilPurchased()
         {
             GameObject bay = FindInactive("ExpansionBay");

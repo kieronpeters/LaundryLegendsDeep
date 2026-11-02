@@ -108,6 +108,7 @@ namespace LaundryLegends.Editor
                         scale.z != 0f ? 1f / scale.z : 1f);
 
                     ConvertMaterials(instance, i);
+                    UpdateInteractionCollider(machine, instance);
                 }
 
                 PrefabUtility.SaveAsPrefabAsset(room, RoomPrefabPath);
@@ -162,6 +163,54 @@ namespace LaundryLegends.Editor
             }
 
             Debug.Log($"[APPLIANCE] Validation passed: {models} detailed models, {urpMaterials} URP material slots.");
+        }
+
+        /// <summary>
+        /// The detailed model is taller than the old greybox body, so the authored
+        /// collider only covered the lower half and the eye-level interaction ray
+        /// passed over it. Resize the root collider to the model bounds.
+        /// </summary>
+        private static void UpdateInteractionCollider(Transform machine, GameObject model)
+        {
+            Bounds bounds = default;
+            bool first = true;
+            foreach (Renderer renderer in model.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null)
+                {
+                    continue;
+                }
+
+                if (first)
+                {
+                    bounds = renderer.bounds;
+                    first = false;
+                }
+                else
+                {
+                    bounds.Encapsulate(renderer.bounds);
+                }
+            }
+
+            if (first)
+            {
+                return;
+            }
+
+            bounds.Expand(0.08f);
+            BoxCollider box = machine.GetComponent<BoxCollider>();
+            if (box == null)
+            {
+                box = machine.gameObject.AddComponent<BoxCollider>();
+            }
+
+            Vector3 scale = machine.lossyScale;
+            box.center = machine.InverseTransformPoint(bounds.center);
+            box.size = new Vector3(
+                bounds.size.x / Mathf.Max(0.0001f, scale.x),
+                bounds.size.y / Mathf.Max(0.0001f, scale.y),
+                bounds.size.z / Mathf.Max(0.0001f, scale.z));
+            box.isTrigger = false;
         }
 
         private static void ConvertMaterials(GameObject instance, int machineIndex)

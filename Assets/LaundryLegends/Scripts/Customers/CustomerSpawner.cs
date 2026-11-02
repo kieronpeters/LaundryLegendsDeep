@@ -106,6 +106,7 @@ namespace LaundryLegends.Customers
         public void SetRespawnDelay(float seconds)
         {
             _respawnDelay = Mathf.Max(0f, seconds);
+            _respawnTimer = Mathf.Min(_respawnTimer, _respawnDelay);
         }
 
         private void Start()
