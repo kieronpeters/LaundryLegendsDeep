@@ -1350,3 +1350,12 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 ### Deferred
 
 - LL-A-005: washer/dryer realism pass, target Phase 12.
+
+## 2026-11-03 - Phase 9 review checkpoint; Phase 10 paused
+
+**Phase:** 9 - Arcade expansion
+**Status:** Implementation and automated checks complete; owner playtest (LL-P9-010) pending. Branch clean for review.
+
+- Re-ran the explicit $300 progression on the clean branch: 1/1 passed.
+- Phase 10 implementation was started after the review request and has been moved off `phase-9` to the local `phase-10-wip` branch (commit 97897a2). It is incomplete: no scene wiring, UI, LaundryStaff rack handling, or tests yet. Do not review it as Phase 9.
+- `phase-9` remains at the reviewed implementation + machine-wall fix; no Phase 10 gameplay code is present.

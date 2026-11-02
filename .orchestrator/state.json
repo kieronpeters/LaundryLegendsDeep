@@ -9,7 +9,7 @@
                     "renderPipeline":  "Universal Render Pipeline 17.0.4",
                     "targetPlatform":  "Windows 64-bit"
                 },
-    "updatedAt":  "2026-11-03T00:45:00+08:00",
+    "updatedAt":  "2026-11-03T01:20:00+08:00",
     "currentMilestone":  {
                              "id":  "M1",
                              "name":  "Playable laundry",
@@ -67,9 +67,9 @@
                 "checkpointCommit":  "ddf82639b992c1e1285a6a955ea9037c70c437d9",
                 "baselineCommit":  "b78218cccfeea741d3d227ffa95e679e9ba92a72",
                 "remote":  null,
-                "workingTree":  "machine fix committed 8d86fef; docs pending",
+                "workingTree":  "clean after the review checkpoint; Phase 10 partial work preserved on local phase-10-wip (97897a2), not on phase-9",
                 "unityProjectCommit":  "e244ba434ace223ff064df52b6a683615d9fb503",
-                "lastCheckpointAt":  "2026-11-03T00:00:00+08:00"
+                "lastCheckpointAt":  "2026-11-03T01:20:00+08:00"
             },
     "environment":  {
                         "opencodeCli":  "2.0.28",
@@ -173,7 +173,8 @@
                                    "editmode":  "158/158 passed",
                                    "playmode":  "59 passed, 0 failed, 2 explicit skipped",
                                    "build":  "198 MB, 0 errors",
-                                   "owner_playtest":  "pending"
+                                   "owner_playtest":  "pending",
+                                   "progression_review":  "1/1 passed on the clean phase-9 branch"
                                },
                     "filesChanged":  [
                                          "Assets/LaundryLegends/Scripts/NPC/LaundryStaff.cs",

@@ -6,6 +6,7 @@
 **Next phase:** Phase 10 - Business operations and order flow, **planned**
 **Active task:** LL-P9-010 - owner playtest and Phase 9 closeout
 **Next recommended task:** Run `Build/LaundryLegends.exe` and verify the dual-business loop (see `.orchestrator/reports/2026-11-02-phase9-arcade-expansion.md`)
+**Review checkpoint:** `phase-9` at `3d8044a` (implementation + machine-wall fix); EditMode 158/158, PlayMode 59 passed / 0 failed / 2 explicit skipped, progression 1/1, build 198 MB / 0 errors. Phase 10 partial work is on local `phase-10-wip`, not on this branch.
 
 > **Manager note (2026-11-01).** Sections below are historical and describe the
 > Phase 1-3 state; they are not rewritten wholesale. Current authoritative
