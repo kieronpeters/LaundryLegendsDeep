@@ -158,3 +158,14 @@ None block the Phase 9 acceptance criteria; they are recorded per guardrails 13.
 
 **LL-P9-010 — owner playtest and Phase 9 closeout.** Verify the dual-business loop
 is coherent and fun, then record the result, mark Phase 9 complete, and tag it.
+
+## Review findings - 2026-11-03
+
+Owner review of the phase-9-review build:
+
+- **Second woman stuck on the counter:** this is the ambient StreetCustomer; her counter waypoint is on the desk and she has no order slot by design. Logged LL-B-009 (Phase 11).
+- **Staff only uses the leftmost machines:** LaundryStaff picks the first free machine by name, so it reuses Machine_1/2. It will use others only when those are occupied. Logged LL-B-010 (Phase 10).
+- **Machines still look basic:** they are usable now; the realism pass remains LL-A-005 (Phase 12).
+- **Multi-order queue:** deferred to Phase 10. The partial Phase 10 work is on local phase-10-wip, not this branch.
+
+No gameplay code was changed for these notes; they are recorded for the target phases.

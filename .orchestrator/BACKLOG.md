@@ -13,7 +13,8 @@ holding area for work that belongs earlier.
 
 | Target | Tickets | Rule |
 |---|---|---|
-| Phase 10 - business operations | `LL-F-008` | Stock, order queue and bills; planned by decision 0013. |
+| Phase 10 - business operations | `LL-F-008`, `LL-B-010` | Stock, order queue and bills; planned by decision 0013. |
+| Phase 11 - characters and animation | `LL-B-009`, `LL-F-009` | NPC route, model and voice cleanup lands here. |
 | Phase 12 - visual art | `LL-F-006`, `LL-B-004`, `LL-A-001`, `LL-A-002`, `LL-A-003`, `LL-A-004`, `LL-A-005` | Art/visual work lands with the art phase. |
 | Phase 13 - audio | (none open) | Audio tickets close with the audio phase. |
 | Phase 14 - save/progression | `LL-F-005`, `LL-B-005` | Save and board metadata work lands with the save phase. |
@@ -50,6 +51,9 @@ holding area for work that belongs earlier.
 | LL-A-003 | art | P2 | Extra machines reuse the Fighter cabinet | Phase 9 duplicates the shipped cabinet for Racer and Puzzle. They differ in price/income/attract weight only; author distinct cabinet bodies and screen art so the three machines read apart at a glance. | `HiddenRoomSetupTool.CreateExtraMachineSlot`, scene `ArcadeCabinet_Racer/Puzzle` |
 | LL-A-004 | art | P2 | Arcade upgrade decor is placeholder primitives | The neon sign, speakers and rug are boxes. Replace with authored props and a lit marquee once art is available. | `HiddenRoomSetupTool.ConfigurePhase9`, `Decor_NeonSign`, `Decor_Speakers`, `Decor_ArcadeRug` |
 | LL-A-005 | art | P2 | Washer/dryer realism pass | The eight machines read as stylised front-load boxes. Keep the readable silhouettes but add realistic proportions, recessed door glass, a proper control panel, detergent drawer, vent/hose details and material wear. | `TestResults/captures/03-machine-wall.png`; `BasketAssetSetupTool` appliance models |
+| LL-B-009 | bug | P2 | Ambient customer stands on the counter | The second woman is the ambient `StreetCustomer`; her route's counter waypoint sits on the counter and she has no order slot by design, so she looks stuck and cannot hand off her parcel. Move the waypoint into the waiting area and stop her carrying the parcel to the counter, or remove her until the queue rework. | review 2026-11-03; `NpcSceneSetupTool` waypoints |
+| LL-B-010 | bug | P2 | Staff reuses the leftmost washer/dryer | `LaundryStaff` sorts hooks by name and picks the first empty one, so it reuses `Machine_1/2` whenever they are free. It only moves to the others if the preferred unit is occupied. Add least-recently-used or round-robin selection so all eight are exercised. | review 2026-11-03; `LaundryStaff.FindMachine` |
+| LL-F-009 | feature | P2 | NPC cleanup and voice reassignment | Remove the woman in the hidden room; silence the male staff's laundry commentary; change one female customer to a male model and move the staff's male voice clips to him. | review 2026-11-03 |
 | LL-B-008 | bug | P2 | Phase 9 bay/kiosk/HUD visual review | No captures were taken of the expansion bay, upgrade kiosks or IMGUI arcade panel. Verify lighting, readability, overlap with the order ticket at 1920x1080, and that the open bay reads as a space. | Phase 9 report; `ArcadePanelView`, `ExpansionBay` |
 
 ## Resolved in the 2026-11-02 stabilization pass
