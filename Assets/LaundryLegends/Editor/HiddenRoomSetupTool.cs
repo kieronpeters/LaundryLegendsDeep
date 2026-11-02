@@ -29,9 +29,11 @@ namespace LaundryLegends.Editor
                 EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
 
             var room = Object.FindFirstObjectByType<SecretRoomController>();
-            var cabinet = Object.FindFirstObjectByType<ArcadeCabinet>(FindObjectsInactive.Include);
-            var spawner = Object.FindFirstObjectByType<CustomerSpawner>();
             var service = Object.FindFirstObjectByType<ArcadeService>(FindObjectsInactive.Include);
+            var cabinet = service != null
+                ? service.GetSlotCabinet(0)
+                : Object.FindFirstObjectByType<ArcadeCabinet>(FindObjectsInactive.Include);
+            var spawner = Object.FindFirstObjectByType<CustomerSpawner>();
 
             if (service != null)
             {
@@ -839,7 +841,7 @@ namespace LaundryLegends.Editor
                 "Buy arcade carpet");
 
             GameObject expansionKiosk = CreateBox(shell, "ExpansionPoint",
-                new Vector3(cx, 0.55f, southZ - 0.9f),
+                new Vector3(x0 + 0.9f, 0.55f, southZ - 0.9f),
                 new Vector3(0.8f, 1.1f, 0.5f), wood);
             var expansionPoint = expansionKiosk.AddComponent<ArcadeExpansionPoint>();
             expansionPoint.SetService(service);

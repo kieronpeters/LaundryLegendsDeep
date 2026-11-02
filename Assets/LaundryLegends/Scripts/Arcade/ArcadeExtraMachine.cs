@@ -40,11 +40,12 @@ namespace LaundryLegends.Arcade
         public bool IsActive => State.IsActive;
         public float InstallRemaining => _installRemaining;
 
-        /// <summary>True when the anchor is available (the expansion bay may be sealed).</summary>
-        public bool IsReachable =>
-            _anchor != null
-            && _anchor.gameObject.activeInHierarchy
-            && (_installPoint == null || _installPoint.activeInHierarchy);
+        /// <summary>
+        /// True when the anchor is available. The install point is a purchase
+        /// pedestal, not part of reachability: it is hidden once the machine is
+        /// bought so it cannot block the cabinet behind it.
+        /// </summary>
+        public bool IsReachable => _anchor != null && _anchor.gameObject.activeInHierarchy;
 
         /// <summary>Where a visitor should stand to play this machine.</summary>
         public Transform TargetTransform => _cabinet != null ? _cabinet.transform : _anchor;

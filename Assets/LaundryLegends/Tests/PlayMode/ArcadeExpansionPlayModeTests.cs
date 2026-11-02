@@ -38,6 +38,11 @@ namespace LaundryLegends.Tests.PlayMode
             Assert.IsNotNull(spawner, "The scene needs the customer spawner for economy.");
             Assert.IsNotNull(panel, "The Phase 9 HUD panel should be in the scene.");
             Assert.IsNotNull(reputation, "The Phase 9 reputation tracker should be in the scene.");
+            Assert.IsNotNull(panel.Service, "The HUD must be wired to the arcade service.");
+            Assert.IsNotNull(panel.Reputation, "The HUD must have a reputation source.");
+            Assert.IsNotNull(service.Reputation, "The service must be wired to the reputation tracker.");
+            Assert.AreEqual(20, service.Reputation.Value, "The authored starting reputation should be 20.");
+            Assert.IsNotNull(spawner.Reputation, "The spawner must feed the same reputation tracker.");
 
             room.UnlockByPurchase();
             yield return null;

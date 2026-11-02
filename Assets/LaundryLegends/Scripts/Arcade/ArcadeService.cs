@@ -1142,6 +1142,7 @@ namespace LaundryLegends.Arcade
             }
 
             WireExtraCabinets();
+            UpdateExtraAttractModes();
 
             if (_attractMode != null)
             {
@@ -1153,13 +1154,13 @@ namespace LaundryLegends.Arcade
         {
             Tick(Time.deltaTime);
 
-            if (_attractMode == null)
+            if (_attractMode != null)
             {
-                return;
+                _attractMode.SetPowered(IsActive);
+                _attractMode.SetBusy(_cabinet != null && _cabinet.IsPlaying);
             }
 
-            _attractMode.SetPowered(IsActive);
-            _attractMode.SetBusy(_cabinet != null && _cabinet.IsPlaying);
+            UpdateExtraAttractModes();
         }
 
         private void ActivateSlot(int slotIndex)
@@ -1187,6 +1188,14 @@ namespace LaundryLegends.Arcade
                 if (slot != null)
                 {
                     slot.SetInstallRemaining(0f);
+
+                    // The purchase pedestal sits in front of the anchor. Hide it once
+                    // the machine is bought so the cabinet is visible and targetable.
+                    if (slot.InstallPoint != null && slot.InstallPoint.activeSelf)
+                    {
+                        slot.InstallPoint.SetActive(false);
+                    }
+
                     if (slot.Cabinet != null)
                     {
                         slot.Cabinet.SetActive(true);
@@ -1362,6 +1371,28 @@ namespace LaundryLegends.Arcade
                 {
                     cabinet.SetService(this, i + 1);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Keeps each extra cabinet's attract pulse in sync with its own power and
+        /// play state. Slot 0 is handled separately because it has a scene-authored
+        /// attract component.
+        /// </summary>
+        private void UpdateExtraAttractModes()
+        {
+            for (int i = 0; i < _extraMachines.Count; i++)
+            {
+                ArcadeExtraMachine slot = _extraMachines[i];
+                if (slot == null || slot.AttractMode == null)
+                {
+                    continue;
+                }
+
+                bool active = slot.State.IsActive;
+                slot.AttractMode.SetPowered(active);
+                ArcadeCabinet cabinet = slot.Cabinet != null ? slot.Cabinet.GetComponent<ArcadeCabinet>() : null;
+                slot.AttractMode.SetBusy(active && cabinet != null && cabinet.IsPlaying);
             }
         }
 

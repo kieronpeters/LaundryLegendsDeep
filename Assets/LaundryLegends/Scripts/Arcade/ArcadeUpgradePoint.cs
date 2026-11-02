@@ -153,5 +153,24 @@ namespace LaundryLegends.Arcade
 
             _service.TryBuyUpgrade(upgrade, Time.time);
         }
+
+        private void OnDestroy()
+        {
+            if (_runtimeUpgrade == null)
+            {
+                return;
+            }
+
+            if (Application.isPlaying)
+            {
+                Destroy(_runtimeUpgrade);
+            }
+            else
+            {
+                DestroyImmediate(_runtimeUpgrade);
+            }
+
+            _runtimeUpgrade = null;
+        }
     }
 }

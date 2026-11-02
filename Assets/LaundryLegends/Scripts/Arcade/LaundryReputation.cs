@@ -67,12 +67,21 @@ namespace LaundryLegends.Arcade
 
             _decayTimer += deltaSeconds;
             float interval = Mathf.Max(1f, _decaySecondsPerPoint);
-            while (_decayTimer >= interval && _value > 0)
+            int points = Mathf.FloorToInt(_decayTimer / interval);
+            if (points <= 0)
             {
-                _decayTimer -= interval;
-                _value -= 1;
-                Changed?.Invoke(_value);
+                return;
             }
+
+            _decayTimer -= points * interval;
+            int next = Mathf.Max(0, _value - points);
+            if (next == _value)
+            {
+                return;
+            }
+
+            _value = next;
+            Changed?.Invoke(_value);
         }
 
         public void SetDecaySecondsPerPoint(float seconds)
