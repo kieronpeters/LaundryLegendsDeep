@@ -366,23 +366,27 @@ namespace LaundryLegends.UI
                 _width,
                 height);
 
+            // Solid backdrop so the list stays readable over the bright shop.
+            Color previousColor = GUI.color;
+            GUI.color = new Color(0.03f, 0.04f, 0.06f, 0.95f);
+            GUI.DrawTexture(rect, Texture2D.whiteTexture);
+            GUI.color = previousColor;
+
             GUI.Box(rect, "PURCHASES");
             GUI.Label(
                 new Rect(rect.x + 16f, rect.y + 26f, rect.width - 32f, 22f),
                 "W/S select   E buy   U/Esc close");
 
-            float y = rect.y + 54f;
+            float y = rect.y + 56f;
             for (int i = 0; i < _entries.Count; i++)
             {
                 Entry entry = _entries[i];
                 var row = new Rect(rect.x + 16f, y, rect.width - 32f, _rowHeight - 4f);
-                if (i == _selected)
-                {
-                    Color previous = GUI.color;
-                    GUI.color = new Color(0.2f, 0.45f, 0.9f, 0.28f);
-                    GUI.DrawTexture(row, Texture2D.whiteTexture);
-                    GUI.color = previous;
-                }
+                GUI.color = i == _selected
+                    ? new Color(0.2f, 0.45f, 0.9f, 0.75f)
+                    : new Color(0.08f, 0.09f, 0.12f, 0.85f);
+                GUI.DrawTexture(row, Texture2D.whiteTexture);
+                GUI.color = previousColor;
 
                 string marker = i == _selected ? "> " : "  ";
                 string text = $"{marker}{entry.Label}   [{entry.Status}]";

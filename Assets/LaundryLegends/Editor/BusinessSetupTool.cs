@@ -23,7 +23,7 @@ namespace LaundryLegends.Editor
         private const string ScenePath = "Assets/LaundryLegends/Scenes/Laundromat.unity";
         private const string DefinitionFolder = "Assets/LaundryLegends/ScriptableObjects/Business";
         private const string MaterialFolder = "Assets/LaundryLegends/Art/Materials";
-        private const int ShelfStock = 5;
+        private const int ShelfStock = 10;
         private const int OrderSlots = 10;
 
         [MenuItem("Laundry Legends/Phase 10/Build Business Systems")]
@@ -73,7 +73,7 @@ namespace LaundryLegends.Editor
 
             var billing = root.AddComponent<BillingService>();
             billing.Configure(clock, spawner);
-            billing.ConfigureAmounts(250, 90, 60, 30, 3, 0.1f);
+            billing.ConfigureAmounts(200, 70, 50, 30, 3, 0.1f);
 
             var businessPanel = root.AddComponent<BusinessPanelView>();
             businessPanel.Configure(clock, stock, spawner, billing, rack);
@@ -82,7 +82,7 @@ namespace LaundryLegends.Editor
 
             spawner.SetOrderRack(rack);
             spawner.SetMaxCustomers(OrderSlots);
-            spawner.SetRespawnDelay(10f);
+            spawner.SetRespawnDelay(20f);
             staff.SetOrderRack(rack);
 
             foreach (MachineLoadHook hook in Object.FindObjectsByType<MachineLoadHook>(

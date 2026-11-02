@@ -45,27 +45,28 @@ namespace LaundryLegends.Tests.PlayMode
             Assert.AreEqual(10, rack.Capacity);
             Assert.AreEqual(10, spawner.MaxCustomers);
             Assert.AreEqual(3, stock.Shelves.Count);
-            Assert.AreEqual(5, stock.Count(ConsumableType.Detergent));
-            Assert.AreEqual(5, stock.Count(ConsumableType.Fragrance));
-            Assert.AreEqual(5, stock.Count(ConsumableType.Plastic));
+            Assert.AreEqual(10, stock.Count(ConsumableType.Detergent));
+            Assert.AreEqual(10, stock.Count(ConsumableType.Fragrance));
+            Assert.AreEqual(10, stock.Count(ConsumableType.Plastic));
 
             StringAssert.Contains("Day 1", panel.BuildText());
             StringAssert.Contains("Detergent", panel.BuildText());
 
             ConsumableShelf shelf = stock.Find(ConsumableType.Detergent);
             Assert.IsTrue(spawner.Economy.TryEarn(1000, "Phase 10 shelf credit", Time.time));
+            Assert.IsTrue(shelf.TryConsumeOne());
             Assert.IsTrue(shelf.TryBuyOne(spawner.Economy, Time.time));
-            Assert.AreEqual(6, shelf.Count);
+            Assert.AreEqual(10, shelf.Count);
 
             clock.AdvanceMinutes(29 * 1440);
             Assert.IsNotNull(billing.CurrentBill, "A bill should be generated on day 30.");
-            Assert.AreEqual(400, billing.CurrentBill.Total);
+            Assert.AreEqual(320, billing.CurrentBill.Total);
             StringAssert.Contains("Rent", bills.BuildText());
 
             Assert.IsTrue(spawner.Economy.TryEarn(1000, "Phase 10 test credit", Time.time));
             int before = spawner.Economy.Balance;
             Assert.IsTrue(billing.TryPayCurrentFromSpawner(Time.time));
-            Assert.AreEqual(before - 400, spawner.Economy.Balance);
+            Assert.AreEqual(before - 320, spawner.Economy.Balance);
             Assert.IsNull(billing.CurrentBill);
             yield return null;
         }

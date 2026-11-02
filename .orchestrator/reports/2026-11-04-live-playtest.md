@@ -56,3 +56,18 @@ The interaction prompt (LL-B-016) and the stock soft-lock (LL-B-018) are the rea
 4. LL-B-018 stock/order/price balance and a guaranteed restock path.
 5. LL-B-019/020/021 prop placement; LL-A-008 exposure.
 6. LL-B-022/023/024 UI polish (Phase 13).
+
+## Follow-up iteration (same day)
+
+Fixed and verified:
+
+- **LL-B-016** machine interaction collider: the old collider covered only y 0.05-1.05, so the eye-level ray passed over it. `ApplianceIntegrationTool` now sizes the root BoxCollider to the detailed model bounds (probe rays hit `Machine_1..8` at 1.12 m). Added `Phase12SceneTests.MachineCollidersCoverEyeHeight`.
+- **LL-A-007** T-pose regression: removed the Load/Fold/Handoff animator states and staff calls that produced the arms-out pose; restored the prior Idle/Walk controller. The fresh start-of-game capture shows arms at the sides.
+- **LL-B-017** U menu: solid dark backdrop, per-row bands, rows moved below the header.
+- **LL-B-018** economy: starting stock 10/10/10, respawn 20 s, bills $200 + $70 + $50 = $320, and `SetRespawnDelay` clamps the live timer. Live HUD confirmed 10/10/10.
+
+New ticket: **LL-B-025** (P2) order customer walks through the player camera at spawn.
+
+Verification: EditMode 164/164; PlayMode 69 total, 67 passed, 0 failed, 2 skipped; build 212 MB / 0 errors.
+
+Not yet started: Phase 13 audio, Phase 14 save/load, Phase 15 balance/tutorial, Phase 16 QA/release. The combined 13-16 branch is therefore not ready to merge.

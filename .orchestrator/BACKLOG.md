@@ -96,7 +96,7 @@ Found in the live 212 MB build (0 build errors). These block or degrade a normal
 | ID | Type | Pri | Title | Description | Evidence |
 |---|---|---|---|---|---|
 | LL-B-016 | bug | P1 | No interaction prompt at the washing machines | Stand at the machine wall, aim at a door from point-blank to ~3 m; no "Load washer / Take laundry" prompt appears and `E` does nothing. Machines still run via the staff, so this is likely a collider/raycast-layer or prompt-condition regression. Blocks manual load, unload and restock testing. | live playtest 2026-11-04; machine-wall screenshots |
-| LL-A-007 | art | P1 | NPC carry pose throws arms out in a T-pose | The staff and the ambient customer carry parcels with both arms extended sideways/up instead of holding the item in front. Seen at the counter and waiting area. Likely `CarryPose` amplitudes or a double-animation conflict. | live playtest 2026-11-04; counter/waiting-area screenshots |
+| LL-A-007 | art | P1 | **Regression:** NPC carry pose throws arms out in a T-pose | The staff and the ambient customer carry parcels with both arms extended sideways/up instead of holding the item in front. The owner notes this looked better before the recent Phase 11 animation pass; the likely cause is the new Load/Fold/Handoff animator states playing takes that do not retarget cleanly onto the humanoid avatar (or CarryPose stacking on top). Restore the pre-gesture look first, then re-add feedback only with verified humanoid clips. | live playtest 2026-11-04; counter/waiting-area screenshots; regression noted by owner |
 | LL-B-017 | bug | P1 | Purchase menu rows overlap the header and are unreadable | `U` opens the list, but the first two rows draw over the panel header and each other, and the low-alpha background makes the white text unreadable over the world. | live playtest 2026-11-04; U-menu screenshot |
 | LL-B-018 | bug | P1 | Stock/order economy soft-locks after ~30 seconds | Starting stock 5/5/5 is consumed by the 10-order queue within roughly 30 real seconds (1 real second = 1 game minute). Stock reaches 0/0/1, all orders stall, and the $400 bill is unaffordable from the typical ~200-300 wallet. Without a working restock interaction there is no recovery. Rebalance starting stock/consumption/order rate, or guarantee a restock path. | live playtest 2026-11-04; day 36 HUD, stock 0/0/1, $440 bill |
 | LL-B-019 | bug | P2 | Order rack slots and ready parcels are invisible | During 10 active orders and 1 ready order the counter top is bare: no slot markers, no wrapped parcels. The queue logic runs, so this is a visual/anchor issue. | live playtest 2026-11-04; counter screenshots |
@@ -106,8 +106,18 @@ Found in the live 212 MB build (0 build errors). These block or degrade a normal
 | LL-B-022 | bug | P3 | Pause overlay is nearly invisible and has no settings | "Paused" and "Resume" are tiny low-contrast text on a translucent panel; the scene is not dimmed and there are no audio/display settings (Phase 13 will add them). | live playtest 2026-11-04; paused screenshot |
 | LL-B-023 | bug | P3 | Bills panel uses a tiny text block in a large empty panel | The itemized bill is readable only up close; the 620x260 box is mostly empty and low-contrast. Improve layout/contrast and add a clear paid/overdue state. | live playtest 2026-11-04; bills screenshots |
 | LL-B-024 | bug | P3 | Shop map is blank before the back room and overlaps the scene | Pressing `M` before the room is discovered shows "No plan of the back room yet" plus a black square; the panel is translucent and overlays the world. Add a shop-only plan or a clearer disabled state. | live playtest 2026-11-04; map screenshot |
+| LL-B-025 | bug | P2 | Order customer walks through the player camera at spawn | On entering the shop a large male customer stands/walks directly through the camera, filling the view with a torso/arm. Route the spawn and counter points around the player start, or push NPCs out of the camera capsule. | live playtest 2026-11-04 (second run); start-of-game screenshot |
 
-Target: **Phase 13 hardening**. `LL-B-016`, `LL-A-007`, `LL-B-017` and `LL-B-018` are release-blocking; the rest are P2/P3 polish.
+Fixed in the same pass (verified 2026-11-04):
+
+| ID | Fix | Evidence |
+|---|---|---|
+| LL-B-016 | The machine root collider only covered the lower body, so the eye-level ray passed over it and hit the wall. `ApplianceIntegrationTool` now resizes the collider to the detailed model bounds. | probe rays now hit `Machine_1..8` at 1.12 m; `Phase12SceneTests.MachineCollidersCoverEyeHeight` |
+| LL-A-007 | Removed the Load/Fold/Handoff animator states and their staff calls that caused the T-pose; restored the prior idle/walk controller. | `NpcAnimationSetupTool.ValidateNpcAnimation`; live start-of-game screenshot shows arms at the sides |
+| LL-B-017 | Purchase menu now draws a solid dark backdrop and per-row bands, with rows moved below the header. | `PurchaseMenuView.OnGUI`; needs a final live screenshot |
+| LL-B-018 | Starting stock raised to 10/10/10, respawn to 20 s, and bills reduced to $200 + $70 + $50 = $320; `SetRespawnDelay` also clamps the timer so tests and scene changes take effect immediately. | live HUD shows 10/10/10; PlayMode 67 passed; `CustomerLifecycleTests`, `BusinessSceneTests` |
+
+Target: **Phase 13 hardening**. `LL-B-016`, `LL-A-007`, `LL-B-017` and `LL-B-018` are addressed; `LL-B-019`-`LL-B-025` remain.
 
 ## Open-issue pass (2026-11-04, branch `phase-10-12`)
 
