@@ -207,6 +207,9 @@ namespace LaundryLegends.Arcade
         /// <summary>True once the hidden room has been prepared to Usable.</summary>
         public bool IsRoomReady => _room != null && _room.Stage == SecretRoomStage.Usable;
 
+        /// <summary>The scene-authored attract mode for the starter cabinet.</summary>
+        public ArcadeAttractMode AttractMode => _attractMode;
+
         /// <summary>True when the first cabinet exists and sits at its install point.</summary>
         public bool IsPlacementValid
         {
@@ -364,6 +367,21 @@ namespace LaundryLegends.Arcade
         public void SetStarterDefinition(ArcadeMachineDefinition definition)
         {
             _starterDefinition = definition;
+            ConfigureStarterGame();
+        }
+
+        private void ConfigureStarterGame()
+        {
+            if (_cabinet == null || _starterDefinition == null)
+            {
+                return;
+            }
+
+            _cabinet.ConfigureGame(
+                _starterDefinition.GameKind,
+                _starterDefinition.OpponentName,
+                _starterDefinition.AccentColor,
+                _starterDefinition.OpponentColor);
         }
 
         public void SetReputation(LaundryReputation reputation)
@@ -448,6 +466,11 @@ namespace LaundryLegends.Arcade
                 if (cabinetBehaviour != null)
                 {
                     cabinetBehaviour.SetService(this, _extraMachines.Count + 1);
+                    cabinetBehaviour.ConfigureGame(
+                        definition.GameKind,
+                        definition.OpponentName,
+                        definition.AccentColor,
+                        definition.OpponentColor);
                 }
 
                 if (cabinet.activeSelf)
@@ -1152,6 +1175,7 @@ namespace LaundryLegends.Arcade
                 _cabinet.SetService(this, 0);
             }
 
+            ConfigureStarterGame();
             WireExtraCabinets();
             UpdateExtraAttractModes();
 
@@ -1359,6 +1383,7 @@ namespace LaundryLegends.Arcade
                 _cabinet.SetService(this, 0);
             }
 
+            ConfigureStarterGame();
             WireExtraCabinets();
 
             if (_attractMode != null)
@@ -1381,6 +1406,15 @@ namespace LaundryLegends.Arcade
                 if (cabinet != null)
                 {
                     cabinet.SetService(this, i + 1);
+                    ArcadeMachineDefinition definition = slot.Definition;
+                    if (definition != null)
+                    {
+                        cabinet.ConfigureGame(
+                            definition.GameKind,
+                            definition.OpponentName,
+                            definition.AccentColor,
+                            definition.OpponentColor);
+                    }
                 }
             }
         }

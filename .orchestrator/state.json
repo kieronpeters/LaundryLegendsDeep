@@ -149,7 +149,7 @@
                   "Free-model spend telemetry is not reliable; limits are conservative and process-based."
               ],
     "technicalDebt":  [
-                          "Test coverage is 32 EditMode and 37 PlayMode tests (plus one explicit capture test); no order, economy, save, or performance coverage yet.",
+                          "Test coverage is 164 EditMode and 68 PlayMode tests; no save or performance coverage yet.",
                           "No Git LFS patterns configured for future large assets.",
                           "Economy values are untuned proposals.",
                           "First-person perspective is provisional.",
@@ -170,12 +170,12 @@
                     "completedAt":  "2026-11-04T12:00:00+08:00",
                     "checks":  {
                                    "editmode":  "164/164 passed",
-                                   "playmode":  "64 passed / 0 failed / 2 skipped",
-                                   "build":  "200 MB / 0 errors",
+                                   "playmode":  "68 total: 66 passed / 0 failed / 2 skipped",
+                                   "build":  "212 MB / 0 errors",
                                    "appliance_validate":  "8 detailed models, 100 URP material slots",
                                    "business_validate":  "10 rack slots, 3 shelves, clock, billing, HUD and bills menu",
-                                   "tickets_closed":  "LL-B-009, LL-B-010, LL-B-011, LL-B-012, LL-B-013, LL-B-014, LL-B-015, LL-A-005, LL-A-006, LL-F-008, LL-F-009",
-                                   "captures":  "machine-wall-4, 12-bay-entry, 12-bay-carpet, 12-bay-poster, 12-cabinet-side, 12-secret-door, 12-waiting-area, menu-u-2, menu-b"
+                                   "tickets_closed":  "LL-B-002, LL-B-004, LL-B-008, LL-B-009, LL-B-010, LL-B-011, LL-B-012, LL-B-013, LL-B-014, LL-B-015, LL-A-002, LL-A-003, LL-A-004, LL-A-005, LL-A-006, LL-F-002, LL-F-003, LL-F-006, LL-F-008, LL-F-009, LL-F-010, LL-T-004",
+                                   "captures":  "machine-wall-4, 12-bay-entry, 12-bay-carpet, 12-bay-poster, 12-cabinet-side, 12-cabinet-front, 12-vending, 12-secret-door, 12-waiting-area, menu-u-2, menu-b, hud-layout, arcade-maze, arcade-fight-turbo"
                                },
                     "filesChanged":  [
                                          ".orchestrator/state.json",

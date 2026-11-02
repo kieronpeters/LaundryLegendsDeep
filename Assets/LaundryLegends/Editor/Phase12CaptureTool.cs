@@ -20,6 +20,29 @@ namespace LaundryLegends.Editor
         private const int Width = 1280;
         private const int Height = 720;
 
+        [MenuItem("Laundry Legends/Phase 12/Probe Arcade Cabinet")]
+        public static void ProbeCabinet()
+        {
+            Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ArcadeCabinet cabinet = Object.FindFirstObjectByType<ArcadeCabinet>(FindObjectsInactive.Include);
+            if (cabinet == null)
+            {
+                Debug.LogError("[P12-PROBE] no cabinet");
+                return;
+            }
+
+            foreach (Renderer renderer in cabinet.GetComponentsInChildren<Renderer>(true))
+            {
+                string materials = string.Empty;
+                foreach (Material material in renderer.sharedMaterials)
+                {
+                    materials += (material != null ? material.name : "<null>") + ";";
+                }
+
+                Debug.Log($"[P12-PROBE] {renderer.transform.name} parent={renderer.transform.parent.name} mats={materials}");
+            }
+        }
+
         [MenuItem("Laundry Legends/Phase 12/Capture Expansion Bay")]
         public static void CaptureBay()
         {
@@ -121,6 +144,41 @@ namespace LaundryLegends.Editor
                     phonePosition + new Vector3(-2.2f, 1.6f, 1.6f),
                     phonePosition + new Vector3(0f, 0.9f, 0f),
                     55f);
+            }
+
+            // 7. Themed starter cabinet front (marquee, tinted body, lit sign).
+            foreach (ArcadeCabinet candidate in Object.FindObjectsByType<ArcadeCabinet>(
+                         FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (candidate.gameObject.name != "ArcadeCabinet")
+                {
+                    continue;
+                }
+
+                Vector3 position = candidate.transform.position;
+                Vector3 towardRoom = new Vector3(12.2f, 0f, 0f) - new Vector3(position.x, 0f, position.z);
+                if (towardRoom.sqrMagnitude < 0.01f)
+                {
+                    towardRoom = Vector3.left;
+                }
+
+                towardRoom.Normalize();
+                Render("12-cabinet-front.png",
+                    new Vector3(position.x, 1.5f, position.z) + towardRoom * 2.2f,
+                    new Vector3(position.x, 1.05f, position.z),
+                    45f);
+                break;
+            }
+
+            // 8. Back-room vending machines near the new poster wall.
+            GameObject vending = FindInactive("Vending_Soda");
+            if (vending != null)
+            {
+                Vector3 position = vending.transform.position;
+                Render("12-vending.png",
+                    position + new Vector3(1.9f, 1.5f, 1.3f),
+                    position + Vector3.up * 1.0f,
+                    50f);
             }
 
             Debug.Log("[P12-CAP] Bay captures written to " + OutputFolder);

@@ -88,6 +88,35 @@ Partially resolved (ticket stays open):
 
 Still open: LL-F-010 (per-machine game variety - the maze game exists but is not wired to a cabinet), LL-B-003, LL-B-002, LL-B-007, LL-A-001, LL-A-002, LL-A-003.
 
+## Open-issue pass (2026-11-04, branch `phase-10-12`)
+
+Resolved in this pass:
+
+| Ticket | Outcome | Evidence |
+|---|---|---|
+| LL-F-010 | Puzzle cabinets now launch the maze game; fight cabinets keep per-machine opponents (`BULL`/`TURBO`) and theme colours. | `arcade-maze.png`, `arcade-fight-turbo.png`; `ArcadeGameVarietyTests` |
+| LL-F-002 | Added `LAUNDRO FIGHTER` and `SUDS OF FURY` posters; placed in the back room and bay. | `Art/Textures/Posters/`; back-room build log |
+| LL-F-003 | Procedural soda and change machines with lit panels, can grid, coin slot and dispenser. | `12-vending.png` |
+| LL-B-002 | Idle cabinets now draw a generated attract image and pulse emission instead of staying black. | `ArcadeGameVarietyTests.IdleCabinetShowsLitAttractImage` |
+| LL-B-004 | Posters re-rendered at 2x (1024x1536) with anti-aliased text. | `tools/make-posters.ps1` |
+| LL-B-008 | Business HUD height raised and made collision-free against the order ticket/arcade panel from 1280 to 1920 wide; bay, kiosk, cabinet and decor captures added. | `hud-layout.png`, `12-bay-*`, `12-cabinet-*`, `12-vending.png` |
+| LL-F-006 | Fight screen gained a parallax skyline, portrait boxes, hit sparks, screen shake and a complete pixel font (V and digits were missing). | `arcade-fight-turbo.png` |
+| LL-A-002 | Marquee material is emissive per machine and a point light follows the slot power state. | `12-cabinet-front.png`; `ArcadeMarqueeLight` |
+| LL-A-003 | Cabinets now differ in body tint, control-panel/trim colour, marquee and opponent, not just price. | `12-cabinet-front.png`; definition themes |
+| LL-A-004 | Neon sign rebuilt from tubes/connectors/glow; speakers gained cones and tweeters. | `12-cabinet-front.png` background; `HiddenRoomSetupTool` |
+| LL-T-004 | Documented the `Time.captureFramerate` wall/game ratio and test rules. | `TESTING_GUIDE.md` |
+
+Also landed for Phase 11: `Load`, `Fold` and `Handoff` animator states driven by `NpcLocomotion.PlayLoad/PlayFold/PlayHandoff`, called from the staff take/load/fold/handoff steps using the existing CC0 `Interact` and `PickUp_Table` takes.
+
+Still open with reasons:
+
+- `LL-B-005`, `LL-F-001`: require a real ticket-board service/API token; the backlog format is unchanged until then.
+- `LL-B-006`: the desktop MCP focus bug lives outside the repository; all capture/focus flows now use process-explicit `game-vision.ps1`, so the repo risk is mitigated.
+- `LL-F-004`, `LL-F-007`: need Unreal Engine 5 hardware/install and a post-1.0 decision.
+- `LL-F-005`: save/load is Phase 14 work.
+- `LL-T-003`, `LL-T-005`: P3 refactors deferred to avoid destabilizing the shared scene tools this late in the branch.
+- `LL-A-001`: first-person hands stay off until a proper hand asset exists (existing decision).
+
 ## Resolved in the 2026-11-02 stabilization pass
 
 | ID | Resolution |

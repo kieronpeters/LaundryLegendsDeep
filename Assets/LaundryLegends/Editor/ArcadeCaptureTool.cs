@@ -18,8 +18,7 @@ namespace LaundryLegends.Editor
 
         [MenuItem("Laundry Legends/Phase 8/Capture Arcade Screen")]
         public static void Capture()
-        {
-            UnityEngine.SceneManagement.Scene scene =
+        {            UnityEngine.SceneManagement.Scene scene =
                 EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
 
             ArcadeCabinet cabinet = Object.FindFirstObjectByType<ArcadeCabinet>(FindObjectsInactive.Include);
@@ -64,6 +63,48 @@ namespace LaundryLegends.Editor
             view.Hide();
             Debug.Log(report.ToString());
             File.WriteAllText("TestResults/arcade-capture.txt", report.ToString());
+        }
+
+        /// <summary>
+        /// Renders the two cabinet games to PNGs so per-machine variety has visual
+        /// evidence without installing cabinets in a running build.
+        /// </summary>
+        [MenuItem("Laundry Legends/Phase 8/Capture Game Varieties")]
+        public static void CaptureVarieties()
+        {
+            Directory.CreateDirectory("TestResults/phase12");
+            var report = new StringBuilder();
+            report.AppendLine("[ARCADE-CAP] game varieties");
+
+            var mazeObject = new GameObject("MazeCapture");
+            var mazeView = mazeObject.AddComponent<MazeGameView>();
+            mazeView.Configure(null);
+            var maze = new MazeGame(new MazeLayout());
+            maze.TryMovePlayer(Vector2Int.up);
+            mazeView.Show(maze);
+            Save(mazeView.Texture, "TestResults/phase12/arcade-maze.png", report);
+            Object.DestroyImmediate(mazeObject);
+
+            var fightObject = new GameObject("FightCapture");
+            var fightView = fightObject.AddComponent<FightGameView>();
+            fightView.Configure(null);
+            var session = new FightSession();
+            session.SetNames("CIVIC", "TURBO");
+            session.Confirm();
+            fightView.SetTheme(
+                new Color(1f, 0.84f, 0.22f),
+                new Color(1f, 0.22f, 0.72f));
+            fightView.Show(session);
+            for (int i = 0; i < 20; i++)
+            {
+                session.Tick(0.05f);
+            }
+
+            fightView.Redraw();
+            Save(fightView.Texture, "TestResults/phase12/arcade-fight-turbo.png", report);
+            Object.DestroyImmediate(fightObject);
+
+            Debug.Log(report.ToString());
         }
 
         private static void Save(Texture2D texture, string path, StringBuilder report)

@@ -21,7 +21,7 @@
 - **Phase 11 (characters/voice):** phone regular moved out of the chair debris; ambient route ends at `Waypoint_Waiting` with a 20 s leg timeout; staff dialogue and voice removed; `NPC_OrderCustomer` uses the male DropOff/Norman clips and subtitles. The only staff voice set is female Cori, so the literal "male staff clips" request was adapted rather than copied.
 - **Phase 12 (art):** `WasherDetailed.fbx` / `DryerDetailed.fbx` (13.3k / 14.1k tris) replace all eight machine visuals with 100 URP material slots; drum clothes rotate while a cycle runs; full-bay 6x4 m casino-lattice carpet replaces the rug, gated to the expansion + carpet purchase; cabinet side art and a bay game poster; the post-unlock doorway reads clearly.
 - **Tests:** `BusinessOperationsTests`, `BusinessSceneTests` and `Phase12SceneTests` added; the queue tests isolate auto-spawn with `SetAutoStart(false)`. `OrderStallDiagnosticTests` completes an order with the player in the back room.
-- **Known gaps:** no authored carry/load/fold/handoff clips (CC0 pack only ships idle/walk); per-machine arcade variety (`LL-F-010`; the maze game exists but is not wired to a cabinet), and neon/speaker polish (`LL-A-004`) remain open. `LL-B-010` (staff rotation) and `LL-B-011` (duplicate U-menu labels) are fixed on this branch.
+- **Known gaps:** authored carry clip is still procedural (`CarryPose`); `Load`/`Fold`/`Handoff` now play existing CC0 gesture takes. Remaining backlog: `LL-F-001`/`LL-B-005` (ticket board/API), `LL-B-006` (external MCP focus, mitigated), `LL-F-004`/`LL-F-007` (Unreal, post-1.0), `LL-F-005` (Phase 14 save), `LL-T-003`/`LL-T-005` (P3 tool refactors) and `LL-A-001` (hands deferred).
 
 ## 1. Verified configuration
 

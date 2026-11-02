@@ -17,7 +17,7 @@ namespace LaundryLegends.UI
         [SerializeField] private BillingService _billing;
         [SerializeField] private DropOffRack _rack;
         [SerializeField] private float _width = 760f;
-        [SerializeField] private float _height = 102f;
+        [SerializeField] private float _height = 120f;
 
         public void Configure(
             BusinessClock clock,
@@ -86,9 +86,19 @@ namespace LaundryLegends.UI
                 return;
             }
 
-            float left = Mathf.Max(8f, (Screen.width - _width) * 0.5f);
-            GUI.Box(new Rect(left, 16f, _width, _height), "BUSINESS");
-            GUI.Label(new Rect(left + 12f, 40f, _width - 24f, _height - 46f), BuildText());
+            // Keep clear of the order ticket on the left and the arcade panel on
+            // the right so nothing overlaps at 1280-1920 wide.
+            const float orderTicketWidth = 300f;
+            const float arcadePanelWidth = 340f;
+            const float margin = 16f;
+            float reservedLeft = margin + orderTicketWidth + 12f;
+            float reservedRight = arcadePanelWidth + margin + 12f;
+            float width = Mathf.Min(_width, Mathf.Max(420f, Screen.width - reservedLeft - reservedRight));
+            float maxLeft = Mathf.Max(reservedLeft, Screen.width - reservedRight - width);
+            float left = Mathf.Clamp((Screen.width - width) * 0.5f, reservedLeft, maxLeft);
+
+            GUI.Box(new Rect(left, margin, width, _height), "BUSINESS");
+            GUI.Label(new Rect(left + 12f, margin + 24f, width - 24f, _height - 30f), BuildText());
         }
 
         private void Resolve()

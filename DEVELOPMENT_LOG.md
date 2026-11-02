@@ -1434,3 +1434,22 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 **Still open:** authored carry/load/fold/handoff clips, `LL-F-010` per-machine arcade variety (the maze game exists but is not wired to a cabinet), and `LL-A-004` neon/speaker polish.
 
 **Also fixed on this branch:** `LL-B-010` staff now rotates through washers and dryers, and `LL-B-011` duplicate U-menu machine rows now carry a `(#slot)` suffix.
+
+## 2026-11-04 - Open-issue pass
+
+**Branch:** `phase-10-12`
+
+- **LL-F-010:** Puzzle cabinets launch `MazeGame` (maze view with arrows/WASD); fight cabinets keep per-machine opponent names and theme colours. Added `ArcadeGameVarietyTests` (2 tests).
+- **LL-B-002:** idle cabinets generate and show an attract screen and pulse emission instead of staying black; covered by the new test.
+- **LL-F-006:** fight screen gained a parallax skyline, portrait boxes, hit sparks, screen shake and a complete pixel font (the letter V and digits were blank before).
+- **LL-A-002 / LL-A-003:** every cabinet now gets a tinted body, coloured control panel/trim, emissive marquee material and a power-following point light. `ArcadeMarqueeLight` added.
+- **LL-A-004:** neon sign rebuilt from tubes/connectors plus a glow light; speakers gained woofer/tweeter cones.
+- **LL-F-003:** procedural soda and change machines with lit fronts, can grid, coin slot and dispenser.
+- **LL-F-002 / LL-B-004:** posters re-rendered at 1024x1536 with anti-aliased text; added LAUNDRO FIGHTER and SUDS OF FURY and placed them in the back room/bay.
+- **LL-B-008:** business HUD is taller and avoids the order ticket and arcade panel at 1280-1920 widths; new bay/kiosk/cabinet/decor captures.
+- **LL-T-004:** documented the `Time.captureFramerate` wall/game ratio in `TESTING_GUIDE.md`.
+- **Phase 11:** animator gained `Load`, `Fold` and `Handoff` states using the CC0 `Interact`/`PickUp_Table` takes; `NpcLocomotion.PlayLoad/PlayFold/PlayHandoff` are called from the staff take/load/fold/handoff steps.
+
+**Evidence:** EditMode 164/164; PlayMode 68 total, 66 passed, 0 failed, 2 explicit skips; build 212 MB / 0 errors. Captures: `arcade-maze.png`, `arcade-fight-turbo.png`, `12-cabinet-front.png`, `12-vending.png`, `hud-layout.png`.
+
+**Still deferred:** `LL-F-001`/`LL-B-005` (board/API), `LL-B-006` (external MCP focus), `LL-F-004`/`LL-F-007` (Unreal), `LL-F-005` (Phase 14 save), `LL-T-003`/`LL-T-005` (P3 tool refactors), `LL-A-001` (hands).

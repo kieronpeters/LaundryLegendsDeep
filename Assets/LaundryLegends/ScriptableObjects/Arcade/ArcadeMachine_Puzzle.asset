@@ -19,3 +19,7 @@ MonoBehaviour:
   _attractWeight: 1.8
   _footprint: {x: 0.9, y: 0.9}
   _prefab: {fileID: 0}
+  _gameKind: 1
+  _opponentName: GLITCH
+  _accentColor: {r: 0.42, g: 1, b: 0.52, a: 1}
+  _opponentColor: {r: 0.72, g: 0.4, b: 1, a: 1}

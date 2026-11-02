@@ -38,9 +38,23 @@ namespace LaundryLegends.Arcade
         public float ResultRemaining => Mathf.Max(0f, _resultRemaining);
 
         /// <summary>The player's fighter; the opponent is the computer.</summary>
-        public string PlayerName => "CIVIC";
+        public string PlayerName { get; private set; } = "CIVIC";
 
-        public string OpponentName => "BULL";
+        public string OpponentName { get; private set; } = "BULL";
+
+        /// <summary>Renames the fighters so themed cabinets read differently.</summary>
+        public void SetNames(string playerName, string opponentName)
+        {
+            if (!string.IsNullOrWhiteSpace(playerName))
+            {
+                PlayerName = playerName;
+            }
+
+            if (!string.IsNullOrWhiteSpace(opponentName))
+            {
+                OpponentName = opponentName;
+            }
+        }
 
         /// <summary>Moves the menu highlight, wrapping between the two rows.</summary>
         public void MoveSelection(int delta)

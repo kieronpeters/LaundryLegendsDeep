@@ -295,6 +295,11 @@ namespace LaundryLegends.NPC
             }
 
             yield return WalkTo(StandPoint(machine.transform, _standDistance));
+            if (_locomotion != null)
+            {
+                _locomotion.PlayLoad();
+            }
+
             for (int attempt = 0; attempt < 10 && HeldItem != null; attempt++)
             {
                 if (Load(machine))
@@ -378,6 +383,11 @@ namespace LaundryLegends.NPC
             }
 
             Debug.Log($"[STAFF] took {item.TemplateId} from {slot.name}");
+            if (_locomotion != null)
+            {
+                _locomotion.PlayLoad();
+            }
+
             return Carry(item);
         }
 
@@ -433,6 +443,11 @@ namespace LaundryLegends.NPC
                 yield break;
             }
 
+            if (_locomotion != null)
+            {
+                _locomotion.PlayFold();
+            }
+
             bool wrapped = false;
             while (_folding != null && !wrapped)
             {
@@ -460,6 +475,10 @@ namespace LaundryLegends.NPC
                 if (target == null || !target.TryPlace(wrappedItem))
                 {
                     Carry(wrappedItem);
+                }
+                else if (_locomotion != null)
+                {
+                    _locomotion.PlayHandoff();
                 }
             }
 
@@ -529,6 +548,10 @@ namespace LaundryLegends.NPC
             {
                 // Last resort: keep carrying rather than deleting or losing it.
                 Carry(item);
+            }
+            else if (_locomotion != null)
+            {
+                _locomotion.PlayHandoff();
             }
         }
 
