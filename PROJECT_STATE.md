@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-11-02 (playtest fixes, hidden room, character re-export, visual pass)
+**Last updated:** 2026-11-02 (Phase 8 complete: fullscreen arcade session verified by owner)
 **Current milestone:** M1 - Playable laundry, **in progress**
-**Current phase:** Phase 8 - First arcade machine, **complete pending owner playtest**
+**Current phase:** Phase 8 - First arcade machine, **complete**
 **Next phase:** Phase 9 - Arcade expansion, **planned**
-**Active task:** Owner playtest of the rebuilt build (two orders, $300, shelf, back room, arcade)
-**Next recommended task:** Owner playtest, then backlog grooming / Phase 9 planning
+**Active task:** Backlog grooming and Phase 9 planning
+**Next recommended task:** Groom `.orchestrator/BACKLOG.md`, then Phase 9 breakdown
 
 > **Manager note (2026-11-01).** Sections below are historical and describe the
 > Phase 1-3 state; they are not rewritten wholesale. Current authoritative
@@ -161,7 +161,11 @@ See `.orchestrator/budgets.json`.
 
 ## 9. Last successful development run
 
-**Playtest fixes, hidden room, character re-export:** `2026-11-02-ll-p8-finish` - **complete, pending owner playtest**
+**Phase 8 complete - fullscreen arcade session:** `2026-11-02-ll-p8-arcade` - **complete, owner verified**
+**Report:** `.orchestrator/reports/2026-11-02-playtest-fixes-and-visual-pass.md`
+**Result:** Cabinet interaction unblocked (it had no collider) and the cabinet now cuts to a fullscreen fight: one interaction starts a paid play, freezes the player and shop HUD, frees the cursor; Esc/Q leaves and the result hold returns to the shop. Owner played it and confirmed the payoff works. EditMode **147/147**, PlayMode **58 passed / 0 failed / 2 skipped**, build **198 MB / 0 errors**. Phase 8 acceptance is satisfied; the fighter visual upgrade is filed as backlog (`LL-F-006`).
+
+**Playtest fixes, hidden room, character re-export:** `2026-11-02-ll-p8-finish` - **complete**
 **Report:** `.orchestrator/reports/2026-11-02-playtest-fixes-and-visual-pass.md`
 **Result:** Order loop unblocked (customer/staff waypoints out of counter colliders, staff walk timeout), hidden room rebuilt at the door with a cut east wall, casino carpet, bar, posters and an upright playable cabinet, and the character Clothing fixed at the source: the MakeHuman plugin now applies each garment's `deleteVerts` mask, the customer re-exported in `female_casualsuit01` (tee + jeans), and the material mapping switched. Placeholder first-person hands removed, clutter hidden, controls legend added. EditMode **147/147**, PlayMode **57 passed / 0 failed / 2 explicit skipped**, six-order **$300 progression** passed, build **198 MB / 0 errors**. 20 captures + live build screenshots inspected. Backlog filed in `.orchestrator/BACKLOG.md`.
 

@@ -1233,3 +1233,23 @@ Owner playtest, then the deferred arcade-payoff verification and Phase 9 plannin
 ### Next
 
 Owner playtest, then Phase 9 planning or backlog grooming.
+
+## 2026-11-02 - Phase 8 complete: fullscreen arcade session
+
+**Phase:** 8 - First arcade machine
+**Status:** Complete; owner verified the payoff.
+
+### Fixed / added
+
+- The cabinet had no collider, so it could not be interacted with. Added a BoxCollider sized from its render bounds and wired the service.
+- Interacting now cuts to a fullscreen fight (Arcade Paradise flow): the player, HUD, prompt and pause are disabled, the cursor is freed, and a paid play starts the fight immediately. Esc/Q leaves; the result hold returns to the shop automatically. Added `ArcadeMode` for control restore and updated the HUD views to hide during the session.
+- Updated the cabinet EditMode test and added `ArcadeCabinetInteractTests` (targeting, fight start, player freeze, restore).
+
+### Checks
+
+- EditMode **147/147**; PlayMode **58 passed / 0 failed / 2 skipped**; build **exit 0, 198 MB**.
+- Owner playtest: cabinet interaction and fullscreen fight work; payoff confirmed.
+
+### Next
+
+Phase 9 planning; backlog grooming (`LL-F-006` fighter visual upgrade, `LL-B-003` doorway clearance, etc.).

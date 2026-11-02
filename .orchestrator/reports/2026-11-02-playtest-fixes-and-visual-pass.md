@@ -55,3 +55,13 @@
 ## Git
 - Commit includes scene, prefabs, scripts, tools, textures, materials, FBX imports, backlog and reports.
 - Not pushed.
+
+## Addendum - fullscreen arcade session (owner verified)
+
+- The cabinet had **no collider** (the model ships without colliders and the screen quad's collider is removed), so it could not be targeted. A `BoxCollider` sized from the render bounds now covers the body, and the service is explicitly wired.
+- Interaction now cuts to a **fullscreen fight**: `ArcadeMode` freezes walking/looking/carrying/interaction/pause, frees the cursor and hides the HUD; the play starts the fight immediately (no PLAY/QUIT menu); Esc/Q leaves; the result hold returns to the shop and restores control.
+- `ArcadeCabinetInteractTests` covers targeting, fight start, player freeze and restore. The EditMode screen test now asserts the fight starts directly.
+- Owner played it: **payoff confirmed**. Phase 8 acceptance is satisfied.
+- Visual upgrade toward SF2 filed as `LL-F-006` (sprite poses, parallax, portraits, banners, sparks); true SF2 fidelity needs imported sprite art.
+
+Checks after the change: EditMode 147/147, PlayMode 58 passed / 0 failed / 2 skipped, build exit 0 (198 MB).

@@ -9,7 +9,7 @@
     "renderPipeline": "Universal Render Pipeline 17.0.4",
     "targetPlatform": "Windows 64-bit"
   },
-  "updatedAt": "2026-11-02T18:00:00+08:00",
+  "updatedAt": "2026-11-02T20:30:00+08:00",
   "currentMilestone": {
     "id": "M1",
     "name": "Playable laundry",
@@ -18,9 +18,9 @@
   "currentPhase": {
     "number": 8,
     "name": "First arcade machine",
-    "status": "complete-pending-playtest",
+    "status": "complete",
     "file": ".orchestrator/reports/2026-11-01-phase8-arcade-business-and-menu-fix.md",
-    "completionNote": "Arcade business loop implemented: install point purchase through EconomyService (single debit), Off->Installing->Active lifecycle, attract mode with emission pulse and generated cue, visitor traffic that pays exactly once per visit, and ArcadeState exposed for future saving. Menu dead-button defect fixed with persistent UnityEvent listeners (the shipped build had m_Calls: []). Menu AudioListener added and the duplicate MainMenuController removed. NPC grey-material regression fixed by restoring MakeHuman textures; first-person hands mounted at measured offset and shown only while carrying. Playtest blockers fixed on 2026-11-01: customer lifecycle always reaches Done, spawner watchdog, ambient NPC no longer feeds the order drop-off, shelf purchase moved onto the SecretAccess group. Suites: EditMode 147/147, PlayMode 57 passed / 0 failed / 1 skipped; build exit 0. Owner playtest still outstanding."
+    "completionNote": "Arcade business loop implemented: install point purchase through EconomyService (single debit), Off->Installing->Active lifecycle, attract mode with emission pulse and generated cue, visitor traffic that pays exactly once per visit, and ArcadeState exposed for future saving. Menu dead-button defect fixed with persistent UnityEvent listeners (the shipped build had m_Calls: []). Menu AudioListener added and the duplicate MainMenuController removed. NPC grey-material regression fixed by restoring MakeHuman textures; first-person hands mounted at measured offset and shown only while carrying. Playtest blockers fixed on 2026-11-01: customer lifecycle always reaches Done, spawner watchdog, ambient NPC no longer feeds the order drop-off, shelf purchase moved onto the SecretAccess group. Suites: EditMode 147/147, PlayMode 57 passed / 0 failed / 1 skipped; build exit 0. Owner playtest still outstanding. Owner played the fullscreen cabinet and confirmed the payoff on 2026-11-02; the fighter visual upgrade is backlog LL-F-006."
   },
   "nextPhase": {
     "number": 9,
@@ -50,7 +50,7 @@
     "5": "planned",
     "6": "planned",
     "7": "planned",
-    "8": "complete-pending-playtest",
+    "8": "complete",
     "9": "planned",
     "10": "planned",
     "11": "planned",
@@ -154,9 +154,9 @@
     "note": "Procedural placeholders only: 3 scenes, 5 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
   },
   "lastRun": {
-    "id": "2026-11-02-ll-p8-finish",
+    "id": "2026-11-02-ll-p8-arcade",
     "report": ".orchestrator/reports/2026-11-02-playtest-fixes-and-visual-pass.md",
-    "status": "complete-pending-owner-playtest",
+    "status": "complete",
     "startedAt": "2026-11-01T13:00:00+08:00",
     "completedAt": "2026-11-02T18:00:00+08:00",
     "checks": {
@@ -165,6 +165,7 @@
       "editmode": "147/147 passed",
       "playmode": "57 passed, 0 failed, 2 explicit skipped",
       "progression_300": "passed (6 paid orders, shelf, back room entry)",
+      "arcade_fullscreen": "owner verified (cabinet play works, fullscreen fight)",
       "captures": "20 shots, 0 invalid",
       "live_build": "captured menu + HUD",
       "player_build": "exit 0, 198 MB"
