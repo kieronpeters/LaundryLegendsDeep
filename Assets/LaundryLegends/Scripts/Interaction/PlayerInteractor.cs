@@ -1,4 +1,5 @@
 using System;
+using LaundryLegends.Audio;
 using UnityEngine;
 
 namespace LaundryLegends.Interaction
@@ -112,6 +113,7 @@ namespace LaundryLegends.Interaction
             }
 
             interactable.Interact(gameObject);
+            GameAudio.Play(Sfx.Click);
             return true;
         }
 

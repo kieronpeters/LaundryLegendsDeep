@@ -1,3 +1,4 @@
+using LaundryLegends.Audio;
 using LaundryLegends.Business;
 using LaundryLegends.Interaction;
 using LaundryLegends.Player;
@@ -63,6 +64,7 @@ namespace LaundryLegends.Laundry
             }
 
             item.SetStage(LaundryStage.Wrapped);
+            GameAudio.Play(Sfx.Wrap);
             LastResult = "Folded and wrapped";
             return true;
         }
@@ -106,6 +108,7 @@ namespace LaundryLegends.Laundry
             }
 
             item.SetStage(LaundryStage.Wrapped);
+            GameAudio.Play(Sfx.Wrap);
             LastResult = "Folded and wrapped";
             Debug.Log($"[Folding] {LastResult}.");
         }

@@ -1469,3 +1469,15 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 - Release blockers: missing machine interaction prompt (`LL-B-016`), T-pose carry (`LL-A-007`), unreadable U menu layout (`LL-B-017`), and the stock/order economy soft-lock (`LL-B-018`).
 - Session evidence and the not-reached list are in `.orchestrator/reports/2026-11-04-live-playtest.md`.
 - No code changes; branch `phase-13-16` remains at the `main` baseline.
+
+## 2026-11-04 - Phase 13 audio
+
+**Branch:** `phase-13-16`
+
+- Decision 0014: Master/Music/Effects buses persisted in PlayerPrefs, applied to the listener and the `GameAudio` sources.
+- `ProceduralSfx` generates click/pickup/place/machine start/done/wrap/cash/error/bell/coin cues plus laundry and arcade ambience loops.
+- `GameAudio` auto-creates, survives scene loads, owns one-shot SFX and crossfades the two ambience beds when `ArcadeMode` is active.
+- Hooks added to interaction, machine start/finish, folding/wrap, order payment and arcade coin-in.
+- Pause menu now dims the screen and exposes Master/Music/Effects sliders plus reset.
+
+**Verification:** EditMode 166/166; PlayMode 69 passed / 0 failed / 2 skipped; compile 0 errors.

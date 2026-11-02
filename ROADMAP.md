@@ -768,7 +768,7 @@ Models, textures, materials, lighting settings, post-processing profiles, signag
 
 ## Phase 13 - Audio and presentation
 
-**Status:** Planned
+**Status:** Implemented on `phase-13-16` (2026-11-04) - awaiting owner listening pass. Added Master/Music/Effects buses with persisted settings, pause-menu sliders, procedural SFX for interaction/machine/wrap/payment/arcade cues, and crossfading laundry/arcade ambience. A native AudioMixer asset and authored SFX remain future polish.
 **Objective:** Implement ambience, machine sounds, interaction effects, customer audio where appropriate, music, UI feedback, and audio settings.
 **Depends on:** Phases 5, 8, 9 and 12.
 
