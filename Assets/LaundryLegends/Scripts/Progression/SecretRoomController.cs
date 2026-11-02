@@ -292,6 +292,14 @@ namespace LaundryLegends.Progression
 
             CaptureClosedDoorRotation();
             Transform leaf = _sealedDoor.transform;
+
+            // The open leaf is decoration; its collider would still narrow the
+            // doorway. Only a closed door blocks the passage.
+            foreach (Collider collider in leaf.GetComponentsInChildren<Collider>(true))
+            {
+                collider.enabled = !open;
+            }
+
             if (!open)
             {
                 leaf.SetPositionAndRotation(_closedDoorPosition, _closedDoorRotation);

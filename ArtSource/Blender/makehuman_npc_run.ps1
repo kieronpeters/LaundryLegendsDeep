@@ -10,12 +10,18 @@ $specs  = Join-Path $PSScriptRoot 'makehuman_characters.json'
 $outDir = Join-Path $root 'ArtSource\Exports\Characters'
 
 if (-not (Test-Path $python)) { throw "MakeHuman python missing: $python" }
-if (-not (Test-Path $plugs))  { throw "Plugin folder missing: $plugs" }
+if (-not (Test-Path $plugs)) { New-Item -ItemType Directory -Force $plugs | Out-Null }
 
 # 1) install the automation plugin and activate it
 Copy-Item (Join-Path $PSScriptRoot 'makehuman_npc_plugin.py') (Join-Path $plugs 'npc_export.py') -Force
 $settings = Join-Path $userMH 'makehuman\v1py3\settings.ini'
-if (-not (Test-Path $settings)) { throw "MakeHuman settings.ini missing: $settings" }
+if (-not (Test-Path $settings)) {
+    New-Item -ItemType Directory -Force (Split-Path $settings) | Out-Null
+    [System.IO.File]::WriteAllText($settings,
+        '{"version":"1.2.0","activeUserPlugins":["npc_export"]}',
+        (New-Object System.Text.UTF8Encoding($false)))
+    Write-Output "created $settings (UTF-8, no BOM)"
+}
 $txt = Get-Content $settings -Raw
 $txt = [regex]::Replace($txt, '"activeUserPlugins"\s*:\s*\[[^\]]*\]', '"activeUserPlugins": ["npc_export"]', 'Singleline')
 Set-Content -Path $settings -Value $txt -NoNewline

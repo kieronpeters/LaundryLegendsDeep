@@ -28,3 +28,14 @@ Type: bug / feature / tech-debt / art / audio / docs.
 | LL-T-005 | tech-debt | P3 | Duplicate/competing wall-gap logic | The door cut, back-room west wall, threshold, and hinge are spread across three tools. Consolidate into one `BackRoomBuilder` with one gap constant. | `HiddenRoomSetupTool`, `PlaytestFixTool` |
 | LL-A-001 | art | P2 | First-person hands removed, not replaced | The placeholder hands were removed (weird shapes). If hands are wanted, author proper hands at the camera offset and re-enable `FirstPersonHandsView`. | `Player.prefab` |
 | LL-A-002 | art | P3 | Emissive/marquee on the cabinet | The marquee is flat pink; add an emissive texture and a subtle point light when the machine is active. | `Art/Materials/MAT_Cabinet*` |
+
+## Resolved in the 2026-11-02 stabilization pass
+
+| ID | Resolution |
+|---|---|
+| LL-B-003 | The open door leaf's colliders are disabled while the door is open, so the leaf is decoration and no longer narrows the passage. |
+| LL-B-001 | Replaced the flat authored bundle sheet with a procedural cloth parcel in a translucent film bag (`LaundryItem.CreateParcelVisual`); it sits on the folding table as a package. |
+| LL-T-002 | `makehuman_npc_run.ps1` now creates the 55-byte `settings.ini` (UTF-8, no BOM) and the plugin folder automatically. |
+| LL-T-001 | `CharacterAppearanceFixTool` discovers the suit renderer from the prefab and derives the texture name, so a re-export cannot silently keep an old outfit. |
+| LL-B-007 | The clawed hand was the body/pelvis tuck artefact; the masked MakeHuman re-export removed it. Captures show normal hands. |
+| LL-A-001 | Decision: first-person hands stay off until a proper hand asset exists (placeholder ones were removed). Tracked here, not in the active set. |
