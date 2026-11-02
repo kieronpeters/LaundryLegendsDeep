@@ -1481,3 +1481,13 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 - Pause menu now dims the screen and exposes Master/Music/Effects sliders plus reset.
 
 **Verification:** EditMode 166/166; PlayMode 69 passed / 0 failed / 2 skipped; compile 0 errors.
+
+## 2026-11-04 - Phase 14 save/load and phase 13-16 checkpoint
+
+- Decision 0015: versioned JSON save at `Application.persistentDataPath/laundry-legends.save.json`, atomic `.tmp` write, corrupt/missing file falls back to a new game.
+- Persists wallet, clock day/minute, three stock counts, reputation, room unlock, arcade expansion and audio settings. Transient customers/orders/machines are recreated on load.
+- Added `GameState.RestoreMoney`, `EconomyService.RestoreBalance`, `ArcadeService.RestoreExpansion`, `SaveData`, `SaveService`, `SaveBootstrap` (autosave 60 s + on quit, skipped in batch mode).
+- Phase 15 tuning: stock 10/10/10, 20 s respawn, bills 200/70/50, next-goal HUD.
+- Phase 16 baseline: EditMode 169/169, PlayMode 69 passed / 0 failed / 2 skipped, build 212 MB / 0 errors.
+
+**Open for the bug-fix branch:** LL-B-019 to LL-B-025 and the older P2/P3 items; per-machine arcade save ownership; performance profiling and release candidate.
