@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-11-02 (Phase 8 complete: fullscreen arcade session verified by owner)
+**Last updated:** 2026-11-02 (Phase 9 planning: contracts and task breakdown accepted)
 **Current milestone:** M1 - Playable laundry, **in progress**
-**Current phase:** Phase 8 - First arcade machine, **complete**
-**Next phase:** Phase 9 - Arcade expansion, **planned**
-**Active task:** Backlog grooming and Phase 9 planning
-**Next recommended task:** Groom `.orchestrator/BACKLOG.md`, then Phase 9 breakdown
+**Current phase:** Phase 9 - Arcade expansion, **in progress**
+**Next phase:** Phase 10 - TBD by roadmap review, **planned**
+**Active task:** LL-P9-002 - machine catalogue and multi-slot arcade service
+**Next recommended task:** Start LL-P9-002 (see `.orchestrator/tasks/phase-09.json`)
 
 > **Manager note (2026-11-01).** Sections below are historical and describe the
 > Phase 1-3 state; they are not rewritten wholesale. Current authoritative

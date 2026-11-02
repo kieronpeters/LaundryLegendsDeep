@@ -1253,3 +1253,21 @@ Owner playtest, then Phase 9 planning or backlog grooming.
 ### Next
 
 Phase 9 planning; backlog grooming (`LL-F-006` fighter visual upgrade, `LL-B-003` doorway clearance, etc.).
+
+## 2026-11-02 - Phase 9 planning: arcade expansion
+
+**Phase:** 9 - Arcade expansion
+**Status:** In progress; LL-P9-001 complete, LL-P9-002 ready.
+
+### Planned
+
+- Decision `0012` locks the contracts: `ArcadeMachineDefinition` (cost, income, attract weight, footprint, prefab), a multi-slot `ArcadeService` whose slot 0 keeps the Phase 8 API, three install anchors, arcade upgrades/decorations with income/traffic multipliers, laundry reputation (paid/tip/abandon, decay) feeding footfall, scaled income plus 120 s upkeep, a visible 6x4 m expansion bay (capacity 3 -> 5), and milestone HUD entries.
+- Ten tasks recorded in `.orchestrator/tasks/phase-09.json` with scope, acceptance and checks.
+
+### Branch
+
+- `phase-9` created from `main` (`cf06745`) and pushed. Phase 8 is merged and tagged `phase-8-complete`.
+
+### Next
+
+LL-P9-002: machine catalogue + multi-slot service, keeping all Phase 8 tests green.
