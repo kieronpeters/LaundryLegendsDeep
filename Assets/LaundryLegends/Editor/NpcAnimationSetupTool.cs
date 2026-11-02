@@ -24,10 +24,15 @@ namespace LaundryLegends.Editor
         public const string ScenePath = "Assets/LaundryLegends/Scenes/Laundromat.unity";
         public const string IdleClipName = "Idle_Loop";
         public const string WalkClipName = "Walk_Loop";
+        public const string LoadClipName = "Interact";
+        public const string FoldClipName = "PickUp_Table";
         public const string PrefabFolder = "Assets/LaundryLegends/Prefabs/Gameplay/NPC";
 
         private const string SpeedParameter = "Speed";
         private const string CarryingParameter = "Carrying";
+        private const string LoadParameter = "Load";
+        private const string FoldParameter = "Fold";
+        private const string HandoffParameter = "Handoff";
         private const float IdleThreshold = 0.1f;
 
         private static readonly string[] PrefabIds =
@@ -46,13 +51,21 @@ namespace LaundryLegends.Editor
             EnsureLoopingLocomotionTakes();
             AnimationClip idle = FindClip(IdleClipName);
             AnimationClip walk = FindClip(WalkClipName);
+            AnimationClip load = FindClip(LoadClipName);
+            AnimationClip fold = FindClip(FoldClipName);
             if (idle == null || walk == null)
             {
                 throw new InvalidOperationException(
                     $"Missing locomotion takes in {LibraryPath} (idle={idle != null}, walk={walk != null}).");
             }
 
-            AnimatorController controller = BuildController(idle, walk);
+            if (load == null || fold == null)
+            {
+                throw new InvalidOperationException(
+                    $"Missing gesture takes in {LibraryPath} (load={load != null}, fold={fold != null}).");
+            }
+
+            AnimatorController controller = BuildController(idle, walk, load, fold);
             foreach (string id in PrefabIds)
             {
                 ConfigurePrefab(id, controller);
@@ -77,6 +90,8 @@ namespace LaundryLegends.Editor
 
             AnimationClip idle = FindClip(IdleClipName);
             AnimationClip walk = FindClip(WalkClipName);
+            AnimationClip load = FindClip(LoadClipName);
+            AnimationClip fold = FindClip(FoldClipName);
             if (idle == null)
             {
                 failures.Add($"Missing clip '{IdleClipName}'.");
@@ -95,6 +110,16 @@ namespace LaundryLegends.Editor
                 failures.Add($"Clip '{walk.name}' does not loop.");
             }
 
+            if (load == null)
+            {
+                failures.Add($"Missing clip '{LoadClipName}'.");
+            }
+
+            if (fold == null)
+            {
+                failures.Add($"Missing clip '{FoldClipName}'.");
+            }
+
             AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(ControllerPath);
             if (controller == null)
             {
@@ -102,7 +127,7 @@ namespace LaundryLegends.Editor
             }
             else
             {
-                ValidateController(controller, idle, walk, failures);
+                ValidateController(controller, idle, walk, load, fold, failures);
             }
 
             foreach (string id in PrefabIds)
@@ -193,7 +218,11 @@ namespace LaundryLegends.Editor
             return null;
         }
 
-        private static AnimatorController BuildController(AnimationClip idle, AnimationClip walk)
+        private static AnimatorController BuildController(
+            AnimationClip idle,
+            AnimationClip walk,
+            AnimationClip load,
+            AnimationClip fold)
         {
             if (AssetDatabase.LoadAssetAtPath<AnimatorController>(ControllerPath) != null)
             {
@@ -203,6 +232,9 @@ namespace LaundryLegends.Editor
             AnimatorController controller = AnimatorController.CreateAnimatorControllerAtPath(ControllerPath);
             controller.AddParameter(SpeedParameter, AnimatorControllerParameterType.Float);
             controller.AddParameter(CarryingParameter, AnimatorControllerParameterType.Bool);
+            controller.AddParameter(LoadParameter, AnimatorControllerParameterType.Trigger);
+            controller.AddParameter(FoldParameter, AnimatorControllerParameterType.Trigger);
+            controller.AddParameter(HandoffParameter, AnimatorControllerParameterType.Trigger);
 
             AnimatorStateMachine machine = controller.layers[0].stateMachine;
 
@@ -213,6 +245,18 @@ namespace LaundryLegends.Editor
             AnimatorState walkState = machine.AddState("Walk");
             walkState.motion = walk;
             walkState.speed = 1f;
+
+            AnimatorState loadState = machine.AddState("Load");
+            loadState.motion = load;
+            loadState.speed = 1f;
+
+            AnimatorState foldState = machine.AddState("Fold");
+            foldState.motion = fold;
+            foldState.speed = 1f;
+
+            AnimatorState handoffState = machine.AddState("Handoff");
+            handoffState.motion = load;
+            handoffState.speed = 1f;
 
             machine.defaultState = idleState;
 
@@ -228,10 +272,34 @@ namespace LaundryLegends.Editor
             toIdle.duration = 0.15f;
             toIdle.AddCondition(AnimatorConditionMode.Less, IdleThreshold, SpeedParameter);
 
+            AddGesture(controller, machine, loadState, LoadParameter, idleState);
+            AddGesture(controller, machine, foldState, FoldParameter, idleState);
+            AddGesture(controller, machine, handoffState, HandoffParameter, idleState);
+
             EditorUtility.SetDirty(controller);
             AssetDatabase.SaveAssets();
 
             return controller;
+        }
+
+        private static void AddGesture(
+            AnimatorController controller,
+            AnimatorStateMachine machine,
+            AnimatorState gesture,
+            string trigger,
+            AnimatorState idleState)
+        {
+            AnimatorStateTransition enter = machine.AddAnyStateTransition(gesture);
+            enter.hasExitTime = false;
+            enter.exitTime = 0f;
+            enter.duration = 0.08f;
+            enter.canTransitionToSelf = false;
+            enter.AddCondition(AnimatorConditionMode.If, 0f, trigger);
+
+            AnimatorStateTransition exit = gesture.AddTransition(idleState);
+            exit.hasExitTime = true;
+            exit.exitTime = 0.9f;
+            exit.duration = 0.12f;
         }
 
         private static void ConfigurePrefab(string id, AnimatorController controller)
@@ -354,10 +422,15 @@ namespace LaundryLegends.Editor
             AnimatorController controller,
             AnimationClip idle,
             AnimationClip walk,
+            AnimationClip load,
+            AnimationClip fold,
             List<string> failures)
         {
             bool hasSpeed = false;
             bool hasCarrying = false;
+            bool hasLoad = false;
+            bool hasFold = false;
+            bool hasHandoff = false;
             foreach (AnimatorControllerParameter parameter in controller.parameters)
             {
                 if (parameter.name == SpeedParameter && parameter.type == AnimatorControllerParameterType.Float)
@@ -367,6 +440,18 @@ namespace LaundryLegends.Editor
                 else if (parameter.name == CarryingParameter && parameter.type == AnimatorControllerParameterType.Bool)
                 {
                     hasCarrying = true;
+                }
+                else if (parameter.name == LoadParameter && parameter.type == AnimatorControllerParameterType.Trigger)
+                {
+                    hasLoad = true;
+                }
+                else if (parameter.name == FoldParameter && parameter.type == AnimatorControllerParameterType.Trigger)
+                {
+                    hasFold = true;
+                }
+                else if (parameter.name == HandoffParameter && parameter.type == AnimatorControllerParameterType.Trigger)
+                {
+                    hasHandoff = true;
                 }
             }
 
@@ -380,8 +465,16 @@ namespace LaundryLegends.Editor
                 failures.Add($"Controller is missing the bool '{CarryingParameter}' parameter.");
             }
 
+            if (!hasLoad || !hasFold || !hasHandoff)
+            {
+                failures.Add("Controller is missing one of the Load/Fold/Handoff trigger parameters.");
+            }
+
             bool idleOk = false;
             bool walkOk = false;
+            bool loadOk = false;
+            bool foldOk = false;
+            bool handoffOk = false;
             if (controller.layers.Length > 0)
             {
                 foreach (ChildAnimatorState child in controller.layers[0].stateMachine.states)
@@ -394,6 +487,18 @@ namespace LaundryLegends.Editor
                     {
                         walkOk = true;
                     }
+                    else if (child.state.name == "Load" && child.state.motion == load)
+                    {
+                        loadOk = true;
+                    }
+                    else if (child.state.name == "Fold" && child.state.motion == fold)
+                    {
+                        foldOk = true;
+                    }
+                    else if (child.state.name == "Handoff" && child.state.motion == load)
+                    {
+                        handoffOk = true;
+                    }
                 }
             }
 
@@ -405,6 +510,21 @@ namespace LaundryLegends.Editor
             if (!walkOk)
             {
                 failures.Add("Controller has no 'Walk' state bound to the Walk_Loop clip.");
+            }
+
+            if (!loadOk)
+            {
+                failures.Add("Controller has no 'Load' state bound to the Interact clip.");
+            }
+
+            if (!foldOk)
+            {
+                failures.Add("Controller has no 'Fold' state bound to the PickUp_Table clip.");
+            }
+
+            if (!handoffOk)
+            {
+                failures.Add("Controller has no 'Handoff' state bound to the Interact clip.");
             }
         }
 
@@ -526,7 +646,9 @@ namespace LaundryLegends.Editor
 
             if (customers == 0)
             {
-                failures.Add("The Laundromat scene has no PickupCustomer.");
+                // Phase 11 removed the hidden-room PickupCustomer on purpose; the
+                // order customer now uses NPC_OrderCustomer instead.
+                Debug.Log("[NPC] No legacy PickupCustomer in the scene; stand-point check skipped.");
             }
         }
 

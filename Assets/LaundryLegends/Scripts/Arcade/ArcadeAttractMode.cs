@@ -30,6 +30,7 @@ namespace LaundryLegends.Arcade
 
         private Material _material;
         private AudioClip _generatedCue;
+        private Texture2D _attractTexture;
         private bool _powered;
         private bool _busy;
 
@@ -119,6 +120,12 @@ namespace LaundryLegends.Arcade
                 Destroy(_material);
                 _material = null;
             }
+
+            if (_attractTexture != null)
+            {
+                Destroy(_attractTexture);
+                _attractTexture = null;
+            }
         }
 
         private void Refresh()
@@ -134,6 +141,7 @@ namespace LaundryLegends.Arcade
             {
                 Intensity01 = _minIntensity;
                 SetEmission(_emissionColor * _minIntensity);
+                ApplyAttractScreen();
                 StartCue();
             }
             else
@@ -178,6 +186,96 @@ namespace LaundryLegends.Arcade
 
             material.EnableKeyword(EmissionKeyword);
             material.SetColor(EmissionColorId, color);
+        }
+
+        /// <summary>
+        /// Puts a bright attract image on an idle screen. Without this the cabinet
+        /// stayed black until someone paid, which read as an offline machine.
+        /// </summary>
+        private void ApplyAttractScreen()
+        {
+            Material material = ScreenMaterial();
+            if (material == null)
+            {
+                return;
+            }
+
+            material.mainTexture = AttractTexture();
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", Color.white);
+            }
+        }
+
+        private Texture2D AttractTexture()
+        {
+            if (_attractTexture != null)
+            {
+                return _attractTexture;
+            }
+
+            const int width = 256;
+            const int height = 192;
+            var texture = new Texture2D(width, height, TextureFormat.RGBA32, false)
+            {
+                filterMode = FilterMode.Point,
+                wrapMode = TextureWrapMode.Clamp,
+                name = "ArcadeAttract"
+            };
+
+            Color32 accent = _emissionColor;
+            var pixels = new Color32[width * height];
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    var color = new Color32(10, 12, 26, 255);
+
+                    // Neon frame.
+                    if (x < 5 || x >= width - 5 || y < 5 || y >= height - 5)
+                    {
+                        color = accent;
+                    }
+
+                    // Title bars.
+                    int bar = y - 34;
+                    if (bar >= 0 && bar < 46)
+                    {
+                        int stripe = x / 18;
+                        color = stripe % 2 == 0
+                            ? accent
+                            : new Color32(
+                                (byte)(accent.r * 0.35f),
+                                (byte)(accent.g * 0.35f),
+                                (byte)(accent.b * 0.55f),
+                                255);
+                    }
+
+                    // Coin-slot plate.
+                    if (x > 96 && x < 160 && y > 108 && y < 126)
+                    {
+                        color = new Color32(230, 226, 180, 255);
+                    }
+
+                    if (x > 110 && x < 146 && y > 112 && y < 122)
+                    {
+                        color = new Color32(20, 22, 40, 255);
+                    }
+
+                    // Pulsing dot grid along the bottom.
+                    if (y > 144 && y < 180 && x % 16 < 4 && y % 16 < 4)
+                    {
+                        color = accent;
+                    }
+
+                    pixels[y * width + x] = color;
+                }
+            }
+
+            texture.SetPixels32(pixels);
+            texture.Apply(false);
+            _attractTexture = texture;
+            return _attractTexture;
         }
 
         private Material ScreenMaterial()

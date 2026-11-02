@@ -9,37 +9,37 @@
                     "renderPipeline":  "Universal Render Pipeline 17.0.4",
                     "targetPlatform":  "Windows 64-bit"
                 },
-    "updatedAt":  "2026-11-03T04:00:00+08:00",
+    "updatedAt":  "2026-11-04T12:00:00+08:00",
     "currentMilestone":  {
                              "id":  "M1",
                              "name":  "Playable laundry",
                              "status":  "in_progress"
                          },
     "currentPhase":  {
-                         "number":  9,
-                         "name":  "Arcade expansion",
-                         "status":  "complete",
-                         "file":  ".orchestrator/decisions/0012-phase-9-arcade-expansion.md",
-                         "completionNote":  "Phase 9 implemented on the phase-9 branch: data-driven machine catalogue, multi-slot ArcadeService (slot 0 keeps the Phase 8 API), four extra anchors (three open, two sealed in the expansion bay), three upgrade kiosks with income/traffic multipliers and decor, laundry reputation (paid/tip/abandon/decay) feeding traffic and income, 120 s upkeep, a visible walkable expansion bay (capacity 3 -\u003e 5), five one-time milestones and an IMGUI arcade HUD. Automated evidence: EditMode 158/158, PlayMode 59 passed / 0 failed / 2 explicit skipped, explicit  progression 1/1, Windows build 198 MB / 0 errors at Build/LaundryLegends.exe. Owner playtest (LL-P9-010) remains the only open acceptance gate. Machine-wall fix (8d86fef): all eight appliances now have load/dry hooks (4 washers, 4 dryers) and the staff dispatches to any free unit; Phase 10 order queue is 10 active. Review round 2 (806d1e1): U purchase menu replaces the ground pedestals, carpet gated to and placed in the expansion bay, posters moved/added, open door leaf hidden, parcel bundle, rotating drums, hidden-room visitor removed, male order customer, silent staff. EditMode 159/159; PlayMode 59/0/2; build 199 MB/0 errors. Owner approved the round 2 fullscreen build on 2026-11-03. Phase 9 complete with follow-up tickets: LL-B-009 (ambient counter), LL-B-010 (staff machine choice), LL-A-005/006 (machine/cabinet art), LL-F-009/010 (voice, game variety), LL-B-011 (menu labels), LL-B-008 (visual review)."
+                         "number":  10,
+                         "name":  "Business operations and order flow",
+                         "status":  "in_progress",
+                         "file":  ".orchestrator/decisions/0013-phase-10-business-operations.md",
+                         "completionNote":  "Implemented on phase-10-12: 10-order queue, 10-slot rack, three 10-capacity shelves (5 starting units), stock blocking, 24-hour clock with N day skip, 30-day bills and HUD. Automated suites green; owner playtest (LL-P10-010) is the only open task."
                      },
     "nextPhase":  {
-                      "number":  10,
-                      "name":  "Business operations and order flow",
+                      "number":  13,
+                      "name":  "Audio and presentation",
                       "status":  "planned",
                       "file":  "ROADMAP.md"
                   },
     "activeTask":  null,
-    "lastCompletedTask":  "LL-P9-010",
-    "nextTask":  "LL-P10-002",
+    "lastCompletedTask":  "LL-P10-009",
+    "nextTask":  "LL-P10-010",
     "taskCounts":  {
-                       "complete":  65,
+                       "complete":  74,
                        "ready":  0,
-                       "planned":  9,
+                       "planned":  0,
                        "pending":  0,
                        "inProgress":  0,
                        "failed":  0,
                        "blocked":  0,
-                       "pendingApproval":  0
+                       "pendingApproval":  1
                    },
     "phaseStatuses":  {
                           "0":  "complete",
@@ -52,9 +52,9 @@
                           "7":  "complete",
                           "8":  "complete",
                           "9":  "complete",
-                          "10":  "planned",
-                          "11":  "planned",
-                          "12":  "planned",
+                          "10":  "in_progress",
+                          "11":  "in_progress",
+                          "12":  "in_progress",
                           "13":  "planned",
                           "14":  "planned",
                           "15":  "planned",
@@ -62,14 +62,14 @@
                           "17":  "planned"
                       },
     "git":  {
-                "branch":  "phase-9",
+                "branch":  "phase-10-12",
                 "checkpointTag":  "phase-9-complete",
-                "checkpointCommit":  "1d71e77",
+                "checkpointCommit":  "197845151b6608b68446821cdbfb3aa432ae863e",
                 "baselineCommit":  "b78218cccfeea741d3d227ffa95e679e9ba92a72",
-                "remote":  null,
-                "workingTree":  "post-approval tickets committed; approved build unchanged",
+                "remote":  "origin/phase-10-12",
+                "workingTree":  "clean; phase-10-12 pushed at 537dd88",
                 "unityProjectCommit":  "e244ba434ace223ff064df52b6a683615d9fb503",
-                "lastCheckpointAt":  "2026-11-03T04:00:00+08:00"
+                "lastCheckpointAt":  "2026-11-04T12:00:00+08:00"
             },
     "environment":  {
                         "opencodeCli":  "2.0.28",
@@ -149,7 +149,7 @@
                   "Free-model spend telemetry is not reliable; limits are conservative and process-based."
               ],
     "technicalDebt":  [
-                          "Test coverage is 32 EditMode and 37 PlayMode tests (plus one explicit capture test); no order, economy, save, or performance coverage yet.",
+                          "Test coverage is 164 EditMode and 68 PlayMode tests; no save or performance coverage yet.",
                           "No Git LFS patterns configured for future large assets.",
                           "Economy values are untuned proposals.",
                           "First-person perspective is provisional.",
@@ -163,26 +163,29 @@
                    "note":  "Procedural placeholders only: 3 scenes, 5 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
                },
     "lastRun":  {
-                    "id":  "2026-11-03-ll-p9-closeout",
-                    "report":  ".orchestrator/reports/2026-11-03-phase9-owner-approval.md",
+                    "id":  "2026-11-04-phase-10-12",
+                    "report":  ".orchestrator/reports/2026-11-04-phase-10-12.md",
                     "status":  "complete",
-                    "startedAt":  "2026-11-03T03:00:00+08:00",
-                    "completedAt":  "2026-11-03T04:00:00+08:00",
+                    "startedAt":  "2026-11-03T06:00:00+08:00",
+                    "completedAt":  "2026-11-04T12:00:00+08:00",
                     "checks":  {
-                                   "owner_playtest":  "approved 2026-11-03",
-                                   "editmode":  "159/159 passed",
-                                   "playmode":  "59 passed, 0 failed, 2 explicit skipped",
-                                   "build":  "199 MB, 0 errors",
-                                   "known_debt":  "LL-B-009, LL-B-010, LL-A-005, LL-A-006, LL-F-009, LL-F-010, LL-B-011, LL-B-008",
-                                   "post_approval_tickets":  "LL-B-012 (P1), LL-B-013, LL-A-005, LL-B-014, LL-B-015"
+                                   "editmode":  "164/164 passed",
+                                   "playmode":  "68 total: 66 passed / 0 failed / 2 skipped",
+                                   "build":  "212 MB / 0 errors",
+                                   "appliance_validate":  "8 detailed models, 100 URP material slots",
+                                   "business_validate":  "10 rack slots, 3 shelves, clock, billing, HUD and bills menu",
+                                   "tickets_closed":  "LL-B-002, LL-B-004, LL-B-008, LL-B-009, LL-B-010, LL-B-011, LL-B-012, LL-B-013, LL-B-014, LL-B-015, LL-A-002, LL-A-003, LL-A-004, LL-A-005, LL-A-006, LL-F-002, LL-F-003, LL-F-006, LL-F-008, LL-F-009, LL-F-010, LL-T-004",
+                                   "captures":  "machine-wall-4, 12-bay-entry, 12-bay-carpet, 12-bay-poster, 12-cabinet-side, 12-cabinet-front, 12-vending, 12-secret-door, 12-waiting-area, menu-u-2, menu-b, hud-layout, arcade-maze, arcade-fight-turbo"
                                },
                     "filesChanged":  [
-                                         ".orchestrator/tasks/phase-09.json",
                                          ".orchestrator/state.json",
-                                         ".orchestrator/reports/2026-11-03-phase9-owner-approval.md",
+                                         ".orchestrator/tasks/phase-10.json",
+                                         ".orchestrator/BACKLOG.md",
+                                         ".orchestrator/reports/2026-11-04-phase-10-12.md",
                                          "PROJECT_STATE.md",
                                          "ROADMAP.md",
-                                         "DEVELOPMENT_LOG.md"
+                                         "DEVELOPMENT_LOG.md",
+                                         "ASSET_INVENTORY.md"
                                      ]
                 },
     "recovery":  {

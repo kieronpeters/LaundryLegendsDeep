@@ -85,6 +85,11 @@ namespace LaundryLegends.UI
                 return;
             }
 
+            if (BillsPanelView.IsOpen)
+            {
+                return;
+            }
+
             if (Input.GetKeyDown(KeyCode.U))
             {
                 if (IsOpen)
@@ -183,6 +188,17 @@ namespace LaundryLegends.UI
 
             if (_arcade != null)
             {
+                var machineNameCounts = new Dictionary<string, int>(StringComparer.Ordinal);
+                for (int slot = 1; slot < _arcade.SlotCount; slot++)
+                {
+                    ArcadeMachineDefinition definition = _arcade.GetSlotDefinition(slot);
+                    if (definition != null)
+                    {
+                        machineNameCounts.TryGetValue(definition.DisplayName, out int seenCount);
+                        machineNameCounts[definition.DisplayName] = seenCount + 1;
+                    }
+                }
+
                 for (int slot = 1; slot < _arcade.SlotCount; slot++)
                 {
                     ArcadeMachineDefinition definition = _arcade.GetSlotDefinition(slot);
@@ -212,10 +228,17 @@ namespace LaundryLegends.UI
                         status = $"${_arcade.GetSlotCost(slot)}";
                     }
 
+                    // Bay anchors reuse the shop definitions, so identical names
+                    // would otherwise read as duplicate rows.
+                    bool duplicated = machineNameCounts.TryGetValue(definition.DisplayName, out int count) && count > 1;
+                    string label = duplicated
+                        ? $"Machine: {definition.DisplayName} (#{slot})"
+                        : $"Machine: {definition.DisplayName}";
+
                     int capturedSlot = slot;
                     _entries.Add(new Entry
                     {
-                        Label = $"Machine: {definition.DisplayName}",
+                        Label = label,
                         Status = status,
                         Enabled = enabled,
                         Buy = () => _arcade.TryInstall(capturedSlot, Time.time)

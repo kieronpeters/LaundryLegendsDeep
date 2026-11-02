@@ -19,3 +19,7 @@ MonoBehaviour:
   _attractWeight: 1
   _footprint: {x: 0.9, y: 0.9}
   _prefab: {fileID: 0}
+  _gameKind: 0
+  _opponentName: BULL
+  _accentColor: {r: 0.38, g: 0.78, b: 1, a: 1}
+  _opponentColor: {r: 1, g: 0.47, b: 0.38, a: 1}

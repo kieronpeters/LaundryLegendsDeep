@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using LaundryLegends.Arcade;
 using LaundryLegends.Customers;
 using LaundryLegends.Progression;
@@ -57,6 +58,10 @@ namespace LaundryLegends.Tests.PlayMode
             StringAssert.Contains("Machine: Racer", menu.BuildText(), "The U menu should list the second machine.");
             StringAssert.Contains("Arcade expansion bay", menu.BuildText(), "The U menu should list the expansion.");
 
+            var distinctLabels = new HashSet<string>(menu.EntryLabels);
+            Assert.AreEqual(menu.EntryLabels.Count, distinctLabels.Count,
+                "Every purchase row must have a unique label; bay anchors reuse shop definitions.");
+
             GameObject bay = FindInactive("ExpansionBay");
             GameObject seal = FindInactive("ExpansionSeal");
             Assert.IsNotNull(bay, "The expansion bay must exist, disabled, in the scene.");
@@ -98,7 +103,7 @@ namespace LaundryLegends.Tests.PlayMode
             Assert.Greater(service.IncomeMultiplier, 1f, "The upgrade should raise the income multiplier.");
 
             ArcadeUpgradePoint carpetKiosk = FindUpgradePoint("arcade.upgrade.carpet");
-            GameObject rugDecor = FindInactive("Decor_ArcadeRug");
+            GameObject rugDecor = FindInactive("Decor_ArcadeCarpet");
             Assert.IsNotNull(carpetKiosk, "The scene needs the carpet upgrade kiosk.");
             Assert.IsNotNull(rugDecor, "The carpet decor should exist, disabled.");
             Assert.IsTrue(rugDecor.transform.IsChildOf(bay.transform), "The carpet must live in the expansion bay.");

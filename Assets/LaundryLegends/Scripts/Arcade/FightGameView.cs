@@ -24,6 +24,16 @@ namespace LaundryLegends.Arcade
         private Color32[] _pixels;
         private float _nextRefresh;
         private FightSession _session;
+        private Color32 _playerColor = new Color32(96, 200, 255, 255);
+        private Color32 _opponentColor = new Color32(255, 120, 96, 255);
+        private int _lastPlayerHealth = -1;
+        private int _lastOpponentHealth = -1;
+        private float _sparkRemaining;
+        private float _shakeRemaining;
+        private int _sparkX = Width / 2;
+        private int _sparkY = FloorY - 70;
+        private int _shakeX;
+        private int _shakeY;
 
         public Renderer Screen => _screen;
 
@@ -31,6 +41,13 @@ namespace LaundryLegends.Arcade
 
         /// <summary>Draw the session fullscreen instead of only on the cabinet screen.</summary>
         public bool Fullscreen { get; set; }
+
+        /// <summary>Per-machine colours so themed cabinets read apart at a glance.</summary>
+        public void SetTheme(Color player, Color opponent)
+        {
+            _playerColor = player;
+            _opponentColor = opponent;
+        }
 
         private void OnGUI()
         {
@@ -76,6 +93,10 @@ namespace LaundryLegends.Arcade
         public void Show(FightSession session)
         {
             _session = session;
+            _lastPlayerHealth = -1;
+            _lastOpponentHealth = -1;
+            _sparkRemaining = 0f;
+            _shakeRemaining = 0f;
             EnsureTexture();
             Redraw();
         }
@@ -101,6 +122,17 @@ namespace LaundryLegends.Arcade
 
         private void Update()
         {
+            float delta = Time.deltaTime;
+            if (_sparkRemaining > 0f)
+            {
+                _sparkRemaining = Mathf.Max(0f, _sparkRemaining - delta);
+            }
+
+            if (_shakeRemaining > 0f)
+            {
+                _shakeRemaining = Mathf.Max(0f, _shakeRemaining - delta);
+            }
+
             if (_session == null || Time.time < _nextRefresh)
             {
                 return;
@@ -167,8 +199,6 @@ namespace LaundryLegends.Arcade
         private void DrawFight()
         {
             Fill(new Color32(12, 16, 32, 255));
-            Block(0, FloorY, Width, 6, new Color32(46, 54, 82, 255));
-            Block(0, FloorY + 6, Width, Height - FloorY - 6, new Color32(20, 26, 44, 255));
 
             FightGame game = _session.Game;
             if (game == null)
@@ -176,21 +206,113 @@ namespace LaundryLegends.Arcade
                 return;
             }
 
-            DrawHealth(24, 44, 180, game.PlayerHealth);
-            DrawHealth(Width - 24 - 180, 44, 180, game.OpponentHealth);
-            DrawText(_session.PlayerName, 24, 22, 2, new Color32(150, 220, 255, 255));
-            DrawText(_session.OpponentName, Width - 24 - (_session.OpponentName.Length * 12), 22, 2, new Color32(255, 170, 150, 255));
+            // Parallax skyline: two layers slide at different rates with the player.
+            int scroll = Mathf.RoundToInt(game.PlayerX * 60f);
+            DrawSkyline(scroll, new Color32(24, 30, 58, 255), FloorY - 130, 54, 1.0f);
+            DrawSkyline(scroll / 2, new Color32(34, 42, 74, 255), FloorY - 96, 72, 0.6f);
+
+            Block(0, FloorY, Width, 6, new Color32(46, 54, 82, 255));
+            Block(0, FloorY + 6, Width, Height - FloorY - 6, new Color32(20, 26, 44, 255));
+
+            // Hit feedback: sparks and a short screen shake when health drops.
+            if (_lastPlayerHealth >= 0 && game.PlayerHealth < _lastPlayerHealth)
+            {
+                RegisterHit((int)(game.OpponentX * Width) - 12, FloorY - 70);
+            }
+
+            if (_lastOpponentHealth >= 0 && game.OpponentHealth < _lastOpponentHealth)
+            {
+                RegisterHit((int)(game.PlayerX * Width) + 12, FloorY - 70);
+            }
+
+            _lastPlayerHealth = game.PlayerHealth;
+            _lastOpponentHealth = game.OpponentHealth;
+
+            if (_shakeRemaining > 0f)
+            {
+                _shakeX = Mathf.RoundToInt(Mathf.Sin(Time.time * 90f) * 3f);
+                _shakeY = Mathf.RoundToInt(Mathf.Cos(Time.time * 77f) * 2f);
+            }
+            else
+            {
+                _shakeX = 0;
+                _shakeY = 0;
+            }
+
+            DrawHealth(24, 56, 180, game.PlayerHealth);
+            DrawHealth(Width - 24 - 180, 56, 180, game.OpponentHealth);
+            DrawPortrait(18, 12, _playerColor);
+            DrawPortrait(Width - 50, 12, _opponentColor);
+            DrawText(_session.PlayerName, 58, 18, 2, Lighten(_playerColor));
+            DrawText(_session.OpponentName, Width - 58 - (_session.OpponentName.Length * 12), 18, 2, Lighten(_opponentColor));
 
             int timerWidth = 120;
             int timerX = (Width - timerWidth) / 2;
-            Block(timerX, 22, timerWidth, 8, new Color32(10, 12, 22, 255));
-            Block(timerX, 22, Mathf.RoundToInt(timerWidth * Mathf.Clamp01(game.TimeRemaining / FightGame.RoundSeconds)), 8,
+            Block(timerX, 30, timerWidth, 8, new Color32(10, 12, 22, 255));
+            Block(timerX, 30, Mathf.RoundToInt(timerWidth * Mathf.Clamp01(game.TimeRemaining / FightGame.RoundSeconds)), 8,
                 new Color32(230, 226, 180, 255));
 
-            DrawFighter((int)(game.PlayerX * Width), new Color32(96, 200, 255, 255), true,
+            DrawFighter((int)(game.PlayerX * Width), _playerColor, true,
                 game.PlayerAttacking, game.PlayerGuarding);
-            DrawFighter((int)(game.OpponentX * Width), new Color32(255, 120, 96, 255), false,
+            DrawFighter((int)(game.OpponentX * Width), _opponentColor, false,
                 game.OpponentAttacking, game.OpponentGuarding);
+
+            if (_sparkRemaining > 0f)
+            {
+                DrawSpark(_sparkX, _sparkY);
+            }
+
+            // Scene shake only affects blocks; reset so HUD/menus stay still.
+            _shakeX = 0;
+            _shakeY = 0;
+        }
+
+        private void RegisterHit(int x, int y)
+        {
+            _sparkX = x;
+            _sparkY = y;
+            _sparkRemaining = 0.18f;
+            _shakeRemaining = 0.2f;
+        }
+
+        private void DrawSkyline(int scroll, Color32 color, int baseY, int spacing, float heightScale)
+        {
+            for (int i = -1; i < Width / spacing + 2; i++)
+            {
+                int x = i * spacing - (scroll % (spacing * 4));
+                int height = 18 + ((i * 37 + 11) % 44);
+                int width = spacing - 8;
+                Block(x, baseY - Mathf.RoundToInt(height * heightScale), width,
+                    Mathf.RoundToInt(height * heightScale), color);
+                Block(x + 6, baseY - Mathf.RoundToInt(height * heightScale) + 6, 4, 4,
+                    new Color32(220, 226, 160, 255));
+            }
+        }
+
+        private void DrawPortrait(int x, int y, Color32 color)
+        {
+            Block(x, y, 32, 32, new Color32(12, 14, 26, 255));
+            Block(x + 3, y + 3, 26, 26, color);
+            Block(x + 10, y + 9, 12, 12, new Color32(230, 214, 190, 255));
+        }
+
+        private void DrawSpark(int x, int y)
+        {
+            var hot = new Color32(255, 246, 180, 255);
+            Block(x - 14, y, 10, 3, hot);
+            Block(x + 4, y, 10, 3, hot);
+            Block(x, y - 14, 3, 10, hot);
+            Block(x, y + 4, 3, 10, hot);
+            Block(x - 4, y - 4, 8, 8, new Color32(255, 150, 60, 255));
+        }
+
+        private static Color32 Lighten(Color32 color)
+        {
+            return new Color32(
+                (byte)Mathf.Min(255, color.r + 60),
+                (byte)Mathf.Min(255, color.g + 60),
+                (byte)Mathf.Min(255, color.b + 60),
+                255);
         }
 
         private void DrawResult()
@@ -300,8 +422,26 @@ namespace LaundryLegends.Arcade
             Add('S', 0b01111, 0b10000, 0b10000, 0b01110, 0b00001, 0b00001, 0b11110);
             Add('T', 0b11111, 0b00100, 0b00100, 0b00100, 0b00100, 0b00100, 0b00100);
             Add('U', 0b10001, 0b10001, 0b10001, 0b10001, 0b10001, 0b10001, 0b01110);
+            Add('V', 0b10001, 0b10001, 0b10001, 0b10001, 0b10001, 0b01010, 0b00100);
             Add('W', 0b10001, 0b10001, 0b10001, 0b10101, 0b10101, 0b11011, 0b10001);
+            Add('X', 0b10001, 0b10001, 0b01010, 0b00100, 0b01010, 0b10001, 0b10001);
             Add('Y', 0b10001, 0b10001, 0b01010, 0b00100, 0b00100, 0b00100, 0b00100);
+            Add('Z', 0b11111, 0b00001, 0b00010, 0b00100, 0b01000, 0b10000, 0b11111);
+            Add('J', 0b00111, 0b00010, 0b00010, 0b00010, 0b00010, 0b10010, 0b01100);
+            Add('0', 0b01110, 0b10001, 0b10011, 0b10101, 0b11001, 0b10001, 0b01110);
+            Add('1', 0b00100, 0b01100, 0b00100, 0b00100, 0b00100, 0b00100, 0b01110);
+            Add('2', 0b01110, 0b10001, 0b00001, 0b00010, 0b00100, 0b01000, 0b11111);
+            Add('3', 0b11110, 0b00001, 0b00001, 0b01110, 0b00001, 0b00001, 0b11110);
+            Add('4', 0b00010, 0b00110, 0b01010, 0b10010, 0b11111, 0b00010, 0b00010);
+            Add('5', 0b11111, 0b10000, 0b11110, 0b00001, 0b00001, 0b10001, 0b01110);
+            Add('6', 0b00110, 0b01000, 0b10000, 0b11110, 0b10001, 0b10001, 0b01110);
+            Add('7', 0b11111, 0b00001, 0b00010, 0b00100, 0b01000, 0b01000, 0b01000);
+            Add('8', 0b01110, 0b10001, 0b10001, 0b01110, 0b10001, 0b10001, 0b01110);
+            Add('9', 0b01110, 0b10001, 0b10001, 0b01111, 0b00001, 0b00010, 0b01100);
+            Add(':', 0, 0b00100, 0b00100, 0, 0b00100, 0b00100, 0);
+            Add('-', 0, 0, 0, 0b11111, 0, 0, 0);
+            Add('.', 0, 0, 0, 0, 0, 0b00110, 0b00110);
+            Add('!', 0b00100, 0b00100, 0b00100, 0b00100, 0b00100, 0, 0b00100);
             Add('/', 0b00001, 0b00010, 0b00010, 0b00100, 0b01000, 0b01000, 0b10000);
             Add(' ', 0, 0, 0, 0, 0, 0, 0);
             return glyphs;
@@ -354,6 +494,8 @@ namespace LaundryLegends.Arcade
 
         private void Block(int x, int y, int width, int height, Color32 color)
         {
+            x += _shakeX;
+            y += _shakeY;
             for (int row = 0; row < height; row++)
             {
                 // The cabinet screen quad presents the texture rotated, so the image is

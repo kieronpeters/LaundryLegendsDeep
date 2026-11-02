@@ -63,6 +63,60 @@ holding area for work that belongs earlier.
 | LL-F-009 | feature | P2 | Male customer voice reassignment | The hidden-room visitor was removed, the staff commentary was silenced, and the order customer now uses the male model. Remaining: move the staff's male voice clips to that customer (or copy them to the DropOff archetype) without restoring the staff's commentary. | review 2026-11-03 |
 | LL-B-008 | bug | P2 | Phase 9 bay/kiosk/HUD visual review | No captures were taken of the expansion bay, upgrade kiosks or IMGUI arcade panel. Verify lighting, readability, overlap with the order ticket at 1920x1080, and that the open bay reads as a space. | Phase 9 report; `ArcadePanelView`, `ExpansionBay` |
 
+## Phase 10-12 closeout (2026-11-04, branch `phase-10-12`)
+
+Resolved in this branch, with evidence in `TestResults/phase12/` and the final suites:
+
+| Ticket | Outcome | Evidence |
+|---|---|---|
+| LL-F-008 | Consumables, ten-order queue, ten-slot rack and 30-day bills implemented and wired. | `BusinessSetupTool.ValidateBusinessSystems`; `BusinessOperationsTests`; `BusinessSceneTests` |
+| LL-B-012 | Order stall could not be reproduced after the queue rework; the diagnostic order completes with the player in the back room. Shortened per-slot machine reuse and stock retry removed the stuck states. | `OrderStallDiagnosticTests`; `TwoOrderPlayModeTests` |
+| LL-B-013 | Phone regular moved to `(6.0, 0, -4.2)`, clear of both chair sets; legacy disabled pickup component removed. | `12-waiting-area.png`; `Phase12SceneTests.WaitingAreaNpcsAreClearOfFurniture` |
+| LL-B-009 | Ambient route now ends at `Waypoint_Waiting (4.3, 0, -4.2)`; the counter waypoint is gone and each leg has a 20 s timeout. | `AmbientNpcTests`; scene waypoint check |
+| LL-F-009 | Order customer uses the male DropOff/Norman voice and subtitles; the staff stays silent (the "staff male clips" request was adapted because the only staff clips are female Cori). | `NPC_OrderCustomer.prefab`; `menu-b.png` subtitle |
+| LL-A-005 | All eight machines replaced with the 13.3k/14.1k-tri detailed washer and dryer FBX models; 100 material slots converted to URP/Lit. | `machine-wall-4.png`; `ApplianceIntegrationTool.Validate`; `Phase12SceneTests` |
+| LL-B-014 | Drum clothes now sit in the detailed glass door and the drum assembly rotates while a cycle runs; the synthetic dark face was removed. | `Phase12SceneTests.EveryMachineHasDetailedModelAndTurnsItsDrum` (angle > 45°) |
+| LL-B-015 | Full-bay 6x4 m casino-lattice carpet replaces the small rug; still gated to the expansion + carpet purchase and parented inside the bay. | `12-bay-carpet.png`, `12-bay-entry.png` |
+| LL-A-006 | Double-sided Racer Riot / Spin Cycle Showdown art added to every cabinet side; the bay poster moved off the expansion seal. | `12-cabinet-side.png`, `12-bay-poster.png` |
+| LL-B-010 | Staff now cycles through washers and dryers with a per-kind cursor instead of always reusing the leftmost unit. | `LaundryStaff.FindMachine`; `LaundryLoopTests` |
+| LL-B-011 | Duplicate U-menu rows fixed: repeated machine names get a `(#slot)` suffix. | `12/menu-u-2.png`; `ArcadeExpansionPlayModeTests` uniqueness assert |
+
+Partially resolved (ticket stays open):
+
+- LL-A-004: the carpet is now authored art; the neon sign and speakers are still primitives.
+- LL-B-008: bay captures now exist (`12-bay-entry`, `12-bay-carpet`, `12-bay-poster`, `12-cabinet-side`); the IMGUI HUD overlap at 1920x1080 still needs a layout pass.
+
+Still open: LL-F-010 (per-machine game variety - the maze game exists but is not wired to a cabinet), LL-B-003, LL-B-002, LL-B-007, LL-A-001, LL-A-002, LL-A-003.
+
+## Open-issue pass (2026-11-04, branch `phase-10-12`)
+
+Resolved in this pass:
+
+| Ticket | Outcome | Evidence |
+|---|---|---|
+| LL-F-010 | Puzzle cabinets now launch the maze game; fight cabinets keep per-machine opponents (`BULL`/`TURBO`) and theme colours. | `arcade-maze.png`, `arcade-fight-turbo.png`; `ArcadeGameVarietyTests` |
+| LL-F-002 | Added `LAUNDRO FIGHTER` and `SUDS OF FURY` posters; placed in the back room and bay. | `Art/Textures/Posters/`; back-room build log |
+| LL-F-003 | Procedural soda and change machines with lit panels, can grid, coin slot and dispenser. | `12-vending.png` |
+| LL-B-002 | Idle cabinets now draw a generated attract image and pulse emission instead of staying black. | `ArcadeGameVarietyTests.IdleCabinetShowsLitAttractImage` |
+| LL-B-004 | Posters re-rendered at 2x (1024x1536) with anti-aliased text. | `tools/make-posters.ps1` |
+| LL-B-008 | Business HUD height raised and made collision-free against the order ticket/arcade panel from 1280 to 1920 wide; bay, kiosk, cabinet and decor captures added. | `hud-layout.png`, `12-bay-*`, `12-cabinet-*`, `12-vending.png` |
+| LL-F-006 | Fight screen gained a parallax skyline, portrait boxes, hit sparks, screen shake and a complete pixel font (V and digits were missing). | `arcade-fight-turbo.png` |
+| LL-A-002 | Marquee material is emissive per machine and a point light follows the slot power state. | `12-cabinet-front.png`; `ArcadeMarqueeLight` |
+| LL-A-003 | Cabinets now differ in body tint, control-panel/trim colour, marquee and opponent, not just price. | `12-cabinet-front.png`; definition themes |
+| LL-A-004 | Neon sign rebuilt from tubes/connectors/glow; speakers gained cones and tweeters. | `12-cabinet-front.png` background; `HiddenRoomSetupTool` |
+| LL-T-004 | Documented the `Time.captureFramerate` wall/game ratio and test rules. | `TESTING_GUIDE.md` |
+
+Also landed for Phase 11: `Load`, `Fold` and `Handoff` animator states driven by `NpcLocomotion.PlayLoad/PlayFold/PlayHandoff`, called from the staff take/load/fold/handoff steps using the existing CC0 `Interact` and `PickUp_Table` takes.
+
+Still open with reasons:
+
+- `LL-B-005`, `LL-F-001`: require a real ticket-board service/API token; the backlog format is unchanged until then.
+- `LL-B-006`: the desktop MCP focus bug lives outside the repository; all capture/focus flows now use process-explicit `game-vision.ps1`, so the repo risk is mitigated.
+- `LL-F-004`, `LL-F-007`: need Unreal Engine 5 hardware/install and a post-1.0 decision.
+- `LL-F-005`: save/load is Phase 14 work.
+- `LL-T-003`, `LL-T-005`: P3 refactors deferred to avoid destabilizing the shared scene tools this late in the branch.
+- `LL-A-001`: first-person hands stay off until a proper hand asset exists (existing decision).
+
 ## Resolved in the 2026-11-02 stabilization pass
 
 | ID | Resolution |

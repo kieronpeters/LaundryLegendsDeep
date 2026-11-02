@@ -1392,3 +1392,64 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 - `LL-B-014`: dryer drum clothes do not tumble (target Phase 12).
 - `LL-B-015`: expansion carpet is a small rug; needs a full-bay bar/casino pattern (target Phase 12).
 - Experimental audit/drum changes preserved on local `phase-9-postapproval-wip`; no code changes in the approved build.
+
+## 2026-11-03 - Phase 9 merged; Phase 10 branch ready
+
+- PR #2 (`phase-9` -> `main`) merged at `1978451`; `main` fast-forwarded.
+- Tag `phase-9-complete` remains on `eb6f5d7`.
+- `phase-10` created from `main` and pushed; phase status ready.
+- Decision 0013 and phase-10 tasks are present. LL-P10-002 (business clock) is the next ready task.
+- Local WIP preserved: `phase-10-wip` (97897a2) and `phase-9-postapproval-wip` (344f942), not merged.
+- Post-approval tickets remain: LL-B-012 (P1), LL-B-013, LL-A-005, LL-B-014, LL-B-015.
+
+## 2026-11-04 - Phases 10-12 combined branch
+
+**Branch:** `phase-10-12` (from `phase-10` / `main` at `3cd96f4`)
+
+**Phase 10 - business operations**
+- Added `BusinessClock`, `ConsumableDefinition`/`ConsumableShelf`/`ConsumableStockService`, `DropOffRack`, `BillingService`, `BusinessPanelView`, `BillsPanelView` and `BusinessSetupTool`.
+- Ten active orders, ten reserved rack slots, three shelves (detergent, fragrance, plastic) at 5/10 starting stock, one unit per purchase, 10 s respawn, 600 s patience.
+- Stock blocks wash/dry/wrap and recovers on restock. Bills: rent 250 + electricity 90 + water 60 every 30 days, 3-day grace, one 10% late fee.
+- Fixed `LaundryStaff.WaitForWork` exiting before assigning the rack slot (the queue stall), and placed the rack in world space so the counter scale no longer spreads the slots across the shop.
+- `U` purchase list and `B` bills menu pause time and release the cursor; `N` skips a day.
+
+**Phase 11 - characters and voice**
+- Phone regular moved to `(6.0, 0, -4.2)` and the disabled legacy pickup component removed.
+- Ambient route now ends at `Waypoint_Waiting (4.3, 0, -4.2)`; the counter waypoint is gone and each leg has a 20 s timeout.
+- Staff dialogue and voice stay removed. `NPC_OrderCustomer` now speaks the male DropOff/Norman clips with subtitles.
+- Audit note: the only staff voice set is female Cori, so the literal "male staff clips" request was adapted to the male DropOff set instead of copying the staff voice.
+
+**Phase 12 - visual art**
+- Generated `WasherDetailed.fbx` (13,300 tris) and `DryerDetailed.fbx` (14,144 tris) in Blender 4.5.15; replaced all eight visuals and converted 100 material slots to URP/Lit.
+- Preserved the FBX 270� X root rotation and added 180� yaw; machines now stand upright with the glass door facing the room.
+- Drum clothes rotate while a cycle runs; the synthetic dark drum face was removed.
+- Full-bay 6x4 m casino-lattice carpet replaces the small rug; it stays gated to the expansion and carpet purchase and is parented inside `ExpansionBay`.
+- Cabinet side art on both faces; Racer Riot poster in the bay; Street Folders poster off the expansion wall; post-unlock doorway verified clear.
+
+**Evidence**
+- EditMode 164/164; PlayMode 61 passed / 0 failed / 2 skipped before the new Phase 12 tests, then `Phase12SceneTests` 3/3.
+- Build 200 MB / 0 errors.
+- Captures: `TestResults/phase12/machine-wall-4.png`, `12-bay-entry.png`, `12-bay-carpet.png`, `12-bay-poster.png`, `12-cabinet-side.png`, `12-secret-door.png`, `12-waiting-area.png`, `menu-u.png`, `menu-b.png`.
+
+**Still open:** authored carry/load/fold/handoff clips, `LL-F-010` per-machine arcade variety (the maze game exists but is not wired to a cabinet), and `LL-A-004` neon/speaker polish.
+
+**Also fixed on this branch:** `LL-B-010` staff now rotates through washers and dryers, and `LL-B-011` duplicate U-menu machine rows now carry a `(#slot)` suffix.
+
+## 2026-11-04 - Open-issue pass
+
+**Branch:** `phase-10-12`
+
+- **LL-F-010:** Puzzle cabinets launch `MazeGame` (maze view with arrows/WASD); fight cabinets keep per-machine opponent names and theme colours. Added `ArcadeGameVarietyTests` (2 tests).
+- **LL-B-002:** idle cabinets generate and show an attract screen and pulse emission instead of staying black; covered by the new test.
+- **LL-F-006:** fight screen gained a parallax skyline, portrait boxes, hit sparks, screen shake and a complete pixel font (the letter V and digits were blank before).
+- **LL-A-002 / LL-A-003:** every cabinet now gets a tinted body, coloured control panel/trim, emissive marquee material and a power-following point light. `ArcadeMarqueeLight` added.
+- **LL-A-004:** neon sign rebuilt from tubes/connectors plus a glow light; speakers gained woofer/tweeter cones.
+- **LL-F-003:** procedural soda and change machines with lit fronts, can grid, coin slot and dispenser.
+- **LL-F-002 / LL-B-004:** posters re-rendered at 1024x1536 with anti-aliased text; added LAUNDRO FIGHTER and SUDS OF FURY and placed them in the back room/bay.
+- **LL-B-008:** business HUD is taller and avoids the order ticket and arcade panel at 1280-1920 widths; new bay/kiosk/cabinet/decor captures.
+- **LL-T-004:** documented the `Time.captureFramerate` wall/game ratio in `TESTING_GUIDE.md`.
+- **Phase 11:** animator gained `Load`, `Fold` and `Handoff` states using the CC0 `Interact`/`PickUp_Table` takes; `NpcLocomotion.PlayLoad/PlayFold/PlayHandoff` are called from the staff take/load/fold/handoff steps.
+
+**Evidence:** EditMode 164/164; PlayMode 68 total, 66 passed, 0 failed, 2 explicit skips; build 212 MB / 0 errors. Captures: `arcade-maze.png`, `arcade-fight-turbo.png`, `12-cabinet-front.png`, `12-vending.png`, `hud-layout.png`.
+
+**Still deferred:** `LL-F-001`/`LL-B-005` (board/API), `LL-B-006` (external MCP focus), `LL-F-004`/`LL-F-007` (Unreal), `LL-F-005` (Phase 14 save), `LL-T-003`/`LL-T-005` (P3 tool refactors), `LL-A-001` (hands).

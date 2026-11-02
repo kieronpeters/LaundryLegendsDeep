@@ -369,6 +369,63 @@ namespace LaundryLegends.Editor
                 "Assets/LaundryLegends/Art/Textures/Posters/spin_cycle_showdown.png",
                 new Vector3(x0 + roomWidth * 0.45f, 1.75f, z0 + 0.11f),
                 Quaternion.Euler(0f, 180f, 0f));
+
+            AddPoster(
+                shell,
+                "Poster_LaundroFighter",
+                "Assets/LaundryLegends/Art/Textures/Posters/laundro_fighter.png",
+                new Vector3(x0 + roomWidth * 0.62f, 1.7f, z0 + 0.11f),
+                Quaternion.Euler(0f, 180f, 0f));
+        }
+
+        /// <summary>
+        /// Adds a double-sided poster quad to one side of an arcade cabinet so the
+        /// machines read as cabinets from every angle. sign -1/+1 picks the side.
+        /// </summary>
+        private static void AddCabinetSideArt(
+            Transform parent,
+            Vector3 position,
+            float yaw,
+            float sign,
+            string name,
+            string texturePath)
+        {
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            if (texture == null)
+            {
+                return;
+            }
+
+            string materialPath = $"Assets/LaundryLegends/Art/Materials/MAT_CabinetSide_{name}.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            Shader lit = Shader.Find("Universal Render Pipeline/Lit");
+            if (material == null)
+            {
+                material = new Material(lit) { name = $"MAT_CabinetSide_{name}" };
+                AssetDatabase.CreateAsset(material, materialPath);
+            }
+            else
+            {
+                material.shader = lit;
+            }
+
+            material.SetTexture("_BaseMap", texture);
+            material.SetColor("_BaseColor", Color.white);
+            material.SetFloat("_Smoothness", 0.2f);
+            material.SetFloat("_Cull", 0f);
+            material.EnableKeyword("_EMISSION");
+            material.SetColor("_EmissionColor", new Color(0.12f, 0.12f, 0.12f));
+            EditorUtility.SetDirty(material);
+
+            var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            quad.name = name;
+            Object.DestroyImmediate(quad.GetComponent<Collider>());
+            quad.transform.SetParent(parent, true);
+            Vector3 side = Quaternion.Euler(0f, yaw, 0f) * Vector3.right * Mathf.Sign(sign);
+            quad.transform.position = position + side * 0.39f + Vector3.up * 1.15f;
+            quad.transform.rotation = Quaternion.LookRotation(-side, Vector3.up);
+            quad.transform.localScale = new Vector3(0.55f, 0.8f, 1f);
+            quad.GetComponent<Renderer>().sharedMaterial = material;
         }
 
         /// <summary>Places an authored poster texture on a wall-facing quad.</summary>
@@ -497,6 +554,86 @@ namespace LaundryLegends.Editor
             material.SetFloat("_Smoothness", 0.03f);
             material.SetFloat("_Metallic", 0f);
             material.mainTextureScale = new Vector2(6f, 6f);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        /// <summary>
+        /// Full-bay carpet for the arcade extension: teal/gold/cyan lattice with
+        /// red accents, deliberately different from the black/red casino carpet.
+        /// </summary>
+        private static Material EnsureArcadeCarpet()
+        {
+            const string folder = "Assets/LaundryLegends/Art/Textures/Environment";
+            const string texturePath = folder + "/arcade_carpet.png";
+            const string materialPath = "Assets/LaundryLegends/Art/Materials/MAT_ArcadeCarpet.mat";
+
+            System.IO.Directory.CreateDirectory(folder);
+            const int size = 128;
+            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            var pixels = new Color32[size * size];
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    int cx = x % 32;
+                    int cy = y % 32;
+                    int manhattan = Mathf.Abs(cx - 16) + Mathf.Abs(cy - 16);
+                    var colour = new Color32(18, 14, 34, 255);
+                    if (manhattan >= 12 && manhattan <= 14)
+                    {
+                        colour = new Color32(206, 164, 64, 255);
+                    }
+
+                    if (manhattan <= 2)
+                    {
+                        colour = new Color32(26, 180, 200, 255);
+                    }
+
+                    if (((cx - 8) * (cx - 8) + (cy - 8) * (cy - 8)) <= 2)
+                    {
+                        colour = new Color32(196, 42, 82, 255);
+                    }
+
+                    if (cx == 0 || cy == 0)
+                    {
+                        colour = new Color32(38, 24, 52, 255);
+                    }
+
+                    pixels[y * size + x] = colour;
+                }
+            }
+
+            texture.SetPixels32(pixels);
+            texture.Apply();
+            System.IO.File.WriteAllBytes(texturePath, texture.EncodeToPNG());
+            AssetDatabase.ImportAsset(texturePath, ImportAssetOptions.ForceUpdate);
+            var importer = AssetImporter.GetAtPath(texturePath) as TextureImporter;
+            if (importer != null)
+            {
+                importer.wrapMode = TextureWrapMode.Repeat;
+                importer.filterMode = FilterMode.Bilinear;
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                importer.SaveAndReimport();
+            }
+
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            Shader lit = Shader.Find("Universal Render Pipeline/Lit");
+            if (material == null)
+            {
+                material = new Material(lit) { name = "MAT_ArcadeCarpet" };
+                AssetDatabase.CreateAsset(material, materialPath);
+            }
+            else
+            {
+                material.shader = lit;
+            }
+
+            material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath));
+            material.SetColor("_BaseColor", Color.white);
+            material.SetFloat("_Smoothness", 0.03f);
+            material.SetFloat("_Metallic", 0f);
+            material.mainTextureScale = new Vector2(6f, 4f);
             EditorUtility.SetDirty(material);
             return material;
         }
@@ -713,6 +850,13 @@ namespace LaundryLegends.Editor
                 new Vector3(cx, 1.7f, southZ + bayDepth - 0.11f),
                 Quaternion.identity);
 
+            AddPoster(
+                bay.transform,
+                "Poster_SudsOfFury",
+                "Assets/LaundryLegends/Art/Textures/Posters/suds_of_fury.png",
+                new Vector3(cx - bayWidth * 0.5f + 0.11f, 1.7f, southZ + bayDepth * 0.5f),
+                Quaternion.Euler(0f, 90f, 0f));
+
             var lightObject = new GameObject("BayLight");
             lightObject.transform.SetParent(bay.transform, false);
             lightObject.transform.position = new Vector3(cx, height - 0.4f, southZ + bayDepth * 0.5f);
@@ -753,13 +897,19 @@ namespace LaundryLegends.Editor
 
             ArcadeMachineDefinition fighter = EnsureMachineDefinition(
                 folder + "/ArcadeMachine_Fighter.asset",
-                "arcade.fighter", "Fighter", 120, 3, 1f);
+                "arcade.fighter", "Fighter", 120, 3, 1f,
+                ArcadeGameKind.Fight, "BULL",
+                new Color(0.38f, 0.78f, 1f), new Color(1f, 0.47f, 0.38f));
             ArcadeMachineDefinition racer = EnsureMachineDefinition(
                 folder + "/ArcadeMachine_Racer.asset",
-                "arcade.racer", "Racer", 250, 5, 1.4f);
+                "arcade.racer", "Racer", 250, 5, 1.4f,
+                ArcadeGameKind.Fight, "TURBO",
+                new Color(1f, 0.84f, 0.22f), new Color(1f, 0.22f, 0.72f));
             ArcadeMachineDefinition puzzle = EnsureMachineDefinition(
                 folder + "/ArcadeMachine_Puzzle.asset",
-                "arcade.puzzle", "Puzzle", 400, 8, 1.8f);
+                "arcade.puzzle", "Puzzle", 400, 8, 1.8f,
+                ArcadeGameKind.Maze, "GLITCH",
+                new Color(0.42f, 1f, 0.52f), new Color(0.72f, 0.4f, 1f));
             service.SetStarterDefinition(fighter);
             service.SetExpansionBay(expansionBay, expansionSeal, 300);
             service.SetUpkeep(120f, 1);
@@ -790,6 +940,11 @@ namespace LaundryLegends.Editor
             }
 
             panel.Configure(service, reputation);
+            ApplyCabinetTheme(starter.gameObject, fighter, service.AttractMode);
+            AddCabinetSideArt(shell, starter.transform.position, 90f, -1f,
+                "SideRacer", "Assets/LaundryLegends/Art/Textures/Posters/racer_riot.png");
+            AddCabinetSideArt(shell, starter.transform.position, 90f, 1f,
+                "SideSpin", "Assets/LaundryLegends/Art/Textures/Posters/spin_cycle_showdown.png");
 
             Material wood = AssetDatabase.LoadAssetAtPath<Material>(
                 "Assets/LaundryLegends/Art/Materials/MAT_CounterWood.mat");
@@ -798,37 +953,37 @@ namespace LaundryLegends.Editor
                 wood = wall;
             }
 
-            Material felt = AssetDatabase.LoadAssetAtPath<Material>(
-                "Assets/LaundryLegends/Art/Materials/MAT_CasinoFelt.mat");
-            if (felt == null)
-            {
-                felt = wall;
-            }
+            Material arcadeCarpet = EnsureArcadeCarpet();
 
             Material neon = EnsureEmissiveMaterial(
                 "Assets/LaundryLegends/Art/Materials/MAT_ArcadeNeon.mat",
                 new Color(0.08f, 0.8f, 1f),
                 3f);
 
-            GameObject neonDecor = CreateDecorObject(
-                shell, "Decor_NeonSign",
-                new Vector3(x0 + roomWidth - 0.35f, 2.35f, doorZ),
-                new Vector3(0.08f, 0.35f, 1.4f), neon, Quaternion.identity);
+            GameObject neonDecor = BuildNeonSign(
+                shell, new Vector3(x0 + roomWidth - 0.35f, 2.35f, doorZ), neon,
+                new Color(0.08f, 0.8f, 1f));
 
             var speakersRoot = new GameObject("Decor_Speakers");
             speakersRoot.transform.SetParent(shell, false);
             speakersRoot.SetActive(false);
-            CreateDecorObject(speakersRoot.transform, "SpeakerWest",
-                new Vector3(x0 + roomWidth * 0.18f, 2.1f, z0 + 0.18f),
-                new Vector3(0.3f, 0.5f, 0.25f), wood, Quaternion.identity);
-            CreateDecorObject(speakersRoot.transform, "SpeakerEast",
-                new Vector3(x0 + roomWidth * 0.23f, 2.1f, z0 + 0.18f),
-                new Vector3(0.3f, 0.5f, 0.25f), wood, Quaternion.identity);
+            BuildSpeaker(speakersRoot.transform, "SpeakerWest",
+                new Vector3(x0 + roomWidth * 0.18f, 2.1f, z0 + 0.18f), wood);
+            BuildSpeaker(speakersRoot.transform, "SpeakerEast",
+                new Vector3(x0 + roomWidth * 0.23f, 2.1f, z0 + 0.18f), wood);
 
+            BuildVendingMachine(shell, "Vending_Soda",
+                new Vector3(x0 + 0.45f, 0f, z0 + 1.4f), 90f,
+                new Color(0.95f, 0.22f, 0.28f));
+            BuildVendingMachine(shell, "Vending_Change",
+                new Vector3(x0 + 0.45f, 0f, z0 + 2.3f), 90f,
+                new Color(0.2f, 0.85f, 0.45f));
+
+            float carpetWidth = Mathf.Max(3.2f, Mathf.Min(6f, roomWidth - 1f));
             GameObject rugDecor = CreateDecorObject(
-                expansionBay.transform, "Decor_ArcadeRug",
-                new Vector3(x0 + roomWidth * 0.5f, 0.03f, z0 + roomDepth + 2f),
-                new Vector3(2.6f, 0.05f, 1.6f), felt, Quaternion.identity);
+                expansionBay.transform, "Decor_ArcadeCarpet",
+                new Vector3(x0 + roomWidth * 0.5f, 0.035f, z0 + roomDepth + 2f),
+                new Vector3(carpetWidth, 0.04f, 4f), arcadeCarpet, Quaternion.identity);
 
             float southZ = z0 + roomDepth;
             float cx = x0 + roomWidth * 0.5f;
@@ -878,7 +1033,11 @@ namespace LaundryLegends.Editor
             string displayName,
             int cost,
             int baseIncome,
-            float attractWeight)
+            float attractWeight,
+            ArcadeGameKind gameKind,
+            string opponentName,
+            Color accentColor,
+            Color opponentColor)
         {
             var definition = AssetDatabase.LoadAssetAtPath<ArcadeMachineDefinition>(path);
             if (definition == null)
@@ -888,6 +1047,7 @@ namespace LaundryLegends.Editor
             }
 
             definition.Configure(id, displayName, cost, baseIncome, attractWeight);
+            definition.ConfigureGame(gameKind, opponentName, accentColor, opponentColor);
             EditorUtility.SetDirty(definition);
             return definition;
         }
@@ -912,6 +1072,406 @@ namespace LaundryLegends.Editor
             material.SetFloat("_Smoothness", 0.2f);
             EditorUtility.SetDirty(material);
             return material;
+        }
+
+        /// <summary>
+        /// Neon sign: dark backing plate, three emissive tubes, two connectors and a
+        /// soft point light. Root starts inactive until the kiosk is bought.
+        /// </summary>
+        private static GameObject BuildNeonSign(
+            Transform parent,
+            Vector3 position,
+            Material neon,
+            Color glow)
+        {
+            var root = new GameObject("Decor_NeonSign");
+            root.transform.SetParent(parent, false);
+            root.transform.position = position;
+
+            Material backing = EnsureTintedMaterial(
+                "Assets/LaundryLegends/Art/Materials/MAT_ArcadeSignBacking.mat",
+                "MAT_ArcadeSignBacking",
+                new Color(0.06f, 0.07f, 0.1f), 0.2f, 0.15f);
+
+            AddDecoBox(root.transform, "Backing", Vector3.zero,
+                new Vector3(0.06f, 0.5f, 1.5f), backing);
+            for (int i = -1; i <= 1; i++)
+            {
+                AddDecoBox(root.transform, $"Tube_{i + 1}", new Vector3(-0.055f, i * 0.13f, 0f),
+                    new Vector3(0.05f, 0.05f, 1.32f), neon);
+            }
+
+            AddDecoBox(root.transform, "TubeConnectorA", new Vector3(-0.055f, 0f, -0.6f),
+                new Vector3(0.05f, 0.3f, 0.05f), neon);
+            AddDecoBox(root.transform, "TubeConnectorB", new Vector3(-0.055f, 0f, 0.6f),
+                new Vector3(0.05f, 0.3f, 0.05f), neon);
+
+            var lightObject = new GameObject("NeonGlow");
+            lightObject.transform.SetParent(root.transform, false);
+            lightObject.transform.localPosition = new Vector3(-0.25f, 0f, 0f);
+            Light light = lightObject.AddComponent<Light>();
+            light.type = LightType.Point;
+            light.color = glow;
+            light.range = 3.2f;
+            light.intensity = 1.4f;
+
+            root.SetActive(false);
+            return root;
+        }
+
+        /// <summary>Speaker cabinet with a woofer and tweeter facing into the room.</summary>
+        private static void BuildSpeaker(Transform parent, string name, Vector3 position, Material bodyMaterial)
+        {
+            var root = new GameObject(name);
+            root.transform.SetParent(parent, false);
+            root.transform.position = position;
+
+            AddDecoBox(root.transform, "Body", Vector3.zero,
+                new Vector3(0.34f, 0.56f, 0.3f), bodyMaterial);
+
+            Material cone = EnsureTintedMaterial(
+                "Assets/LaundryLegends/Art/Materials/MAT_SpeakerCone.mat",
+                "MAT_SpeakerCone", new Color(0.07f, 0.08f, 0.1f), 0.15f, 0f);
+            Material rim = EnsureTintedMaterial(
+                "Assets/LaundryLegends/Art/Materials/MAT_SpeakerRim.mat",
+                "MAT_SpeakerRim", new Color(0.62f, 0.66f, 0.72f), 0.75f, 0.85f);
+
+            AddDecoDisc(root.transform, "WooferRim", new Vector3(0f, -0.09f, 0.152f),
+                0.14f, 0.02f, rim);
+            AddDecoDisc(root.transform, "Woofer", new Vector3(0f, -0.09f, 0.165f),
+                0.11f, 0.02f, cone);
+            AddDecoDisc(root.transform, "TweeterRim", new Vector3(0f, 0.17f, 0.152f),
+                0.065f, 0.02f, rim);
+            AddDecoDisc(root.transform, "Tweeter", new Vector3(0f, 0.17f, 0.165f),
+                0.048f, 0.02f, cone);
+        }
+
+        /// <summary>
+        /// Soda/change machine: dark cabinet, lit front panel, a grid of cans and a
+        /// coin/dispenser column. Procedural so it ships without a new FBX.
+        /// </summary>
+        private static void BuildVendingMachine(
+            Transform parent,
+            string name,
+            Vector3 floorPosition,
+            float yaw,
+            Color accent)
+        {
+            var root = new GameObject(name);
+            root.transform.SetParent(parent, false);
+            root.transform.position = floorPosition;
+            root.transform.rotation = Quaternion.Euler(0f, yaw, 0f);
+
+            Material shellMaterial = EnsureTintedMaterial(
+                "Assets/LaundryLegends/Art/Materials/MAT_VendingShell.mat",
+                "MAT_VendingShell", new Color(0.09f, 0.1f, 0.13f), 0.4f, 0.3f);
+            Material panel = EnsureEmissiveMaterial(
+                $"Assets/LaundryLegends/Art/Materials/MAT_VendingPanel_{name}.mat",
+                accent, 1.6f);
+            Material metal = EnsureTintedMaterial(
+                "Assets/LaundryLegends/Art/Materials/MAT_VendingMetal.mat",
+                "MAT_VendingMetal", new Color(0.62f, 0.66f, 0.72f), 0.75f, 0.85f);
+
+            AddDecoBox(root.transform, "Body", new Vector3(0f, 0.95f, 0f),
+                new Vector3(0.8f, 1.9f, 0.7f), shellMaterial);
+            AddDecoBox(root.transform, "FrontPanel", new Vector3(0f, 1.38f, 0.365f),
+                new Vector3(0.64f, 0.68f, 0.03f), panel);
+            AddDecoBox(root.transform, "CoinPlate", new Vector3(0.26f, 0.8f, 0.37f),
+                new Vector3(0.14f, 0.24f, 0.03f), metal);
+            AddDecoBox(root.transform, "CoinSlot", new Vector3(0.26f, 0.84f, 0.39f),
+                new Vector3(0.02f, 0.12f, 0.01f), shellMaterial);
+            AddDecoBox(root.transform, "Dispenser", new Vector3(0f, 0.42f, 0.37f),
+                new Vector3(0.44f, 0.2f, 0.03f), metal);
+
+            Color[] canColors =
+            {
+                new Color(0.92f, 0.24f, 0.22f),
+                new Color(0.24f, 0.62f, 0.95f),
+                new Color(0.95f, 0.78f, 0.2f),
+                new Color(0.32f, 0.85f, 0.42f)
+            };
+            for (int row = 0; row < 3; row++)
+            {
+                for (int column = 0; column < 4; column++)
+                {
+                    Material can = EnsureTintedMaterial(
+                        $"Assets/LaundryLegends/Art/Materials/MAT_VendingCan_{row}_{column}.mat",
+                        $"MAT_VendingCan_{row}_{column}",
+                        canColors[(row + column) % canColors.Length], 0.6f, 0.4f);
+                    AddDecoDisc(root.transform, $"Can_{row}_{column}",
+                        new Vector3(-0.22f + column * 0.15f, 1.15f + row * 0.17f, 0.385f),
+                        0.045f, 0.06f, can);
+                }
+            }
+        }
+
+        private static void AddDecoBox(Transform parent, string name, Vector3 localPosition, Vector3 size, Material material)
+        {
+            GameObject box = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            box.name = name;
+            box.transform.SetParent(parent, false);
+            box.transform.localPosition = localPosition;
+            box.transform.localScale = size;
+            Object.DestroyImmediate(box.GetComponent<Collider>());
+            box.GetComponent<Renderer>().sharedMaterial = material;
+        }
+
+        private static void AddDecoDisc(
+            Transform parent,
+            string name,
+            Vector3 localPosition,
+            float radius,
+            float depth,
+            Material material)
+        {
+            GameObject disc = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            disc.name = name;
+            disc.transform.SetParent(parent, false);
+            disc.transform.localPosition = localPosition;
+            disc.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            disc.transform.localScale = new Vector3(radius * 2f, depth * 0.5f, radius * 2f);
+            Object.DestroyImmediate(disc.GetComponent<Collider>());
+            disc.GetComponent<Renderer>().sharedMaterial = material;
+        }
+
+        /// <summary>
+        /// Gives a cabinet a per-machine body tint, marquee texture and glowing
+        /// sign light so the three catalogue entries read apart at a glance.
+        /// </summary>
+        private static void ApplyCabinetTheme(
+            GameObject cabinet,
+            ArcadeMachineDefinition definition,
+            ArcadeAttractMode attract = null)
+        {
+            if (cabinet == null || definition == null)
+            {
+                return;
+            }
+
+            string id = definition.Id.Replace("arcade.", string.Empty);
+            Renderer body = FindRendererByName(cabinet.transform, "CabinetBody");
+            if (body != null)
+            {
+                Material tint = EnsureTintedMaterial(
+                    $"Assets/LaundryLegends/Art/Materials/MAT_CabinetBody_{id}.mat",
+                    $"MAT_CabinetBody_{id}",
+                    Color.Lerp(new Color(0.1f, 0.11f, 0.14f), definition.AccentColor, 0.35f),
+                    0.35f, 0.2f);
+                Material panel = EnsureEmissiveMaterial(
+                    $"Assets/LaundryLegends/Art/Materials/MAT_CabinetPanel_{id}.mat",
+                    definition.AccentColor, 0.9f);
+                Material trim = EnsureEmissiveMaterial(
+                    $"Assets/LaundryLegends/Art/Materials/MAT_CabinetTrim_{id}.mat",
+                    Color.Lerp(definition.OpponentColor, Color.white, 0.2f), 0.6f);
+
+                Material[] materials = body.sharedMaterials;
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    if (materials[i] == null)
+                    {
+                        continue;
+                    }
+
+                    string materialName = materials[i].name;
+                    if (materialName.IndexOf("CabinetBody", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        materials[i] = tint;
+                    }
+                    else if (materialName.IndexOf("ControlPanel", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        materials[i] = panel;
+                    }
+                    else if (materialName.IndexOf("CabinetTrim", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        materials[i] = trim;
+                    }
+                }
+
+                body.sharedMaterials = materials;
+            }
+
+            Renderer marquee = FindRendererByName(cabinet.transform, "MarqueePanel");
+            if (marquee != null)
+            {
+                marquee.sharedMaterial = EnsureMarqueeMaterial(id, definition);
+            }
+
+            Transform existing = cabinet.transform.Find("MarqueeLight");
+            GameObject lightObject = existing != null ? existing.gameObject : new GameObject("MarqueeLight");
+            lightObject.transform.SetParent(cabinet.transform, false);
+            Bounds bounds = marquee != null
+                ? marquee.bounds
+                : new Bounds(cabinet.transform.position + Vector3.up * 1.6f, Vector3.one * 0.4f);
+            lightObject.transform.position = bounds.center + cabinet.transform.forward * 0.3f;
+
+            Light light = lightObject.GetComponent<Light>();
+            if (light == null)
+            {
+                light = lightObject.AddComponent<Light>();
+            }
+
+            light.type = LightType.Point;
+            light.color = definition.AccentColor;
+            light.range = 1.8f;
+            light.intensity = 0.9f;
+
+            ArcadeMarqueeLight marqueeLight = cabinet.GetComponent<ArcadeMarqueeLight>();
+            if (marqueeLight == null)
+            {
+                marqueeLight = cabinet.AddComponent<ArcadeMarqueeLight>();
+            }
+
+            marqueeLight.Configure(light, attract != null ? attract : cabinet.GetComponent<ArcadeAttractMode>());
+        }
+
+        private static Material EnsureMarqueeMaterial(string id, ArcadeMachineDefinition definition)
+        {
+            const string textureFolder = "Assets/LaundryLegends/Art/Textures/Arcade";
+            const string materialFolder = "Assets/LaundryLegends/Art/Materials";
+            System.IO.Directory.CreateDirectory(textureFolder);
+            string texturePath = $"{textureFolder}/marquee_{id}.png";
+            string materialPath = $"{materialFolder}/MAT_Marquee_{id}.mat";
+
+            Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            if (texture == null)
+            {
+                texture = BuildMarqueeTexture(definition);
+                System.IO.File.WriteAllBytes(texturePath, texture.EncodeToPNG());
+                Object.DestroyImmediate(texture);
+                AssetDatabase.ImportAsset(texturePath, ImportAssetOptions.ForceUpdate);
+                var importer = AssetImporter.GetAtPath(texturePath) as TextureImporter;
+                if (importer != null)
+                {
+                    importer.textureCompression = TextureImporterCompression.Uncompressed;
+                    importer.filterMode = FilterMode.Point;
+                    importer.wrapMode = TextureWrapMode.Clamp;
+                    importer.SaveAndReimport();
+                }
+
+                texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            }
+
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            Shader lit = Shader.Find("Universal Render Pipeline/Lit");
+            if (material == null)
+            {
+                material = new Material(lit) { name = $"MAT_Marquee_{id}" };
+                AssetDatabase.CreateAsset(material, materialPath);
+            }
+            else
+            {
+                material.shader = lit;
+            }
+
+            material.SetTexture("_BaseMap", texture);
+            material.SetColor("_BaseColor", definition.AccentColor);
+            material.SetFloat("_Smoothness", 0.45f);
+            material.SetFloat("_Metallic", 0f);
+            material.EnableKeyword("_EMISSION");
+            material.SetColor("_EmissionColor", definition.AccentColor * 1.6f);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Texture2D BuildMarqueeTexture(ArcadeMachineDefinition definition)
+        {
+            const int width = 256;
+            const int height = 64;
+            var texture = new Texture2D(width, height, TextureFormat.RGBA32, false)
+            {
+                name = $"marquee_{definition.Id}"
+            };
+
+            Color32 accent = definition.AccentColor;
+            Color32 second = definition.OpponentColor;
+            bool maze = definition.GameKind == ArcadeGameKind.Maze;
+            bool racer = definition.Id.IndexOf("racer", System.StringComparison.OrdinalIgnoreCase) >= 0;
+
+            var pixels = new Color32[width * height];
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    var color = new Color32(8, 9, 18, 255);
+                    if (maze)
+                    {
+                        if (x % 16 < 4 && y % 16 < 4)
+                        {
+                            color = accent;
+                        }
+                    }
+                    else if (racer)
+                    {
+                        int chevron = Mathf.Abs((x + (y / 8) * 8) % 32 - 16);
+                        if (chevron < 4)
+                        {
+                            color = accent;
+                        }
+                        else if (chevron < 8)
+                        {
+                            color = second;
+                        }
+                    }
+                    else if (((x / 16) + (y / 16)) % 2 == 0)
+                    {
+                        color = accent;
+                    }
+
+                    if (x < 3 || x >= width - 3 || y < 3 || y >= height - 3)
+                    {
+                        color = new Color32(
+                            (byte)(accent.r * 0.5f),
+                            (byte)(accent.g * 0.5f),
+                            (byte)(accent.b * 0.5f),
+                            255);
+                    }
+
+                    pixels[y * width + x] = color;
+                }
+            }
+
+            texture.SetPixels32(pixels);
+            texture.Apply(false);
+            return texture;
+        }
+
+        private static Material EnsureTintedMaterial(
+            string path,
+            string name,
+            Color color,
+            float smoothness,
+            float metallic)
+        {
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            Shader lit = Shader.Find("Universal Render Pipeline/Lit");
+            if (material == null)
+            {
+                material = new Material(lit) { name = name };
+                AssetDatabase.CreateAsset(material, path);
+            }
+            else
+            {
+                material.shader = lit;
+            }
+
+            material.SetColor("_BaseColor", color);
+            material.SetFloat("_Smoothness", smoothness);
+            material.SetFloat("_Metallic", metallic);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Renderer FindRendererByName(Transform root, string name)
+        {
+            foreach (Renderer renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer.gameObject.name == name)
+                {
+                    return renderer;
+                }
+            }
+
+            return null;
         }
 
         private static GameObject CreateDecorObject(
@@ -1046,10 +1606,15 @@ namespace LaundryLegends.Editor
             }
 
             attract.Configure(screen, audio);
+            ApplyCabinetTheme(cabinetObject, definition, attract);
             cabinetObject.SetActive(false);
 
             service.AddSlot(anchor.transform, install, definition, cabinetObject, attract);
             install.SetActive(false);
+            AddCabinetSideArt(parent, cabinetObject.transform.position, yaw, -1f,
+                $"SideRacer_{label}", "Assets/LaundryLegends/Art/Textures/Posters/racer_riot.png");
+            AddCabinetSideArt(parent, cabinetObject.transform.position, yaw, 1f,
+                $"SideSpin_{label}", "Assets/LaundryLegends/Art/Textures/Posters/spin_cycle_showdown.png");
         }
 
         private static GameObject CreateBox(Transform parent, string name, Vector3 centre, Vector3 size, Material material)

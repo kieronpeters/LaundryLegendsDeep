@@ -19,3 +19,7 @@ MonoBehaviour:
   _attractWeight: 1.4
   _footprint: {x: 0.9, y: 0.9}
   _prefab: {fileID: 0}
+  _gameKind: 0
+  _opponentName: TURBO
+  _accentColor: {r: 1, g: 0.84, b: 0.22, a: 1}
+  _opponentColor: {r: 1, g: 0.22, b: 0.72, a: 1}

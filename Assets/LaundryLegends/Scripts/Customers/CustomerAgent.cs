@@ -33,7 +33,7 @@ namespace LaundryLegends.Customers
         [SerializeField] private int _price = 40;
 
         [Tooltip("Seconds a customer waits for the laundry before giving up. A full wash/dry/fold cycle takes about 75 s, so this leaves room for a player using the same machines.")]
-        [SerializeField] private float _patienceSeconds = 180f;
+        [SerializeField] private float _patienceSeconds = 600f;
 
         [Tooltip("One walk leg may not run longer than this. A blocked path skips the leg instead of freezing the order loop.")]
         [SerializeField] private float _walkTimeoutSeconds = 40f;
@@ -71,6 +71,9 @@ namespace LaundryLegends.Customers
         public LaundryOrder Order => _order;
 
         public LaundryItem Item => _item;
+
+        /// <summary>The counter slot assigned to this customer for drop-off and pickup.</summary>
+        public CarrySlot OrderSlot => _orderSlot;
 
         public event Action<CustomerAgent, CustomerState> StateEntered;
 

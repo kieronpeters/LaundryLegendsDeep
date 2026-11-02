@@ -1,3 +1,4 @@
+using LaundryLegends.Business;
 using LaundryLegends.Interaction;
 using LaundryLegends.Player;
 using UnityEngine;
@@ -12,6 +13,7 @@ namespace LaundryLegends.Laundry
     public sealed class FoldingStation : MonoBehaviour, IInteractable
     {
         [SerializeField] private CarrySlot _slot;
+        [SerializeField] private ConsumableStockService _stock;
 
         public LaundryItem ReadyItem => _slot != null ? _slot.Occupant : null;
         public bool IsReady => ReadyItem != null && ReadyItem.Stage == LaundryStage.Wrapped;
@@ -29,10 +31,28 @@ namespace LaundryLegends.Laundry
             _slot = slot;
         }
 
+        public void SetStockService(ConsumableStockService stock)
+        {
+            _stock = stock;
+        }
+
+        private void Awake()
+        {
+            if (_stock == null)
+            {
+                _stock = FindFirstObjectByType<ConsumableStockService>();
+            }
+        }
+
         /// <summary>Staff path: wrap a dried item and leave it for pickup.</summary>
         public bool WrapItem(LaundryItem item)
         {
             if (item == null || item.Stage != LaundryStage.Dried || _slot == null || !_slot.IsEmpty)
+            {
+                return false;
+            }
+
+            if (!TryConsumePlastic())
             {
                 return false;
             }
@@ -74,6 +94,11 @@ namespace LaundryLegends.Laundry
                 return;
             }
 
+            if (!TryConsumePlastic())
+            {
+                return;
+            }
+
             if (!carry.TryPlaceInto(_slot))
             {
                 LastResult = "Table is occupied";
@@ -83,6 +108,22 @@ namespace LaundryLegends.Laundry
             item.SetStage(LaundryStage.Wrapped);
             LastResult = "Folded and wrapped";
             Debug.Log($"[Folding] {LastResult}.");
+        }
+
+        private bool TryConsumePlastic()
+        {
+            if (_stock == null)
+            {
+                return true;
+            }
+
+            if (_stock.TryConsume(ConsumableType.Plastic))
+            {
+                return true;
+            }
+
+            LastResult = $"Out of {_stock.DisplayName(ConsumableType.Plastic)}";
+            return false;
         }
     }
 }

@@ -64,6 +64,13 @@ Use for interaction, machine cycles, order flow, customer flow, and scene smoke 
 
 **Batch-mode timing:** batch PlayMode runs at an uncapped frame rate. A fixed frame count is not a fixed duration. Tests that need movement or elapsed time should accumulate `Time.deltaTime` (for example, a `while (elapsed < 0.1f)` loop) instead of assuming 60 frames per second.
 
+**`Time.captureFramerate` ratio (LL-T-004):** `TwoOrderPlayModeTests` sets `Time.captureFramerate = 60`, so every rendered frame advances game time by exactly `1/60 s` regardless of how long the frame took on the wall clock. In batch mode the frames render as fast as the machine allows, so game time runs roughly `60 x actual FPS` times faster than wall time - on the development machine that is often 10-40x. Consequences:
+
+- A `[Timeout]` attribute is wall-clock seconds; size it from the *wall* cost of the game seconds you simulate, not from the game length.
+- Wait on `Time.deltaTime` accumulation (game seconds), never on frame counts or `WaitForSecondsRealtime`.
+- Reset `Time.captureFramerate = 0` in teardown so later tests in the same run are not accelerated.
+- Capture/screenshot tests should not assume a stable wall-to-game ratio; drive them by explicit ticks.
+
 ### Current suites (2026-10-31)
 
 | Suite | Tests | Coverage |

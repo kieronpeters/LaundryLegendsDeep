@@ -21,8 +21,41 @@ namespace LaundryLegends.Arcade
         [SerializeField] private string _prompt = "Play arcade";
 
         private FightSession _session;
+        private MazeGame _maze;
+        private MazeGameView _mazeView;
+        private float _mazeOverSeconds;
+        [SerializeField] private ArcadeGameKind _gameKind = ArcadeGameKind.Fight;
+        [SerializeField] private string _opponentName = "BULL";
+        [SerializeField] private Color _accentColor = new Color(0.38f, 0.78f, 1f);
+        [SerializeField] private Color _opponentColor = new Color(1f, 0.47f, 0.38f);
 
-        public bool IsPlaying => _session != null;
+        public bool IsPlaying => _session != null || _maze != null;
+
+        /// <summary>Which minigame this cabinet launches.</summary>
+        public ArcadeGameKind GameKind => _gameKind;
+
+        /// <summary>Active maze session, or null for fight cabinets.</summary>
+        public MazeGame Maze => _maze;
+
+        /// <summary>Opponent name shown on a fight cabinet.</summary>
+        public string OpponentName => _opponentName;
+
+        /// <summary>Applies the machine definition's game kind, names and colours.</summary>
+        public void ConfigureGame(
+            ArcadeGameKind gameKind,
+            string opponentName,
+            Color accentColor,
+            Color opponentColor)
+        {
+            _gameKind = gameKind;
+            _opponentName = string.IsNullOrWhiteSpace(opponentName) ? "BULL" : opponentName;
+            _accentColor = accentColor;
+            _opponentColor = opponentColor;
+            if (_view != null)
+            {
+                _view.SetTheme(accentColor, opponentColor);
+            }
+        }
 
         /// <summary>Which service slot powers this cabinet. Slot 0 is the original machine.</summary>
         public int SlotIndex => _slotIndex;
@@ -103,13 +136,31 @@ namespace LaundryLegends.Arcade
             }
 
             PlaysStarted += 1;
+
+            if (_gameKind == ArcadeGameKind.Maze)
+            {
+                _maze = new MazeGame(new MazeLayout());
+                _mazeOverSeconds = 0f;
+                MazeGameView view = EnsureMazeView();
+                if (view != null)
+                {
+                    view.Fullscreen = true;
+                    view.Show(_maze);
+                }
+
+                ArcadeMode.Enter();
+                return true;
+            }
+
             _session = new FightSession();
+            _session.SetNames("CIVIC", _opponentName);
 
             // Arcade Paradise flow: one interaction drops you into the game. The
             // cabinet's PLAY/QUIT menu is skipped; Esc leaves the cabinet.
             _session.Confirm();
             if (_view != null)
             {
+                _view.SetTheme(_accentColor, _opponentColor);
                 _view.Fullscreen = true;
                 _view.Show(_session);
             }
@@ -122,17 +173,53 @@ namespace LaundryLegends.Arcade
         public void Stop()
         {
             _session = null;
+            _maze = null;
+            _mazeOverSeconds = 0f;
             if (_view != null)
             {
                 _view.Fullscreen = false;
                 _view.Hide();
             }
 
+            if (_mazeView != null)
+            {
+                _mazeView.Fullscreen = false;
+                _mazeView.Hide();
+            }
+
             ArcadeMode.Exit();
+        }
+
+        private MazeGameView EnsureMazeView()
+        {
+            if (_mazeView != null)
+            {
+                return _mazeView;
+            }
+
+            _mazeView = GetComponent<MazeGameView>();
+            if (_mazeView == null)
+            {
+                _mazeView = gameObject.AddComponent<MazeGameView>();
+            }
+
+            Renderer screen = _view != null ? _view.Screen : null;
+            if (screen != null)
+            {
+                _mazeView.Configure(screen);
+            }
+
+            return _mazeView;
         }
 
         private void Update()
         {
+            if (_maze != null)
+            {
+                UpdateMaze();
+                return;
+            }
+
             if (_session == null)
             {
                 return;
@@ -158,6 +245,52 @@ namespace LaundryLegends.Arcade
             }
 
             HandleInput(_session);
+        }
+
+        private void UpdateMaze()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Q))
+            {
+                Stop();
+                return;
+            }
+
+            Vector2Int direction = Vector2Int.zero;
+            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                direction = Vector2Int.left;
+            }
+            else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                direction = Vector2Int.right;
+            }
+            else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                direction = Vector2Int.up;
+            }
+            else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                direction = Vector2Int.down;
+            }
+
+            if (direction != Vector2Int.zero)
+            {
+                _maze.TryMovePlayer(direction);
+            }
+
+            _maze.Tick(Time.deltaTime);
+
+            if (!_maze.IsOver)
+            {
+                _mazeOverSeconds = 0f;
+                return;
+            }
+
+            _mazeOverSeconds += Time.deltaTime;
+            if (_mazeOverSeconds >= 3f)
+            {
+                Stop();
+            }
         }
 
         private static void HandleInput(FightSession session)

@@ -3,6 +3,13 @@ using UnityEngine;
 
 namespace LaundryLegends.Arcade
 {
+    /// <summary>Which minigame a cabinet launches.</summary>
+    public enum ArcadeGameKind
+    {
+        Fight,
+        Maze
+    }
+
     /// <summary>
     /// One purchasable arcade machine. Definitions are data only; the service
     /// owns the slots, money and scene instances.
@@ -17,6 +24,10 @@ namespace LaundryLegends.Arcade
         [SerializeField, Min(0.1f)] private float _attractWeight = 1f;
         [SerializeField] private Vector2 _footprint = new Vector2(0.9f, 0.9f);
         [SerializeField] private GameObject _prefab;
+        [SerializeField] private ArcadeGameKind _gameKind = ArcadeGameKind.Fight;
+        [SerializeField] private string _opponentName = "BULL";
+        [SerializeField] private Color _accentColor = new Color(0.38f, 0.78f, 1f);
+        [SerializeField] private Color _opponentColor = new Color(1f, 0.47f, 0.38f);
 
         public string Id => _id;
         public string DisplayName => _displayName;
@@ -24,6 +35,10 @@ namespace LaundryLegends.Arcade
         public int BaseVisitIncome => _baseVisitIncome;
         public float AttractWeight => _attractWeight;
         public Vector2 Footprint => _footprint;
+        public ArcadeGameKind GameKind => _gameKind;
+        public string OpponentName => _opponentName;
+        public Color AccentColor => _accentColor;
+        public Color OpponentColor => _opponentColor;
 
         /// <summary>Optional cabinet visual. When null the slot uses its authored cabinet.</summary>
         public GameObject Prefab => _prefab;
@@ -47,6 +62,19 @@ namespace LaundryLegends.Arcade
             _baseVisitIncome = Mathf.Max(1, baseVisitIncome);
             _attractWeight = Mathf.Max(0.1f, attractWeight);
             _prefab = prefab;
+        }
+
+        /// <summary>Sets what the cabinet plays and how its screen is themed.</summary>
+        public void ConfigureGame(
+            ArcadeGameKind gameKind,
+            string opponentName,
+            Color accentColor,
+            Color opponentColor)
+        {
+            _gameKind = gameKind;
+            _opponentName = string.IsNullOrWhiteSpace(opponentName) ? "BULL" : opponentName;
+            _accentColor = accentColor;
+            _opponentColor = opponentColor;
         }
 
         /// <summary>Placeholder balance used when the scene has no authored assets.</summary>

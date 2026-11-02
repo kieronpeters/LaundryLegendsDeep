@@ -6,10 +6,14 @@ New-Item -ItemType Directory -Path $outDir -Force | Out-Null
 
 $W = 512
 $H = 768
+$Scale = 2
+$BitmapW = $W * $Scale
+$BitmapH = $H * $Scale
 
 function New-Canvas {
-    $bmp = New-Object System.Drawing.Bitmap $W, $H
+    $bmp = New-Object System.Drawing.Bitmap $BitmapW, $BitmapH
     $g = [System.Drawing.Graphics]::FromImage($bmp)
+    $g.ScaleTransform($Scale, $Scale)
     $g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
     $g.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAlias
     return @($bmp, $g)
@@ -176,4 +180,51 @@ Draw-Border $g
 $bmp.Save((Join-Path $outDir 'racer_riot.png'), [System.Drawing.Imaging.ImageFormat]::Png)
 $g.Dispose(); $bmp.Dispose()
 
-"posters written to $outDir"
+# ---------------- Poster 4: LAUNDRO FIGHTER ----------------
+$bmp, $g = New-Canvas
+$rect = New-Object System.Drawing.Rectangle 0, 0, $W, $H
+$grad = New-Object System.Drawing.Drawing2D.LinearGradientBrush $rect, ([System.Drawing.Color]::FromArgb(255, 8, 18, 46)), ([System.Drawing.Color]::FromArgb(255, 22, 60, 120)), 90
+$g.FillRectangle($grad, $rect)
+$grad.Dispose()
+Draw-Sunburst $g 256 360 ([System.Drawing.Color]::FromArgb(80, 90, 190, 255))
+Draw-Fighter $g 160 560 1.2 ([System.Drawing.Color]::FromArgb(255, 40, 90, 190))
+Draw-Fighter $g 360 560 1.2 ([System.Drawing.Color]::FromArgb(255, 210, 170, 40))
+$band = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(215, 8, 10, 24))
+$g.FillRectangle($band, 0, 40, $W, 240)
+$band.Dispose()
+Draw-OutlinedText $g 'LAUNDRO' (New-Object System.Drawing.Font 'Impact', 66) 46 ([System.Drawing.Color]::FromArgb(255, 255, 210, 60))
+Draw-OutlinedText $g 'FIGHTER' (New-Object System.Drawing.Font 'Impact', 66) 116 ([System.Drawing.Color]::FromArgb(255, 255, 210, 60))
+Draw-OutlinedText $g 'FOLD OR BE FOLDED' ([System.Drawing.Font]::new('Arial', 22, [System.Drawing.FontStyle]::Bold, [System.Drawing.GraphicsUnit]::Pixel)) 640 ([System.Drawing.Color]::FromArgb(255, 120, 220, 255))
+Draw-OutlinedText $g 'INSERT COIN' (New-Object System.Drawing.Font 'Arial', 18) 700 ([System.Drawing.Color]::FromArgb(255, 220, 220, 220))
+Draw-Border $g
+$bmp.Save((Join-Path $outDir 'laundro_fighter.png'), [System.Drawing.Imaging.ImageFormat]::Png)
+$g.Dispose(); $bmp.Dispose()
+
+# ---------------- Poster 5: SUDS OF FURY ----------------
+$bmp, $g = New-Canvas
+$rect = New-Object System.Drawing.Rectangle 0, 0, $W, $H
+$grad = New-Object System.Drawing.Drawing2D.LinearGradientBrush $rect, ([System.Drawing.Color]::FromArgb(255, 30, 8, 48)), ([System.Drawing.Color]::FromArgb(255, 10, 70, 90)), 90
+$g.FillRectangle($grad, $rect)
+$grad.Dispose()
+$bubble = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(80, 160, 255, 240))
+foreach ($b in @(@(90,300,90),@(430,260,60),@(390,540,110),@(120,590,70),@(470,640,40),@(60,470,45))) {
+    $g.FillEllipse($bubble, ($b[0]-$b[2]/2), ($b[1]-$b[2]/2), $b[2], $b[2])
+}
+$bubble.Dispose()
+Draw-Fighter $g 256 600 1.3 ([System.Drawing.Color]::FromArgb(255, 200, 40, 120))
+$basket = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 220, 210, 240))
+$g.FillRectangle($basket, 160, 470, 190, 90)
+$g.FillRectangle($basket, 175, 445, 160, 30)
+$basket.Dispose()
+$band = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(215, 16, 6, 30))
+$g.FillRectangle($band, 0, 40, $W, 235)
+$band.Dispose()
+Draw-OutlinedText $g 'SUDS OF' (New-Object System.Drawing.Font 'Impact', 64) 46 ([System.Drawing.Color]::FromArgb(255, 120, 250, 235))
+Draw-OutlinedText $g 'FURY' (New-Object System.Drawing.Font 'Impact', 72) 118 ([System.Drawing.Color]::FromArgb(255, 255, 120, 190))
+Draw-OutlinedText $g 'THE STAIN STRIKES BACK' ([System.Drawing.Font]::new('Arial', 21, [System.Drawing.FontStyle]::Bold, [System.Drawing.GraphicsUnit]::Pixel)) 640 ([System.Drawing.Color]::FromArgb(255, 255, 205, 60))
+Draw-OutlinedText $g 'INSERT COIN' (New-Object System.Drawing.Font 'Arial', 18) 700 ([System.Drawing.Color]::FromArgb(255, 220, 220, 220))
+Draw-Border $g
+$bmp.Save((Join-Path $outDir 'suds_of_fury.png'), [System.Drawing.Imaging.ImageFormat]::Png)
+$g.Dispose(); $bmp.Dispose()
+
+"posters written to $outDir (2x resolution)"

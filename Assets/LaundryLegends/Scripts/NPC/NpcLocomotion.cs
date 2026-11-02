@@ -12,6 +12,9 @@ namespace LaundryLegends.NPC
     {
         private static readonly int SpeedHash = Animator.StringToHash("Speed");
         private static readonly int CarryingHash = Animator.StringToHash("Carrying");
+        private static readonly int LoadHash = Animator.StringToHash("Load");
+        private static readonly int FoldHash = Animator.StringToHash("Fold");
+        private static readonly int HandoffHash = Animator.StringToHash("Handoff");
 
         [SerializeField] private Animator _animator;
         [SerializeField] private float _referenceSpeed = 1.1f;
@@ -49,6 +52,32 @@ namespace LaundryLegends.NPC
         }
 
         public bool HasAnimator => _animator != null && _animator.runtimeAnimatorController != null;
+
+        /// <summary>Plays the short pick-up/load gesture when an animator exists.</summary>
+        public void PlayLoad()
+        {
+            Trigger(LoadHash);
+        }
+
+        /// <summary>Plays the folding/wrapping gesture when an animator exists.</summary>
+        public void PlayFold()
+        {
+            Trigger(FoldHash);
+        }
+
+        /// <summary>Plays the hand-off gesture when an animator exists.</summary>
+        public void PlayHandoff()
+        {
+            Trigger(HandoffHash);
+        }
+
+        private void Trigger(int hash)
+        {
+            if (HasAnimator)
+            {
+                _animator.SetTrigger(hash);
+            }
+        }
 
         private void Awake()
         {
