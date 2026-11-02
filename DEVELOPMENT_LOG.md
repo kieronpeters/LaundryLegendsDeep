@@ -1461,3 +1461,11 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 - Branch `phase-10-12` and its commits (`5e93cbb`, `9ada561`, `537dd88`, `74f8875`) remain for history.
 - Verified before merge: EditMode 164/164, PlayMode 66 passed / 0 failed / 2 skipped, build 212 MB / 0 errors.
 - Phase 10-12 remain `in_progress` in the phase board pending the owner playtest; deferred tickets are recorded in `.orchestrator/BACKLOG.md`.
+
+## 2026-11-04 - Live playtest and hardening tickets
+
+- Built and drove the 212 MB `main` build on the desktop: menu, shop, machine wall, counter, U/B/M/Esc/N, day 36, bills and late fee.
+- Logged 11 defects as `LL-B-016`..`LL-B-024` and `LL-A-007`/`LL-A-008` in `.orchestrator/BACKLOG.md`.
+- Release blockers: missing machine interaction prompt (`LL-B-016`), T-pose carry (`LL-A-007`), unreadable U menu layout (`LL-B-017`), and the stock/order economy soft-lock (`LL-B-018`).
+- Session evidence and the not-reached list are in `.orchestrator/reports/2026-11-04-live-playtest.md`.
+- No code changes; branch `phase-13-16` remains at the `main` baseline.

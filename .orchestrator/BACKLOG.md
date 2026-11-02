@@ -16,6 +16,7 @@ holding area for work that belongs earlier.
 | Phase 10 - business operations | `LL-F-008`, `LL-B-010`, `LL-B-012` | Stock, order queue and bills; the order-stall investigation lands here. |
 | Phase 11 - characters and animation | `LL-B-009`, `LL-B-013`, `LL-F-009` | NPC route, model and voice cleanup lands here. |
 | Phase 12 - visual art | `LL-F-006`, `LL-B-004`, `LL-A-001`, `LL-A-002`, `LL-A-003`, `LL-A-004`, `LL-A-005`, `LL-A-006`, `LL-B-014`, `LL-B-015`, `LL-F-010` | Art/visual work and arcade presentation land with the art phase. |
+| Pre-Phase 13 hardening | `LL-B-016`-`LL-B-024`, `LL-A-007`, `LL-A-008` | Fix the P1 playtest blockers before audio work. |
 | Phase 13 - audio | (none open) | Audio tickets close with the audio phase. |
 | Phase 14 - save/progression | `LL-F-005`, `LL-B-005` | Save and board metadata work lands with the save phase. |
 | Phase 16 - QA/polish | `LL-B-002`, `LL-B-006`, `LL-B-008`, `LL-F-002`, `LL-F-003`, `LL-T-003`, `LL-T-004`, `LL-T-005` | Must be fixed or explicitly accepted/deferred before Phase 17. |
@@ -87,6 +88,26 @@ Partially resolved (ticket stays open):
 - LL-B-008: bay captures now exist (`12-bay-entry`, `12-bay-carpet`, `12-bay-poster`, `12-cabinet-side`); the IMGUI HUD overlap at 1920x1080 still needs a layout pass.
 
 Still open: LL-F-010 (per-machine game variety - the maze game exists but is not wired to a cabinet), LL-B-003, LL-B-002, LL-B-007, LL-A-001, LL-A-002, LL-A-003.
+
+## Pre-Phase 13 hardening (playtest 2026-11-04)
+
+Found in the live 212 MB build (0 build errors). These block or degrade a normal playthrough and should be fixed before Phase 13 audio work begins.
+
+| ID | Type | Pri | Title | Description | Evidence |
+|---|---|---|---|---|---|
+| LL-B-016 | bug | P1 | No interaction prompt at the washing machines | Stand at the machine wall, aim at a door from point-blank to ~3 m; no "Load washer / Take laundry" prompt appears and `E` does nothing. Machines still run via the staff, so this is likely a collider/raycast-layer or prompt-condition regression. Blocks manual load, unload and restock testing. | live playtest 2026-11-04; machine-wall screenshots |
+| LL-A-007 | art | P1 | NPC carry pose throws arms out in a T-pose | The staff and the ambient customer carry parcels with both arms extended sideways/up instead of holding the item in front. Seen at the counter and waiting area. Likely `CarryPose` amplitudes or a double-animation conflict. | live playtest 2026-11-04; counter/waiting-area screenshots |
+| LL-B-017 | bug | P1 | Purchase menu rows overlap the header and are unreadable | `U` opens the list, but the first two rows draw over the panel header and each other, and the low-alpha background makes the white text unreadable over the world. | live playtest 2026-11-04; U-menu screenshot |
+| LL-B-018 | bug | P1 | Stock/order economy soft-locks after ~30 seconds | Starting stock 5/5/5 is consumed by the 10-order queue within roughly 30 real seconds (1 real second = 1 game minute). Stock reaches 0/0/1, all orders stall, and the $400 bill is unaffordable from the typical ~200-300 wallet. Without a working restock interaction there is no recovery. Rebalance starting stock/consumption/order rate, or guarantee a restock path. | live playtest 2026-11-04; day 36 HUD, stock 0/0/1, $440 bill |
+| LL-B-019 | bug | P2 | Order rack slots and ready parcels are invisible | During 10 active orders and 1 ready order the counter top is bare: no slot markers, no wrapped parcels. The queue logic runs, so this is a visual/anchor issue. | live playtest 2026-11-04; counter screenshots |
+| LL-B-020 | bug | P2 | Eight white blocks sit on the floor in front of the machines | One white parcel-like block is detached at the base of every machine, aligned under the doors. Probably a machine-front/coin-box detail placed at floor height instead of on the machine. | live playtest 2026-11-04; machine-wall close-up |
+| LL-B-021 | bug | P2 | Stray grey and orange boxes near the counter | Loose grey boxes by the left shelving and orange boxes on the floor beside the counter. They read as misplaced counter/step or detail props. | live playtest 2026-11-04; counter screenshots |
+| LL-A-008 | art | P2 | Machine bodies blow out to pure white up close | At 1-2 m the cream machine shells clip to white, losing the door bezel, panel and body detail. Reduce exposure/albedo or add roughness variation. | live playtest 2026-11-04; machine close-up |
+| LL-B-022 | bug | P3 | Pause overlay is nearly invisible and has no settings | "Paused" and "Resume" are tiny low-contrast text on a translucent panel; the scene is not dimmed and there are no audio/display settings (Phase 13 will add them). | live playtest 2026-11-04; paused screenshot |
+| LL-B-023 | bug | P3 | Bills panel uses a tiny text block in a large empty panel | The itemized bill is readable only up close; the 620x260 box is mostly empty and low-contrast. Improve layout/contrast and add a clear paid/overdue state. | live playtest 2026-11-04; bills screenshots |
+| LL-B-024 | bug | P3 | Shop map is blank before the back room and overlaps the scene | Pressing `M` before the room is discovered shows "No plan of the back room yet" plus a black square; the panel is translucent and overlays the world. Add a shop-only plan or a clearer disabled state. | live playtest 2026-11-04; map screenshot |
+
+Target: **Phase 13 hardening**. `LL-B-016`, `LL-A-007`, `LL-B-017` and `LL-B-018` are release-blocking; the rest are P2/P3 polish.
 
 ## Open-issue pass (2026-11-04, branch `phase-10-12`)
 
