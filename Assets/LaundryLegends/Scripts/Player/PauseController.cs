@@ -18,7 +18,8 @@ namespace LaundryLegends.Player
 
         private void Update()
         {
-            if (PurchaseMenuView.IsOpen || PurchaseMenuView.ClosedThisFrame)
+            if (PurchaseMenuView.IsOpen || PurchaseMenuView.ClosedThisFrame
+                || BillsPanelView.IsOpen || BillsPanelView.ClosedThisFrame)
             {
                 return;
             }

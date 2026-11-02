@@ -41,7 +41,7 @@ namespace LaundryLegends.Player
                 return;
             }
 
-            if (PurchaseMenuView.IsOpen)
+            if (PurchaseMenuView.IsOpen || BillsPanelView.IsOpen)
             {
                 return;
             }

@@ -1401,3 +1401,34 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 - Decision 0013 and phase-10 tasks are present. LL-P10-002 (business clock) is the next ready task.
 - Local WIP preserved: `phase-10-wip` (97897a2) and `phase-9-postapproval-wip` (344f942), not merged.
 - Post-approval tickets remain: LL-B-012 (P1), LL-B-013, LL-A-005, LL-B-014, LL-B-015.
+
+## 2026-11-04 - Phases 10-12 combined branch
+
+**Branch:** `phase-10-12` (from `phase-10` / `main` at `3cd96f4`)
+
+**Phase 10 - business operations**
+- Added `BusinessClock`, `ConsumableDefinition`/`ConsumableShelf`/`ConsumableStockService`, `DropOffRack`, `BillingService`, `BusinessPanelView`, `BillsPanelView` and `BusinessSetupTool`.
+- Ten active orders, ten reserved rack slots, three shelves (detergent, fragrance, plastic) at 5/10 starting stock, one unit per purchase, 10 s respawn, 600 s patience.
+- Stock blocks wash/dry/wrap and recovers on restock. Bills: rent 250 + electricity 90 + water 60 every 30 days, 3-day grace, one 10% late fee.
+- Fixed `LaundryStaff.WaitForWork` exiting before assigning the rack slot (the queue stall), and placed the rack in world space so the counter scale no longer spreads the slots across the shop.
+- `U` purchase list and `B` bills menu pause time and release the cursor; `N` skips a day.
+
+**Phase 11 - characters and voice**
+- Phone regular moved to `(6.0, 0, -4.2)` and the disabled legacy pickup component removed.
+- Ambient route now ends at `Waypoint_Waiting (4.3, 0, -4.2)`; the counter waypoint is gone and each leg has a 20 s timeout.
+- Staff dialogue and voice stay removed. `NPC_OrderCustomer` now speaks the male DropOff/Norman clips with subtitles.
+- Audit note: the only staff voice set is female Cori, so the literal "male staff clips" request was adapted to the male DropOff set instead of copying the staff voice.
+
+**Phase 12 - visual art**
+- Generated `WasherDetailed.fbx` (13,300 tris) and `DryerDetailed.fbx` (14,144 tris) in Blender 4.5.15; replaced all eight visuals and converted 100 material slots to URP/Lit.
+- Preserved the FBX 270° X root rotation and added 180° yaw; machines now stand upright with the glass door facing the room.
+- Drum clothes rotate while a cycle runs; the synthetic dark drum face was removed.
+- Full-bay 6x4 m casino-lattice carpet replaces the small rug; it stays gated to the expansion and carpet purchase and is parented inside `ExpansionBay`.
+- Cabinet side art on both faces; Racer Riot poster in the bay; Street Folders poster off the expansion wall; post-unlock doorway verified clear.
+
+**Evidence**
+- EditMode 164/164; PlayMode 61 passed / 0 failed / 2 skipped before the new Phase 12 tests, then `Phase12SceneTests` 3/3.
+- Build 200 MB / 0 errors.
+- Captures: `TestResults/phase12/machine-wall-4.png`, `12-bay-entry.png`, `12-bay-carpet.png`, `12-bay-poster.png`, `12-cabinet-side.png`, `12-secret-door.png`, `12-waiting-area.png`, `menu-u.png`, `menu-b.png`.
+
+**Still open:** authored carry/load/fold/handoff clips, `LL-F-010` per-machine arcade variety, `LL-B-010` staff machine rotation, `LL-B-011` duplicate U-menu labels, `LL-A-004` neon/speaker polish.

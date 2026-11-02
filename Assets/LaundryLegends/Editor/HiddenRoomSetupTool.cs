@@ -371,6 +371,56 @@ namespace LaundryLegends.Editor
                 Quaternion.Euler(0f, 180f, 0f));
         }
 
+        /// <summary>
+        /// Adds a double-sided poster quad to one side of an arcade cabinet so the
+        /// machines read as cabinets from every angle. sign -1/+1 picks the side.
+        /// </summary>
+        private static void AddCabinetSideArt(
+            Transform parent,
+            Vector3 position,
+            float yaw,
+            float sign,
+            string name,
+            string texturePath)
+        {
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            if (texture == null)
+            {
+                return;
+            }
+
+            string materialPath = $"Assets/LaundryLegends/Art/Materials/MAT_CabinetSide_{name}.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            Shader lit = Shader.Find("Universal Render Pipeline/Lit");
+            if (material == null)
+            {
+                material = new Material(lit) { name = $"MAT_CabinetSide_{name}" };
+                AssetDatabase.CreateAsset(material, materialPath);
+            }
+            else
+            {
+                material.shader = lit;
+            }
+
+            material.SetTexture("_BaseMap", texture);
+            material.SetColor("_BaseColor", Color.white);
+            material.SetFloat("_Smoothness", 0.2f);
+            material.SetFloat("_Cull", 0f);
+            material.EnableKeyword("_EMISSION");
+            material.SetColor("_EmissionColor", new Color(0.12f, 0.12f, 0.12f));
+            EditorUtility.SetDirty(material);
+
+            var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            quad.name = name;
+            Object.DestroyImmediate(quad.GetComponent<Collider>());
+            quad.transform.SetParent(parent, true);
+            Vector3 side = Quaternion.Euler(0f, yaw, 0f) * Vector3.right * Mathf.Sign(sign);
+            quad.transform.position = position + side * 0.39f + Vector3.up * 1.15f;
+            quad.transform.rotation = Quaternion.LookRotation(-side, Vector3.up);
+            quad.transform.localScale = new Vector3(0.55f, 0.8f, 1f);
+            quad.GetComponent<Renderer>().sharedMaterial = material;
+        }
+
         /// <summary>Places an authored poster texture on a wall-facing quad.</summary>
         private static void AddPoster(Transform shell, string name, string texturePath, Vector3 position,
             Quaternion rotation)
@@ -497,6 +547,86 @@ namespace LaundryLegends.Editor
             material.SetFloat("_Smoothness", 0.03f);
             material.SetFloat("_Metallic", 0f);
             material.mainTextureScale = new Vector2(6f, 6f);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        /// <summary>
+        /// Full-bay carpet for the arcade extension: teal/gold/cyan lattice with
+        /// red accents, deliberately different from the black/red casino carpet.
+        /// </summary>
+        private static Material EnsureArcadeCarpet()
+        {
+            const string folder = "Assets/LaundryLegends/Art/Textures/Environment";
+            const string texturePath = folder + "/arcade_carpet.png";
+            const string materialPath = "Assets/LaundryLegends/Art/Materials/MAT_ArcadeCarpet.mat";
+
+            System.IO.Directory.CreateDirectory(folder);
+            const int size = 128;
+            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            var pixels = new Color32[size * size];
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    int cx = x % 32;
+                    int cy = y % 32;
+                    int manhattan = Mathf.Abs(cx - 16) + Mathf.Abs(cy - 16);
+                    var colour = new Color32(18, 14, 34, 255);
+                    if (manhattan >= 12 && manhattan <= 14)
+                    {
+                        colour = new Color32(206, 164, 64, 255);
+                    }
+
+                    if (manhattan <= 2)
+                    {
+                        colour = new Color32(26, 180, 200, 255);
+                    }
+
+                    if (((cx - 8) * (cx - 8) + (cy - 8) * (cy - 8)) <= 2)
+                    {
+                        colour = new Color32(196, 42, 82, 255);
+                    }
+
+                    if (cx == 0 || cy == 0)
+                    {
+                        colour = new Color32(38, 24, 52, 255);
+                    }
+
+                    pixels[y * size + x] = colour;
+                }
+            }
+
+            texture.SetPixels32(pixels);
+            texture.Apply();
+            System.IO.File.WriteAllBytes(texturePath, texture.EncodeToPNG());
+            AssetDatabase.ImportAsset(texturePath, ImportAssetOptions.ForceUpdate);
+            var importer = AssetImporter.GetAtPath(texturePath) as TextureImporter;
+            if (importer != null)
+            {
+                importer.wrapMode = TextureWrapMode.Repeat;
+                importer.filterMode = FilterMode.Bilinear;
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                importer.SaveAndReimport();
+            }
+
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            Shader lit = Shader.Find("Universal Render Pipeline/Lit");
+            if (material == null)
+            {
+                material = new Material(lit) { name = "MAT_ArcadeCarpet" };
+                AssetDatabase.CreateAsset(material, materialPath);
+            }
+            else
+            {
+                material.shader = lit;
+            }
+
+            material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath));
+            material.SetColor("_BaseColor", Color.white);
+            material.SetFloat("_Smoothness", 0.03f);
+            material.SetFloat("_Metallic", 0f);
+            material.mainTextureScale = new Vector2(6f, 4f);
             EditorUtility.SetDirty(material);
             return material;
         }
@@ -790,6 +920,10 @@ namespace LaundryLegends.Editor
             }
 
             panel.Configure(service, reputation);
+            AddCabinetSideArt(shell, starter.transform.position, 90f, -1f,
+                "SideRacer", "Assets/LaundryLegends/Art/Textures/Posters/racer_riot.png");
+            AddCabinetSideArt(shell, starter.transform.position, 90f, 1f,
+                "SideSpin", "Assets/LaundryLegends/Art/Textures/Posters/spin_cycle_showdown.png");
 
             Material wood = AssetDatabase.LoadAssetAtPath<Material>(
                 "Assets/LaundryLegends/Art/Materials/MAT_CounterWood.mat");
@@ -798,12 +932,7 @@ namespace LaundryLegends.Editor
                 wood = wall;
             }
 
-            Material felt = AssetDatabase.LoadAssetAtPath<Material>(
-                "Assets/LaundryLegends/Art/Materials/MAT_CasinoFelt.mat");
-            if (felt == null)
-            {
-                felt = wall;
-            }
+            Material arcadeCarpet = EnsureArcadeCarpet();
 
             Material neon = EnsureEmissiveMaterial(
                 "Assets/LaundryLegends/Art/Materials/MAT_ArcadeNeon.mat",
@@ -825,10 +954,11 @@ namespace LaundryLegends.Editor
                 new Vector3(x0 + roomWidth * 0.23f, 2.1f, z0 + 0.18f),
                 new Vector3(0.3f, 0.5f, 0.25f), wood, Quaternion.identity);
 
+            float carpetWidth = Mathf.Max(3.2f, Mathf.Min(6f, roomWidth - 1f));
             GameObject rugDecor = CreateDecorObject(
-                expansionBay.transform, "Decor_ArcadeRug",
-                new Vector3(x0 + roomWidth * 0.5f, 0.03f, z0 + roomDepth + 2f),
-                new Vector3(2.6f, 0.05f, 1.6f), felt, Quaternion.identity);
+                expansionBay.transform, "Decor_ArcadeCarpet",
+                new Vector3(x0 + roomWidth * 0.5f, 0.035f, z0 + roomDepth + 2f),
+                new Vector3(carpetWidth, 0.04f, 4f), arcadeCarpet, Quaternion.identity);
 
             float southZ = z0 + roomDepth;
             float cx = x0 + roomWidth * 0.5f;
@@ -1050,6 +1180,10 @@ namespace LaundryLegends.Editor
 
             service.AddSlot(anchor.transform, install, definition, cabinetObject, attract);
             install.SetActive(false);
+            AddCabinetSideArt(parent, cabinetObject.transform.position, yaw, -1f,
+                $"SideRacer_{label}", "Assets/LaundryLegends/Art/Textures/Posters/racer_riot.png");
+            AddCabinetSideArt(parent, cabinetObject.transform.position, yaw, 1f,
+                $"SideSpin_{label}", "Assets/LaundryLegends/Art/Textures/Posters/spin_cycle_showdown.png");
         }
 
         private static GameObject CreateBox(Transform parent, string name, Vector3 centre, Vector3 size, Material material)

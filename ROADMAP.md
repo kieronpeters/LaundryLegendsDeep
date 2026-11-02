@@ -607,7 +607,7 @@ Arcade definitions/prefabs, decoration props, expansion geometry, balance data, 
 
 ## Phase 10 - Business operations and order flow
 
-**Status:** Ready (2026-11-03) - branch `phase-10` created from `main`; LL-P10-001 complete, LL-P10-002 ready to start.
+**Status:** Implemented on branch `phase-10-12` (2026-11-04) - awaiting owner playtest. EditMode 164/164; PlayMode 64 passed / 0 failed / 2 explicit skips.
 **Objective:** Turn the laundry into a stock-and-cash business: consumable shelves, a ten-order queue with a ready-order shelf, and a 24-hour calendar with recurring utility and rent bills.
 **Depends on:** Phases 5 and 9.
 
@@ -666,7 +666,7 @@ Arcade definitions/prefabs, decoration props, expansion geometry, balance data, 
 
 ## Phase 11 - Characters and animation
 
-**Status:** Planned
+**Status:** Partially implemented on branch `phase-10-12` (2026-11-04) - awaiting owner review. Landed: phone-regular placement, ambient waiting route with leg timeout, silent staff, male-voiced order customer, idle/walk/carry readings. Still open: authored carry/load/fold/handoff clips (only CC0 idle/walk clips exist) and the full animation state machine.
 **Objective:** Develop necessary player, customer, and other character assets, animations, movement, interactions, and visual feedback.
 **Depends on:** Phases 5, 9 and 10 (stable loops and the business layer).
 
@@ -717,7 +717,7 @@ Character models/rigs/animations, animator controllers, prefabs, materials, inve
 
 ## Phase 12 - Visual art and environment
 
-**Status:** Planned
+**Status:** Partially implemented on branch `phase-10-12` (2026-11-04) - awaiting owner review. Landed: eight detailed appliance models, tumbling drum clothes, full-bay gated carpet, cabinet side art, bay game poster, clear post-unlock doorway. Still open: per-machine game variety, marquee/neon polish, first-person hands, duct/signage detail.
 **Objective:** Improve models, materials, textures, lighting, signage, room identity, cozy laundry atmosphere, and colorful arcade.
 **Depends on:** Phases 2, 5, 7, 8, 9, 10 and 11.
 

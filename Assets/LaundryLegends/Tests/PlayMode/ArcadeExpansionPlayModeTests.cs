@@ -98,7 +98,7 @@ namespace LaundryLegends.Tests.PlayMode
             Assert.Greater(service.IncomeMultiplier, 1f, "The upgrade should raise the income multiplier.");
 
             ArcadeUpgradePoint carpetKiosk = FindUpgradePoint("arcade.upgrade.carpet");
-            GameObject rugDecor = FindInactive("Decor_ArcadeRug");
+            GameObject rugDecor = FindInactive("Decor_ArcadeCarpet");
             Assert.IsNotNull(carpetKiosk, "The scene needs the carpet upgrade kiosk.");
             Assert.IsNotNull(rugDecor, "The carpet decor should exist, disabled.");
             Assert.IsTrue(rugDecor.transform.IsChildOf(bay.transform), "The carpet must live in the expansion bay.");

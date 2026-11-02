@@ -85,6 +85,11 @@ namespace LaundryLegends.UI
                 return;
             }
 
+            if (BillsPanelView.IsOpen)
+            {
+                return;
+            }
+
             if (Input.GetKeyDown(KeyCode.U))
             {
                 if (IsOpen)

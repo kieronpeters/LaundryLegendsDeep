@@ -41,7 +41,7 @@ namespace LaundryLegends.Editor
             // the review pass. Keep the model and the LaundryStaff behaviour.
             attendant.AddComponent<LaundryStaff>();
 
-            GameObject regular = Instantiate("NPC_Regular", new Vector3(5.6f, 0f, -5.2f), Quaternion.Euler(0f, 180f, 0f), root.transform);
+            GameObject regular = Instantiate("NPC_Regular", new Vector3(6.0f, 0f, -4.2f), Quaternion.Euler(0f, 180f, 0f), root.transform);
             regular.name = "PhoneRegular";
             AddPhone(regular);
             regular.AddComponent<NpcDialogue>().Configure(
@@ -59,7 +59,7 @@ namespace LaundryLegends.Editor
             {
                 CreateWaypoint(root.transform, "Waypoint_Street", new Vector3(0f, 0f, -10.5f)),
                 CreateWaypoint(root.transform, "Waypoint_Door", new Vector3(0f, 0f, -5.6f)),
-                CreateWaypoint(root.transform, "Waypoint_Counter", new Vector3(-3.9f, 0f, -2.0f)),
+                CreateWaypoint(root.transform, "Waypoint_Waiting", new Vector3(4.3f, 0f, -4.2f)),
                 CreateWaypoint(root.transform, "Waypoint_DoorOut", new Vector3(0f, 0f, -5.6f)),
                 CreateWaypoint(root.transform, "Waypoint_StreetOut", new Vector3(0f, 0f, -10.5f))
             };

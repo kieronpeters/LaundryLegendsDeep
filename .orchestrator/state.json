@@ -9,7 +9,7 @@
                     "renderPipeline":  "Universal Render Pipeline 17.0.4",
                     "targetPlatform":  "Windows 64-bit"
                 },
-    "updatedAt":  "2026-11-03T05:00:00+08:00",
+    "updatedAt":  "2026-11-04T12:00:00+08:00",
     "currentMilestone":  {
                              "id":  "M1",
                              "name":  "Playable laundry",
@@ -18,28 +18,28 @@
     "currentPhase":  {
                          "number":  10,
                          "name":  "Business operations and order flow",
-                         "status":  "ready",
+                         "status":  "in_progress",
                          "file":  ".orchestrator/decisions/0013-phase-10-business-operations.md",
-                         "completionNote":  "Branch phase-10 created from main 1978451. Decision 0013 accepted: 10 active orders, consumable shelves with stock blocking, ready-order shelf, 24-hour clock and 30-day bills. LL-P10-002 (business clock) is ready."
+                         "completionNote":  "Implemented on phase-10-12: 10-order queue, 10-slot rack, three 10-capacity shelves (5 starting units), stock blocking, 24-hour clock with N day skip, 30-day bills and HUD. Automated suites green; owner playtest (LL-P10-010) is the only open task."
                      },
     "nextPhase":  {
-                      "number":  11,
-                      "name":  "Characters and animation",
+                      "number":  13,
+                      "name":  "Audio and presentation",
                       "status":  "planned",
                       "file":  "ROADMAP.md"
                   },
     "activeTask":  null,
-    "lastCompletedTask":  "LL-P9-010",
-    "nextTask":  "LL-P10-002",
+    "lastCompletedTask":  "LL-P10-009",
+    "nextTask":  "LL-P10-010",
     "taskCounts":  {
-                       "complete":  65,
-                       "ready":  1,
-                       "planned":  8,
+                       "complete":  74,
+                       "ready":  0,
+                       "planned":  0,
                        "pending":  0,
                        "inProgress":  0,
                        "failed":  0,
                        "blocked":  0,
-                       "pendingApproval":  0
+                       "pendingApproval":  1
                    },
     "phaseStatuses":  {
                           "0":  "complete",
@@ -52,9 +52,9 @@
                           "7":  "complete",
                           "8":  "complete",
                           "9":  "complete",
-                          "10":  "ready",
-                          "11":  "planned",
-                          "12":  "planned",
+                          "10":  "in_progress",
+                          "11":  "in_progress",
+                          "12":  "in_progress",
                           "13":  "planned",
                           "14":  "planned",
                           "15":  "planned",
@@ -62,14 +62,14 @@
                           "17":  "planned"
                       },
     "git":  {
-                "branch":  "phase-10",
+                "branch":  "phase-10-12",
                 "checkpointTag":  "phase-9-complete",
                 "checkpointCommit":  "197845151b6608b68446821cdbfb3aa432ae863e",
                 "baselineCommit":  "b78218cccfeea741d3d227ffa95e679e9ba92a72",
-                "remote":  null,
-                "workingTree":  "clean after Phase 10 branch setup",
+                "remote":  "origin/phase-10-12",
+                "workingTree":  "Phase 10-12 implementation staged for commit",
                 "unityProjectCommit":  "e244ba434ace223ff064df52b6a683615d9fb503",
-                "lastCheckpointAt":  "2026-11-03T05:00:00+08:00"
+                "lastCheckpointAt":  "2026-11-04T12:00:00+08:00"
             },
     "environment":  {
                         "opencodeCli":  "2.0.28",
@@ -163,25 +163,28 @@
                    "note":  "Procedural placeholders only: 3 scenes, 5 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
                },
     "lastRun":  {
-                    "id":  "2026-11-03-ll-p9-merge-p10-branch",
-                    "report":  ".orchestrator/reports/2026-11-03-phase9-merge-and-phase10-start.md",
+                    "id":  "2026-11-04-phase-10-12",
+                    "report":  ".orchestrator/reports/2026-11-04-phase-10-12.md",
                     "status":  "complete",
-                    "startedAt":  "2026-11-03T04:30:00+08:00",
-                    "completedAt":  "2026-11-03T05:00:00+08:00",
+                    "startedAt":  "2026-11-03T06:00:00+08:00",
+                    "completedAt":  "2026-11-04T12:00:00+08:00",
                     "checks":  {
-                                   "pr_merge":  "PR #2 merged at 1978451",
-                                   "main":  "fast-forwarded to 1978451",
-                                   "phase10_branch":  "phase-10 created and pushed",
-                                   "phase10_ready":  "LL-P10-002 ready",
-                                   "approved_build":  "199 MB / 0 errors; owner approved"
+                                   "editmode":  "164/164 passed",
+                                   "playmode":  "61 passed / 0 failed / 2 skipped, then Phase12SceneTests 3/3",
+                                   "build":  "200 MB / 0 errors",
+                                   "appliance_validate":  "8 detailed models, 100 URP material slots",
+                                   "business_validate":  "10 rack slots, 3 shelves, clock, billing, HUD and bills menu",
+                                   "captures":  "machine-wall-4, 12-bay-entry, 12-bay-carpet, 12-bay-poster, 12-cabinet-side, 12-secret-door, 12-waiting-area, menu-u, menu-b"
                                },
                     "filesChanged":  [
                                          ".orchestrator/state.json",
                                          ".orchestrator/tasks/phase-10.json",
-                                         ".orchestrator/reports/2026-11-03-phase9-merge-and-phase10-start.md",
+                                         ".orchestrator/BACKLOG.md",
+                                         ".orchestrator/reports/2026-11-04-phase-10-12.md",
                                          "PROJECT_STATE.md",
                                          "ROADMAP.md",
-                                         "DEVELOPMENT_LOG.md"
+                                         "DEVELOPMENT_LOG.md",
+                                         "ASSET_INVENTORY.md"
                                      ]
                 },
     "recovery":  {

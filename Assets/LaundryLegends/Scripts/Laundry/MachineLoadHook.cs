@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using LaundryLegends.Business;
 using LaundryLegends.Interaction;
 using LaundryLegends.Player;
 using UnityEngine;
@@ -34,6 +35,7 @@ namespace LaundryLegends.Laundry
         [SerializeField] private float _dryerDuration = 25f;
         [SerializeField] private string _emptyPrompt = "Load washer";
         [SerializeField] private string _occupiedPrompt = "Take laundry";
+        [SerializeField] private ConsumableStockService _stock;
         [SerializeField] private Transform _drumVisual;
         [SerializeField, Min(0f)] private float _drumDegreesPerSecond = 240f;
 
@@ -46,6 +48,12 @@ namespace LaundryLegends.Laundry
         public MachineState State => _state;
         public bool IsRunning => _state == MachineState.Running;
         public bool IsComplete => _state == MachineState.Complete;
+
+        /// <summary>Consumable consumed when this machine starts a cycle.</summary>
+        public ConsumableType RequiredConsumable =>
+            _kind == MachineKind.Washer ? ConsumableType.Detergent : ConsumableType.Fragrance;
+
+        public ConsumableStockService Stock => _stock;
 
         public Transform DrumVisual => _drumVisual;
 
@@ -113,6 +121,7 @@ namespace LaundryLegends.Laundry
                 _elapsed = EffectiveDuration;
                 _state = MachineState.Complete;
                 LastResult = _kind == MachineKind.Washer ? "Wash complete" : "Dry complete";
+                SetLoadedItemVisible(true);
                 LaundryItem item = LoadedItem;
                 if (item != null)
                 {
@@ -138,9 +147,39 @@ namespace LaundryLegends.Laundry
             _kind = kind;
         }
 
+        public void SetStockService(ConsumableStockService stock)
+        {
+            _stock = stock;
+        }
+
         public void SetDrumVisual(Transform drum)
         {
             _drumVisual = drum;
+        }
+
+        private void SetLoadedItemVisible(bool visible)
+        {
+            LaundryItem item = LoadedItem;
+            if (item == null)
+            {
+                return;
+            }
+
+            foreach (Renderer renderer in item.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer != null)
+                {
+                    renderer.enabled = visible;
+                }
+            }
+        }
+
+        private void Awake()
+        {
+            if (_stock == null)
+            {
+                _stock = FindFirstObjectByType<ConsumableStockService>();
+            }
         }
 
         public bool StartCycle()
@@ -151,8 +190,15 @@ namespace LaundryLegends.Laundry
                 return false;
             }
 
+            if (_stock != null && !_stock.TryConsume(RequiredConsumable))
+            {
+                LastResult = $"Out of {_stock.DisplayName(RequiredConsumable)}";
+                return false;
+            }
+
             _state = MachineState.Running;
             _elapsed = 0f;
+            SetLoadedItemVisible(false);
             LastResult = _kind == MachineKind.Washer ? "Wash started" : "Dry started";
             return true;
         }
@@ -165,6 +211,7 @@ namespace LaundryLegends.Laundry
                 _elapsed = EffectiveDuration;
                 _state = MachineState.Complete;
                 LastResult = _kind == MachineKind.Washer ? "Wash complete" : "Dry complete";
+                SetLoadedItemVisible(true);
             }
         }
 
@@ -222,6 +269,7 @@ namespace LaundryLegends.Laundry
             LaundryItem item = _slot != null ? _slot.Take() : null;
             _state = MachineState.Empty;
             _elapsed = 0f;
+            SetLoadedItemVisible(true);
             return item;
         }
 
@@ -257,6 +305,7 @@ namespace LaundryLegends.Laundry
 
             _state = MachineState.Loaded;
             _elapsed = 0f;
+            SetLoadedItemVisible(true);
             return true;
         }
 

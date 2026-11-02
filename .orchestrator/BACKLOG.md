@@ -63,6 +63,30 @@ holding area for work that belongs earlier.
 | LL-F-009 | feature | P2 | Male customer voice reassignment | The hidden-room visitor was removed, the staff commentary was silenced, and the order customer now uses the male model. Remaining: move the staff's male voice clips to that customer (or copy them to the DropOff archetype) without restoring the staff's commentary. | review 2026-11-03 |
 | LL-B-008 | bug | P2 | Phase 9 bay/kiosk/HUD visual review | No captures were taken of the expansion bay, upgrade kiosks or IMGUI arcade panel. Verify lighting, readability, overlap with the order ticket at 1920x1080, and that the open bay reads as a space. | Phase 9 report; `ArcadePanelView`, `ExpansionBay` |
 
+## Phase 10-12 closeout (2026-11-04, branch `phase-10-12`)
+
+Resolved in this branch, with evidence in `TestResults/phase12/` and the final suites:
+
+| Ticket | Outcome | Evidence |
+|---|---|---|
+| LL-F-008 | Consumables, ten-order queue, ten-slot rack and 30-day bills implemented and wired. | `BusinessSetupTool.ValidateBusinessSystems`; `BusinessOperationsTests`; `BusinessSceneTests` |
+| LL-B-012 | Order stall could not be reproduced after the queue rework; the diagnostic order completes with the player in the back room. Shortened per-slot machine reuse and stock retry removed the stuck states. | `OrderStallDiagnosticTests`; `TwoOrderPlayModeTests` |
+| LL-B-013 | Phone regular moved to `(6.0, 0, -4.2)`, clear of both chair sets; legacy disabled pickup component removed. | `12-waiting-area.png`; `Phase12SceneTests.WaitingAreaNpcsAreClearOfFurniture` |
+| LL-B-009 | Ambient route now ends at `Waypoint_Waiting (4.3, 0, -4.2)`; the counter waypoint is gone and each leg has a 20 s timeout. | `AmbientNpcTests`; scene waypoint check |
+| LL-F-009 | Order customer uses the male DropOff/Norman voice and subtitles; the staff stays silent (the "staff male clips" request was adapted because the only staff clips are female Cori). | `NPC_OrderCustomer.prefab`; `menu-b.png` subtitle |
+| LL-A-005 | All eight machines replaced with the 13.3k/14.1k-tri detailed washer and dryer FBX models; 100 material slots converted to URP/Lit. | `machine-wall-4.png`; `ApplianceIntegrationTool.Validate`; `Phase12SceneTests` |
+| LL-B-014 | Drum clothes now sit in the detailed glass door and the drum assembly rotates while a cycle runs; the synthetic dark face was removed. | `Phase12SceneTests.EveryMachineHasDetailedModelAndTurnsItsDrum` (angle > 45°) |
+| LL-B-015 | Full-bay 6x4 m casino-lattice carpet replaces the small rug; still gated to the expansion + carpet purchase and parented inside the bay. | `12-bay-carpet.png`, `12-bay-entry.png` |
+| LL-A-006 | Double-sided Racer Riot / Spin Cycle Showdown art added to every cabinet side; the bay poster moved off the expansion seal. | `12-cabinet-side.png`, `12-bay-poster.png` |
+
+Partially resolved (ticket stays open):
+
+- LL-A-004: the carpet is now authored art; the neon sign and speakers are still primitives.
+- LL-B-008: bay captures now exist (`12-bay-entry`, `12-bay-carpet`, `12-bay-poster`, `12-cabinet-side`); the IMGUI HUD overlap at 1920x1080 still needs a layout pass.
+- LL-B-011: confirmed in `menu-u.png` - Racer and Puzzle still appear twice (shop anchor and bay anchor).
+
+Still open: LL-B-010 (staff machine rotation), LL-F-010 (per-machine game variety), LL-B-011, LL-B-003, LL-B-002, LL-B-007, LL-A-001, LL-A-002, LL-A-003.
+
 ## Resolved in the 2026-11-02 stabilization pass
 
 | ID | Resolution |

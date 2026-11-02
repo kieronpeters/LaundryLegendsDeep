@@ -206,44 +206,53 @@ namespace LaundryLegends.Editor
                 var drumObject = new GameObject("DrumVisual");
                 drum = drumObject.transform;
                 drum.SetParent(machine, false);
-                drum.localPosition = new Vector3(0f, 0.02f, -0.36f);
-                drum.localRotation = Quaternion.Euler(90f, 0f, 0f);
-                drum.localScale = Vector3.one;
             }
 
-            Transform face = drum.Find("DrumFace");
-            if (face == null)
+            drum.localPosition = new Vector3(0f, 0.02f, -0.38f);
+            drum.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            drum.localScale = Vector3.one;
+
+            // The detailed FBX already has a glass door and drum. Keep only the
+            // rotating clothes in front of the glass; a synthetic dark disc would
+            // cover the realistic model.
+            Transform oldFace = drum.Find("DrumFace");
+            if (oldFace != null)
             {
-                GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                cylinder.name = "DrumFace";
-                cylinder.transform.SetParent(drum, false);
-                cylinder.transform.localPosition = Vector3.zero;
-                cylinder.transform.localRotation = Quaternion.identity;
-                cylinder.transform.localScale = new Vector3(0.38f, 0.02f, 0.38f);
-                UnityEngine.Object.DestroyImmediate(cylinder.GetComponent<Collider>());
-                cylinder.GetComponent<Renderer>().sharedMaterial = drumMaterial;
+                UnityEngine.Object.DestroyImmediate(oldFace.gameObject);
             }
 
-            EnsureDrumCloth(drum, "DrumClothA", new Vector3(0.08f, 0.07f, 0.03f), clothesMaterial);
-            EnsureDrumCloth(drum, "DrumClothB", new Vector3(-0.07f, 0.03f, 0.03f), clothesMaterial);
-            EnsureDrumCloth(drum, "DrumClothC", new Vector3(0.01f, -0.08f, 0.03f), clothesMaterial);
+            EnsureDrumCloth(drum, "DrumClothA", new Vector3(0.07f, 0.06f, 0.09f),
+                new Vector3(0.2f, 0.16f, 0.09f), clothesMaterial);
+            EnsureDrumCloth(drum, "DrumClothB", new Vector3(-0.08f, 0.02f, 0.09f),
+                new Vector3(0.18f, 0.14f, 0.09f), clothesMaterial);
+            EnsureDrumCloth(drum, "DrumClothC", new Vector3(0.01f, -0.09f, 0.09f),
+                new Vector3(0.19f, 0.13f, 0.09f), clothesMaterial);
             hook.SetDrumVisual(drum);
         }
 
-        private static void EnsureDrumCloth(Transform drum, string name, Vector3 localPosition, Material material)
+        private static void EnsureDrumCloth(
+            Transform drum,
+            string name,
+            Vector3 localPosition,
+            Vector3 scale,
+            Material material)
         {
-            if (drum.Find(name) != null)
-            {
-                return;
-            }
+            Transform existing = drum.Find(name);
+            GameObject cube = existing != null
+                ? existing.gameObject
+                : GameObject.CreatePrimitive(PrimitiveType.Cube);
 
-            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube.name = name;
             cube.transform.SetParent(drum, false);
             cube.transform.localPosition = localPosition;
             cube.transform.localRotation = Quaternion.identity;
-            cube.transform.localScale = new Vector3(0.1f, 0.08f, 0.04f);
-            UnityEngine.Object.DestroyImmediate(cube.GetComponent<Collider>());
+            cube.transform.localScale = scale;
+            Collider collider = cube.GetComponent<Collider>();
+            if (collider != null)
+            {
+                UnityEngine.Object.DestroyImmediate(collider);
+            }
+
             cube.GetComponent<Renderer>().sharedMaterial = material;
         }
 

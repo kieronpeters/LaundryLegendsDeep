@@ -31,7 +31,9 @@ namespace LaundryLegends.Tests.PlayMode
             var spawner = Object.FindFirstObjectByType<CustomerSpawner>();
             Assert.IsNotNull(spawner, "Laundromat needs a CustomerSpawner.");
 
-            spawner.DisposeCurrent();
+            spawner.SetAutoStart(false);
+            spawner.SetMaxCustomers(1);
+            spawner.DisposeAll();
 
             var wallet = new GameState(100);
             var ledger = new OrderLedger(wallet);
@@ -95,7 +97,9 @@ namespace LaundryLegends.Tests.PlayMode
         {
             var spawner = Object.FindFirstObjectByType<CustomerSpawner>();
             Assert.IsNotNull(spawner);
-            spawner.DisposeCurrent();
+            spawner.SetAutoStart(false);
+            spawner.SetMaxCustomers(1);
+            spawner.DisposeAll();
 
             var wallet = new GameState(100);
             var ledger = new OrderLedger(wallet);
@@ -151,7 +155,9 @@ namespace LaundryLegends.Tests.PlayMode
         {
             var spawner = Object.FindFirstObjectByType<CustomerSpawner>();
             Assert.IsNotNull(spawner);
-            spawner.DisposeCurrent();
+            spawner.SetAutoStart(false);
+            spawner.SetMaxCustomers(1);
+            spawner.DisposeAll();
 
             var wallet = new GameState(100);
             var ledger = new OrderLedger(wallet);

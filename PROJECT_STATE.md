@@ -1,18 +1,27 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-11-03 (Phase 9 merged to `main`; Phase 10 branch ready)
-**Current milestone:** M3 - Arcade, **complete**
-**Current phase:** Phase 10 - Business operations and order flow, **ready**
-**Next phase:** Phase 11 - Characters and animation, **planned**
-**Active task:** None - LL-P10-002 is the next ready task
-**Next recommended task:** Start LL-P10-002 - business clock and day counter (see `.orchestrator/tasks/phase-10.json`)
-**Review checkpoint:** Phase 9 merged to `main` at `1978451` (PR #2); tag `phase-9-complete`; owner approval report `.orchestrator/reports/2026-11-03-phase9-owner-approval.md`.
-**Post-approval tickets:** `LL-B-012` order stall in the back room, `LL-B-013` phone regular in debris, `LL-A-005` real washer/dryer models, `LL-B-014` tumbling clothes, `LL-B-015` full-bay carpet. Not part of the approved build.
+**Last updated:** 2026-11-04 (Phases 10-12 implemented on `phase-10-12`; awaiting owner review)
+**Current milestone:** M4 - Operations and M5 - Presentation, in progress on the combined branch
+**Current phase:** Phase 10 - Business operations, **implemented**; Phases 11 and 12, **partially implemented**
+**Next phase:** Phase 13 - Audio and presentation, **planned**
+**Active task:** None - combined Phase 10-12 branch is ready for review
+**Next recommended task:** Owner playtest of the combined branch, then close remaining Phase 11/12 items (`LL-F-010`, `LL-B-010`, `LL-B-011`, `LL-A-004`)
+**Review checkpoint:** Phase 9 merged to `main` at `1978451` (PR #2); tag `phase-9-complete`; combined work on `phase-10-12`.
+**Post-approval tickets:** `LL-B-012`, `LL-B-013`, `LL-A-005`, `LL-B-014`, `LL-B-015`, `LL-B-009` and `LL-F-009` are addressed in this branch; see `.orchestrator/BACKLOG.md` for evidence.
 
 > **Manager note (2026-11-01).** Sections below are historical and describe the
 > Phase 1-3 state; they are not rewritten wholesale. Current authoritative
 > status lives here, in `.orchestrator/ORCHESTRATION_PLAN.md`,
 > `.orchestrator/state.json`, and the dated files in `.orchestrator/reports/`.
+
+## Phase 10-12 implementation (2026-11-04, branch `phase-10-12`)
+
+- **Phase 10 (business operations):** `BusinessClock` (Day 1 08:00, 1 real second = 1 game minute, `N` skips a day), `ConsumableDefinition`/`ConsumableShelf`/`ConsumableStockService` (detergent, fragrance, plastic; 10 capacity, start at 5, one unit per purchase), `DropOffRack` (10 reserved slots), `BillingService` (rent 250 + electricity 90 + water 60 every 30 days, 3-day grace, one 10% late fee), `BusinessPanelView` HUD and `BillsPanelView` (`B`). `U` opens the purchase list. Stock blocks wash/dry/wrap and recovers after restock.
+- **Queue:** `CustomerSpawner` supports 10 concurrent customers, each reserving a rack slot; the single staff takes the oldest occupied slot, washes, dries, folds, wraps and returns the parcel to that slot. Customer patience is 600 s.
+- **Phase 11 (characters/voice):** phone regular moved out of the chair debris; ambient route ends at `Waypoint_Waiting` with a 20 s leg timeout; staff dialogue and voice removed; `NPC_OrderCustomer` uses the male DropOff/Norman clips and subtitles. The only staff voice set is female Cori, so the literal "male staff clips" request was adapted rather than copied.
+- **Phase 12 (art):** `WasherDetailed.fbx` / `DryerDetailed.fbx` (13.3k / 14.1k tris) replace all eight machine visuals with 100 URP material slots; drum clothes rotate while a cycle runs; full-bay 6x4 m casino-lattice carpet replaces the rug, gated to the expansion + carpet purchase; cabinet side art and a bay game poster; the post-unlock doorway reads clearly.
+- **Tests:** `BusinessOperationsTests`, `BusinessSceneTests` and `Phase12SceneTests` added; the queue tests isolate auto-spawn with `SetAutoStart(false)`. `OrderStallDiagnosticTests` completes an order with the player in the back room.
+- **Known gaps:** no authored carry/load/fold/handoff clips (CC0 pack only ships idle/walk); per-machine arcade variety (`LL-F-010`), staff machine rotation (`LL-B-010`), duplicate U-menu labels (`LL-B-011`), and neon/speaker polish (`LL-A-004`) remain open.
 
 ## 1. Verified configuration
 

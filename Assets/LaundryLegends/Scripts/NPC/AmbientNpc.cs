@@ -16,6 +16,7 @@ namespace LaundryLegends.NPC
         [SerializeField] private float _speed = 1.1f;
         [SerializeField] private float _stopDuration = 3f;
         [SerializeField] private float _respawnDelay = 3f;
+        [SerializeField] private float _legTimeoutSeconds = 20f;
         [SerializeField] private GameObject _carriedProp;
         [SerializeField] private AudioSource _voice;
         [SerializeField] private AudioClip _enterClip;
@@ -27,6 +28,7 @@ namespace LaundryLegends.NPC
 
         private int _index;
         private float _timer;
+        private float _legElapsed;
         private bool _waiting;
         private bool _hidden;
         private Vector3 _startPosition;
@@ -116,6 +118,17 @@ namespace LaundryLegends.NPC
             }
 
             Transform target = _waypoints[_index];
+            _legElapsed += Time.deltaTime;
+            if (_legElapsed >= _legTimeoutSeconds)
+            {
+                // A blocked leg must not freeze the loop forever. Skip the beat
+                // and continue to the next waypoint.
+                _legElapsed = 0f;
+                _waiting = true;
+                _timer = 0f;
+                return;
+            }
+
             Vector3 flatTarget = new Vector3(target.position.x, transform.position.y, target.position.z);
             transform.position = Vector3.MoveTowards(transform.position, flatTarget, _speed * Time.deltaTime);
             Vector3 direction = flatTarget - transform.position;
@@ -126,6 +139,7 @@ namespace LaundryLegends.NPC
 
             if (Vector3.Distance(transform.position, flatTarget) <= 0.08f)
             {
+                _legElapsed = 0f;
                 _waiting = true;
                 _timer = _stopDuration;
                 if (_index == 2)

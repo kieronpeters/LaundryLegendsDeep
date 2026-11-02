@@ -1,9 +1,9 @@
-{
+﻿{
     "schemaVersion":  1,
     "phase":  10,
     "name":  "Business operations and order flow",
-    "status":  "ready",
-    "updatedAt":  "2026-11-03T05:00:00+08:00",
+    "status":  "in_progress",
+    "updatedAt":  "2026-11-04T12:00:00+08:00",
     "tasks":  [
                   {
                       "id":  "LL-P10-001",
@@ -50,7 +50,7 @@
                   {
                       "id":  "LL-P10-002",
                       "title":  "Add the business clock and day counter",
-                      "status":  "ready",
+                      "status":  "complete",
                       "priority":  2,
                       "owner":  "ll-unity-dev",
                       "dependsOn":  [
@@ -88,7 +88,7 @@
                   {
                       "id":  "LL-P10-003",
                       "title":  "Add consumable shelves, restock purchases and stock state",
-                      "status":  "planned",
+                      "status":  "complete",
                       "priority":  3,
                       "owner":  "ll-unity-dev",
                       "dependsOn":  [
@@ -127,7 +127,7 @@
                   {
                       "id":  "LL-P10-004",
                       "title":  "Consume stock in processing and block empty stages",
-                      "status":  "planned",
+                      "status":  "complete",
                       "priority":  4,
                       "owner":  "ll-unity-dev",
                       "dependsOn":  [
@@ -165,7 +165,7 @@
                   {
                       "id":  "LL-P10-005",
                       "title":  "Raise the order queue to ten active orders",
-                      "status":  "planned",
+                      "status":  "complete",
                       "priority":  5,
                       "owner":  "ll-unity-dev",
                       "dependsOn":  [
@@ -204,7 +204,7 @@
                   {
                       "id":  "LL-P10-006",
                       "title":  "Add the ready-order shelf and ticket pickup",
-                      "status":  "planned",
+                      "status":  "complete",
                       "priority":  6,
                       "owner":  "ll-unity-dev",
                       "dependsOn":  [
@@ -242,7 +242,7 @@
                   {
                       "id":  "LL-P10-007",
                       "title":  "Add 30-day rent and utility billing with a bills menu",
-                      "status":  "planned",
+                      "status":  "complete",
                       "priority":  7,
                       "owner":  "ll-unity-dev",
                       "dependsOn":  [
@@ -280,7 +280,7 @@
                   {
                       "id":  "LL-P10-008",
                       "title":  "Surface clock, stock, queue and bills in the HUD",
-                      "status":  "planned",
+                      "status":  "complete",
                       "priority":  8,
                       "owner":  "ll-unity-dev",
                       "dependsOn":  [
@@ -319,7 +319,7 @@
                   {
                       "id":  "LL-P10-009",
                       "title":  "Balance and verify the combined stock/queue/bill loop",
-                      "status":  "planned",
+                      "status":  "complete",
                       "priority":  9,
                       "owner":  "ll-qa",
                       "dependsOn":  [
@@ -358,7 +358,7 @@
                   {
                       "id":  "LL-P10-010",
                       "title":  "Owner playtest and Phase 10 closeout",
-                      "status":  "planned",
+                      "status":  "approval_pending",
                       "priority":  10,
                       "owner":  "owner",
                       "dependsOn":  [

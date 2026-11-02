@@ -1,4 +1,5 @@
 using LaundryLegends.Arcade;
+using LaundryLegends.Business;
 using LaundryLegends.Core;
 using LaundryLegends.Economy;
 using LaundryLegends.Interaction;
@@ -9,8 +10,10 @@ using UnityEngine;
 namespace LaundryLegends.Customers
 {
     /// <summary>
-    /// Spawns one order customer at a time, hands it a fresh laundry item and
-    /// the shared ledger, and respawns after the previous customer leaves.
+    /// Spawns order customers up to a configurable maximum and gives each one its
+    /// own counter slot. Multiple customers can be in the shop at once, each with
+    /// a ticket; the staff processes their slots in order and returns each wrapped
+    /// parcel to the same slot for pickup.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class CustomerSpawner : MonoBehaviour
@@ -18,6 +21,7 @@ namespace LaundryLegends.Customers
         [SerializeField] private GameObject _customerPrefab;
         [SerializeField] private GameObject _laundryPrefab;
         [SerializeField] private CarrySlot _orderSlot;
+        [SerializeField] private DropOffRack _orderRack;
         [SerializeField] private Transform _streetPoint;
         [SerializeField] private Transform _doorPoint;
         [SerializeField] private Transform _counterPoint;
@@ -25,15 +29,24 @@ namespace LaundryLegends.Customers
         [SerializeField] private float _respawnDelay = 4f;
         [SerializeField] private bool _autoStart = true;
         [SerializeField] private int _price = 40;
+        [SerializeField, Min(1)] private int _maxCustomers = 10;
         [SerializeField] private LaundryReputation _reputation;
 
         private OrderLedger _ledger;
         private EconomyService _economy;
         private readonly List<UpgradeDefinition> _upgrades = new List<UpgradeDefinition>(UpgradeCatalogue.CreateDefault());
+        private readonly List<CustomerAgent> _activeCustomers = new List<CustomerAgent>();
         private float _respawnTimer;
-        private bool _waitingToRespawn;
 
-        public CustomerAgent ActiveCustomer { get; private set; }
+        /// <summary>The first active customer, kept for older tests and callers.</summary>
+        public CustomerAgent ActiveCustomer =>
+            _activeCustomers.Count > 0 ? _activeCustomers[0] : null;
+
+        public IReadOnlyList<CustomerAgent> ActiveCustomers => _activeCustomers;
+
+        public int MaxCustomers => _maxCustomers;
+
+        public DropOffRack OrderRack => _orderRack;
 
         public OrderLedger Ledger => _ledger;
 
@@ -68,6 +81,21 @@ namespace LaundryLegends.Customers
             WireReputation();
         }
 
+        public void SetOrderRack(DropOffRack rack)
+        {
+            _orderRack = rack;
+        }
+
+        public void SetAutoStart(bool autoStart)
+        {
+            _autoStart = autoStart;
+        }
+
+        public void SetMaxCustomers(int maximum)
+        {
+            _maxCustomers = Mathf.Max(1, maximum);
+        }
+
         public void Initialize(OrderLedger ledger, bool autoStart)
         {
             _ledger = ledger;
@@ -86,7 +114,7 @@ namespace LaundryLegends.Customers
 
             if (_autoStart)
             {
-                SpawnNow();
+                _respawnTimer = SpawnNow() != null ? Mathf.Max(0f, _respawnDelay) : 0.5f;
             }
         }
 
@@ -161,11 +189,6 @@ namespace LaundryLegends.Customers
             }
         }
 
-        /// <summary>
-        /// Hands the upgrade to the shared capability map. Both catalogue
-        /// upgrades are machine-speed effects, and each machine ignores a repeat
-        /// application, so re-running this after a reload is safe.
-        /// </summary>
         private static void ApplyUpgrade(UpgradeDefinition upgrade)
         {
             UpgradeEffects.Apply(
@@ -173,11 +196,15 @@ namespace LaundryLegends.Customers
                 UnityEngine.Object.FindObjectsByType<MachineLoadHook>(FindObjectsSortMode.None));
         }
 
+        /// <summary>
+        /// Spawns one customer if the shop has room and a counter slot is free.
+        /// Returns null when at capacity or there is nowhere to put the order.
+        /// </summary>
         public CustomerAgent SpawnNow()
         {
-            if (ActiveCustomer != null)
+            if (_activeCustomers.Count >= _maxCustomers)
             {
-                return ActiveCustomer;
+                return null;
             }
 
             if (_customerPrefab == null || _streetPoint == null)
@@ -187,6 +214,24 @@ namespace LaundryLegends.Customers
             }
 
             EnsureEconomy();
+
+            CarrySlot slot;
+            if (_orderRack != null)
+            {
+                slot = _orderRack.ReserveFreeSlot();
+                if (slot == null)
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                slot = _orderSlot;
+                if (slot == null || !slot.IsEmpty)
+                {
+                    return null;
+                }
+            }
 
             GameObject instance = Instantiate(_customerPrefab, _streetPoint.position, _streetPoint.rotation);
             instance.name = "OrderCustomer";
@@ -210,25 +255,57 @@ namespace LaundryLegends.Customers
             }
 
             LaundryItem item = CreateLaundryItem(instance.transform);
-            agent.Configure(_ledger, _orderSlot, _doorPoint, _counterPoint, _exitPoint, item);
+            agent.Configure(_ledger, slot, _doorPoint, _counterPoint, _exitPoint, item);
             agent.StateEntered += OnCustomerState;
 
-            ActiveCustomer = agent;
-            _waitingToRespawn = false;
-            Debug.Log("[CUSTOMER] A customer walked in.");
+            _activeCustomers.Add(agent);
+            Debug.Log($"[CUSTOMER] A customer walked in ({_activeCustomers.Count}/{_maxCustomers}).");
             return agent;
         }
 
         public void DisposeCurrent()
         {
-            if (ActiveCustomer == null)
+            if (_activeCustomers.Count == 0)
             {
                 return;
             }
 
-            ActiveCustomer.StateEntered -= OnCustomerState;
-            Destroy(ActiveCustomer.gameObject);
-            ActiveCustomer = null;
+            RemoveCustomer(_activeCustomers[0], true);
+        }
+
+        public void DisposeAll()
+        {
+            for (int i = _activeCustomers.Count - 1; i >= 0; i--)
+            {
+                RemoveCustomer(_activeCustomers[i], true);
+            }
+        }
+
+        private void RemoveCustomer(CustomerAgent agent, bool destroy)
+        {
+            if (agent == null)
+            {
+                return;
+            }
+
+            agent.StateEntered -= OnCustomerState;
+            CarrySlot slot = agent.OrderSlot;
+            _orderRack?.Release(slot);
+            if (slot != null)
+            {
+                LaundryItem leftover = slot.Take();
+                if (leftover != null)
+                {
+                    Destroy(leftover.gameObject);
+                }
+            }
+
+            _activeCustomers.Remove(agent);
+
+            if (destroy && agent.gameObject != null)
+            {
+                Destroy(agent.gameObject);
+            }
         }
 
         private LaundryItem CreateLaundryItem(Transform parent)
@@ -262,25 +339,24 @@ namespace LaundryLegends.Customers
                 return;
             }
 
-            agent.StateEntered -= OnCustomerState;
-            Destroy(agent.gameObject);
-            ActiveCustomer = null;
-            BeginRespawn();
+            RemoveCustomer(agent, true);
         }
 
-        /// <summary>Arms the respawn delay. Re-arming restarts the timer.</summary>
-        private void BeginRespawn()
+        private void CleanActive()
         {
-            _waitingToRespawn = true;
-            _respawnTimer = Mathf.Max(0f, _respawnDelay);
-            Debug.Log($"[CUSTOMER] Next customer in {_respawnTimer:0.0}s.");
+            for (int i = _activeCustomers.Count - 1; i >= 0; i--)
+            {
+                CustomerAgent agent = _activeCustomers[i];
+                if (agent == null || !agent.isActiveAndEnabled || agent.State == CustomerState.Done)
+                {
+                    RemoveCustomer(agent, agent != null);
+                }
+            }
         }
 
         /// <summary>
-        /// Serves one customer at a time and never lets a missing or interrupted
-        /// customer stop the shop. If the active customer disappears without
-        /// reaching Done, it is cleared and the respawn timer starts, so the loop
-        /// continues instead of stalling after one order.
+        /// Keeps the shop stocked with customers up to the configured maximum. The
+        /// timer is shared, so one customer arrives per respawn interval.
         /// </summary>
         private void Update()
         {
@@ -289,22 +365,9 @@ namespace LaundryLegends.Customers
                 return;
             }
 
-            if (ActiveCustomer == null)
-            {
-                if (!_waitingToRespawn)
-                {
-                    BeginRespawn();
-                }
-            }
-            else if (!ActiveCustomer.isActiveAndEnabled || ActiveCustomer.State == CustomerState.Done)
-            {
-                Debug.LogWarning("[CUSTOMER] The active customer stopped without reporting Done; clearing it and respawning.");
-                DisposeCurrent();
-                BeginRespawn();
-                return;
-            }
+            CleanActive();
 
-            if (!_waitingToRespawn)
+            if (_activeCustomers.Count >= _maxCustomers)
             {
                 return;
             }
@@ -315,12 +378,7 @@ namespace LaundryLegends.Customers
                 return;
             }
 
-            _waitingToRespawn = false;
-            if (SpawnNow() == null)
-            {
-                // Missing wiring must not turn into a spawn attempt every frame.
-                BeginRespawn();
-            }
+            _respawnTimer = SpawnNow() != null ? Mathf.Max(0f, _respawnDelay) : 0.5f;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections;
+using LaundryLegends.Business;
 using LaundryLegends.Interaction;
 using LaundryLegends.Laundry;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace LaundryLegends.NPC
 
         [Tooltip("Distance from the drop-off slot to the staff's stand point. The slot sits on the counter, so this must clear the counter's collider or overlap correction pins the staff short of it.")]
         [SerializeField] private float _dropOffStandDistance = 1.6f;
+        [SerializeField] private DropOffRack _orderRack;
         [SerializeField] private float _carryLiftSeconds = 0.45f;
         [SerializeField] private Vector3 _idlePoint = new Vector3(-4.6f, 0f, -0.9f);
 
@@ -27,6 +29,7 @@ namespace LaundryLegends.NPC
         private MachineLoadHook _dryer;
         private FoldingStation _folding;
         private CarrySlot _dropOff;
+        private CarrySlot _originSlot;
         private NpcLocomotion _locomotion;
         private CarrySocket _socket;
 
@@ -47,6 +50,11 @@ namespace LaundryLegends.NPC
             _walkSpeed = Mathf.Max(0.05f, speed);
         }
 
+        public void SetOrderRack(DropOffRack rack)
+        {
+            _orderRack = rack;
+        }
+
         private void Awake()
         {
             _locomotion = GetComponent<NpcLocomotion>();
@@ -58,13 +66,22 @@ namespace LaundryLegends.NPC
             _washer = FindMachine(MachineKind.Washer, true);
             _dryer = FindMachine(MachineKind.Dryer, true);
             _folding = Object.FindFirstObjectByType<FoldingStation>();
+            _orderRack = Object.FindFirstObjectByType<DropOffRack>();
             _dropOff = FindDropOff();
+            Debug.Log($"[STAFF] start rack={_orderRack != null} dropOff={_dropOff != null} washer={_washer != null} dryer={_dryer != null}");
 
             while (true)
             {
                 yield return WaitForWork();
-                yield return WalkTo(StandPoint(_dropOff.transform, _dropOffStandDistance));
-                if (!TakeFromSlot(_dropOff))
+                CarrySlot source = _originSlot != null ? _originSlot : _dropOff;
+                if (source == null)
+                {
+                    yield return null;
+                    continue;
+                }
+
+                yield return WalkTo(StandPoint(source.transform, _dropOffStandDistance));
+                if (!TakeFromSlot(source))
                 {
                     yield return null;
                     continue;
@@ -209,24 +226,59 @@ namespace LaundryLegends.NPC
         private bool CanStartCycle()
         {
             return !IsCarrying
-                && _dropOff != null
-                && !_dropOff.IsEmpty
+                && HasWork()
                 && _washer != null
                 && _washer.State == MachineState.Empty;
         }
 
+        private bool HasWork()
+        {
+            if (_orderRack != null)
+            {
+                return _orderRack.TryFindOccupied(out _);
+            }
+
+            return _dropOff != null && !_dropOff.IsEmpty;
+        }
+
         private IEnumerator WaitForWork()
         {
-            while (!CanStartCycle())
+            while (true)
             {
                 if (_washer == null || _washer.State != MachineState.Empty)
                 {
                     _washer = FindMachine(MachineKind.Washer, true);
                 }
 
-                if (_dropOff == null)
+                if (_orderRack == null)
                 {
-                    _dropOff = FindDropOff();
+                    _orderRack = Object.FindFirstObjectByType<DropOffRack>();
+                }
+
+                if (_orderRack != null)
+                {
+                    if (_orderRack.TryFindOccupied(out CarrySlot occupied))
+                    {
+                        _originSlot = occupied;
+                    }
+                    else
+                    {
+                        _originSlot = null;
+                    }
+                }
+                else
+                {
+                    if (_dropOff == null)
+                    {
+                        _dropOff = FindDropOff();
+                    }
+
+                    _originSlot = _dropOff;
+                }
+
+                if (CanStartCycle())
+                {
+                    yield break;
                 }
 
                 yield return new WaitForSeconds(0.25f);
@@ -266,7 +318,14 @@ namespace LaundryLegends.NPC
                     yield break;
                 }
 
-                yield return null;
+                if (machine.State == MachineState.Loaded)
+                {
+                    // Retry when a stock-out blocked the start; once the shelf is
+                    // restocked the same loaded order continues.
+                    machine.StartCycle();
+                }
+
+                yield return new WaitForSeconds(0.5f);
             }
         }
 
@@ -312,9 +371,11 @@ namespace LaundryLegends.NPC
             LaundryItem item = slot.Take();
             if (item == null)
             {
+                Debug.LogWarning($"[STAFF] slot {slot.name} was empty when taking.");
                 return false;
             }
 
+            Debug.Log($"[STAFF] took {item.TemplateId} from {slot.name}");
             return Carry(item);
         }
 
@@ -370,12 +431,37 @@ namespace LaundryLegends.NPC
                 yield break;
             }
 
-            bool wrapped = _folding != null && _folding.WrapItem(item);
+            bool wrapped = false;
+            while (_folding != null && !wrapped)
+            {
+                wrapped = _folding.WrapItem(item);
+                if (!wrapped)
+                {
+                    // Usually an empty plastic shelf; wait for a restock instead
+                    // of dropping the dried order on the floor.
+                    yield return new WaitForSeconds(0.5f);
+                }
+            }
+
             if (!wrapped)
             {
                 Carry(item);
+                yield break;
             }
 
+            LaundryItem wrappedItem = _folding.TakeWrappedItem();
+            if (wrappedItem != null)
+            {
+                CarrySlot target = _originSlot != null && _originSlot.IsEmpty
+                    ? _originSlot
+                    : _dropOff;
+                if (target == null || !target.TryPlace(wrappedItem))
+                {
+                    Carry(wrappedItem);
+                }
+            }
+
+            _originSlot = null;
             yield return new WaitForSeconds(_carryLiftSeconds);
         }
 
@@ -433,7 +519,11 @@ namespace LaundryLegends.NPC
                 _dropOff = FindDropOff();
             }
 
-            if (_dropOff == null || !_dropOff.TryPlace(item))
+            CarrySlot target = _originSlot != null && _originSlot.IsEmpty
+                ? _originSlot
+                : _dropOff;
+
+            if (target == null || !target.TryPlace(item))
             {
                 // Last resort: keep carrying rather than deleting or losing it.
                 Carry(item);
