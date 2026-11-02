@@ -1,11 +1,11 @@
 # Laundry Legends — Project State
 
-**Last updated:** 2026-11-02 (Phase 9 planning: contracts and task breakdown accepted)
+**Last updated:** 2026-11-02 (Phase 9 implementation complete; owner playtest pending)
 **Current milestone:** M1 - Playable laundry, **in progress**
 **Current phase:** Phase 9 - Arcade expansion, **in progress**
 **Next phase:** Phase 10 - TBD by roadmap review, **planned**
-**Active task:** LL-P9-002 - machine catalogue and multi-slot arcade service
-**Next recommended task:** Start LL-P9-002 (see `.orchestrator/tasks/phase-09.json`)
+**Active task:** LL-P9-010 - owner playtest and Phase 9 closeout
+**Next recommended task:** Run `Build/LaundryLegends.exe` and verify the dual-business loop (see `.orchestrator/reports/2026-11-02-phase9-arcade-expansion.md`)
 
 > **Manager note (2026-11-01).** Sections below are historical and describe the
 > Phase 1-3 state; they are not rewritten wholesale. Current authoritative
@@ -35,12 +35,12 @@
 
 ## 2. Existing project content
 
-- **Scenes:** `Bootstrap.unity`, `MainMenu.unity`, and `Laundromat.unity`. All are registered in build settings with Bootstrap at index 0. Bootstrap contains `GameSession` + `BootstrapController`; MainMenu contains `MainMenuController`; Laundromat contains a greybox room prefab, the Player prefab instance, and a directional light.
+- **Scenes:** `Bootstrap.unity`, `MainMenu.unity`, and `Laundromat.unity`. All are registered in build settings with Bootstrap at index 0. Bootstrap contains `GameSession` + `BootstrapController`; MainMenu contains `MainMenuController`; Laundromat contains a greybox room prefab, the Player prefab instance, and a directional light. The Phase 9 back room adds five arcade anchors (three open, two in a sealed expansion bay), three upgrade kiosks, a reputation tracker and an arcade HUD.
 - **Scripts:** runtime `GameState`, `GameSession`, `SceneRouter`, `BootstrapController`, `MainMenuController`, `FirstPersonController`, `PauseController`, `PlayerInteractor`, `IInteractable`, `SimpleInteractable`, `LaundryItemInteractable`, `CarryController`, `CarrySlot`, `LaundryItem`, `LaundryItemKind`, `MachineLoadHook`, `InteractionPromptView`, and an assembly marker. Editor tools: `SceneSetupTool`, `PlayerSetupTool`, `GreyboxSetupTool`, `Phase2SetupTool`, `Phase3SetupTool`.
 - **Assemblies:** `LaundryLegends.Runtime`, `LaundryLegends.Editor`, `LaundryLegends.Tests.EditMode`, `LaundryLegends.Tests.PlayMode`. Runtime, editor, and PlayMode test assemblies compile.
 - **Prefabs:** `Prefabs/Gameplay/Player.prefab` with CharacterController, first-person controller, pause controller, interaction raycast, carry controller with a `HoldAnchor` child, IMGUI interaction prompt view, child camera, and AudioListener. `Prefabs/Gameplay/Laundry/` with `Basket.prefab`, `LooseLaundry.prefab`, and `Bag.prefab`, each with a collider, rigidbody, custom Blender mesh/material, and unique template ID. `Prefabs/Gameplay/NPC/` with three CC0 static humanoid archetypes. `Prefabs/Environment/GreyboxRoom.prefab` with room shell, counter, folding table, eight-machine wall (one washer carries the Phase 3 load/unload hook and drum slot, all eight have additive front details), secret door, ceiling point lights, a south storefront (window openings/frames/glass, entrance frame with open glass leaves and threshold, and a minimal exterior ground/backdrop), a south-east waiting area, west-wall storage shelving, a north-west utility alcove with placeholder signage, and a service-panel/rolling-shelf cover in front of the secret door.
 - **Materials:** eleven flat Standard greybox materials under `Art/Materials`, including transparent `Grey_Glass`, emissive `Grey_Sky`, `Grey_Chair`, and `Grey_Sign`; no textures.
-- **Tests:** 147 EditMode and 59 PlayMode tests as of 2026-11-02 (PlayMode 57 passed, 2 explicit skipped). Coverage includes game state, economy and exactly-once income, orders and payment, two consecutive paid orders, a six-order $300 progression into the back room, machine loading, navigation and containment, secret room, shelf purchase reachability, HUD/prompt wiring and controls legend, arcade business loop, main-menu serialized handlers, and NPC anatomy. Test assemblies are isolated from runtime.
+- **Tests:** 158 EditMode and 61 PlayMode tests as of 2026-11-02 (PlayMode 59 passed, 2 explicit skipped). Coverage includes game state, economy and exactly-once income, orders and payment, two consecutive paid orders, a six-order $300 progression into the back room, machine loading, navigation and containment, secret room, shelf purchase reachability, HUD/prompt wiring and controls legend, the Phase 8 arcade business loop, Phase 9 multi-machine purchase/income, upgrades, reputation, upkeep, expansion walkability and milestones, main-menu serialized handlers, and NPC anatomy. Test assemblies are isolated from runtime.
 - **Folders:** full `Assets/LaundryLegends` feature tree for art, audio, prefabs, scenes, scripts, settings, ScriptableObjects, UI, editor, and tests.
 - **Textures/models/audio:** none; placeholder primitives only.
 - **Unity project files:** `Packages/manifest.json` (34 direct dependencies), `Packages/packages-lock.json` (37 resolved built-in packages), and generated files under `ProjectSettings/`.
@@ -165,6 +165,10 @@ See `.orchestrator/budgets.json`.
 **Phase 8 complete - fullscreen arcade session:** `2026-11-02-ll-p8-arcade` - **complete, owner verified**
 **Report:** `.orchestrator/reports/2026-11-02-playtest-fixes-and-visual-pass.md`
 **Result:** Cabinet interaction unblocked (it had no collider) and the cabinet now cuts to a fullscreen fight: one interaction starts a paid play, freezes the player and shop HUD, frees the cursor; Esc/Q leaves and the result hold returns to the shop. Owner played it and confirmed the payoff works. EditMode **147/147**, PlayMode **58 passed / 0 failed / 2 skipped**, build **198 MB / 0 errors**. Phase 8 acceptance is satisfied; the fighter visual upgrade is filed as backlog (`LL-F-006`).
+
+**Phase 9 implementation - arcade expansion:** `2026-11-02-ll-p9-implementation` - **complete, owner playtest pending**
+**Report:** `.orchestrator/reports/2026-11-02-phase9-arcade-expansion.md`
+**Result:** `ArcadeService` now owns five slots while slot 0 keeps the Phase 8 API. The back room has three open anchors plus two in a sealed expansion bay, three upgrade kiosks (neon/speakers/carpet) with income/traffic multipliers and scene decor, laundry reputation from paid/tip/abandon feeding footfall, scaled income with 120 s upkeep, five one-time milestones and an IMGUI arcade panel. The expansion bay is walkable and raises capacity from 3 to 5. Commit `5881945` on `phase-9`. EditMode **158/158**, PlayMode **59 passed / 0 failed / 2 explicit skipped**, explicit $300 progression **1/1**, build **198 MB / 0 errors** at `Build/LaundryLegends.exe`. Visual capture, build launch and the owner dual-business playtest are not run. Deferred: `LL-A-003` (unique cabinet art), `LL-A-004` (placeholder upgrade decor), `LL-B-008` (1080p visual/HUD review).
 
 **Playtest fixes, hidden room, character re-export:** `2026-11-02-ll-p8-finish` - **complete**
 **Report:** `.orchestrator/reports/2026-11-02-playtest-fixes-and-visual-pass.md`

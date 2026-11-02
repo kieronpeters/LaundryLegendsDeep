@@ -554,7 +554,7 @@ Arcade machine prefab/definition, arcade scripts, lights/audio placeholders, inc
 
 ## Phase 9 — Arcade expansion
 
-**Status:** In progress (2026-11-02) - decision 0012 accepted; ten tasks recorded; LL-P9-002 (catalogue + multi-slot service) is ready to start.
+**Status:** In progress (2026-11-02) - implementation and automated checks complete; owner playtest (LL-P9-010) is the remaining acceptance gate. Build: `Build/LaundryLegends.exe`.
 **Objective:** Add machines, upgrades, room expansion, decoration, improved income, progression, and meaningful laundry/arcade links.
 **Depends on:** Phase 8.
 

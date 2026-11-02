@@ -1,4 +1,4 @@
-﻿{
+{
     "schemaVersion":  1,
     "project":  {
                     "name":  "Laundry Legends",
@@ -9,7 +9,7 @@
                     "renderPipeline":  "Universal Render Pipeline 17.0.4",
                     "targetPlatform":  "Windows 64-bit"
                 },
-    "updatedAt":  "2026-11-02T20:30:00+08:00",
+    "updatedAt":  "2026-11-02T22:30:00+08:00",
     "currentMilestone":  {
                              "id":  "M1",
                              "name":  "Playable laundry",
@@ -20,7 +20,7 @@
                          "name":  "Arcade expansion",
                          "status":  "in_progress",
                          "file":  ".orchestrator/decisions/0012-phase-9-arcade-expansion.md",
-                         "completionNote":  "Phase 9 planning accepted in decision 0012: data-driven machine catalogue and multi-slot ArcadeService (slot 0 keeps the Phase 8 API), three install anchors, arcade upgrades/decorations, laundry reputation feeding traffic and income, upkeep, a visible expansion bay, and milestone HUD. Ten tasks recorded in .orchestrator/tasks/phase-09.json; LL-P9-001 complete, LL-P9-002 ready."
+                         "completionNote":  "Phase 9 implemented on the phase-9 branch: data-driven machine catalogue, multi-slot ArcadeService (slot 0 keeps the Phase 8 API), four extra anchors (three open, two sealed in the expansion bay), three upgrade kiosks with income/traffic multipliers and decor, laundry reputation (paid/tip/abandon/decay) feeding traffic and income, 120 s upkeep, a visible walkable expansion bay (capacity 3 -\u003e 5), five one-time milestones and an IMGUI arcade HUD. Automated evidence: EditMode 158/158, PlayMode 59 passed / 0 failed / 2 explicit skipped, explicit  progression 1/1, Windows build 198 MB / 0 errors at Build/LaundryLegends.exe. Owner playtest (LL-P9-010) remains the only open acceptance gate."
                      },
     "nextPhase":  {
                       "number":  10,
@@ -28,14 +28,14 @@
                       "status":  "planned",
                       "file":  "ROADMAP.md"
                   },
-    "activeTask":  "LL-P9-002",
-    "lastCompletedTask":  "LL-P9-001",
-    "nextTask":  "LL-P9-002",
+    "activeTask":  "LL-P9-010",
+    "lastCompletedTask":  "LL-P9-009",
+    "nextTask":  "LL-P9-010",
     "taskCounts":  {
-                       "complete":  54,
-                       "ready":  1,
-                       "planned":  8,
-                       "pending":  0,
+                       "complete":  63,
+                       "ready":  0,
+                       "planned":  0,
+                       "pending":  1,
                        "inProgress":  0,
                        "failed":  0,
                        "blocked":  0,
@@ -61,14 +61,14 @@
                           "16":  "planned"
                       },
     "git":  {
-                "branch":  "main",
+                "branch":  "phase-9",
                 "checkpointTag":  "phase-8-complete",
                 "checkpointCommit":  "ddf82639b992c1e1285a6a955ea9037c70c437d9",
                 "baselineCommit":  "b78218cccfeea741d3d227ffa95e679e9ba92a72",
                 "remote":  null,
-                "workingTree":  "phase-9 branch created from main (cf06745); Phase 8 merged and tagged phase-8-complete",
+                "workingTree":  "clean after implementation commit 5881945; Build/LaundryLegends.exe is git-ignored",
                 "unityProjectCommit":  "e244ba434ace223ff064df52b6a683615d9fb503",
-                "lastCheckpointAt":  "2026-11-02T21:30:00+08:00"
+                "lastCheckpointAt":  "2026-11-02T22:45:00+08:00"
             },
     "environment":  {
                         "opencodeCli":  "2.0.28",
@@ -162,23 +162,28 @@
                    "note":  "Procedural placeholders only: 3 scenes, 5 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
                },
     "lastRun":  {
-                    "id":  "2026-11-02-ll-p9-plan",
-                    "report":  ".orchestrator/decisions/0012-phase-9-arcade-expansion.md",
+                    "id":  "2026-11-02-ll-p9-implementation",
+                    "report":  ".orchestrator/reports/2026-11-02-phase9-arcade-expansion.md",
                     "status":  "complete",
-                    "startedAt":  "2026-11-02T21:00:00+08:00",
-                    "completedAt":  "2026-11-02T21:30:00+08:00",
+                    "startedAt":  "2026-11-02T21:30:00+08:00",
+                    "completedAt":  "2026-11-02T22:30:00+08:00",
                     "checks":  {
-                                   "contracts":  "accepted",
-                                   "tasks":  "10 recorded",
-                                   "branch":  "phase-9 created and pushed"
+                                   "compile":  "passed",
+                                   "editmode":  "158/158 passed",
+                                   "playmode":  "59 passed, 0 failed, 2 explicit skipped",
+                                   "progression_300":  "1/1 passed",
+                                   "build":  "198 MB, 0 errors, Build/LaundryLegends.exe",
+                                   "owner_playtest":  "pending"
                                },
                     "filesChanged":  [
-                                         ".orchestrator/decisions/0012-phase-9-arcade-expansion.md",
-                                         ".orchestrator/tasks/phase-09.json",
-                                         ".orchestrator/state.json",
-                                         "ROADMAP.md",
-                                         "PROJECT_STATE.md",
-                                         "DEVELOPMENT_LOG.md"
+                                         "Assets/LaundryLegends/Scripts/Arcade/**",
+                                         "Assets/LaundryLegends/Scripts/Customers/OrderLedger.cs",
+                                         "Assets/LaundryLegends/Scripts/Customers/CustomerSpawner.cs",
+                                         "Assets/LaundryLegends/Editor/HiddenRoomSetupTool.cs",
+                                         "Assets/LaundryLegends/Scenes/Laundromat.unity",
+                                         "Assets/LaundryLegends/ScriptableObjects/Arcade/**",
+                                         "Assets/LaundryLegends/Tests/EditMode/ArcadeExpansionTests.cs",
+                                         "Assets/LaundryLegends/Tests/PlayMode/ArcadeExpansionPlayModeTests.cs"
                                      ]
                 },
     "recovery":  {

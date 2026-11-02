@@ -13,10 +13,10 @@ holding area for work that belongs earlier.
 
 | Target | Tickets | Rule |
 |---|---|---|
-| Phase 11 - visual art | `LL-F-006`, `LL-B-004`, `LL-A-001`, `LL-A-002` | Art/visual work lands with the art phase. |
+| Phase 11 - visual art | `LL-F-006`, `LL-B-004`, `LL-A-001`, `LL-A-002`, `LL-A-003`, `LL-A-004` | Art/visual work lands with the art phase. |
 | Phase 12 - audio | (none open) | Audio tickets close with the audio phase. |
 | Phase 13 - save/progression | `LL-F-005`, `LL-B-005` | Save and board metadata work lands with the save phase. |
-| Phase 15 - QA/polish | `LL-B-002`, `LL-B-006`, `LL-F-002`, `LL-F-003`, `LL-T-003`, `LL-T-004`, `LL-T-005` | Must be fixed or explicitly accepted/deferred before Phase 16. |
+| Phase 15 - QA/polish | `LL-B-002`, `LL-B-006`, `LL-B-008`, `LL-F-002`, `LL-F-003`, `LL-T-003`, `LL-T-004`, `LL-T-005` | Must be fixed or explicitly accepted/deferred before Phase 16. |
 | Post-1.0 (P3 opportunity) | `LL-F-004`, `LL-F-007` | Park with a written reason; list in release known-issues. |
 
 **Phase 15 gate:** no open P0/P1; every P2 fixed or owner-accepted; every P3 either fixed or explicitly deferred to post-1.0. See `.orchestrator/GUARDRAILS.md` section 13.5.
@@ -45,6 +45,9 @@ holding area for work that belongs earlier.
 | LL-T-005 | tech-debt | P3 | Duplicate/competing wall-gap logic | The door cut, back-room west wall, threshold, and hinge are spread across three tools. Consolidate into one `BackRoomBuilder` with one gap constant. | `HiddenRoomSetupTool`, `PlaytestFixTool` |
 | LL-A-001 | art | P2 | First-person hands removed, not replaced | The placeholder hands were removed (weird shapes). If hands are wanted, author proper hands at the camera offset and re-enable `FirstPersonHandsView`. | `Player.prefab` |
 | LL-A-002 | art | P3 | Emissive/marquee on the cabinet | The marquee is flat pink; add an emissive texture and a subtle point light when the machine is active. | `Art/Materials/MAT_Cabinet*` |
+| LL-A-003 | art | P2 | Extra machines reuse the Fighter cabinet | Phase 9 duplicates the shipped cabinet for Racer and Puzzle. They differ in price/income/attract weight only; author distinct cabinet bodies and screen art so the three machines read apart at a glance. | `HiddenRoomSetupTool.CreateExtraMachineSlot`, scene `ArcadeCabinet_Racer/Puzzle` |
+| LL-A-004 | art | P2 | Arcade upgrade decor is placeholder primitives | The neon sign, speakers and rug are boxes. Replace with authored props and a lit marquee once art is available. | `HiddenRoomSetupTool.ConfigurePhase9`, `Decor_NeonSign`, `Decor_Speakers`, `Decor_ArcadeRug` |
+| LL-B-008 | bug | P2 | Phase 9 bay/kiosk/HUD visual review | No captures were taken of the expansion bay, upgrade kiosks or IMGUI arcade panel. Verify lighting, readability, overlap with the order ticket at 1920x1080, and that the open bay reads as a space. | Phase 9 report; `ArcadePanelView`, `ExpansionBay` |
 
 ## Resolved in the 2026-11-02 stabilization pass
 

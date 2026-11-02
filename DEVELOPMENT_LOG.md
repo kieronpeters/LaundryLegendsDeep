@@ -1271,3 +1271,37 @@ Phase 9 planning; backlog grooming (`LL-F-006` fighter visual upgrade, `LL-B-003
 ### Next
 
 LL-P9-002: machine catalogue + multi-slot service, keeping all Phase 8 tests green.
+
+## 2026-11-02 - Phase 9 implementation: arcade expansion
+
+**Phase:** 9 - Arcade expansion
+**Status:** Implementation and automated checks complete; owner playtest (LL-P9-010) pending.
+**Commit:** 5881945 on phase-9.
+
+### Implemented
+
+- ArcadeMachineDefinition catalogue (Fighter/Racer/Puzzle) and a multi-slot ArcadeService; slot 0 keeps every Phase 8 API.
+- Four extra anchors: Racer and Puzzle open at start, two more inside a sealed expansion bay. Purchase/placement is spatial; each debit happens once.
+- Three arcade upgrade kiosks (neon +10% income, speakers +20% traffic, carpet +10% both) with scene decor that appears on purchase.
+- LaundryReputation (0-100): +4 paid, +2 tip, -2 abandon, decay 1 per 120 s; footfall 0.8-1.4 feeds traffic cadence and visit income.
+- Scaled visit income and 120 s upkeep through EconomyService; unpayable upkeep is skipped and logged, never negative.
+- Visible, walkable 6x4 m expansion bay; capacity 3 -> 5, with two new anchors.
+- Five one-time milestones and an IMGUI arcade panel (machines, lifetime income, reputation/footfall, next milestone).
+- Scene rebuilt by HiddenRoomSetupTool: five anchors, three kiosks, expansion kiosk, decor, reputation and HUD.
+
+### Verification
+
+- EditMode **158/158**; PlayMode **59 passed / 0 failed / 2 explicit skipped**; explicit $300 progression **1/1**.
+- Windows build **198 MB / 0 errors** at Build/LaundryLegends.exe.
+- Long-session EditMode test reconciles laundry income, tips, reputation, arcade income, second-machine cost, expansion cost and the transaction log.
+- Not run: visual capture review, build launch smoke test, owner dual-business playtest.
+
+### Deferred
+
+- LL-A-003 unique Racer/Puzzle cabinet visuals (Phase 11).
+- LL-A-004 placeholder upgrade decor (Phase 11).
+- LL-B-008 1080p capture review of bay/kiosks/HUD (Phase 15).
+
+### Next
+
+LL-P9-010: owner runs Build/LaundryLegends.exe, plays the dual-business loop, and records the result.
