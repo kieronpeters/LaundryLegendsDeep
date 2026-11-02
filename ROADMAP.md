@@ -874,6 +874,7 @@ Balance ScriptableObjects, tutorial UI/triggers, tuning notes, playtest reports.
 - Visual/audio polish pass.
 - Accessibility review.
 - Gameplay bug fixes and edge-case hardening.
+- Backlog burn-down: every open bug closed, or explicitly accepted as a known issue with owner approval.
 - Updated documentation and known-issues list.
 
 ### Tasks
@@ -881,6 +882,7 @@ Balance ScriptableObjects, tutorial UI/triggers, tuning notes, playtest reports.
 - Run full regression suite.
 - Profile CPU/GPU/memory/load times.
 - Fix critical and high-severity defects.
+- Burn down the defect backlog: no P0/P1 left open, every P2 fixed or accepted, every P3 explicitly deferred.
 - Polish feedback, lighting, audio, UI.
 - Verify accessibility settings.
 - Freeze features and prepare release branch/candidate.
@@ -889,10 +891,22 @@ Balance ScriptableObjects, tutorial UI/triggers, tuning notes, playtest reports.
 
 - No known game-breaking defects.
 - All critical/high defects fixed or documented with approval.
+- Backlog gate met: every bug ticket is fixed, or accepted/deferred in writing by the owner; no P0/P1 remains open.
 - Performance meets the agreed target on the development machine.
 - Accessibility basics work.
 - Full loop and secret progression can be completed.
 - Human verifies final play quality.
+
+### Backlog gate
+
+Phase 15 is the final defect drain, not Phase 16. Phase 16 only builds and verifies the candidate; it does not absorb unfinished gameplay, art, or audio work.
+
+- Feature freeze starts when Phase 15 begins.
+- A ticket with a target phase must be closed in that phase; it may not silently roll into Phase 15.
+- At Phase 15 exit, every remaining ticket is either fixed, accepted as a known issue with owner approval, or explicitly deferred to post-1.0 with a written reason.
+- P3 opportunities that do not affect the shipped game (for example `LL-F-004` Unreal parity) may be parked as post-1.0, but they must be listed in the known-issues/release notes.
+- If a release blocker appears in Phase 16, fix only that blocker, re-run the gate, and rebuild. Do not reopen general backlog work there.
+
 
 ### Expected files/assets
 

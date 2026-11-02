@@ -6,6 +6,22 @@ move them to Ready/In Progress in the ticket board when they are picked up.
 Columns used: **P0** breaks the core loop, **P1** visible/playtest blocker, **P2** polish, **P3** later.
 Type: bug / feature / tech-debt / art / audio / docs.
 
+## Target phases
+
+Tickets close in their target phase. Phase 15 is the final defect drain; it is not a
+holding area for work that belongs earlier.
+
+| Target | Tickets | Rule |
+|---|---|---|
+| Phase 11 - visual art | `LL-F-006`, `LL-B-004`, `LL-A-001`, `LL-A-002` | Art/visual work lands with the art phase. |
+| Phase 12 - audio | (none open) | Audio tickets close with the audio phase. |
+| Phase 13 - save/progression | `LL-F-005`, `LL-B-005` | Save and board metadata work lands with the save phase. |
+| Phase 15 - QA/polish | `LL-B-002`, `LL-B-006`, `LL-F-002`, `LL-F-003`, `LL-T-003`, `LL-T-004`, `LL-T-005` | Must be fixed or explicitly accepted/deferred before Phase 16. |
+| Post-1.0 (P3 opportunity) | `LL-F-004` | Park with a written reason; list in release known-issues. |
+
+**Phase 15 gate:** no open P0/P1; every P2 fixed or owner-accepted; every P3 either fixed or explicitly deferred to post-1.0. See `.orchestrator/GUARDRAILS.md` section 13.5.
+
+
 | ID | Type | Pri | Title | Description | Evidence |
 |---|---|---|---|---|---|
 | LL-B-001 | bug | P2 | Wrapped bundle reads as a flat sheet | The authored `WrappedBundle.fbx` is a thin sheet; on the folding table it looks like paper, not a wrapped parcel. Replace the visual or rebuild it as a parcel (cloth + film) in Blender. | `TestResults/captures/08-wrapped-bundle.png` |
