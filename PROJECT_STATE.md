@@ -7,6 +7,7 @@
 **Active task:** None - Phase 9 closed
 **Next recommended task:** Start LL-P10-002 once Phase 10 is opened (see `.orchestrator/tasks/phase-10.json`)
 **Review checkpoint:** Phase 9 complete; tag `phase-9-complete`; owner approval report `.orchestrator/reports/2026-11-03-phase9-owner-approval.md`.
+**Post-approval tickets:** `LL-B-012` order stall in the back room, `LL-B-013` phone regular in debris, `LL-A-005` real washer/dryer models, `LL-B-014` tumbling clothes, `LL-B-015` full-bay carpet. Not part of the approved build.
 
 > **Manager note (2026-11-01).** Sections below are historical and describe the
 > Phase 1-3 state; they are not rewritten wholesale. Current authoritative

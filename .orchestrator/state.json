@@ -67,7 +67,7 @@
                 "checkpointCommit":  "1d71e77",
                 "baselineCommit":  "b78218cccfeea741d3d227ffa95e679e9ba92a72",
                 "remote":  null,
-                "workingTree":  "clean after the Phase 9 owner-approval commit",
+                "workingTree":  "post-approval tickets committed; approved build unchanged",
                 "unityProjectCommit":  "e244ba434ace223ff064df52b6a683615d9fb503",
                 "lastCheckpointAt":  "2026-11-03T04:00:00+08:00"
             },
@@ -173,7 +173,8 @@
                                    "editmode":  "159/159 passed",
                                    "playmode":  "59 passed, 0 failed, 2 explicit skipped",
                                    "build":  "199 MB, 0 errors",
-                                   "known_debt":  "LL-B-009, LL-B-010, LL-A-005, LL-A-006, LL-F-009, LL-F-010, LL-B-011, LL-B-008"
+                                   "known_debt":  "LL-B-009, LL-B-010, LL-A-005, LL-A-006, LL-F-009, LL-F-010, LL-B-011, LL-B-008",
+                                   "post_approval_tickets":  "LL-B-012 (P1), LL-B-013, LL-A-005, LL-B-014, LL-B-015"
                                },
                     "filesChanged":  [
                                          ".orchestrator/tasks/phase-09.json",

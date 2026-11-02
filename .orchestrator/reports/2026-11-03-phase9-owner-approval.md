@@ -52,3 +52,17 @@ criteria. Known follow-ups are listed below and are not phase blockers.
 Phase 10 (business operations) is planned: 10 active orders, consumable shelves,
 stock blocking, ready shelf, 24-hour clock and 30-day bills. Partial Phase 10
 work is preserved on the local `phase-10-wip` branch, not this release.
+
+## Post-approval playtest tickets (2026-11-03)
+
+Owner approved the build, then noted these for later. They are **not** part of
+the approved build and do not reopen Phase 9.
+
+- `LL-B-012` (P1): orders stop processing after walking from the shop into the back room. Needs a runtime audit; target Phase 10.
+- `LL-B-013` (P2): the phone regular stands in the storefront debris; move him to the waiting area. Target Phase 11.
+- `LL-A-005` (P2): replace all eight square-block appliances with real washer/dryer models. Target Phase 12.
+- `LL-B-014` (P2): the dryer drum face spins but the visible clothes do not tumble. Target Phase 12.
+- `LL-B-015` (P2): the expansion carpet is a small rug; make it a full-bay patterned bar/casino carpet, gated to the expansion. Target Phase 12.
+
+Partial experiments for the order-stall audit and drum-clothes work are preserved
+on the local `phase-9-postapproval-wip` branch, not in the approved build.

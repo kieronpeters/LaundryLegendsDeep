@@ -1380,3 +1380,15 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 - Known follow-ups ticketed: LL-B-009, LL-B-010, LL-A-005, LL-A-006, LL-F-009, LL-F-010, LL-B-011, LL-B-008.
 - Branch `phase-9`; tag `phase-9-complete`; merge request to `main` opened.
 - Phase 10 (business operations) is next; partial work remains on local `phase-10-wip`.
+
+## 2026-11-03 - Post-approval playtest tickets
+
+**Phase:** 9 post-approval
+**Status:** Approved build unchanged; follow-ups ticketed.
+
+- `LL-B-012`: orders stall when entering the back room (target Phase 10).
+- `LL-B-013`: phone regular stands in storefront debris (target Phase 11).
+- `LL-A-005`: replace the eight block appliances with real washer/dryer models (target Phase 12).
+- `LL-B-014`: dryer drum clothes do not tumble (target Phase 12).
+- `LL-B-015`: expansion carpet is a small rug; needs a full-bay bar/casino pattern (target Phase 12).
+- Experimental audit/drum changes preserved on local `phase-9-postapproval-wip`; no code changes in the approved build.
