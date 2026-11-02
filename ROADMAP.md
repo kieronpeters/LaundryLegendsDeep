@@ -1,8 +1,8 @@
 # Laundry Legends — Development Roadmap
 
-**Last updated:** 2026-10-30
-**Current phase:** 3 - in progress
-**Next phase:** 4 - planned
+**Last updated:** 2026-11-02
+**Current phase:** 9 - in progress
+**Next phase:** 10 - planned
 **Authority:** This roadmap defines sequence, dependencies, deliverables, and acceptance. Update it when a genuine dependency requires a change; record the reason in a decision record.
 
 ## 0. Status legend
@@ -24,9 +24,10 @@
 | M1 — Playable laundry | 1–5 | One complete, repeatable order loop |
 | M2 — Business and secret | 6–7 | Economy, upgrades, discovered hidden room |
 | M3 — Arcade | 8–9 | First machine, income, expansion |
-| M4 — Presentation | 10–12 | Characters, art, animation, audio |
-| M5 — Reliability | 13–14 | UI, save, balance, usability |
-| M6 — Release | 15–16 | QA, optimization, reproducible build |
+| M4 — Operations | 10 | Consumable stock, order queue, recurring bills |
+| M5 — Presentation | 11–13 | Characters, art, animation, audio |
+| M6 — Reliability | 14–15 | UI, save, balance, usability |
+| M7 — Release | 16–17 | QA, optimization, reproducible build |
 
 ## 2. Global validation policy
 
@@ -38,7 +39,7 @@ Every phase must run the applicable subset of:
 - Scene/prefab validation for missing references, duplicate IDs, and broken build settings.
 - Log inspection for exceptions, missing scripts, and import errors.
 - Manual playtest for feel, readability, visual quality, audio, and fun.
-- Release build validation in Phase 16.
+- Release build validation in Phase 17.
 
 A phase is not complete because code compiles. Human-sensitive criteria must be explicitly marked verified or pending.
 
@@ -554,7 +555,7 @@ Arcade machine prefab/definition, arcade scripts, lights/audio placeholders, inc
 
 ## Phase 9 — Arcade expansion
 
-**Status:** Planned
+**Status:** Complete (2026-11-03) - owner approved the round 2 fullscreen build; automated checks green; follow-up tickets recorded. Merge request to `main` open.
 **Objective:** Add machines, upgrades, room expansion, decoration, improved income, progression, and meaningful laundry/arcade links.
 **Depends on:** Phase 8.
 
@@ -604,11 +605,70 @@ Arcade definitions/prefabs, decoration props, expansion geometry, balance data, 
 
 ---
 
-## Phase 10 — Characters and animation
+## Phase 10 - Business operations and order flow
+
+**Status:** Planned - decision 0013 accepted; LL-P10-001 complete, LL-P10-002 ready after LL-P9-010.
+**Objective:** Turn the laundry into a stock-and-cash business: consumable shelves, a ten-order queue with a ready-order shelf, and a 24-hour calendar with recurring utility and rent bills.
+**Depends on:** Phases 5 and 9.
+
+### Deliverables
+
+- Consumable definitions and one shelf per item (detergent, fragrance, plastic), capacity 10 each, fixed unit cost, one unit per purchase.
+- Stock consumption in wash, dry and wrap; an empty shelf blocks that stage with a clear reason.
+- Order queue of up to 10 active orders; a ready-order shelf of up to 10 wrapped orders; customers collect by ticket.
+- Business clock from Day 1 onward with a 24-hour display and a skip-to-next-day action.
+- Utility/rent billing every 30 in-game days, with an itemized bill and a payable menu.
+- HUD for stock, queue, clock and bills.
+
+### Tasks
+
+- Lock the clock, stock, queue and billing contracts in a decision record.
+- Add the business clock and day counter.
+- Add consumable definitions, shelves, purchase/restock and stock HUD.
+- Consume stock in processing and block out-of-stock stages.
+- Raise the order queue to ten active orders with concurrent customers.
+- Add the ready-order shelf and ticket pickup.
+- Add the 30-day billing service and bills menu.
+- Surface stock, queue, clock and bills in the HUD.
+- Balance and verify the combined stock/queue/bill loop.
+- Owner playtest and phase closeout.
+
+### Acceptance criteria
+
+- Running out of a consumable blocks the relevant stage and is recoverable by buying stock.
+- Ten orders can be active at once, and multiple orders can be ready and waiting on the shelf.
+- A bill is generated every 30 in-game days with separate rent, electricity and water lines, and can be paid from a menu.
+- An unaffordable bill never makes the wallet negative; the late-payment rule is documented and recoverable.
+- The clock advances during play and can be skipped to the next day for testing.
+- HUD shows stock levels, queue state and the next bill.
+- Human verifies the stock/queue/billing loop is coherent and recoverable.
+
+### Expected files/assets
+
+`Scripts/Business/**`, `Scripts/Economy/**`, `Scripts/Customers/**`, `Scripts/UI/**`, `Editor/*SetupTool.cs`, `Scenes/Laundromat.unity`, tests.
+
+### Automated validation
+
+- EditMode/PlayMode suites, stock depletion/restock, five concurrent orders, multiple ready tickets, 30-day bill generation and payment, late-fee/no-negative-balance checks.
+
+### Human verification
+
+- Extended playtest covering stock, queue, ready shelf, day skip and a bill payment.
+
+### Risks
+
+- The queue refactor touches `CustomerSpawner` and `CustomerAgent`, which are shared by the Phase 5-9 loops.
+- Clock pacing can make bills either trivial or unreachable; keep the skip action and tune later.
+- Bills must stay recoverable when the wallet is empty.
+- Save/load is Phase 14; the clock and stock state must be serializable first.
+
+---
+
+## Phase 11 - Characters and animation
 
 **Status:** Planned
 **Objective:** Develop necessary player, customer, and other character assets, animations, movement, interactions, and visual feedback.
-**Depends on:** Phases 5 and 9 (stable loops and interactions).
+**Depends on:** Phases 5, 9 and 10 (stable loops and the business layer).
 
 ### Deliverables
 
@@ -655,11 +715,11 @@ Character models/rigs/animations, animator controllers, prefabs, materials, inve
 
 ---
 
-## Phase 11 — Visual art and environment
+## Phase 12 - Visual art and environment
 
 **Status:** Planned
 **Objective:** Improve models, materials, textures, lighting, signage, room identity, cozy laundry atmosphere, and colorful arcade.
-**Depends on:** Phases 2, 5, 7, 8, 9, 10.
+**Depends on:** Phases 2, 5, 7, 8, 9, 10 and 11.
 
 ### Deliverables
 
@@ -706,11 +766,11 @@ Models, textures, materials, lighting settings, post-processing profiles, signag
 
 ---
 
-## Phase 12 — Audio and presentation
+## Phase 13 - Audio and presentation
 
 **Status:** Planned
 **Objective:** Implement ambience, machine sounds, interaction effects, customer audio where appropriate, music, UI feedback, and audio settings.
-**Depends on:** Phases 5, 8, 9, 11.
+**Depends on:** Phases 5, 8, 9 and 12.
 
 ### Deliverables
 
@@ -758,11 +818,11 @@ Audio clips, mixer assets, audio scripts, subtitles, inventory rows, settings UI
 
 ---
 
-## Phase 13 — UI, saving, and progression reliability
+## Phase 14 - UI, saving, and progression reliability
 
 **Status:** Planned
 **Objective:** Implement menus, HUD, prompts, progression display, saving/loading, settings, and recovery from invalid data.
-**Depends on:** Phases 6, 9, 12.
+**Depends on:** Phases 6, 9, 10 and 13.
 
 ### Deliverables
 
@@ -810,11 +870,11 @@ UI prefabs, save scripts/DTOs, settings assets, tests, documentation.
 
 ---
 
-## Phase 14 — Balancing and usability
+## Phase 15 - Balancing and usability
 
 **Status:** Planned
 **Objective:** Tune difficulty, economy, pacing, tutorials, customer behavior, upgrade costs, and discovery-to-arcade progression.
-**Depends on:** Phase 13.
+**Depends on:** Phase 14.
 
 ### Deliverables
 
@@ -861,11 +921,11 @@ Balance ScriptableObjects, tutorial UI/triggers, tuning notes, playtest reports.
 
 ---
 
-## Phase 15 — QA, optimization, and polish
+## Phase 16 - QA, optimization, and polish
 
 **Status:** Planned
 **Objective:** Perform regression testing, bug fixing, performance work, visual/audio refinement, accessibility improvements, and gameplay testing.
-**Depends on:** Phase 14.
+**Depends on:** Phase 15.
 
 ### Deliverables
 
@@ -874,6 +934,7 @@ Balance ScriptableObjects, tutorial UI/triggers, tuning notes, playtest reports.
 - Visual/audio polish pass.
 - Accessibility review.
 - Gameplay bug fixes and edge-case hardening.
+- Backlog burn-down: every open bug closed, or explicitly accepted as a known issue with owner approval.
 - Updated documentation and known-issues list.
 
 ### Tasks
@@ -881,6 +942,7 @@ Balance ScriptableObjects, tutorial UI/triggers, tuning notes, playtest reports.
 - Run full regression suite.
 - Profile CPU/GPU/memory/load times.
 - Fix critical and high-severity defects.
+- Burn down the defect backlog: no P0/P1 left open, every P2 fixed or accepted, every P3 explicitly deferred.
 - Polish feedback, lighting, audio, UI.
 - Verify accessibility settings.
 - Freeze features and prepare release branch/candidate.
@@ -889,10 +951,22 @@ Balance ScriptableObjects, tutorial UI/triggers, tuning notes, playtest reports.
 
 - No known game-breaking defects.
 - All critical/high defects fixed or documented with approval.
+- Backlog gate met: every bug ticket is fixed, or accepted/deferred in writing by the owner; no P0/P1 remains open.
 - Performance meets the agreed target on the development machine.
 - Accessibility basics work.
 - Full loop and secret progression can be completed.
 - Human verifies final play quality.
+
+### Backlog gate
+
+Phase 16 is the final defect drain, not Phase 17. Phase 17 only builds and verifies the candidate; it does not absorb unfinished gameplay, art, or audio work.
+
+- Feature freeze starts when Phase 16 begins.
+- A ticket with a target phase must be closed in that phase; it may not silently roll into Phase 16.
+- At Phase 16 exit, every remaining ticket is either fixed, accepted as a known issue with owner approval, or explicitly deferred to post-1.0 with a written reason.
+- P3 opportunities that do not affect the shipped game (for example `LL-F-004` Unreal parity) may be parked as post-1.0, but they must be listed in the known-issues/release notes.
+- If a release blocker appears in Phase 17, fix only that blocker, re-run the gate, and rebuild. Do not reopen general backlog work there.
+
 
 ### Expected files/assets
 
@@ -914,11 +988,11 @@ Test reports, profiling captures, fix commits, polished assets, known-issues lis
 
 ---
 
-## Phase 16 — Build and release preparation
+## Phase 17 - Build and release preparation
 
 **Status:** Planned
 **Objective:** Create a reproducible PC build, validate startup/gameplay, verify essential features, prepare menus/settings, capture promotional material, and document release requirements.
-**Depends on:** Phase 15.
+**Depends on:** Phase 16.
 
 ### Deliverables
 

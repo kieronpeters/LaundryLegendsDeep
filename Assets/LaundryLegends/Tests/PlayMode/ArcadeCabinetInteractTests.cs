@@ -30,11 +30,15 @@ namespace LaundryLegends.Tests.PlayMode
         public IEnumerator CabinetIsTargetableAndStartsAPlay()
         {
             SecretRoomController room = Object.FindFirstObjectByType<SecretRoomController>();
-            ArcadeCabinet cabinet = Object.FindFirstObjectByType<ArcadeCabinet>(FindObjectsInactive.Include);
+            ArcadeService service = Object.FindFirstObjectByType<ArcadeService>();
+            ArcadeCabinet cabinet = service != null
+                ? service.GetSlotCabinet(0)
+                : Object.FindFirstObjectByType<ArcadeCabinet>(FindObjectsInactive.Include);
             PlayerInteractor interactor = Object.FindFirstObjectByType<PlayerInteractor>();
             FirstPersonController player = Object.FindFirstObjectByType<FirstPersonController>();
             CustomerSpawner spawner = Object.FindFirstObjectByType<CustomerSpawner>();
             Assert.IsNotNull(room);
+            Assert.IsNotNull(service);
             Assert.IsNotNull(cabinet);
             Assert.IsNotNull(interactor);
             Assert.IsNotNull(player);

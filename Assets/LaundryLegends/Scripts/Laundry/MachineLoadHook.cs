@@ -34,6 +34,8 @@ namespace LaundryLegends.Laundry
         [SerializeField] private float _dryerDuration = 25f;
         [SerializeField] private string _emptyPrompt = "Load washer";
         [SerializeField] private string _occupiedPrompt = "Take laundry";
+        [SerializeField] private Transform _drumVisual;
+        [SerializeField, Min(0f)] private float _drumDegreesPerSecond = 240f;
 
         private MachineState _state = MachineState.Empty;
         private float _elapsed;
@@ -44,6 +46,8 @@ namespace LaundryLegends.Laundry
         public MachineState State => _state;
         public bool IsRunning => _state == MachineState.Running;
         public bool IsComplete => _state == MachineState.Complete;
+
+        public Transform DrumVisual => _drumVisual;
 
         /// <summary>Authored cycle time, before any upgrade multiplier.</summary>
         public float Duration => _kind == MachineKind.Washer ? _washerDuration : _dryerDuration;
@@ -93,6 +97,11 @@ namespace LaundryLegends.Laundry
 
         private void Update()
         {
+            if (_drumVisual != null && _state == MachineState.Running)
+            {
+                _drumVisual.Rotate(0f, _drumDegreesPerSecond * Time.deltaTime, 0f, Space.Self);
+            }
+
             if (_state != MachineState.Running)
             {
                 return;
@@ -127,6 +136,11 @@ namespace LaundryLegends.Laundry
         {
             _slot = slot;
             _kind = kind;
+        }
+
+        public void SetDrumVisual(Transform drum)
+        {
+            _drumVisual = drum;
         }
 
         public bool StartCycle()

@@ -123,4 +123,57 @@ Draw-Border $g
 $bmp.Save((Join-Path $outDir 'spin_cycle_showdown.png'), [System.Drawing.Imaging.ImageFormat]::Png)
 $g.Dispose(); $bmp.Dispose()
 
+# ---------------- Poster 3: RACER RIOT ----------------
+$bmp, $g = New-Canvas
+$rect = New-Object System.Drawing.Rectangle 0, 0, $W, $H
+$grad = New-Object System.Drawing.Drawing2D.LinearGradientBrush $rect, ([System.Drawing.Color]::FromArgb(255, 18, 8, 42)), ([System.Drawing.Color]::FromArgb(255, 18, 70, 110)), 90
+$g.FillRectangle($grad, $rect)
+$grad.Dispose()
+Draw-Sunburst $g 256 430 ([System.Drawing.Color]::FromArgb(85, 255, 120, 40))
+
+# Speed lines
+$linePen = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(180, 120, 220, 255)), 8
+$linePen.StartCap = [System.Drawing.Drawing2D.LineCap]::Round
+$linePen.EndCap = [System.Drawing.Drawing2D.LineCap]::Round
+$g.DrawLine($linePen, 30, 420, 150, 420)
+$g.DrawLine($linePen, 20, 470, 130, 470)
+$g.DrawLine($linePen, 40, 520, 140, 520)
+$g.DrawLine($linePen, 370, 420, 490, 420)
+$g.DrawLine($linePen, 390, 470, 500, 470)
+$linePen.Dispose()
+
+# Car body
+$body = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 220, 64, 42))
+$g.FillRectangle($body, 105, 520, 302, 92)
+$roof = @(
+    (New-Object System.Drawing.PointF 160, 520),
+    (New-Object System.Drawing.PointF 210, 450),
+    (New-Object System.Drawing.PointF 330, 450),
+    (New-Object System.Drawing.PointF 385, 520)
+)
+$g.FillPolygon($body, $roof)
+$body.Dispose()
+$window = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 30, 40, 70))
+$g.FillRectangle($window, 205, 472, 118, 38)
+$window.Dispose()
+$wheel = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 12, 12, 16))
+$g.FillEllipse($wheel, 130, 585, 78, 78)
+$g.FillEllipse($wheel, 315, 585, 78, 78)
+$wheel.Dispose()
+$hub = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 210, 210, 220))
+$g.FillEllipse($hub, 156, 611, 26, 26)
+$g.FillEllipse($hub, 341, 611, 26, 26)
+$hub.Dispose()
+
+$band = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(215, 8, 8, 18))
+$g.FillRectangle($band, 0, 40, $W, 240)
+$band.Dispose()
+Draw-OutlinedText $g 'RACER' (New-Object System.Drawing.Font 'Impact', 66) 46 ([System.Drawing.Color]::FromArgb(255, 255, 170, 60))
+Draw-OutlinedText $g 'RIOT' (New-Object System.Drawing.Font 'Impact', 66) 116 ([System.Drawing.Color]::FromArgb(255, 255, 170, 60))
+Draw-OutlinedText $g 'TURBO RINSE' ([System.Drawing.Font]::new('Arial', 22, [System.Drawing.FontStyle]::Bold, [System.Drawing.GraphicsUnit]::Pixel)) 640 ([System.Drawing.Color]::FromArgb(255, 120, 230, 255))
+Draw-OutlinedText $g 'INSERT COIN' (New-Object System.Drawing.Font 'Arial', 18) 700 ([System.Drawing.Color]::FromArgb(255, 220, 220, 220))
+Draw-Border $g
+$bmp.Save((Join-Path $outDir 'racer_riot.png'), [System.Drawing.Imaging.ImageFormat]::Png)
+$g.Dispose(); $bmp.Dispose()
+
 "posters written to $outDir"

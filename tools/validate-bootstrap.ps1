@@ -187,8 +187,8 @@ if ($state) {
     if ($state.project.engineVersion -ne '6000.0.64f1') {
         Add-Error "Selected Unity version is not 6000.0.64f1: $($state.project.engineVersion)"
     }
-    if ($state.git.branch -ne 'main') {
-        Add-Error "Expected branch main, found: $($state.git.branch)"
+    if ($state.git.branch -ne 'main' -and $state.git.branch -notmatch '^phase-[0-9]+') {
+        Add-Error "Expected branch main or a phase branch, found: $($state.git.branch)"
     }
     if ($state.nextTask -and -not $knownTaskIds.ContainsKey($state.nextTask)) {
         Add-Error "state.nextTask does not exist: $($state.nextTask)"
@@ -282,8 +282,8 @@ if (-not (Test-Path -LiteralPath (Join-Path $root '.git'))) {
 }
 else {
     $branch = (git -C $root branch --show-current 2>$null)
-    if ($branch -ne 'main') {
-        Add-Error "Git branch is not main: $branch"
+    if ($branch -ne 'main' -and $branch -notmatch '^phase-[0-9]+') {
+        Add-Error "Git branch is not main or a phase branch: $branch"
     }
 
     $tracked = @(git -C $root ls-files 2>$null)

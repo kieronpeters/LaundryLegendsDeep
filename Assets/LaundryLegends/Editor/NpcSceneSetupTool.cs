@@ -37,12 +37,8 @@ namespace LaundryLegends.Editor
 
             GameObject attendant = Instantiate("NPC_Attendant", new Vector3(-4.6f, 0f, -1.9f), Quaternion.Euler(0f, 180f, 0f), root.transform);
             attendant.name = "Attendant";
-            attendant.AddComponent<NpcDialogue>().Configure(
-                "The weather is so humid today.",
-                "The kids are out of school this week.",
-                "Rainy season makes laundry take longer.",
-                "This load looks clean and fresh.",
-                "The dryers are warm today.");
+            // The staff works silently; the old laundry commentary was removed in
+            // the review pass. Keep the model and the LaundryStaff behaviour.
             attendant.AddComponent<LaundryStaff>();
 
             GameObject regular = Instantiate("NPC_Regular", new Vector3(5.6f, 0f, -5.2f), Quaternion.Euler(0f, 180f, 0f), root.transform);

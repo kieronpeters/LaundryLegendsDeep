@@ -1253,3 +1253,142 @@ Owner playtest, then Phase 9 planning or backlog grooming.
 ### Next
 
 Phase 9 planning; backlog grooming (`LL-F-006` fighter visual upgrade, `LL-B-003` doorway clearance, etc.).
+
+## 2026-11-02 - Phase 9 planning: arcade expansion
+
+**Phase:** 9 - Arcade expansion
+**Status:** In progress; LL-P9-001 complete, LL-P9-002 ready.
+
+### Planned
+
+- Decision `0012` locks the contracts: `ArcadeMachineDefinition` (cost, income, attract weight, footprint, prefab), a multi-slot `ArcadeService` whose slot 0 keeps the Phase 8 API, three install anchors, arcade upgrades/decorations with income/traffic multipliers, laundry reputation (paid/tip/abandon, decay) feeding footfall, scaled income plus 120 s upkeep, a visible 6x4 m expansion bay (capacity 3 -> 5), and milestone HUD entries.
+- Ten tasks recorded in `.orchestrator/tasks/phase-09.json` with scope, acceptance and checks.
+
+### Branch
+
+- `phase-9` created from `main` (`cf06745`) and pushed. Phase 8 is merged and tagged `phase-8-complete`.
+
+### Next
+
+LL-P9-002: machine catalogue + multi-slot service, keeping all Phase 8 tests green.
+
+## 2026-11-02 - Phase 9 implementation: arcade expansion
+
+**Phase:** 9 - Arcade expansion
+**Status:** Implementation and automated checks complete; owner playtest (LL-P9-010) pending.
+**Commit:** 5881945 on phase-9.
+
+### Implemented
+
+- ArcadeMachineDefinition catalogue (Fighter/Racer/Puzzle) and a multi-slot ArcadeService; slot 0 keeps every Phase 8 API.
+- Four extra anchors: Racer and Puzzle open at start, two more inside a sealed expansion bay. Purchase/placement is spatial; each debit happens once.
+- Three arcade upgrade kiosks (neon +10% income, speakers +20% traffic, carpet +10% both) with scene decor that appears on purchase.
+- LaundryReputation (0-100): +4 paid, +2 tip, -2 abandon, decay 1 per 120 s; footfall 0.8-1.4 feeds traffic cadence and visit income.
+- Scaled visit income and 120 s upkeep through EconomyService; unpayable upkeep is skipped and logged, never negative.
+- Visible, walkable 6x4 m expansion bay; capacity 3 -> 5, with two new anchors.
+- Five one-time milestones and an IMGUI arcade panel (machines, lifetime income, reputation/footfall, next milestone).
+- Scene rebuilt by HiddenRoomSetupTool: five anchors, three kiosks, expansion kiosk, decor, reputation and HUD.
+
+### Verification
+
+- EditMode **158/158**; PlayMode **59 passed / 0 failed / 2 explicit skipped**; explicit $300 progression **1/1**.
+- Windows build **198 MB / 0 errors** at Build/LaundryLegends.exe.
+- Long-session EditMode test reconciles laundry income, tips, reputation, arcade income, second-machine cost, expansion cost and the transaction log.
+- Not run: visual capture review, build launch smoke test, owner dual-business playtest.
+
+### Deferred
+
+- LL-A-003 unique Racer/Puzzle cabinet visuals (Phase 11).
+- LL-A-004 placeholder upgrade decor (Phase 11).
+- LL-B-008 1080p capture review of bay/kiosks/HUD (Phase 15).
+
+### Next
+
+LL-P9-010: owner runs Build/LaundryLegends.exe, plays the dual-business loop, and records the result.
+
+## 2026-11-02 - Phase 10 added: business operations and order flow
+
+**Phase:** 10 - Business operations and order flow (new; old phases 10-16 renumbered 11-17).
+**Status:** Planned; contracts accepted, implementation waits on the Phase 9 owner playtest.
+
+### Added
+
+- Decision  013: a serializable 24-hour BusinessClock (Day 1+, skip-to-next-day), consumable definitions and one shelf per item (detergent/fragrance/plastic, capacity 10, one unit per purchase), stock consumption in wash/dry/wrap with out-of-stock blocking, five active orders, a ten-slot ready-order shelf, and a 30-day itemized rent/electricity/water bill with a bills menu.
+- Balance placeholders: detergent , fragrance , plastic ; rent , electricity , water  per 30 days; 10% late fee after 3 days; 1 real second = 1 game minute.
+- phase-10.json with ten tasks; LL-P10-001 complete, LL-P10-002-010 planned.
+- Backlog umbrella LL-F-008; future art/audio/save/QA targets renumbered to Phases 12/13/14/16.
+
+### Tooling
+
+- alidate-bootstrap.ps1 now accepts main or a phase-N branch, matching the phase-branch workflow.
+- Removed the stale LL-P8-010 dependency from the Phase 9 plan; validation passes.
+
+### Next
+
+Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 10 is the active phase.
+
+## 2026-11-02 - Machine-wall fix and Phase 10 queue size
+
+**Phase:** 9 follow-up / Phase 10 contract
+**Status:** Fixed; build rebuilt; owner playtest pending.
+**Commit:** 8d86fef.
+
+### Fixed
+
+- Only Machine_1/2 had MachineLoadHook; the other six appliances were decorative, and LaundryStaff hard-coded those two names.
+- Wired all eight machines: 4 washers (1/3/5/7) and 4 dryers (2/4/6/8), each with a load slot and hook.
+- LaundryStaff now sorts hooks and uses the first free unit of the required kind, so any machine can serve an order and the player can occupy one without stalling the staff.
+- Updated the old Phase 3/4/appliance validators so they no longer assert a single-hook prototype.
+- Phase 10 active-order queue raised from 5 to 10 (ready shelf remains 10).
+
+### Verification
+
+- Machine validation: 4 washers + 4 dryers, each with a slot.
+- EditMode 158/158; PlayMode 59 passed / 0 failed / 2 explicit skipped; build 198 MB / 0 errors.
+- Not run: owner walk-the-wall check in the shipped build.
+
+### Deferred
+
+- LL-A-005: washer/dryer realism pass, target Phase 12.
+
+## 2026-11-03 - Phase 9 review checkpoint; Phase 10 paused
+
+**Phase:** 9 - Arcade expansion
+**Status:** Implementation and automated checks complete; owner playtest (LL-P9-010) pending. Branch clean for review.
+
+- Re-ran the explicit $300 progression on the clean branch: 1/1 passed.
+- Phase 10 implementation was started after the review request and has been moved off `phase-9` to the local `phase-10-wip` branch (commit 97897a2). It is incomplete: no scene wiring, UI, LaundryStaff rack handling, or tests yet. Do not review it as Phase 9.
+- `phase-9` remains at the reviewed implementation + machine-wall fix; no Phase 10 gameplay code is present.
+
+## 2026-11-03 - Review round 2 fixes
+
+**Phase:** 9 - review follow-up
+**Status:** Implemented and built; owner walkthrough pending.
+
+- U purchase menu replaces the ground pedestals; carpet gated to the expansion and moved into the bay; posters moved/added; secret-door leaf hidden; parcel bundle; rotating drums; hidden-room visitor removed, male order customer, silent staff.
+- Machines: 4 washers/4 dryers valid; drums assigned.
+- EditMode 159/159; PlayMode 59 passed / 0 failed / 2 explicit skipped; build 199 MB / 0 errors.
+- Follow-ups: LL-B-011 (menu bay labels), LL-A-006 (cabinet side art), LL-F-010 (different games per machine), LL-F-009 (male-customer voice).
+
+## 2026-11-03 - Phase 9 owner approval and closeout
+
+**Phase:** 9 - Arcade expansion
+**Status:** Complete. Owner approved the round 2 fullscreen build on 2026-11-03.
+
+- Phase 9 acceptance satisfied: 5 arcade slots, reputation-fed traffic/income, walkable expansion bay, combined economy, owner-verified dual-business loop.
+- Evidence: EditMode 159/159, PlayMode 59 passed / 0 failed / 2 explicit skipped, machine wall 4 washers/4 dryers, build 199 MB / 0 errors.
+- Known follow-ups ticketed: LL-B-009, LL-B-010, LL-A-005, LL-A-006, LL-F-009, LL-F-010, LL-B-011, LL-B-008.
+- Branch `phase-9`; tag `phase-9-complete`; merge request to `main` opened.
+- Phase 10 (business operations) is next; partial work remains on local `phase-10-wip`.
+
+## 2026-11-03 - Post-approval playtest tickets
+
+**Phase:** 9 post-approval
+**Status:** Approved build unchanged; follow-ups ticketed.
+
+- `LL-B-012`: orders stall when entering the back room (target Phase 10).
+- `LL-B-013`: phone regular stands in storefront debris (target Phase 11).
+- `LL-A-005`: replace the eight block appliances with real washer/dryer models (target Phase 12).
+- `LL-B-014`: dryer drum clothes do not tumble (target Phase 12).
+- `LL-B-015`: expansion carpet is a small rug; needs a full-bay bar/casino pattern (target Phase 12).
+- Experimental audit/drum changes preserved on local `phase-9-postapproval-wip`; no code changes in the approved build.

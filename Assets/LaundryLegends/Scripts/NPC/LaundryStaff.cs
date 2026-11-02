@@ -55,8 +55,8 @@ namespace LaundryLegends.NPC
 
         private IEnumerator Start()
         {
-            _washer = FindMachine("Machine_1");
-            _dryer = FindMachine("Machine_2");
+            _washer = FindMachine(MachineKind.Washer, true);
+            _dryer = FindMachine(MachineKind.Dryer, true);
             _folding = Object.FindFirstObjectByType<FoldingStation>();
             _dropOff = FindDropOff();
 
@@ -219,9 +219,9 @@ namespace LaundryLegends.NPC
         {
             while (!CanStartCycle())
             {
-                if (_washer == null)
+                if (_washer == null || _washer.State != MachineState.Empty)
                 {
-                    _washer = FindMachine("Machine_1");
+                    _washer = FindMachine(MachineKind.Washer, true);
                 }
 
                 if (_dropOff == null)
@@ -273,13 +273,13 @@ namespace LaundryLegends.NPC
         private IEnumerator WaitForDryer()
         {
             bool warned = false;
-            while (_dryer == null)
+            while (_dryer == null || _dryer.State != MachineState.Empty)
             {
-                _dryer = FindMachine("Machine_2");
+                _dryer = FindMachine(MachineKind.Dryer, true);
                 if (_dryer == null && !warned)
                 {
                     warned = true;
-                    Debug.LogWarning("[Staff] No dryer (Machine_2) found; waiting with the washed laundry in hand.");
+                    Debug.LogWarning("[Staff] No free dryer found; waiting with the washed laundry in hand.");
                 }
 
                 yield return null;
@@ -440,10 +440,31 @@ namespace LaundryLegends.NPC
             }
         }
 
-        private static MachineLoadHook FindMachine(string name)
+        private static MachineLoadHook FindMachine(MachineKind kind, bool requireEmpty)
         {
-            GameObject target = GameObject.Find(name);
-            return target != null ? target.GetComponent<MachineLoadHook>() : null;
+            MachineLoadHook[] hooks = Object.FindObjectsByType<MachineLoadHook>(FindObjectsSortMode.None);
+            System.Array.Sort(hooks, (a, b) => string.CompareOrdinal(a.gameObject.name, b.gameObject.name));
+
+            MachineLoadHook fallback = null;
+            foreach (MachineLoadHook hook in hooks)
+            {
+                if (hook == null || !hook.isActiveAndEnabled || hook.Kind != kind)
+                {
+                    continue;
+                }
+
+                if (!requireEmpty || hook.State == MachineState.Empty)
+                {
+                    return hook;
+                }
+
+                if (fallback == null)
+                {
+                    fallback = hook;
+                }
+            }
+
+            return requireEmpty ? null : fallback;
         }
 
         private static CarrySlot FindDropOff()

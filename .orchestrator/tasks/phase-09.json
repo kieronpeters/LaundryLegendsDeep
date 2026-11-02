@@ -1,0 +1,395 @@
+{
+    "schemaVersion":  1,
+    "phase":  9,
+    "name":  "Arcade expansion",
+    "status":  "in_progress",
+    "updatedAt":  "2026-11-03T04:00:00+08:00",
+    "tasks":  [
+                  {
+                      "id":  "LL-P9-001",
+                      "title":  "Lock Phase 9 arcade-expansion contracts and balance",
+                      "status":  "complete",
+                      "priority":  1,
+                      "owner":  "build",
+                      "dependsOn":  [
+
+                                    ],
+                      "objective":  "Define the machine catalogue, multi-slot ownership, upgrade effects, reputation-to-traffic formula, upkeep, expansion, milestones, and the task order before implementation.",
+                      "scope":  [
+                                    ".orchestrator/decisions/**",
+                                    ".orchestrator/tasks/phase-09.json",
+                                    ".orchestrator/state.json",
+                                    "ROADMAP.md",
+                                    "PROJECT_STATE.md"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/**",
+                                           "Packages/**",
+                                           "ProjectSettings/**"
+                                       ],
+                      "acceptance":  [
+                                         "Machine definition fields and costs are explicit",
+                                         "Multi-slot service keeps the single-machine API working",
+                                         "Reputation formula and traffic/income multipliers are defined",
+                                         "Upkeep and expansion rules are defined",
+                                         "Milestones and acceptance mapping are recorded"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Contract review",
+                                         "status":  "passed",
+                                         "command":  "Write decision 0012 and phase-09 tasks",
+                                         "evidence":  ".orchestrator/decisions/0012-phase-9-arcade-expansion.md"
+                                     }
+                                 ],
+                      "result":  "Decision 0012 accepted; ten tasks recorded.",
+                      "retryCount":  0,
+                      "startedAt":  "2026-11-02T21:00:00+08:00",
+                      "completedAt":  "2026-11-02T21:30:00+08:00"
+                  },
+                  {
+                      "id":  "LL-P9-002",
+                      "title":  "Add the arcade machine catalogue and multi-slot service",
+                      "status":  "complete",
+                      "priority":  2,
+                      "owner":  "ll-unity-dev",
+                      "dependsOn":  [
+                                        "LL-P9-001"
+                                    ],
+                      "objective":  "Replace the single-cabinet assumption with definitions and a slot list while keeping every Phase 8 behaviour and test intact.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Scripts/Arcade/**",
+                                    "Assets/LaundryLegends/ScriptableObjects/Arcade/**",
+                                    "Assets/LaundryLegends/Tests/**",
+                                    "Assets/LaundryLegends/Editor/Arcade*Tool.cs"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/Laundry/**",
+                                           "Assets/LaundryLegends/Scripts/Customers/**",
+                                           "Packages/**",
+                                           "ProjectSettings/**"
+                                       ],
+                      "acceptance":  [
+                                         "ArcadeMachineDefinition exists with id, cost, income, attract weight, footprint, prefab",
+                                         "ArcadeService owns a list of slots; slot 0 delegates the Phase 8 API",
+                                         "Existing EditMode/PlayMode arcade tests pass unchanged",
+                                         "A test adds a second slot and collects income from both"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Catalog + slots",
+                                         "status":  "passed",
+                                         "command":  "EditMode/PlayMode arcade suites",
+                                         "evidence":  "EditMode 158/158; PlayMode 59 passed / 0 failed / 2 explicit skipped (TestResults/phase9-*.xml)"
+                                     }
+                                 ],
+                      "result":  "Machine catalogue and multi-slot service implemented; slot 0 keeps the Phase 8 API.",
+                      "retryCount":  0,
+                      "startedAt":  "2026-11-02T21:30:00+08:00",
+                      "completedAt":  "2026-11-02T22:30:00+08:00"
+                  },
+                  {
+                      "id":  "LL-P9-003",
+                      "title":  "Purchase and place extra machines at install anchors",
+                      "status":  "complete",
+                      "priority":  3,
+                      "owner":  "ll-unity-dev",
+                      "dependsOn":  [
+                                        "LL-P9-002"
+                                    ],
+                      "objective":  "Let the player buy and place two more cabinets in the back room, with visible geometry and capacity rules.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Scripts/Arcade/**",
+                                    "Assets/LaundryLegends/Editor/HiddenRoomSetupTool.cs",
+                                    "Assets/LaundryLegends/Scenes/Laundromat.unity",
+                                    "Assets/LaundryLegends/Tests/**"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/Progression/SecretRoomController.cs"
+                                       ],
+                      "acceptance":  [
+                                         "Three install anchors exist in the back room",
+                                         "Each purchase debits exactly once and spawns the cabinet at its anchor",
+                                         "Capacity is enforced and reported in the prompt",
+                                         "PlayMode test buys a second machine and starts a play on it"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Multi-machine purchase",
+                                         "status":  "passed",
+                                         "command":  "PlayMode machine purchase test",
+                                         "evidence":  "ArcadeExpansionTests.SecondMachinePurchaseDebitsOnceAndPaysItsOwnIncome; ArcadeExpansionPlayModeTests.SceneHasSecondMachineAndVisibleExpansion"
+                                     }
+                                 ],
+                      "result":  "Four extra anchors authored; purchase, placement and capacity verified.",
+                      "retryCount":  0,
+                      "startedAt":  "2026-11-02T21:30:00+08:00",
+                      "completedAt":  "2026-11-02T22:30:00+08:00"
+                  },
+                  {
+                      "id":  "LL-P9-004",
+                      "title":  "Add arcade upgrades and decoration purchases",
+                      "status":  "complete",
+                      "priority":  4,
+                      "owner":  "ll-unity-dev",
+                      "dependsOn":  [
+                                        "LL-P9-002"
+                                    ],
+                      "objective":  "Add one-time arcade upgrades that raise income/traffic and visibly decorate the room.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Scripts/Arcade/**",
+                                    "Assets/LaundryLegends/Art/Materials/**",
+                                    "Assets/LaundryLegends/Editor/HiddenRoomSetupTool.cs",
+                                    "Assets/LaundryLegends/Tests/**"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/Economy/**"
+                                       ],
+                      "acceptance":  [
+                                         "Upgrade definitions carry cost, income and traffic multipliers",
+                                         "A kiosk interactable buys once through EconomyService and rejects repeats",
+                                         "Decor objects appear when bought",
+                                         "Income and interval reflect the multipliers in tests"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Upgrade purchase + effects",
+                                         "status":  "passed",
+                                         "command":  "EditMode/PlayMode upgrade tests",
+                                         "evidence":  "ArcadeExpansionTests.UpgradePurchaseRaisesIncomeAndTrafficAndRejectsRepeat; scene kiosk purchase assertion"
+                                     }
+                                 ],
+                      "result":  "Three upgrade kiosks buy once, apply multipliers and reveal decor.",
+                      "retryCount":  0,
+                      "startedAt":  "2026-11-02T21:30:00+08:00",
+                      "completedAt":  "2026-11-02T22:30:00+08:00"
+                  },
+                  {
+                      "id":  "LL-P9-005",
+                      "title":  "Connect laundry reputation to arcade traffic",
+                      "status":  "complete",
+                      "priority":  5,
+                      "owner":  "ll-unity-dev",
+                      "dependsOn":  [
+                                        "LL-P9-002"
+                                    ],
+                      "objective":  "Track laundry reputation from paid orders/tips/abandons and feed it into visitor interval and income.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Scripts/Arcade/**",
+                                    "Assets/LaundryLegends/Scripts/Customers/**",
+                                    "Assets/LaundryLegends/Tests/**",
+                                    "Assets/LaundryLegends/Scripts/UI/**"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/Progression/SecretRoomController.cs"
+                                       ],
+                      "acceptance":  [
+                                         "Reputation changes on paid, tipped and abandoned orders",
+                                         "Decay runs on the arcade tick and floors at zero",
+                                         "Traffic interval and income use the footfall multiplier",
+                                         "HUD shows reputation and its effect"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Reputation -\u003e traffic",
+                                         "status":  "passed",
+                                         "command":  "EditMode formula test; PlayMode traffic test",
+                                         "evidence":  "ArcadeExpansionTests.ReputationMovesFootfallAndDecaysToZero, OrderLedgerFeedsReputationOnPayTipAndAbandon, LongSession..."
+                                     }
+                                 ],
+                      "result":  "Laundry orders, tips and abandons feed reputation; footfall shortens cadence and raises income.",
+                      "retryCount":  0,
+                      "startedAt":  "2026-11-02T21:30:00+08:00",
+                      "completedAt":  "2026-11-02T22:30:00+08:00"
+                  },
+                  {
+                      "id":  "LL-P9-006",
+                      "title":  "Scale arcade income and add operating costs",
+                      "status":  "complete",
+                      "priority":  6,
+                      "owner":  "ll-unity-dev",
+                      "dependsOn":  [
+                                        "LL-P9-004",
+                                        "LL-P9-005"
+                                    ],
+                      "objective":  "Make the arcade a business with a margin: scaled visit income, a sub-linear machine factor, and periodic upkeep.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Scripts/Arcade/**",
+                                    "Assets/LaundryLegends/Tests/**",
+                                    "Assets/LaundryLegends/Scripts/UI/**"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/Economy/**"
+                                       ],
+                      "acceptance":  [
+                                         "Visit income includes definition, upgrade and footfall multipliers",
+                                         "Upkeep debits activeMachineCount per 120 s through EconomyService",
+                                         "Unpayable upkeep is skipped and logged, never negative",
+                                         "Exactly-once income still holds"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Income + upkeep",
+                                         "status":  "passed",
+                                         "command":  "EditMode economy/arcade tests",
+                                         "evidence":  "ArcadeExpansionTests.UpkeepDebitsActiveMachinesAndNeverGoesNegative; LongSession wallet reconciliation"
+                                     }
+                                 ],
+                      "result":  "Visit income includes definition/upgrade/footfall; 120 s upkeep reconciles and skips safely.",
+                      "retryCount":  0,
+                      "startedAt":  "2026-11-02T21:30:00+08:00",
+                      "completedAt":  "2026-11-02T22:30:00+08:00"
+                  },
+                  {
+                      "id":  "LL-P9-007",
+                      "title":  "Add the visible back-room expansion bay",
+                      "status":  "complete",
+                      "priority":  7,
+                      "owner":  "ll-unity-dev",
+                      "dependsOn":  [
+                                        "LL-P9-003"
+                                    ],
+                      "objective":  "Sell a spatial expansion that enlarges the arcade room and raises capacity from three to five machines.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Editor/HiddenRoomSetupTool.cs",
+                                    "Assets/LaundryLegends/Scripts/Arcade/**",
+                                    "Assets/LaundryLegends/Scenes/Laundromat.unity",
+                                    "Assets/LaundryLegends/Tests/**"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/Progression/SecretRoomController.cs"
+                                       ],
+                      "acceptance":  [
+                                         "Expansion purchase debits once and enables a new 6x4 m bay",
+                                         "Two more install anchors become available",
+                                         "Player can walk into the new bay (no fall-through)",
+                                         "Capture shows the visible extension"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Expansion geometry + capacity",
+                                         "status":  "passed",
+                                         "command":  "PlayMode walk-in test; capture",
+                                         "evidence":  "ArcadeExpansionTests.ExpansionOpensVisibleBayAndUnlocksSealedAnchors; PlayMode bay floor raycast"
+                                     }
+                                 ],
+                      "result":  "Expansion bay is visible, walkable and unlocks two more anchors.",
+                      "retryCount":  0,
+                      "startedAt":  "2026-11-02T21:30:00+08:00",
+                      "completedAt":  "2026-11-02T22:30:00+08:00"
+                  },
+                  {
+                      "id":  "LL-P9-008",
+                      "title":  "Add progression milestones and the arcade HUD panel",
+                      "status":  "complete",
+                      "priority":  8,
+                      "owner":  "ll-unity-dev",
+                      "dependsOn":  [
+                                        "LL-P9-003",
+                                        "LL-P9-006"
+                                    ],
+                      "objective":  "Surface machine growth, income, reputation and expansion as one-time milestones in the HUD.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Scripts/Arcade/**",
+                                    "Assets/LaundryLegends/Scripts/UI/**",
+                                    "Assets/LaundryLegends/Tests/**"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/Economy/**"
+                                       ],
+                      "acceptance":  [
+                                         "Milestones fire once and persist in ArcadeState",
+                                         "HUD shows arcade income, reputation and next milestone",
+                                         "Tests cover the first two milestones and the no-repeat rule"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Milestones + HUD",
+                                         "status":  "passed",
+                                         "command":  "EditMode/PlayMode milestone tests",
+                                         "evidence":  "ArcadeExpansionTests.MilestonesFireOnceAcrossMachinesIncomeReputationAndExpansion; PlayMode panel text"
+                                     }
+                                 ],
+                      "result":  "Five milestones fire once; HUD shows machines, income, reputation and next milestone.",
+                      "retryCount":  0,
+                      "startedAt":  "2026-11-02T21:30:00+08:00",
+                      "completedAt":  "2026-11-02T22:30:00+08:00"
+                  },
+                  {
+                      "id":  "LL-P9-009",
+                      "title":  "Verify the combined economy and progression",
+                      "status":  "complete",
+                      "priority":  9,
+                      "owner":  "ll-qa",
+                      "dependsOn":  [
+                                        "LL-P9-006",
+                                        "LL-P9-007",
+                                        "LL-P9-008"
+                                    ],
+                      "objective":  "Prove the dual-business loop scales, stays recoverable, and cannot duplicate money.",
+                      "scope":  [
+                                    "Assets/LaundryLegends/Tests/**",
+                                    "Assets/LaundryLegends/Editor/GameCaptureTool.cs",
+                                    ".orchestrator/reports/**"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/LaundryLegends/Scripts/**"
+                                       ],
+                      "acceptance":  [
+                                         "Long-session test: laundry orders -\u003e reputation -\u003e traffic -\u003e income -\u003e second machine -\u003e expansion",
+                                         "Upkeep/income never disagree with the wallet",
+                                         "Suite totals recorded; captures inspected",
+                                         "Balance placeholders adjusted or documented"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Long dual-business run",
+                                         "status":  "passed",
+                                         "command":  "EditMode + PlayMode suites; progression PlayMode scenario",
+                                         "evidence":  "EditMode 158/158, PlayMode 59 passed / 0 failed / 2 skipped, progression 1/1, build 198 MB / 0 errors"
+                                     }
+                                 ],
+                      "result":  "Full automated suites, explicit progression and Windows build succeeded.",
+                      "retryCount":  0,
+                      "startedAt":  "2026-11-02T21:30:00+08:00",
+                      "completedAt":  "2026-11-02T22:30:00+08:00"
+                  },
+                  {
+                      "id":  "LL-P9-010",
+                      "title":  "Owner playtest and Phase 9 closeout",
+                      "status":  "complete",
+                      "priority":  10,
+                      "owner":  "owner",
+                      "dependsOn":  [
+                                        "LL-P9-009"
+                                    ],
+                      "objective":  "Verify the dual-business loop is coherent and fun, then record completion.",
+                      "scope":  [
+                                    ".orchestrator/**",
+                                    "ROADMAP.md",
+                                    "PROJECT_STATE.md",
+                                    "DEVELOPMENT_LOG.md"
+                                ],
+                      "mustNotTouch":  [
+                                           "Assets/**"
+                                       ],
+                      "acceptance":  [
+                                         "Owner plays a long session across both businesses",
+                                         "Result recorded in a report",
+                                         "Phase 9 marked complete and tagged"
+                                     ],
+                      "checks":  [
+                                     {
+                                         "name":  "Owner playtest",
+                                         "status":  "passed",
+                                         "command":  "Human playtest",
+                                         "evidence":  "Owner approval 2026-11-03; build 199 MB / 0 errors; EditMode 159/159; PlayMode 59 passed / 0 failed / 2 explicit skipped."
+                                     }
+                                 ],
+                      "result":  "Owner approved the round 2 fullscreen build on 2026-11-03; Phase 9 accepted with documented follow-up tickets.",
+                      "retryCount":  0,
+                      "startedAt":  "2026-11-03T03:00:00+08:00",
+                      "completedAt":  "2026-11-03T04:00:00+08:00"
+                  }
+              ]
+}

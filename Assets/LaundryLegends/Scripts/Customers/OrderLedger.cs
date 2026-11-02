@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using LaundryLegends.Arcade;
 using LaundryLegends.Core;
 using LaundryLegends.Economy;
 using LaundryLegends.Laundry;
@@ -27,6 +28,8 @@ namespace LaundryLegends.Customers
         private readonly GameState _wallet;
 
         private readonly EconomyService _economy;
+
+        private LaundryReputation _reputation;
 
         private int _nextOrderNumber;
 
@@ -75,6 +78,18 @@ namespace LaundryLegends.Customers
 
         /// <summary>The economy service payments flow through, or null for the legacy path.</summary>
         public EconomyService Economy => _economy;
+
+        /// <summary>Optional laundry reputation fed by payments, tips and abandons.</summary>
+        public LaundryReputation Reputation => _reputation;
+
+        /// <summary>
+        /// Links the ledger to the reputation tracker. Safe to call repeatedly; the
+        /// spawner uses it when the ledger is injected before the scene is awake.
+        /// </summary>
+        public void SetReputation(LaundryReputation reputation)
+        {
+            _reputation = reputation;
+        }
 
         /// <summary>Number of registered orders in every state.</summary>
         public int Count => _ordersById.Count;
@@ -233,7 +248,13 @@ namespace LaundryLegends.Customers
         /// <summary>Abandons any order that has not already settled, leaving it registered and immutable.</summary>
         public bool TryAbandon(string orderId, float atSeconds)
         {
-            return Advance(orderId, OrderState.Abandoned, atSeconds, "abandoned");
+            if (!Advance(orderId, OrderState.Abandoned, atSeconds, "abandoned"))
+            {
+                return false;
+            }
+
+            _reputation?.RecordAbandonedOrder();
+            return true;
         }
 
         /// <summary>
@@ -287,6 +308,7 @@ namespace LaundryLegends.Customers
             LastResult = order.Price > 0
                 ? $"Paid {order.Price} for order {order.OrderId}."
                 : $"Order {order.OrderId} settled with no charge.";
+            _reputation?.RecordPaidOrder();
             return true;
         }
 
@@ -337,6 +359,7 @@ namespace LaundryLegends.Customers
 
             _tippedOrderIds.Add(order.OrderId);
             LastResult = $"Tip of {amount} for order {order.OrderId}.";
+            _reputation?.RecordTip();
             return true;
         }
 

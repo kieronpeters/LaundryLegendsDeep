@@ -24,6 +24,10 @@ namespace LaundryLegends.Arcade
         [SerializeField] private int _visitCount;
         [SerializeField] private int _nextVisitNumber = 1;
         [SerializeField] private List<string> _paidVisits = new List<string>();
+        [SerializeField] private List<string> _upgrades = new List<string>();
+        [SerializeField] private List<string> _milestones = new List<string>();
+        [SerializeField] private float _incomeMultiplier = 1f;
+        [SerializeField] private float _trafficMultiplier = 1f;
 
         /// <summary>Current machine lifecycle phase.</summary>
         public ArcadePhase Phase => _phase;
@@ -46,9 +50,31 @@ namespace LaundryLegends.Arcade
         /// <summary>Visit ids that have already been paid, in recording order.</summary>
         public IReadOnlyList<string> PaidVisits => _paidVisits;
 
+        /// <summary>Upgrade ids owned by the business, in purchase order.</summary>
+        public IReadOnlyList<string> Upgrades => _upgrades;
+
+        /// <summary>Milestone ids already earned, in earning order.</summary>
+        public IReadOnlyList<string> Milestones => _milestones;
+
+        /// <summary>Business-wide income multiplier from owned upgrades.</summary>
+        public float IncomeMultiplier => _incomeMultiplier;
+
+        /// <summary>Business-wide traffic multiplier from owned upgrades.</summary>
+        public float TrafficMultiplier => _trafficMultiplier;
+
         public bool HasPaidVisit(string visitId)
         {
             return !string.IsNullOrWhiteSpace(visitId) && _paidVisits.Contains(visitId);
+        }
+
+        public bool HasUpgrade(string upgradeId)
+        {
+            return !string.IsNullOrWhiteSpace(upgradeId) && _upgrades.Contains(upgradeId);
+        }
+
+        public bool HasMilestone(string milestoneId)
+        {
+            return !string.IsNullOrWhiteSpace(milestoneId) && _milestones.Contains(milestoneId);
         }
 
         /// <summary>
@@ -91,16 +117,27 @@ namespace LaundryLegends.Arcade
             return true;
         }
 
-        /// <summary>
-        /// Creates the next unique visit id, skipping ids already recorded as
-        /// paid so a restored state cannot hand out a colliding id.
-        /// </summary>
+        /// <summary>Creates the next unique visit id using the legacy prefix.</summary>
         public string CreateVisitId()
         {
+            return CreateVisitId("arcade-visit");
+        }
+
+        /// <summary>
+        /// Creates the next unique visit id for <paramref name="prefix"/>, skipping
+        /// ids already recorded so a restored state cannot hand out a collision.
+        /// </summary>
+        public string CreateVisitId(string prefix)
+        {
+            if (string.IsNullOrWhiteSpace(prefix))
+            {
+                prefix = "arcade-visit";
+            }
+
             string id;
             do
             {
-                id = $"arcade-visit-{_nextVisitNumber:D4}";
+                id = $"{prefix}-{_nextVisitNumber:D4}";
                 _nextVisitNumber++;
             }
             while (HasPaidVisit(id));
@@ -136,6 +173,35 @@ namespace LaundryLegends.Arcade
                 _paidVisits.RemoveAt(0);
             }
 
+            return true;
+        }
+
+        /// <summary>
+        /// Records one upgrade and folds its multipliers into the business totals.
+        /// A duplicate id is rejected without changing anything.
+        /// </summary>
+        public bool RecordUpgrade(string upgradeId, float incomeMultiplier, float trafficMultiplier)
+        {
+            if (string.IsNullOrWhiteSpace(upgradeId) || HasUpgrade(upgradeId))
+            {
+                return false;
+            }
+
+            _upgrades.Add(upgradeId);
+            _incomeMultiplier = Mathf.Max(0.01f, _incomeMultiplier * Mathf.Max(0.01f, incomeMultiplier));
+            _trafficMultiplier = Mathf.Max(0.01f, _trafficMultiplier * Mathf.Max(0.01f, trafficMultiplier));
+            return true;
+        }
+
+        /// <summary>Records one milestone exactly once.</summary>
+        public bool RecordMilestone(string milestoneId)
+        {
+            if (string.IsNullOrWhiteSpace(milestoneId) || HasMilestone(milestoneId))
+            {
+                return false;
+            }
+
+            _milestones.Add(milestoneId);
             return true;
         }
     }

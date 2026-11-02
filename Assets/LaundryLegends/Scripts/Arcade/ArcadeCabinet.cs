@@ -16,6 +16,7 @@ namespace LaundryLegends.Arcade
         [SerializeField] private FightGameView _view;
         [SerializeField] private CustomerSpawner _spawner;
         [SerializeField] private ArcadeService _service;
+        [SerializeField, Min(0)] private int _slotIndex;
         [SerializeField] private int _cost = 2;
         [SerializeField] private string _prompt = "Play arcade";
 
@@ -23,11 +24,14 @@ namespace LaundryLegends.Arcade
 
         public bool IsPlaying => _session != null;
 
+        /// <summary>Which service slot powers this cabinet. Slot 0 is the original machine.</summary>
+        public int SlotIndex => _slotIndex;
+
         /// <summary>
         /// False until the machine has been bought and activated. A cabinet with no
         /// service wired stays unlocked so isolated tests and prefab authoring work.
         /// </summary>
-        public bool IsUnlocked => _service == null || _service.IsActive;
+        public bool IsUnlocked => _service == null || _service.IsSlotActive(_slotIndex);
 
         public int PlaysStarted { get; private set; }
 
@@ -41,10 +45,17 @@ namespace LaundryLegends.Arcade
             _spawner = spawner;
         }
 
-        /// <summary>Links the cabinet to the business loop that powers it.</summary>
+        /// <summary>Links the cabinet to the business loop that powers it (slot 0).</summary>
         public void SetService(ArcadeService service)
         {
+            SetService(service, 0);
+        }
+
+        /// <summary>Links the cabinet to one slot of the business loop.</summary>
+        public void SetService(ArcadeService service, int slotIndex)
+        {
             _service = service;
+            _slotIndex = Mathf.Max(0, slotIndex);
         }
 
         public string InteractionPrompt => IsPlaying

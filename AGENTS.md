@@ -90,6 +90,7 @@ Every task ends with:
 - Checks not performed
 - Git checkpoint or commit
 - Review outcome
+- Deferred defects (ticket ID, severity, target phase)
 - Known risks and limitations
 - Approval required, if any
 - Recommended next task

@@ -6,6 +6,24 @@ move them to Ready/In Progress in the ticket board when they are picked up.
 Columns used: **P0** breaks the core loop, **P1** visible/playtest blocker, **P2** polish, **P3** later.
 Type: bug / feature / tech-debt / art / audio / docs.
 
+## Target phases
+
+Tickets close in their target phase. Phase 16 is the final defect drain; it is not a
+holding area for work that belongs earlier.
+
+| Target | Tickets | Rule |
+|---|---|---|
+| Phase 10 - business operations | `LL-F-008`, `LL-B-010`, `LL-B-012` | Stock, order queue and bills; the order-stall investigation lands here. |
+| Phase 11 - characters and animation | `LL-B-009`, `LL-B-013`, `LL-F-009` | NPC route, model and voice cleanup lands here. |
+| Phase 12 - visual art | `LL-F-006`, `LL-B-004`, `LL-A-001`, `LL-A-002`, `LL-A-003`, `LL-A-004`, `LL-A-005`, `LL-A-006`, `LL-B-014`, `LL-B-015`, `LL-F-010` | Art/visual work and arcade presentation land with the art phase. |
+| Phase 13 - audio | (none open) | Audio tickets close with the audio phase. |
+| Phase 14 - save/progression | `LL-F-005`, `LL-B-005` | Save and board metadata work lands with the save phase. |
+| Phase 16 - QA/polish | `LL-B-002`, `LL-B-006`, `LL-B-008`, `LL-F-002`, `LL-F-003`, `LL-T-003`, `LL-T-004`, `LL-T-005` | Must be fixed or explicitly accepted/deferred before Phase 17. |
+| Post-1.0 (P3 opportunity) | `LL-F-004`, `LL-F-007` | Park with a written reason; list in release known-issues. |
+
+**Phase 16 gate:** no open P0/P1; every P2 fixed or owner-accepted; every P3 either fixed or explicitly deferred to post-1.0. See `.orchestrator/GUARDRAILS.md` section 13.5.
+
+
 | ID | Type | Pri | Title | Description | Evidence |
 |---|---|---|---|---|---|
 | LL-B-001 | bug | P2 | Wrapped bundle reads as a flat sheet | The authored `WrappedBundle.fbx` is a thin sheet; on the folding table it looks like paper, not a wrapped parcel. Replace the visual or rebuild it as a parcel (cloth + film) in Blender. | `TestResults/captures/08-wrapped-bundle.png` |
@@ -21,6 +39,8 @@ Type: bug / feature / tech-debt / art / audio / docs.
 | LL-F-004 | feature | P3 | Unreal sample parity check | `UnrealSample/` has a ready project + `build_laundromat_scene.py`; install UE5 on a capable machine and run it to compare the scene. | `.orchestrator/reports/2026-11-02-unreal-sample.md` |
 | LL-F-005 | feature | P3 | Save/load arcade state | Phase 8 acceptance says arcade state persists once saving exists. Add arcade + room state to the save payload. | ROADMAP Phase 8 |
 | LL-F-006 | feature | P2 | Fighter visual upgrade toward SF2 | The cabinet fight is a readable 512x384 pixel homage with blocky fighters. Improve with sprite-style limbs and idle/punch/kick/hit poses, parallax background, portrait boxes, round pips, FIGHT/KO banners, hit sparks and screen shake. True SF2 fidelity needs imported sprite art (AI image credits or a licensed/free pack); the current renderer is procedural. | `FightGameView.cs`, `FightGame.cs`; owner request 2026-11-02 |
+| LL-F-007 | feature | P3 | Post-release Unreal vertical slice | After the Unity release is frozen, evaluate an Unreal Engine 5 vertical slice built from the shipped design and assets (FBX, textures, audio, animation, balance) plus the existing `UnrealSample/build_laundromat_scene.py`. This is a remake/sample, not a code port; it needs a decision record, a scoped slice, and a machine that meets UE5 specs. Keep `UnrealSample/` as the starting point. | conversation 2026-11-02; `UnrealSample/README.md` |
+| LL-F-008 | feature | P1 | Consumables, order queue and 30-day bills | Phase 10 feature block: detergent/fragrance/plastic shelves (10 each, one unit per purchase), stock consumption with out-of-stock blocking, ten active orders, a ten-slot ready-order shelf, and rent/electricity/water bills every 30 in-game days. | decision 0013; `phase-10.json` |
 | LL-T-001 | tech-debt | P2 | `CharacterAppearanceFixTool` hard-codes outfit names | It was switched to `female_casualsuit01`; make the material mapping data-driven from the FBX renderer names so a re-export cannot silently keep an old suit. | `Editor/CharacterAppearanceFixTool.cs` |
 | LL-T-002 | tech-debt | P2 | MakeHuman export needs a one-time bootstrap | `settings.ini` (55 bytes, UTF-8 no BOM) and the plugin copy are required; document it in `ASSET_PIPELINE.md` or auto-create it in `makehuman_npc_run.ps1`. | `ArtSource/Downloads/MakeHuman/userhome` |
 | LL-T-003 | tech-debt | P3 | Scene repair tools mutate the scene in place | `PlaytestFixTool`, `VisualPolishTool`, `HiddenRoomSetupTool` are idempotent but write the scene; add a dry-run/validate-only switch and a single "run all" entry point. | `Editor/*FixTool.cs` |
@@ -28,6 +48,20 @@ Type: bug / feature / tech-debt / art / audio / docs.
 | LL-T-005 | tech-debt | P3 | Duplicate/competing wall-gap logic | The door cut, back-room west wall, threshold, and hinge are spread across three tools. Consolidate into one `BackRoomBuilder` with one gap constant. | `HiddenRoomSetupTool`, `PlaytestFixTool` |
 | LL-A-001 | art | P2 | First-person hands removed, not replaced | The placeholder hands were removed (weird shapes). If hands are wanted, author proper hands at the camera offset and re-enable `FirstPersonHandsView`. | `Player.prefab` |
 | LL-A-002 | art | P3 | Emissive/marquee on the cabinet | The marquee is flat pink; add an emissive texture and a subtle point light when the machine is active. | `Art/Materials/MAT_Cabinet*` |
+| LL-A-003 | art | P2 | Extra machines reuse the Fighter cabinet | Phase 9 duplicates the shipped cabinet for Racer and Puzzle. They differ in price/income/attract weight only; author distinct cabinet bodies and screen art so the three machines read apart at a glance. | `HiddenRoomSetupTool.CreateExtraMachineSlot`, scene `ArcadeCabinet_Racer/Puzzle` |
+| LL-A-004 | art | P2 | Arcade upgrade decor is placeholder primitives | The neon sign, speakers and rug are boxes. Replace with authored props and a lit marquee once art is available. | `HiddenRoomSetupTool.ConfigurePhase9`, `Decor_NeonSign`, `Decor_Speakers`, `Decor_ArcadeRug` |
+| LL-A-005 | art | P2 | Replace the washer/dryer blocks with real appliance models | The eight machines still read as square blocks. Replace all eight with actual front-load washer and dryer models: rounded body, recessed door glass, control panel, detergent drawer, drum, feet, hoses and material wear. Keep the existing load/dry hooks and drum anchors. | review 2026-11-03; `TestResults/captures/03-machine-wall.png`; `ApplianceHD.blend` |
+| LL-A-006 | art | P2 | Arcade cabinet side art and marquee | The cabinet is plain on the sides and has no side logo. Add side decals, a lit marquee, a control-panel overlay and a screen bezel so it reads as a real cabinet from every angle. | review 2026-11-03; `ArcadeCabinet.fbx` |
+| LL-F-010 | feature | P2 | Per-machine arcade game variety | Racer and Puzzle currently launch the same fight game. Give at least one extra machine a distinct mode (the existing maze game is a candidate) or a visibly different opponent/palette so the catalogue is not cosmetic. | review 2026-11-03; `ArcadeCabinet`, `FightSession`, `MazeGame` |
+| LL-B-011 | bug | P3 | Purchase menu shows two Racer and two Puzzle rows | The initial and bay anchors share definition names, so the U list shows duplicate labels. Append "(bay)" or a slot number to the bay entries. | review 2026-11-03; `PurchaseMenuView.Rebuild` |
+| LL-B-012 | bug | P1 | Orders stop processing when entering the back room | Owner observed the order loop stall after walking from the main shop into the hidden room. Needs a runtime audit of the customer spawner, staff, drop-off rack and any room/culling state that changes on entry. | review 2026-11-03 |
+| LL-B-013 | bug | P2 | Phone regular stands in storefront debris | The ambient `PhoneRegular` is placed in the window debris at `(5.6, 0, -5.2)`. Move him into the waiting area or remove the placement. | review 2026-11-03; `NpcSceneSetupTool` |
+| LL-B-014 | bug | P2 | Dryer drum clothes do not tumble | The drum face spins, but the visible clothes stay static. Make the drum's clothes the visible spinner, or parent the loaded item to the drum while running. | review 2026-11-03; `MachineLoadHook`, `MachineSetupTool` |
+| LL-B-015 | bug | P2 | Expansion carpet is a small rug | The carpet upgrade covers only a 2.6x1.6 m rug on the white bay floor. Replace it with a full-bay patterned carpet in a bar/casino style, distinct from the back-room carpet, gated to the expansion. | review 2026-11-03; `HiddenRoomSetupTool` |
+| LL-B-009 | bug | P2 | Ambient customer stands on the counter | The second woman is the ambient `StreetCustomer`; her route's counter waypoint sits on the counter and she has no order slot by design, so she looks stuck and cannot hand off her parcel. Move the waypoint into the waiting area and stop her carrying the parcel to the counter, or remove her until the queue rework. | review 2026-11-03; `NpcSceneSetupTool` waypoints |
+| LL-B-010 | bug | P2 | Staff reuses the leftmost washer/dryer | `LaundryStaff` sorts hooks by name and picks the first empty one, so it reuses `Machine_1/2` whenever they are free. It only moves to the others if the preferred unit is occupied. Add least-recently-used or round-robin selection so all eight are exercised. | review 2026-11-03; `LaundryStaff.FindMachine` |
+| LL-F-009 | feature | P2 | Male customer voice reassignment | The hidden-room visitor was removed, the staff commentary was silenced, and the order customer now uses the male model. Remaining: move the staff's male voice clips to that customer (or copy them to the DropOff archetype) without restoring the staff's commentary. | review 2026-11-03 |
+| LL-B-008 | bug | P2 | Phase 9 bay/kiosk/HUD visual review | No captures were taken of the expansion bay, upgrade kiosks or IMGUI arcade panel. Verify lighting, readability, overlap with the order ticket at 1920x1080, and that the open bay reads as a space. | Phase 9 report; `ArcadePanelView`, `ExpansionBay` |
 
 ## Resolved in the 2026-11-02 stabilization pass
 

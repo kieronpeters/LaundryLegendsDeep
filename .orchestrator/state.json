@@ -1,247 +1,233 @@
-﻿{
-  "schemaVersion": 1,
-  "project": {
-    "name": "Laundry Legends",
-    "root": "C:/Users/Asus/Desktop/AI Coding Test/LaundryLegends",
-    "type": "3D PC business simulation",
-    "engine": "Unity 6.0 LTS",
-    "engineVersion": "6000.0.64f1",
-    "renderPipeline": "Universal Render Pipeline 17.0.4",
-    "targetPlatform": "Windows 64-bit"
-  },
-  "updatedAt": "2026-11-02T20:30:00+08:00",
-  "currentMilestone": {
-    "id": "M1",
-    "name": "Playable laundry",
-    "status": "in_progress"
-  },
-  "currentPhase": {
-    "number": 8,
-    "name": "First arcade machine",
-    "status": "complete",
-    "file": ".orchestrator/reports/2026-11-01-phase8-arcade-business-and-menu-fix.md",
-    "completionNote": "Arcade business loop implemented: install point purchase through EconomyService (single debit), Off->Installing->Active lifecycle, attract mode with emission pulse and generated cue, visitor traffic that pays exactly once per visit, and ArcadeState exposed for future saving. Menu dead-button defect fixed with persistent UnityEvent listeners (the shipped build had m_Calls: []). Menu AudioListener added and the duplicate MainMenuController removed. NPC grey-material regression fixed by restoring MakeHuman textures; first-person hands mounted at measured offset and shown only while carrying. Playtest blockers fixed on 2026-11-01: customer lifecycle always reaches Done, spawner watchdog, ambient NPC no longer feeds the order drop-off, shelf purchase moved onto the SecretAccess group. Suites: EditMode 147/147, PlayMode 57 passed / 0 failed / 1 skipped; build exit 0. Owner playtest still outstanding. Owner played the fullscreen cabinet and confirmed the payoff on 2026-11-02; the fighter visual upgrade is backlog LL-F-006."
-  },
-  "nextPhase": {
-    "number": 9,
-    "name": "Arcade expansion",
-    "status": "planned",
-    "file": "ROADMAP.md"
-  },
-  "activeTask": null,
-  "lastCompletedTask": "LL-P4-007",
-  "nextTask": null,
-  "taskCounts": {
-    "complete": 53,
-    "ready": 0,
-    "planned": 0,
-    "pending": 1,
-    "inProgress": 0,
-    "failed": 0,
-    "blocked": 0,
-    "pendingApproval": 0
-  },
-  "phaseStatuses": {
-    "0": "complete",
-    "1": "complete",
-    "2": "complete",
-    "3": "in_progress",
-    "4": "complete",
-    "5": "planned",
-    "6": "planned",
-    "7": "planned",
-    "8": "complete",
-    "9": "planned",
-    "10": "planned",
-    "11": "planned",
-    "12": "planned",
-    "13": "planned",
-    "14": "planned",
-    "15": "planned",
-    "16": "planned"
-  },
-  "git": {
-    "branch": "main",
-    "checkpointTag": "phase-8-complete",
-    "checkpointCommit": "ddf82639b992c1e1285a6a955ea9037c70c437d9",
-    "baselineCommit": "b78218cccfeea741d3d227ffa95e679e9ba92a72",
-    "remote": null,
-    "workingTree": "clean; main = phase-8 = phase-8-complete at ddf8263 (Phase 8 merged and tagged 2026-11-02)",
-    "unityProjectCommit": "e244ba434ace223ff064df52b6a683615d9fb503",
-    "lastCheckpointAt": "2026-11-02T20:45:00+08:00"
-  },
-  "environment": {
-    "opencodeCli": "2.0.28",
-    "opencodeServer": "2.0.32",
-    "primaryModel": "opencode/deepseek-v4.1-flash-free",
-    "globalConfigModel": "ollama/qwen3.5:4b",
-    "git": "2.55.0.windows.3",
-    "gitLfs": "3.7.1",
-    "unityHub": "43.5.0",
-    "unityEditorsInstalled": [
-      "6000.0.0f1",
-      "6000.0.64f1",
-      "6000.5.7f1"
-    ],
-    "unitySelected": "6000.0.64f1",
-    "windowsStandaloneModule": "installed for 6000.0.64f1",
-    "unityBatchLicense": "verified 2026-10-19: batch launch exit 0 after Unity Hub license refresh",
-    "dotnetSdk": "10.0.401",
-    "node": "24.21.0",
-    "npm": "11.19.0",
-    "python": "3.15.0",
-    "missingTools": [
-      "Blender",
-      "FFmpeg",
-      "ImageMagick",
-      "GitHub CLI"
-    ],
-    "missingPythonPackages": [
-      "PIL",
-      "numpy",
-      "scipy",
-      "soundfile",
-      "trimesh"
-    ],
-    "assetGenerationToolsVerified": [],
-    "subagentsAvailable": [
-      "explore",
-      "general"
-    ],
-    "customAgentsConfigured": [
-      "ll-unity-dev",
-      "ll-designer",
-      "ll-reviewer",
-      "ll-qa"
-    ],
-    "mcpServers": [],
-    "plugins": []
-  },
-  "approvals": {
-    "pending": [
-      "Cleanup: remove the stray file C:\\Users\\Asus\\Desktop\\AI created by an unquoted Unity -logFile path; project permissions blocked deletion."
-    ],
-    "standing": [
-      "Full in-repository execution authorization granted by the project owner on 2026-10-19 and reiterated on 2026-10-20. Destructive Git/filesystem actions, package changes, broad project-settings changes, and external publishing still follow recorded approval gates."
-    ],
-    "policy": "Required for destructive operations, installs, dependency changes, broad project settings, major architecture changes, external publishing, and unclear/consequential actions."
-  },
-  "blockers": [],
-  "risks": [
-    "Unity Personal offline license validity expires periodically; it required a Unity Hub refresh on 2026-10-19 and may block batch automation again.",
-    "The Unity project has scenes, player/room prefabs, and test suites, but no gameplay loop, customers, machines, economy, or save system exists yet.",
-    "No dedicated image, 3D, audio, or voice-generation tool is verified.",
-    "The project now uses Linear color space; future lit materials and lighting must be authored and checked for that space.",
-    "Asset production may require licensed external sources and approval.",
-    "Placeholder signage uses the built-in LegacyRuntime font and simple cube panels; it is not final typography or branding.",
-    "The secret-door concealment is a static placeholder shelf/panel. The owner reported the Phase 2 subtlety review as passed; reveal logic and animation remain future work.",
-    "Scene/prefab merge conflicts are a high-risk collaboration surface.",
-    "Global OpenCode configuration uses a local Ollama default; this project overrides it with the verified free DeepSeek model.",
-    "Free-model spend telemetry is not reliable; limits are conservative and process-based."
-  ],
-  "technicalDebt": [
-    "Test coverage is 32 EditMode and 37 PlayMode tests (plus one explicit capture test); no order, economy, save, or performance coverage yet.",
-    "No Git LFS patterns configured for future large assets.",
-    "Economy values are untuned proposals.",
-    "First-person perspective is provisional.",
-    "Project settings were edited as serialized YAML before an editor settings API existed; re-verified by batch reopen."
-  ],
-  "assets": {
-    "created": 16,
-    "integrated": 16,
-    "verified": 2,
-    "inventory": "ASSET_INVENTORY.md",
-    "note": "Procedural placeholders only: 3 scenes, 5 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
-  },
-  "lastRun": {
-    "id": "2026-11-02-ll-p8-arcade",
-    "report": ".orchestrator/reports/2026-11-02-playtest-fixes-and-visual-pass.md",
-    "status": "complete",
-    "startedAt": "2026-11-01T13:00:00+08:00",
-    "completedAt": "2026-11-02T18:00:00+08:00",
-    "checks": {
-      "scene_repair": "passed",
-      "scene_validation": "passed",
-      "editmode": "147/147 passed",
-      "playmode": "57 passed, 0 failed, 2 explicit skipped",
-      "progression_300": "passed (6 paid orders, shelf, back room entry)",
-      "arcade_fullscreen": "owner verified (cabinet play works, fullscreen fight)",
-      "captures": "20 shots, 0 invalid",
-      "live_build": "captured menu + HUD",
-      "player_build": "exit 0, 198 MB"
-    },
-    "filesChanged": [
-      "Assets/LaundryLegends/Scenes/Laundromat.unity",
-      "Assets/LaundryLegends/Prefabs/Gameplay/NPC/*.prefab",
-      "Assets/LaundryLegends/Prefabs/Gameplay/Laundry/LooseLaundry.prefab",
-      "Assets/LaundryLegends/Prefabs/Gameplay/Player.prefab",
-      "Assets/LaundryLegends/Scripts/Customers/CustomerAgent.cs",
-      "Assets/LaundryLegends/Scripts/NPC/LaundryStaff.cs",
-      "Assets/LaundryLegends/Scripts/Laundry/LaundryItem.cs",
-      "Assets/LaundryLegends/Scripts/Progression/SecretRoomController.cs",
-      "Assets/LaundryLegends/Scripts/UI/ControlsHintView.cs",
-      "Assets/LaundryLegends/Editor/HiddenRoomSetupTool.cs",
-      "Assets/LaundryLegends/Editor/PlaytestFixTool.cs",
-      "Assets/LaundryLegends/Editor/VisualPolishTool.cs",
-      "Assets/LaundryLegends/Editor/CharacterAppearanceFixTool.cs",
-      "Assets/LaundryLegends/Art/Models/NPC/Variants/*.fbx",
-      "Assets/LaundryLegends/Art/Textures/NPC/female_casualsuit01_*",
-      "Assets/LaundryLegends/Art/Textures/Posters/**",
-      "Assets/LaundryLegends/Art/Textures/Environment/casino_carpet.png",
-      "Assets/LaundryLegends/Tests/PlayMode/ProgressionPlayModeTests.cs",
-      "ArtSource/Blender/makehuman_npc_plugin.py",
-      ".orchestrator/BACKLOG.md",
-      ".orchestrator/reports/2026-11-02-*.md",
-      "PROJECT_STATE.md",
-      "DEVELOPMENT_LOG.md",
-      ".orchestrator/state.json"
-    ]
-  },
-  "recovery": {
-    "procedure": ".orchestrator/recovery/RESUME.md",
-    "resumeTask": null,
-    "doNotReplay": [
-      "LL-P0-001",
-      "LL-P0-002",
-      "LL-P0-003",
-      "LL-P0-004",
-      "LL-P0-005",
-      "LL-P0-006",
-      "LL-P0-007",
-      "LL-P0-008",
-      "LL-P1-001",
-      "LL-P1-002",
-      "LL-P1-003",
-      "LL-P1-004",
-      "LL-P1-005",
-      "LL-P1-006",
-      "LL-P1-007",
-      "LL-P1-008",
-      "LL-P1-009",
-      "LL-P2-001",
-      "LL-P2-002",
-      "LL-P2-003",
-      "LL-P2-004",
-      "LL-P2-005",
-      "LL-P2-006",
-      "LL-P3-001",
-      "LL-P3-002",
-      "LL-P3-003",
-      "LL-P3-004",
-      "LL-P3-005",
-      "LL-P3-006",
-      "LL-P3-008",
-      "LL-P3-009",
-      "LL-P3-007",
-      "LL-P3-010",
-      "LL-P3-011",
-      "LL-P3-012",
-      "LL-P3-013",
-      "LL-P3-014",
-      "LL-P3-015",
-      "LL-P3-016"
-    ]
-  }
+{
+    "schemaVersion":  1,
+    "project":  {
+                    "name":  "Laundry Legends",
+                    "root":  "C:/Users/Asus/Desktop/AI Coding Test/LaundryLegends",
+                    "type":  "3D PC business simulation",
+                    "engine":  "Unity 6.0 LTS",
+                    "engineVersion":  "6000.0.64f1",
+                    "renderPipeline":  "Universal Render Pipeline 17.0.4",
+                    "targetPlatform":  "Windows 64-bit"
+                },
+    "updatedAt":  "2026-11-03T04:00:00+08:00",
+    "currentMilestone":  {
+                             "id":  "M1",
+                             "name":  "Playable laundry",
+                             "status":  "in_progress"
+                         },
+    "currentPhase":  {
+                         "number":  9,
+                         "name":  "Arcade expansion",
+                         "status":  "complete",
+                         "file":  ".orchestrator/decisions/0012-phase-9-arcade-expansion.md",
+                         "completionNote":  "Phase 9 implemented on the phase-9 branch: data-driven machine catalogue, multi-slot ArcadeService (slot 0 keeps the Phase 8 API), four extra anchors (three open, two sealed in the expansion bay), three upgrade kiosks with income/traffic multipliers and decor, laundry reputation (paid/tip/abandon/decay) feeding traffic and income, 120 s upkeep, a visible walkable expansion bay (capacity 3 -\u003e 5), five one-time milestones and an IMGUI arcade HUD. Automated evidence: EditMode 158/158, PlayMode 59 passed / 0 failed / 2 explicit skipped, explicit  progression 1/1, Windows build 198 MB / 0 errors at Build/LaundryLegends.exe. Owner playtest (LL-P9-010) remains the only open acceptance gate. Machine-wall fix (8d86fef): all eight appliances now have load/dry hooks (4 washers, 4 dryers) and the staff dispatches to any free unit; Phase 10 order queue is 10 active. Review round 2 (806d1e1): U purchase menu replaces the ground pedestals, carpet gated to and placed in the expansion bay, posters moved/added, open door leaf hidden, parcel bundle, rotating drums, hidden-room visitor removed, male order customer, silent staff. EditMode 159/159; PlayMode 59/0/2; build 199 MB/0 errors. Owner approved the round 2 fullscreen build on 2026-11-03. Phase 9 complete with follow-up tickets: LL-B-009 (ambient counter), LL-B-010 (staff machine choice), LL-A-005/006 (machine/cabinet art), LL-F-009/010 (voice, game variety), LL-B-011 (menu labels), LL-B-008 (visual review)."
+                     },
+    "nextPhase":  {
+                      "number":  10,
+                      "name":  "Business operations and order flow",
+                      "status":  "planned",
+                      "file":  "ROADMAP.md"
+                  },
+    "activeTask":  null,
+    "lastCompletedTask":  "LL-P9-010",
+    "nextTask":  "LL-P10-002",
+    "taskCounts":  {
+                       "complete":  65,
+                       "ready":  0,
+                       "planned":  9,
+                       "pending":  0,
+                       "inProgress":  0,
+                       "failed":  0,
+                       "blocked":  0,
+                       "pendingApproval":  0
+                   },
+    "phaseStatuses":  {
+                          "0":  "complete",
+                          "1":  "complete",
+                          "2":  "complete",
+                          "3":  "complete",
+                          "4":  "complete",
+                          "5":  "complete",
+                          "6":  "complete",
+                          "7":  "complete",
+                          "8":  "complete",
+                          "9":  "complete",
+                          "10":  "planned",
+                          "11":  "planned",
+                          "12":  "planned",
+                          "13":  "planned",
+                          "14":  "planned",
+                          "15":  "planned",
+                          "16":  "planned",
+                          "17":  "planned"
+                      },
+    "git":  {
+                "branch":  "phase-9",
+                "checkpointTag":  "phase-9-complete",
+                "checkpointCommit":  "1d71e77",
+                "baselineCommit":  "b78218cccfeea741d3d227ffa95e679e9ba92a72",
+                "remote":  null,
+                "workingTree":  "post-approval tickets committed; approved build unchanged",
+                "unityProjectCommit":  "e244ba434ace223ff064df52b6a683615d9fb503",
+                "lastCheckpointAt":  "2026-11-03T04:00:00+08:00"
+            },
+    "environment":  {
+                        "opencodeCli":  "2.0.28",
+                        "opencodeServer":  "2.0.32",
+                        "primaryModel":  "opencode/deepseek-v4.1-flash-free",
+                        "globalConfigModel":  "ollama/qwen3.5:4b",
+                        "git":  "2.55.0.windows.3",
+                        "gitLfs":  "3.7.1",
+                        "unityHub":  "43.5.0",
+                        "unityEditorsInstalled":  [
+                                                      "6000.0.0f1",
+                                                      "6000.0.64f1",
+                                                      "6000.5.7f1"
+                                                  ],
+                        "unitySelected":  "6000.0.64f1",
+                        "windowsStandaloneModule":  "installed for 6000.0.64f1",
+                        "unityBatchLicense":  "verified 2026-10-19: batch launch exit 0 after Unity Hub license refresh",
+                        "dotnetSdk":  "10.0.401",
+                        "node":  "24.21.0",
+                        "npm":  "11.19.0",
+                        "python":  "3.15.0",
+                        "missingTools":  [
+                                             "Blender",
+                                             "FFmpeg",
+                                             "ImageMagick",
+                                             "GitHub CLI"
+                                         ],
+                        "missingPythonPackages":  [
+                                                      "PIL",
+                                                      "numpy",
+                                                      "scipy",
+                                                      "soundfile",
+                                                      "trimesh"
+                                                  ],
+                        "assetGenerationToolsVerified":  [
+
+                                                         ],
+                        "subagentsAvailable":  [
+                                                   "explore",
+                                                   "general"
+                                               ],
+                        "customAgentsConfigured":  [
+                                                       "ll-unity-dev",
+                                                       "ll-designer",
+                                                       "ll-reviewer",
+                                                       "ll-qa"
+                                                   ],
+                        "mcpServers":  [
+
+                                       ],
+                        "plugins":  [
+
+                                    ]
+                    },
+    "approvals":  {
+                      "pending":  [
+                                      "Cleanup: remove the stray file C:\\Users\\Asus\\Desktop\\AI created by an unquoted Unity -logFile path; project permissions blocked deletion."
+                                  ],
+                      "standing":  [
+                                       "Full in-repository execution authorization granted by the project owner on 2026-10-19 and reiterated on 2026-10-20. Destructive Git/filesystem actions, package changes, broad project-settings changes, and external publishing still follow recorded approval gates."
+                                   ],
+                      "policy":  "Required for destructive operations, installs, dependency changes, broad project settings, major architecture changes, external publishing, and unclear/consequential actions."
+                  },
+    "blockers":  [
+
+                 ],
+    "risks":  [
+                  "Unity Personal offline license validity expires periodically; it required a Unity Hub refresh on 2026-10-19 and may block batch automation again.",
+                  "The Unity project has scenes, player/room prefabs, and test suites, but no gameplay loop, customers, machines, economy, or save system exists yet.",
+                  "No dedicated image, 3D, audio, or voice-generation tool is verified.",
+                  "The project now uses Linear color space; future lit materials and lighting must be authored and checked for that space.",
+                  "Asset production may require licensed external sources and approval.",
+                  "Placeholder signage uses the built-in LegacyRuntime font and simple cube panels; it is not final typography or branding.",
+                  "The secret-door concealment is a static placeholder shelf/panel. The owner reported the Phase 2 subtlety review as passed; reveal logic and animation remain future work.",
+                  "Scene/prefab merge conflicts are a high-risk collaboration surface.",
+                  "Global OpenCode configuration uses a local Ollama default; this project overrides it with the verified free DeepSeek model.",
+                  "Free-model spend telemetry is not reliable; limits are conservative and process-based."
+              ],
+    "technicalDebt":  [
+                          "Test coverage is 32 EditMode and 37 PlayMode tests (plus one explicit capture test); no order, economy, save, or performance coverage yet.",
+                          "No Git LFS patterns configured for future large assets.",
+                          "Economy values are untuned proposals.",
+                          "First-person perspective is provisional.",
+                          "Project settings were edited as serialized YAML before an editor settings API existed; re-verified by batch reopen."
+                      ],
+    "assets":  {
+                   "created":  16,
+                   "integrated":  16,
+                   "verified":  2,
+                   "inventory":  "ASSET_INVENTORY.md",
+                   "note":  "Procedural placeholders only: 3 scenes, 5 prefabs, and 11 materials. Verified counts room and player; production art/audio remain absent."
+               },
+    "lastRun":  {
+                    "id":  "2026-11-03-ll-p9-closeout",
+                    "report":  ".orchestrator/reports/2026-11-03-phase9-owner-approval.md",
+                    "status":  "complete",
+                    "startedAt":  "2026-11-03T03:00:00+08:00",
+                    "completedAt":  "2026-11-03T04:00:00+08:00",
+                    "checks":  {
+                                   "owner_playtest":  "approved 2026-11-03",
+                                   "editmode":  "159/159 passed",
+                                   "playmode":  "59 passed, 0 failed, 2 explicit skipped",
+                                   "build":  "199 MB, 0 errors",
+                                   "known_debt":  "LL-B-009, LL-B-010, LL-A-005, LL-A-006, LL-F-009, LL-F-010, LL-B-011, LL-B-008",
+                                   "post_approval_tickets":  "LL-B-012 (P1), LL-B-013, LL-A-005, LL-B-014, LL-B-015"
+                               },
+                    "filesChanged":  [
+                                         ".orchestrator/tasks/phase-09.json",
+                                         ".orchestrator/state.json",
+                                         ".orchestrator/reports/2026-11-03-phase9-owner-approval.md",
+                                         "PROJECT_STATE.md",
+                                         "ROADMAP.md",
+                                         "DEVELOPMENT_LOG.md"
+                                     ]
+                },
+    "recovery":  {
+                     "procedure":  ".orchestrator/recovery/RESUME.md",
+                     "resumeTask":  null,
+                     "doNotReplay":  [
+                                         "LL-P0-001",
+                                         "LL-P0-002",
+                                         "LL-P0-003",
+                                         "LL-P0-004",
+                                         "LL-P0-005",
+                                         "LL-P0-006",
+                                         "LL-P0-007",
+                                         "LL-P0-008",
+                                         "LL-P1-001",
+                                         "LL-P1-002",
+                                         "LL-P1-003",
+                                         "LL-P1-004",
+                                         "LL-P1-005",
+                                         "LL-P1-006",
+                                         "LL-P1-007",
+                                         "LL-P1-008",
+                                         "LL-P1-009",
+                                         "LL-P2-001",
+                                         "LL-P2-002",
+                                         "LL-P2-003",
+                                         "LL-P2-004",
+                                         "LL-P2-005",
+                                         "LL-P2-006",
+                                         "LL-P3-001",
+                                         "LL-P3-002",
+                                         "LL-P3-003",
+                                         "LL-P3-004",
+                                         "LL-P3-005",
+                                         "LL-P3-006",
+                                         "LL-P3-008",
+                                         "LL-P3-009",
+                                         "LL-P3-007",
+                                         "LL-P3-010",
+                                         "LL-P3-011",
+                                         "LL-P3-012",
+                                         "LL-P3-013",
+                                         "LL-P3-014",
+                                         "LL-P3-015",
+                                         "LL-P3-016"
+                                     ]
+                 }
 }
-
-
