@@ -256,3 +256,5 @@ Follow-up fixed: LL-B-026 and LL-B-027 - the dark lower-left mesh was the open e
 | LL-A-003 | arcade, art | Closed via per-machine theme/game; mesh replacement post-1.0. |
 | LL-T-005 | refactor, scene | Wall-gap consolidation deferred. |
 | LL-F-004/007 | unreal, post-1.0 | Awaiting UE5 install/decision. |
+
+Wall-gap consolidation: `BackRoomGeometry` now owns the door width (1.6 m), half-width, gap min/max helpers and hinge Z (0.6). `HiddenRoomSetupTool` and `PlaytestFixTool` use it, so the cut and hinge cannot drift again.

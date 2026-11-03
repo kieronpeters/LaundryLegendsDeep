@@ -103,13 +103,12 @@ namespace LaundryLegends.Editor
 
             // WallSouth is split around the expansion opening by BuildExpansionBay.
 
-            const float doorWidth = 1.6f;
             GameObject doorLeaf = GameObject.Find("SecretDoor_Foreshadowed");
             float doorZ = doorLeaf != null
                 ? doorLeaf.transform.position.z
                 : (shelf != null ? shelf.transform.position.z : zCentre);
-            float gapMin = doorZ - doorWidth * 0.5f;
-            float gapMax = doorZ + doorWidth * 0.5f;
+            float gapMin = BackRoomGeometry.GapMin(doorZ);
+            float gapMax = BackRoomGeometry.GapMax(doorZ);
             float southSize = Mathf.Max(0.1f, gapMin - z0);
             float northSize = Mathf.Max(0.1f, z0 + roomDepth - gapMax);
 

@@ -251,7 +251,7 @@ namespace LaundryLegends.Editor
             SerializedProperty hinge = serialized.FindProperty("_doorHingeLocal");
             if (hinge != null && hinge.vector3Value.z < 0.5f)
             {
-                hinge.vector3Value = new Vector3(0f, 0f, 0.6f);
+                hinge.vector3Value = new Vector3(0f, 0f, BackRoomGeometry.DoorHingeLocalZ);
                 report.Add("door hinge point moved to the leaf's north edge");
             }
 
@@ -274,8 +274,10 @@ namespace LaundryLegends.Editor
 
             var renderer = wall.GetComponent<Renderer>();
             Bounds bounds = GetBounds(wall.gameObject);
-            const float gapMin = 2.2f;
-            const float gapMax = 3.8f;
+            GameObject doorLeaf = GameObject.Find("SecretDoor_Foreshadowed");
+            float doorZ = doorLeaf != null ? doorLeaf.transform.position.z : 3.0f;
+            float gapMin = BackRoomGeometry.GapMin(doorZ);
+            float gapMax = BackRoomGeometry.GapMax(doorZ);
             const float gapTop = 2.4f;
             Material material = renderer != null ? renderer.sharedMaterial : null;
 
