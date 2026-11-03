@@ -296,11 +296,11 @@ namespace LaundryLegends.Editor
 
             if (washerBody)
             {
-                color = new Color(0.84f, 0.90f, 0.98f, 1f);
+                color = new Color(0.62f, 0.68f, 0.75f, 1f);
             }
             else if (dryerBody)
             {
-                color = new Color(0.98f, 0.92f, 0.84f, 1f);
+                color = new Color(0.74f, 0.68f, 0.60f, 1f);
             }
 
             if (glass && color.a >= 0.95f)
@@ -310,7 +310,7 @@ namespace LaundryLegends.Editor
 
             material.SetColor("_BaseColor", color);
             material.SetFloat("_Metallic", chrome ? 0.85f : metal ? 0.55f : 0f);
-            material.SetFloat("_Smoothness", glass ? 0.9f : chrome ? 0.75f : rubber ? 0.1f : 0.4f);
+            material.SetFloat("_Smoothness", glass ? 0.9f : chrome ? 0.75f : rubber ? 0.1f : 0.22f);
 
             if (glass)
             {

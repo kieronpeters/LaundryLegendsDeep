@@ -208,3 +208,22 @@ Remaining ticket count after closeout:
 - **P2:** 5 - `LL-B-005`, `LL-A-001`, `LL-A-003`, `LL-A-008`, `LL-F-001` (board/art polish; accepted or deferred)
 - **P3:** 7 - `LL-A-002`, `LL-F-004`, `LL-F-007`, `LL-T-003`, `LL-T-005`, `LL-B-026`, `LL-B-027`
 - **Total open:** 13 (all accepted/deferred for post-1.0; no P0)
+
+## Outstanding-ticket pass (2026-11-03, `outstanding-bug-fixes`)
+
+Fixed:
+
+- **LL-A-008** machine overexposure: body albedo lowered and body smoothness reduced so the shells no longer clip to white.
+
+Skipped because they need external access, a purchased asset, or an explicit decision:
+
+- `LL-F-001` / `LL-B-005` - ticket-board integration and board tags need an API token/service.
+- `LL-F-004` / `LL-F-007` - Unreal Engine 5 work needs hardware/install and a post-1.0 decision.
+- `LL-A-001` - first-person hands need a hand asset; the existing decision keeps them off.
+- `LL-T-005` - wall-gap consolidation is a risky refactor of shared scene tools.
+- `LL-T-003` - dry-run wrappers for every scene tool is a tooling project, not a player-facing bug.
+- `LL-B-006` - external desktop-MCP focus; already mitigated by process-explicit `game-vision.ps1`.
+- `LL-A-002` / `LL-A-003` - remaining art direction (marquee texture mapping, distinct cabinet bodies); accepted as post-1.0 polish.
+- `LL-B-026` / `LL-B-027` - unidentified lower-left geometry and the dark left storefront window; need a visual art pass.
+
+Still open: 12 accepted/deferred tickets (no P0/P1 code bugs).
