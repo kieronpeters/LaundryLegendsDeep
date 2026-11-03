@@ -38,11 +38,15 @@ namespace LaundryLegends.Laundry
         [SerializeField] private string _occupiedPrompt = "Take laundry";
         [SerializeField] private ConsumableStockService _stock;
         [SerializeField] private Transform _drumVisual;
+        [SerializeField] private Renderer[] _clothRenderers = new Renderer[0];
         [SerializeField, Min(0f)] private float _drumDegreesPerSecond = 240f;
 
         private MachineState _state = MachineState.Empty;
         private float _elapsed;
         private float _durationScale = 1f;
+        private Vector3 _drumPivot;
+        private Vector3 _drumAxis = Vector3.forward;
+        private bool _hasDrumPivot;
         private readonly HashSet<string> _appliedUpgrades = new HashSet<string>(StringComparer.Ordinal);
 
         public MachineKind Kind => _kind;
@@ -108,7 +112,15 @@ namespace LaundryLegends.Laundry
         {
             if (_drumVisual != null && _state == MachineState.Running)
             {
-                _drumVisual.Rotate(0f, _drumDegreesPerSecond * Time.deltaTime, 0f, Space.Self);
+                float degrees = _drumDegreesPerSecond * Time.deltaTime;
+                if (_hasDrumPivot)
+                {
+                    _drumVisual.RotateAround(_drumPivot, _drumAxis, degrees);
+                }
+                else
+                {
+                    _drumVisual.Rotate(0f, degrees, 0f, Space.Self);
+                }
             }
 
             if (_state != MachineState.Running)
@@ -123,6 +135,7 @@ namespace LaundryLegends.Laundry
                 _state = MachineState.Complete;
                 LastResult = _kind == MachineKind.Washer ? "Wash complete" : "Dry complete";
                 SetLoadedItemVisible(true);
+                SetClothesVisible(true);
                 GameAudio.Play(Sfx.MachineDone);
                 LaundryItem item = LoadedItem;
                 if (item != null)
@@ -157,21 +170,58 @@ namespace LaundryLegends.Laundry
         public void SetDrumVisual(Transform drum)
         {
             _drumVisual = drum;
+            _hasDrumPivot = false;
+            if (drum == null)
+            {
+                return;
+            }
+
+            Renderer[] renderers = drum.GetComponentsInChildren<Renderer>(true);
+            if (renderers.Length == 0)
+            {
+                return;
+            }
+
+            Bounds bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++)
+            {
+                bounds.Encapsulate(renderers[i].bounds);
+            }
+
+            _drumPivot = bounds.center;
+            _drumAxis = drum.forward.sqrMagnitude > 0.01f ? drum.forward : Vector3.forward;
+            _hasDrumPivot = true;
+        }
+
+        /// <summary>Cloth bundles that belong to the machine, shown only when occupied.</summary>
+        public void SetClothVisuals(Renderer[] cloths)
+        {
+            _clothRenderers = cloths ?? new Renderer[0];
+            SetClothesVisible(_state != MachineState.Empty);
+        }
+
+        private void SetClothesVisible(bool visible)
+        {
+            foreach (Renderer cloth in _clothRenderers)
+            {
+                if (cloth != null)
+                {
+                    cloth.enabled = visible;
+                }
+            }
         }
 
         private void SetLoadedItemVisible(bool visible)
         {
             LaundryItem item = LoadedItem;
-            if (item == null)
+            if (item != null)
             {
-                return;
-            }
-
-            foreach (Renderer renderer in item.GetComponentsInChildren<Renderer>(true))
-            {
-                if (renderer != null)
+                foreach (Renderer renderer in item.GetComponentsInChildren<Renderer>(true))
                 {
-                    renderer.enabled = visible;
+                    if (renderer != null)
+                    {
+                        renderer.enabled = visible;
+                    }
                 }
             }
         }
@@ -182,6 +232,8 @@ namespace LaundryLegends.Laundry
             {
                 _stock = FindFirstObjectByType<ConsumableStockService>();
             }
+
+            SetClothesVisible(false);
         }
 
         public bool StartCycle()
@@ -201,6 +253,7 @@ namespace LaundryLegends.Laundry
             _state = MachineState.Running;
             _elapsed = 0f;
             SetLoadedItemVisible(false);
+            SetClothesVisible(true);
             LastResult = _kind == MachineKind.Washer ? "Wash started" : "Dry started";
             GameAudio.Play(Sfx.MachineStart);
             return true;
@@ -215,6 +268,7 @@ namespace LaundryLegends.Laundry
                 _state = MachineState.Complete;
                 LastResult = _kind == MachineKind.Washer ? "Wash complete" : "Dry complete";
                 SetLoadedItemVisible(true);
+                SetClothesVisible(true);
                 GameAudio.Play(Sfx.MachineDone);
             }
         }
@@ -273,7 +327,8 @@ namespace LaundryLegends.Laundry
             LaundryItem item = _slot != null ? _slot.Take() : null;
             _state = MachineState.Empty;
             _elapsed = 0f;
-            SetLoadedItemVisible(true);
+            SetLoadedItemVisible(false);
+            SetClothesVisible(false);
             return item;
         }
 
@@ -289,6 +344,8 @@ namespace LaundryLegends.Laundry
             {
                 _state = MachineState.Empty;
                 _elapsed = 0f;
+                SetLoadedItemVisible(false);
+                SetClothesVisible(false);
             }
 
             return item;
@@ -310,6 +367,7 @@ namespace LaundryLegends.Laundry
             _state = MachineState.Loaded;
             _elapsed = 0f;
             SetLoadedItemVisible(true);
+            SetClothesVisible(true);
             return true;
         }
 

@@ -59,6 +59,28 @@ namespace LaundryLegends.Save
                 data.Plastic = stock.Count(ConsumableType.Plastic);
             }
 
+            if (arcade != null)
+            {
+                int slots = arcade.SlotCount;
+                data.ArcadeInstalled = new bool[slots];
+                data.ArcadeActive = new bool[slots];
+                for (int i = 0; i < slots; i++)
+                {
+                    data.ArcadeInstalled[i] = arcade.IsSlotInstalled(i);
+                    data.ArcadeActive[i] = arcade.IsSlotActive(i);
+                }
+
+                ArcadeState state = arcade.GetSlotState(0);
+                if (state != null && state.Upgrades != null)
+                {
+                    data.ArcadeUpgrades = new string[state.Upgrades.Count];
+                    for (int i = 0; i < state.Upgrades.Count; i++)
+                    {
+                        data.ArcadeUpgrades[i] = state.Upgrades[i];
+                    }
+                }
+            }
+
             return data;
         }
 
@@ -164,6 +186,11 @@ namespace LaundryLegends.Save
             if (data.ArcadeExpanded && arcade != null)
             {
                 arcade.RestoreExpansion(true);
+            }
+
+            if (arcade != null)
+            {
+                arcade.RestoreArcade(data.ArcadeInstalled, data.ArcadeActive, data.ArcadeUpgrades);
             }
 
             GameAudioSettings.SetMaster(data.MasterVolume);

@@ -183,6 +183,20 @@ namespace LaundryLegends.Editor
             {
                 hook.SetDrumVisual(drum);
             }
+
+            if (hook != null)
+            {
+                var cloths = new System.Collections.Generic.List<Renderer>();
+                foreach (Renderer renderer in instance.GetComponentsInChildren<Renderer>(true))
+                {
+                    if (renderer.gameObject.name.IndexOf("Cloth", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        cloths.Add(renderer);
+                    }
+                }
+
+                hook.SetClothVisuals(cloths.ToArray());
+            }
         }
 
         /// <summary>

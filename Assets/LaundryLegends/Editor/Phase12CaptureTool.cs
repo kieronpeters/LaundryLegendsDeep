@@ -54,6 +54,111 @@ namespace LaundryLegends.Editor
             }
         }
 
+        [MenuItem("Laundry Legends/Phase 16/Fix Street Props")]
+        public static void FixStreetProps()
+        {
+            Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Material wood = AssetDatabase.LoadAssetAtPath<Material>(
+                "Assets/LaundryLegends/Art/Materials/MAT_CounterWood.mat");
+            Material plant = AssetDatabase.LoadAssetAtPath<Material>(
+                "Assets/LaundryLegends/Art/Materials/MAT_Plant.mat");
+
+            GameObject bench = GameObject.Find("Bench_Street");
+            if (bench != null && wood != null)
+            {
+                foreach (Renderer renderer in bench.GetComponentsInChildren<Renderer>(true))
+                {
+                    renderer.sharedMaterial = wood;
+                }
+            }
+
+            foreach (string name in new[] { "Plant_StreetLeft", "Plant_StreetRight" })
+            {
+                GameObject target = GameObject.Find(name);
+                if (target == null)
+                {
+                    continue;
+                }
+
+                foreach (Renderer renderer in target.GetComponentsInChildren<Renderer>(true))
+                {
+                    bool leaf = renderer.gameObject.name.IndexOf("leaf", System.StringComparison.OrdinalIgnoreCase) >= 0
+                                || renderer.gameObject.name.IndexOf("foliage", System.StringComparison.OrdinalIgnoreCase) >= 0;
+                    Material material = leaf ? plant : wood;
+                    if (material != null)
+                    {
+                        renderer.sharedMaterial = material;
+                    }
+                }
+            }
+
+            GameObject back = GameObject.Find("Counter_DeskText_Back");
+            if (back != null)
+            {
+                back.SetActive(false);
+            }
+
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            Debug.Log("[P16] Street bench/plant materials restored.");
+        }
+
+        [MenuItem("Laundry Legends/Phase 16/Fix Storefront Signs")]
+        public static void FixStorefrontSigns()
+        {
+            Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ScaleText("Facade_SignText_Outside", 0.52f);
+            ScaleText("Facade_HoursText_Outside", 0.58f);
+            ScaleText("Blade_Text", 0.62f);
+            ScaleText("DropOff_Text", 0.28f);
+            ScaleText("Counter_DeskText", 0.26f);
+            ScaleText("Counter_DeskText_Back", 0.26f);
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            Debug.Log("[P16] Storefront sign text scaled to fit its panels.");
+        }
+
+        private static void ScaleText(string name, float scale)
+        {
+            GameObject target = GameObject.Find(name);
+            if (target == null)
+            {
+                return;
+            }
+
+            Vector3 local = target.transform.localScale;
+            target.transform.localScale = new Vector3(scale, scale, local.z);
+        }
+
+        [MenuItem("Laundry Legends/Phase 16/Probe Signs")]
+        public static void ProbeSigns()
+        {
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            foreach (TextMesh text in Object.FindObjectsByType<TextMesh>(FindObjectsSortMode.None))
+            {
+                Debug.Log($"[P16-SIGN] TextMesh {text.gameObject.name} text='{text.text}' " +
+                          $"pos={text.transform.position} scale={text.transform.lossyScale} " +
+                          $"color={text.color} parent={text.transform.parent.name}");
+            }
+
+            foreach (Renderer renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if (renderer.sharedMaterial == null)
+                {
+                    continue;
+                }
+
+                string mat = renderer.sharedMaterial.name;
+                if (mat.IndexOf("Sign", System.StringComparison.OrdinalIgnoreCase) >= 0
+                    || renderer.gameObject.name.IndexOf("Sign", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    Debug.Log($"[P16-SIGN] Renderer {renderer.gameObject.name} mat={mat} " +
+                              $"pos={renderer.transform.position} size={renderer.bounds.size} " +
+                              $"parent={renderer.transform.parent.name}");
+                }
+            }
+        }
+
         [MenuItem("Laundry Legends/Phase 16/Fix Loose Props")]
         public static void FixLooseProps()
         {
