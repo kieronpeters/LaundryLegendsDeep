@@ -37,33 +37,51 @@ namespace LaundryLegends.UI
                 return;
             }
 
-            const float width = 520f;
-            const float height = 300f;
+            const float width = 560f;
+            const float height = 340f;
             var panel = new Rect((Screen.width - width) * 0.5f, (Screen.height - height) * 0.5f, width, height);
 
-            GUI.Box(panel, "SHOP MAP");
-            GUI.Label(new Rect(panel.x + 16f, panel.y + 26f, width - 32f, 20f),
-                HasBackRoom ? "Back room unlocked - arcade marked" : "No plan of the back room yet");
-            GUI.Label(new Rect(panel.x + 16f, panel.y + height - 26f, width - 32f, 20f), "M closes the map");
+            Color previous = GUI.color;
+            GUI.color = new Color(0.03f, 0.04f, 0.06f, 0.95f);
+            GUI.DrawTexture(panel, Texture2D.whiteTexture);
+            GUI.color = previous;
 
-            // Laundromat footprint.
-            var shop = new Rect(panel.x + 30f, panel.y + 60f, 300f, 190f);
+            GUI.Box(panel, "SHOP MAP");
+            GUIStyle body = new GUIStyle(GUI.skin.label) { fontSize = 15 };
+            GUI.Label(new Rect(panel.x + 18f, panel.y + 28f, width - 36f, 22f),
+                HasBackRoom
+                    ? "Back room unlocked - arcade marked"
+                    : "Back room not discovered yet. Explore the shop and follow the clues.",
+                body);
+
+            // Laundromat footprint with the main fixtures.
+            var shop = new Rect(panel.x + 26f, panel.y + 64f, 330f, 210f);
             GUI.Box(shop, "LAUNDROMAT");
+            GUI.Box(new Rect(shop.x + 20f, shop.y + 34f, 84f, 26f), "Counter");
+            GUI.Box(new Rect(shop.x + 20f, shop.y + 120f, 150f, 26f), "Machines");
+            GUI.Box(new Rect(shop.x + 200f, shop.y + 150f, 96f, 26f), "Waiting");
+            GUI.Box(new Rect(shop.x + 120f, shop.y + 70f, 70f, 26f), "Fold");
 
             if (!HasBackRoom)
             {
+                GUI.Box(new Rect(shop.xMax + 18f, panel.y + 110f, 130f, 90f), "?");
+                GUI.Label(new Rect(shop.xMax + 26f, panel.y + 150f, 116f, 40f), "Uncharted", body);
+                GUI.Label(new Rect(panel.x + 18f, panel.y + height - 28f, width - 36f, 20f),
+                    "M closes the map", body);
                 return;
             }
 
             // The back room is roughly half the shop, through the east door.
-            var backRoom = new Rect(shop.xMax + 8f, panel.y + 90f, 150f, 130f);
+            var backRoom = new Rect(shop.xMax + 18f, panel.y + 90f, 160f, 140f);
             GUI.Box(backRoom, "BACK ROOM");
 
-            var arcade = new Rect(backRoom.x + 20f, backRoom.y + 40f, 46f, 26f);
+            var arcade = new Rect(backRoom.x + 22f, backRoom.y + 44f, 58f, 28f);
             GUI.Box(arcade, "ARCADE");
 
-            Vector2 arrow = new Vector2(shop.xMax + 2f, panel.y + 150f);
+            Vector2 arrow = new Vector2(shop.xMax + 4f, panel.y + 158f);
             GUI.Label(new Rect(arrow.x, arrow.y, 24f, 20f), ">");
+            GUI.Label(new Rect(panel.x + 18f, panel.y + height - 28f, width - 36f, 20f),
+                "M closes the map", body);
         }
     }
 }

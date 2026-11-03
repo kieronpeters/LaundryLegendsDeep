@@ -1500,3 +1500,10 @@ Finish the Phase 9 owner playtest (LL-P9-010), then start LL-P10-002 once Phase 
 - LL-B-025: player spawn moved to (-1.8, 0.1, -4.4) to clear the customer lane.
 - Verification: PlayMode 69 passed / 0 failed / 2 skipped; build 212 MB / 0 errors.
 - Remaining: LL-B-021, LL-B-023, LL-B-024, per-machine arcade save ownership, performance profiling.
+
+## 2026-11-04 - Low-priority UI and prop fixes
+
+- LL-B-021: basket/bag/loose laundry moved beside the folding table.
+- LL-B-023: bills panel solid backdrop, 16 px text, better spacing.
+- LL-B-024: shop map draws counter/machines/folding/waiting zones and an "uncharted" back-room state.
+- PlayMode 69 passed / 0 failed / 2 skipped.

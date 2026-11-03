@@ -130,6 +130,15 @@ Target: **Phase 13 hardening**. `LL-B-016`, `LL-A-007`, `LL-B-017` and `LL-B-018
 
 Still open: `LL-B-021` stray counter boxes, `LL-B-023` bills layout, `LL-B-024` shop map, plus per-machine arcade save ownership and performance profiling.
 
+Follow-up low-priority pass (2026-11-04, `phase-16-bug-fixes`):
+
+| Ticket | Outcome |
+|---|---|
+| LL-B-021 | Basket/bag/loose laundry grouped around the folding table instead of reading as debris across the room. |
+| LL-B-023 | Bills panel gets a solid backdrop, 16 px text and better spacing. |
+| LL-B-024 | Shop map now draws the counter/machines/folding/waiting zones and a clear "uncharted" state before the back room. |
+
+
 
 ## Open-issue pass (2026-11-04, branch `phase-10-12`)
 
