@@ -18,6 +18,9 @@ namespace LaundryLegends.Save
         public int Reputation = 20;
         public bool RoomUnlocked;
         public bool ArcadeExpanded;
+        public bool[] ArcadeInstalled = new bool[0];
+        public bool[] ArcadeActive = new bool[0];
+        public string[] ArcadeUpgrades = new string[0];
         public int Detergent;
         public int Fragrance;
         public int Plastic;

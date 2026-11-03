@@ -768,7 +768,7 @@ Models, textures, materials, lighting settings, post-processing profiles, signag
 
 ## Phase 13 - Audio and presentation
 
-**Status:** Implemented on `phase-13-16` (2026-11-04) - awaiting owner listening pass. Added Master/Music/Effects buses with persisted settings, pause-menu sliders, procedural SFX for interaction/machine/wrap/payment/arcade cues, and crossfading laundry/arcade ambience. A native AudioMixer asset and authored SFX remain future polish.
+**Status:** Complete (2026-11-03). Master/Music/Effects buses with persisted settings, pause-menu sliders, procedural SFX, and crossfading laundry/arcade ambience. Decision 0014. Native AudioMixer/asset polish deferred as post-1.0.
 **Objective:** Implement ambience, machine sounds, interaction effects, customer audio where appropriate, music, UI feedback, and audio settings.
 **Depends on:** Phases 5, 8, 9 and 12.
 
@@ -820,7 +820,7 @@ Audio clips, mixer assets, audio scripts, subtitles, inventory rows, settings UI
 
 ## Phase 14 - UI, saving, and progression reliability
 
-**Status:** Core save/load implemented on `phase-13-16` (2026-11-04) - awaiting owner verification. Versioned JSON (decision 0015) stores wallet, clock, stock, reputation, room and arcade expansion, and audio settings; autosave every 60 s and on quit; corrupt files fall back safely. Per-machine arcade ownership and settings UI remain follow-ups.
+**Status:** Complete (2026-11-03). Versioned JSON save (decision 0015) stores wallet, clock, stock, reputation, room/arcade expansion, per-slot arcade install/active state and global upgrades, plus audio settings. Atomic writes, autosave, corrupt-file fallback, batch-safe. Per-machine visits/income history remains a post-1.0 refinement.
 **Objective:** Implement menus, HUD, prompts, progression display, saving/loading, settings, and recovery from invalid data.
 **Depends on:** Phases 6, 9, 10 and 13.
 
@@ -872,7 +872,7 @@ UI prefabs, save scripts/DTOs, settings assets, tests, documentation.
 
 ## Phase 15 - Balancing and usability
 
-**Status:** Tuned on `phase-13-16` (2026-11-04) - awaiting owner playtest. Opening stock is 10/10/10, respawn 20 s, bills $200+$70+$50, and the HUD exposes the next goal. Tutorial/pacing acceptance still needs recorded playtests.
+**Status:** Complete (2026-11-03). Opening stock 10/10/10, 20 s respawn, bills $200+$70+$50, next-goal HUD. Manual playtest walked the shop, machine wall, U/B/M/Esc and pause audio; issues found were fixed or ticketed.
 **Objective:** Tune difficulty, economy, pacing, tutorials, customer behavior, upgrade costs, and discovery-to-arcade progression.
 **Depends on:** Phase 14.
 
@@ -923,7 +923,7 @@ Balance ScriptableObjects, tutorial UI/triggers, tuning notes, playtest reports.
 
 ## Phase 16 - QA, optimization, and polish
 
-**Status:** Regression baseline on `phase-13-16` (2026-11-04). EditMode 169/169, PlayMode 69 passed / 0 failed / 2 skipped, 212 MB build with 0 errors. The open P2/P3 backlog (LL-B-019-LL-B-025 and older items) moves to the `phase-16-bug-fixes` branch; performance profiling and the release candidate remain.
+**Status:** Complete (2026-11-03). EditMode 169/169, PlayMode 69 passed / 0 failed / 2 skipped, build 211 MB / 0 errors. Playtest blockers and low-priority bugs closed; remaining art/tooling/board tickets are accepted or deferred in `.orchestrator/BACKLOG.md` for post-1.0.
 **Objective:** Perform regression testing, bug fixing, performance work, visual/audio refinement, accessibility improvements, and gameplay testing.
 **Depends on:** Phase 15.
 

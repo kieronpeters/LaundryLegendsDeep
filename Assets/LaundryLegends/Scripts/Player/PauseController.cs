@@ -91,6 +91,10 @@ namespace LaundryLegends.Player
                 width,
                 height);
 
+            GUI.color = new Color(0.03f, 0.04f, 0.06f, 1f);
+            GUI.DrawTexture(rect, Texture2D.whiteTexture);
+            GUI.color = previous;
+
             GUI.Box(rect, "Paused");
             GUI.Label(new Rect(rect.x + 20f, rect.y + 34f, width - 40f, 22f), "Audio");
 

@@ -314,6 +314,66 @@ namespace LaundryLegends.Arcade
 
         public bool IsExpanded => _expansionPurchased;
 
+        /// <summary>
+        /// Restores per-slot ownership and global upgrades from a save without
+        /// charging the player again.
+        /// </summary>
+        public void RestoreArcade(bool[] installed, bool[] active, string[] upgrades)
+        {
+            if (installed != null)
+            {
+                int count = Mathf.Min(SlotCount, installed.Length);
+                for (int i = 0; i < count; i++)
+                {
+                    if (!installed[i])
+                    {
+                        continue;
+                    }
+
+                    ArcadeState state = GetSlotState(i);
+                    if (state == null)
+                    {
+                        continue;
+                    }
+
+                    if (!state.IsInstalled)
+                    {
+                        state.BeginInstall();
+                    }
+
+                    bool shouldActivate = active != null && i < active.Length && active[i];
+                    if (shouldActivate && state.Phase == ArcadePhase.Installing)
+                    {
+                        state.Activate();
+                    }
+
+                    if (i > 0)
+                    {
+                        ArcadeExtraMachine slot = GetExtraMachine(i);
+                        if (slot != null && slot.Cabinet != null)
+                        {
+                            slot.Cabinet.SetActive(shouldActivate);
+                            if (slot.AttractMode != null)
+                            {
+                                slot.AttractMode.SetPowered(shouldActivate);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (upgrades != null)
+            {
+                foreach (string upgrade in upgrades)
+                {
+                    if (!string.IsNullOrEmpty(upgrade) && !State.HasUpgrade(upgrade))
+                    {
+                        State.RecordUpgrade(upgrade, 1f, 1f);
+                    }
+                }
+            }
+        }
+
         /// <summary>Save/load restore of the bay purchase without charging again.</summary>
         public void RestoreExpansion(bool expanded)
         {

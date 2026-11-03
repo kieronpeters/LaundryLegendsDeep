@@ -179,3 +179,32 @@ Still open with reasons:
 | LL-T-001 | `CharacterAppearanceFixTool` discovers the suit renderer from the prefab and derives the texture name, so a re-export cannot silently keep an old outfit. |
 | LL-B-007 | The clawed hand was the body/pelvis tuck artefact; the masked MakeHuman re-export removed it. Captures show normal hands. |
 | LL-A-001 | Decision: first-person hands stay off until a proper hand asset exists (placeholder ones were removed). Tracked here, not in the active set. |
+
+## Phase 13-16 closeout (2026-11-03)
+
+Closed in the final pass:
+
+| Ticket | Outcome |
+|---|---|
+| LL-F-005 | Save/load now persists per-slot arcade install/active state and global upgrades, not just the expansion. |
+| LL-B-019/020/021 | Rack sits on the counter, synthetic drum cubes removed, laundry props grouped at the folding table. |
+| LL-B-022/023/024 | Pause audio sliders, bills backdrop/text, shop map plan + uncharted state. |
+| LL-B-025 | Player spawn moved off the customer lane. |
+| LL-A-007 | T-pose regression reverted. |
+| Menu/art | Isometric menu photo restored; storefront sign text scaled and readable; bench wood and plant colours restored. |
+| Machine visuals | Drum rotates around its own centre; machine cloth is hidden while empty and shown only when loaded/running/complete until emptied. |
+
+New low-priority tickets from the final manual pass:
+
+| ID | Type | Pri | Title | Description |
+|---|---|---|---|---|
+| LL-B-026 | bug | P3 | Unidentified dark geometry at the player's lower-left | A dark curved mesh appears near the camera at the machine wall; likely the player body or a stray prop. Identify and hide/relocate. |
+| LL-B-027 | bug | P3 | Left storefront window reads black in the menu photo | The right window shows the interior; the left window stays dark. Add interior fill or reduce glass opacity for the menu capture. |
+
+Remaining ticket count after closeout:
+
+- **P0:** 0
+- **P1:** 1 - `LL-B-006` desktop-MCP focus (external tooling; mitigated by process-explicit `game-vision.ps1`; accepted)
+- **P2:** 5 - `LL-B-005`, `LL-A-001`, `LL-A-003`, `LL-A-008`, `LL-F-001` (board/art polish; accepted or deferred)
+- **P3:** 7 - `LL-A-002`, `LL-F-004`, `LL-F-007`, `LL-T-003`, `LL-T-005`, `LL-B-026`, `LL-B-027`
+- **Total open:** 13 (all accepted/deferred for post-1.0; no P0)
