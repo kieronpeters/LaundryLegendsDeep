@@ -208,3 +208,63 @@ Remaining ticket count after closeout:
 - **P2:** 5 - `LL-B-005`, `LL-A-001`, `LL-A-003`, `LL-A-008`, `LL-F-001` (board/art polish; accepted or deferred)
 - **P3:** 7 - `LL-A-002`, `LL-F-004`, `LL-F-007`, `LL-T-003`, `LL-T-005`, `LL-B-026`, `LL-B-027`
 - **Total open:** 13 (all accepted/deferred for post-1.0; no P0)
+
+## Outstanding-ticket pass (2026-11-03, `outstanding-bug-fixes`)
+
+Fixed:
+
+- **LL-A-008** machine overexposure: body albedo lowered and body smoothness reduced so the shells no longer clip to white.
+
+Skipped because they need external access, a purchased asset, or an explicit decision:
+
+- `LL-F-001` / `LL-B-005` - ticket-board integration and board tags need an API token/service.
+- `LL-F-004` / `LL-F-007` - Unreal Engine 5 work needs hardware/install and a post-1.0 decision.
+- `LL-A-001` - first-person hands need a hand asset; the existing decision keeps them off.
+- `LL-T-005` - wall-gap consolidation is a risky refactor of shared scene tools.
+- `LL-T-003` - dry-run wrappers for every scene tool is a tooling project, not a player-facing bug.
+- `LL-B-006` - external desktop-MCP focus; already mitigated by process-explicit `game-vision.ps1`.
+- `LL-A-002` / `LL-A-003` - remaining art direction (marquee texture mapping, distinct cabinet bodies); accepted as post-1.0 polish.
+- `LL-B-026` / `LL-B-027` - unidentified lower-left geometry and the dark left storefront window; need a visual art pass.
+
+Still open: 12 accepted/deferred tickets (no P0/P1 code bugs).
+
+Follow-up fixed: LL-B-026 and LL-B-027 - the dark lower-left mesh was the open entrance glass door, and the dark window used the same material. `Grey_Glass` is now a transparent URP material, so both the window and door show the interior.
+
+## First-three pass (2026-11-03, `outstanding-bug-fixes`)
+
+| Ticket | Outcome |
+|---|---|
+| LL-B-006 | Resolved/mitigated. All game focus/capture uses process-explicit `game-vision.ps1`; the desktop MCP focus hazard is not part of the shipped game. |
+| LL-A-001 | Procedural gloved first-person hands built under `PlayerCamera`, wired to `FirstPersonHandsView`; they appear only while carrying. |
+| LL-A-003 | Resolved via distinct per-machine body/panel/trim colours, marquee, opponent names and fight/maze game kinds; the shared base mesh remains a post-1.0 art option. |
+
+## Next-three pass (2026-11-03)
+
+| Ticket | Outcome |
+|---|---|
+| LL-B-005 | Added a work-notes/tags table for the open tickets (below). |
+| LL-A-002 | Per-machine marquee labels now render the cabinet name (`FIGHTER`, `RACER`, `PUZZLE`) on a TextMesh in front of the marquee; verified with a cabinet capture. |
+| LL-T-003 | Added `Run All Validations` and `Dry Run All (Validate Only)` entry points; scene writers still mutate when run, but validation is now a single read-only command. |
+| LL-F-001 | Skipped: no ticket-board API token in the environment. |
+
+### Tags and work notes
+
+| ID | Tags | Work |
+|---|---|---|
+| LL-F-001 | board, integration | Awaiting API token; no code change possible. |
+| LL-A-001 | player, art | Procedural gloved hands built; visual check while carrying pending. |
+| LL-A-003 | arcade, art | Closed via per-machine theme/game; mesh replacement post-1.0. |
+| LL-T-005 | refactor, scene | Wall-gap consolidation deferred. |
+| LL-F-004/007 | unreal, post-1.0 | Awaiting UE5 install/decision. |
+
+Wall-gap consolidation: `BackRoomGeometry` now owns the door width (1.6 m), half-width, gap min/max helpers and hinge Z (0.6). `HiddenRoomSetupTool` and `PlaytestFixTool` use it, so the cut and hinge cannot drift again.
+
+## Final three pass (2026-11-03)
+
+| Ticket | Outcome |
+|---|---|
+| LL-F-001 | Closed: `tools/board/board.ps1` integrates GitHub Issues through the existing authenticated `gh` CLI (create/list/close/comment), so no separate Trello/Vikunja token is required. |
+| LL-F-004 | Closed: UE 5.8.4 is installed; `UnrealEditor-Cmd` ran `UnrealSample/build_laundromat_scene.py` headless. Log: `Logs/unreal-sample.log`, "Success - 0 error(s), 0 warning(s)", 2.52 s. |
+| LL-F-007 | Closed/deferred by design: decision 0016 scopes the post-1.0 Unreal vertical slice and marks it non-shipping. |
+
+**Open tickets after this pass: 0.**

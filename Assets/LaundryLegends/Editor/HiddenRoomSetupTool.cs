@@ -103,13 +103,12 @@ namespace LaundryLegends.Editor
 
             // WallSouth is split around the expansion opening by BuildExpansionBay.
 
-            const float doorWidth = 1.6f;
             GameObject doorLeaf = GameObject.Find("SecretDoor_Foreshadowed");
             float doorZ = doorLeaf != null
                 ? doorLeaf.transform.position.z
                 : (shelf != null ? shelf.transform.position.z : zCentre);
-            float gapMin = doorZ - doorWidth * 0.5f;
-            float gapMax = doorZ + doorWidth * 0.5f;
+            float gapMin = BackRoomGeometry.GapMin(doorZ);
+            float gapMax = BackRoomGeometry.GapMax(doorZ);
             float southSize = Mathf.Max(0.1f, gapMin - z0);
             float northSize = Mathf.Max(0.1f, z0 + roomDepth - gapMax);
 
@@ -1294,6 +1293,33 @@ namespace LaundryLegends.Editor
             if (marquee != null)
             {
                 marquee.sharedMaterial = EnsureMarqueeMaterial(id, definition);
+
+                Transform oldLabel = cabinet.transform.Find("MarqueeLabel");
+                if (oldLabel != null)
+                {
+                    Object.DestroyImmediate(oldLabel.gameObject);
+                }
+
+                var label = new GameObject("MarqueeLabel");
+                label.transform.SetParent(cabinet.transform, true);
+                Vector3 towardRoom = new Vector3(12.2f, 0f, 0f)
+                                     - new Vector3(cabinet.transform.position.x, 0f, cabinet.transform.position.z);
+                if (towardRoom.sqrMagnitude < 0.01f)
+                {
+                    towardRoom = Vector3.back;
+                }
+
+                towardRoom.Normalize();
+                label.transform.position = marquee.bounds.center + towardRoom * 0.045f;
+                label.transform.rotation = Quaternion.LookRotation(-towardRoom, Vector3.up);
+                var text = label.AddComponent<TextMesh>();
+                text.text = definition.DisplayName.ToUpperInvariant();
+                text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+                text.fontSize = 64;
+                text.characterSize = 0.012f;
+                text.anchor = TextAnchor.MiddleCenter;
+                text.alignment = TextAlignment.Center;
+                text.color = Color.white;
             }
 
             Transform existing = cabinet.transform.Find("MarqueeLight");
