@@ -54,6 +54,65 @@ namespace LaundryLegends.Editor
             }
         }
 
+        [MenuItem("Laundry Legends/Phase 16/Fix Glass")]
+        public static void FixGlass()
+        {
+            var material = AssetDatabase.LoadAssetAtPath<Material>(
+                "Assets/LaundryLegends/Art/Materials/Grey_Glass.mat");
+            if (material == null)
+            {
+                Debug.LogError("[P16] Grey_Glass.mat missing.");
+                return;
+            }
+
+            Shader lit = Shader.Find("Universal Render Pipeline/Lit");
+            if (lit != null)
+            {
+                material.shader = lit;
+            }
+
+            material.SetColor("_BaseColor", new Color(0.62f, 0.76f, 0.86f, 0.12f));
+            material.SetFloat("_Smoothness", 0.95f);
+            material.SetFloat("_Metallic", 0f);
+            material.SetFloat("_Surface", 1f);
+            material.SetFloat("_Blend", 0f);
+            material.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            material.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            material.SetFloat("_ZWrite", 0f);
+            material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            material.DisableKeyword("_ALPHATEST_ON");
+            material.renderQueue = 3000;
+            EditorUtility.SetDirty(material);
+            AssetDatabase.SaveAssets();
+            Debug.Log("[P16] Window/door glass set to transparent.");
+        }
+
+        [MenuItem("Laundry Legends/Phase 16/Probe Remaining")]
+        public static void ProbeRemaining()
+        {
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Vector3 player = new Vector3(-1.8f, 0.1f, -4.4f);
+            foreach (Renderer renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                Vector3 center = renderer.bounds.center;
+                if (Vector3.Distance(new Vector3(center.x, 0f, center.z),
+                        new Vector3(player.x, 0f, player.z)) < 2.4f
+                    && center.y < 1.4f)
+                {
+                    Debug.Log($"[P16-NEAR] {renderer.name} center={center} size={renderer.bounds.size} " +
+                              $"mat={(renderer.sharedMaterial != null ? renderer.sharedMaterial.name : "null")}");
+                }
+
+                if (renderer.sharedMaterial != null
+                    && renderer.sharedMaterial.name.IndexOf("Glass", System.StringComparison.OrdinalIgnoreCase) >= 0
+                    && center.z < -5.0f)
+                {
+                    Debug.Log($"[P16-GLASS] {renderer.name} center={center} size={renderer.bounds.size} " +
+                              $"mat={renderer.sharedMaterial.name} parent={renderer.transform.parent.name}");
+                }
+            }
+        }
+
         [MenuItem("Laundry Legends/Phase 16/Brighten Left Window")]
         public static void BrightenLeftWindow()
         {

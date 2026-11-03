@@ -227,3 +227,5 @@ Skipped because they need external access, a purchased asset, or an explicit dec
 - `LL-B-026` / `LL-B-027` - unidentified lower-left geometry and the dark left storefront window; need a visual art pass.
 
 Still open: 12 accepted/deferred tickets (no P0/P1 code bugs).
+
+Follow-up fixed: LL-B-026 and LL-B-027 - the dark lower-left mesh was the open entrance glass door, and the dark window used the same material. `Grey_Glass` is now a transparent URP material, so both the window and door show the interior.
