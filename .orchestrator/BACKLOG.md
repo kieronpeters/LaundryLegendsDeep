@@ -229,3 +229,11 @@ Skipped because they need external access, a purchased asset, or an explicit dec
 Still open: 12 accepted/deferred tickets (no P0/P1 code bugs).
 
 Follow-up fixed: LL-B-026 and LL-B-027 - the dark lower-left mesh was the open entrance glass door, and the dark window used the same material. `Grey_Glass` is now a transparent URP material, so both the window and door show the interior.
+
+## First-three pass (2026-11-03, `outstanding-bug-fixes`)
+
+| Ticket | Outcome |
+|---|---|
+| LL-B-006 | Resolved/mitigated. All game focus/capture uses process-explicit `game-vision.ps1`; the desktop MCP focus hazard is not part of the shipped game. |
+| LL-A-001 | Procedural gloved first-person hands built under `PlayerCamera`, wired to `FirstPersonHandsView`; they appear only while carrying. |
+| LL-A-003 | Resolved via distinct per-machine body/panel/trim colours, marquee, opponent names and fight/maze game kinds; the shared base mesh remains a post-1.0 art option. |
