@@ -54,6 +54,29 @@ namespace LaundryLegends.Editor
             }
         }
 
+        [MenuItem("Laundry Legends/Phase 16/Fix Loose Props")]
+        public static void FixLooseProps()
+        {
+            Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            MoveProp("Basket_01", new Vector3(3.55f, 0.05f, 1.45f));
+            MoveProp("Bag_01", new Vector3(4.15f, 0.05f, 1.45f));
+            MoveProp("LooseLaundry_01", new Vector3(3.80f, 0.62f, 0.95f));
+            MoveProp("LooseLaundry_02", new Vector3(4.10f, 0.62f, 0.95f));
+            Physics.SyncTransforms();
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            Debug.Log("[P16] Laundry props grouped around the folding table.");
+        }
+
+        private static void MoveProp(string name, Vector3 position)
+        {
+            GameObject target = GameObject.Find(name);
+            if (target != null)
+            {
+                target.transform.position = position;
+            }
+        }
+
         [MenuItem("Laundry Legends/Phase 16/Fix Player Spawn")]
         public static void FixPlayerSpawn()
         {
@@ -115,16 +138,21 @@ namespace LaundryLegends.Editor
                     continue;
                 }
 
-                if (bounds.center.z > 4.2f && bounds.center.z < 5.4f)
+                if (bounds.center.x > -1f && bounds.center.x < 5f
+                    && bounds.center.z > -1f && bounds.center.z < 3.5f
+                    && bounds.size.magnitude < 4f)
                 {
-                    Debug.Log($"[P16-LOW-MACHINE] {renderer.name} center={bounds.center} size={bounds.size} " +
+                    Debug.Log($"[P16-BOX] {renderer.name} center={bounds.center} size={bounds.size} " +
                               $"mat={(renderer.sharedMaterial != null ? renderer.sharedMaterial.name : "null")}");
                 }
-                else if (bounds.center.x > -6f && bounds.center.x < -1f
-                         && bounds.center.z > -4f && bounds.center.z < -1f)
+            }
+
+            GameObject phase3 = GameObject.Find("Phase3Items");
+            if (phase3 != null)
+            {
+                foreach (Transform child in phase3.GetComponentsInChildren<Transform>(true))
                 {
-                    Debug.Log($"[P16-LOW-COUNTER] {renderer.name} center={bounds.center} size={bounds.size} " +
-                              $"mat={(renderer.sharedMaterial != null ? renderer.sharedMaterial.name : "null")}");
+                    Debug.Log($"[P16-PHASE3] {child.name} pos={child.position}");
                 }
             }
         }

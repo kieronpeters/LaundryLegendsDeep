@@ -173,18 +173,25 @@ namespace LaundryLegends.UI
                 (Screen.height - _height) * 0.5f,
                 _width,
                 _height);
+
+            Color previous = GUI.color;
+            GUI.color = new Color(0.03f, 0.04f, 0.06f, 0.95f);
+            GUI.DrawTexture(rect, Texture2D.whiteTexture);
+            GUI.color = previous;
+
             GUI.Box(rect, "BILLS");
-            GUI.Label(new Rect(rect.x + 20f, rect.y + 32f, rect.width - 40f, rect.height - 90f), BuildText());
+            GUIStyle body = new GUIStyle(GUI.skin.label) { fontSize = 16, wordWrap = false };
+            GUI.Label(new Rect(rect.x + 24f, rect.y + 36f, rect.width - 48f, rect.height - 100f), BuildText(), body);
 
             if (_billing != null && _billing.CurrentBill != null)
             {
-                if (GUI.Button(new Rect(rect.x + 20f, rect.y + rect.height - 52f, 150f, 32f), "Pay bill"))
+                if (GUI.Button(new Rect(rect.x + 24f, rect.y + rect.height - 56f, 160f, 34f), "Pay bill"))
                 {
                     PayCurrent();
                 }
             }
 
-            if (GUI.Button(new Rect(rect.x + rect.width - 120f, rect.y + rect.height - 52f, 100f, 32f), "Close"))
+            if (GUI.Button(new Rect(rect.x + rect.width - 136f, rect.y + rect.height - 56f, 112f, 34f), "Close"))
             {
                 Close();
             }
