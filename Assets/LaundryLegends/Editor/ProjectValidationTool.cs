@@ -13,8 +13,7 @@ namespace LaundryLegends.Editor
     {
         [MenuItem("Laundry Legends/Phase 16/Run All Validations")]
         public static void RunAll()
-        {
-            var failures = new List<string>();
+        {            var failures = new List<string>();
             Run("Business", BusinessSetupTool.ValidateBusinessSystems, failures);
             Run("Appliances", ApplianceIntegrationTool.Validate, failures);
             Run("NPC animation", NpcAnimationSetupTool.ValidateNpcAnimation, failures);
@@ -26,6 +25,12 @@ namespace LaundryLegends.Editor
             }
 
             Debug.Log("[VALIDATE] Business, appliance and NPC animation validators passed.");
+        }
+
+        [MenuItem("Laundry Legends/Phase 16/Dry Run All (Validate Only)")]
+        public static void DryRunAll()
+        {
+            RunAll();
         }
 
         private static void Run(string label, Action action, List<string> failures)

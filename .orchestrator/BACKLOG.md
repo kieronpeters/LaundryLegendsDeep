@@ -237,3 +237,22 @@ Follow-up fixed: LL-B-026 and LL-B-027 - the dark lower-left mesh was the open e
 | LL-B-006 | Resolved/mitigated. All game focus/capture uses process-explicit `game-vision.ps1`; the desktop MCP focus hazard is not part of the shipped game. |
 | LL-A-001 | Procedural gloved first-person hands built under `PlayerCamera`, wired to `FirstPersonHandsView`; they appear only while carrying. |
 | LL-A-003 | Resolved via distinct per-machine body/panel/trim colours, marquee, opponent names and fight/maze game kinds; the shared base mesh remains a post-1.0 art option. |
+
+## Next-three pass (2026-11-03)
+
+| Ticket | Outcome |
+|---|---|
+| LL-B-005 | Added a work-notes/tags table for the open tickets (below). |
+| LL-A-002 | Per-machine marquee labels now render the cabinet name (`FIGHTER`, `RACER`, `PUZZLE`) on a TextMesh in front of the marquee; verified with a cabinet capture. |
+| LL-T-003 | Added `Run All Validations` and `Dry Run All (Validate Only)` entry points; scene writers still mutate when run, but validation is now a single read-only command. |
+| LL-F-001 | Skipped: no ticket-board API token in the environment. |
+
+### Tags and work notes
+
+| ID | Tags | Work |
+|---|---|---|
+| LL-F-001 | board, integration | Awaiting API token; no code change possible. |
+| LL-A-001 | player, art | Procedural gloved hands built; visual check while carrying pending. |
+| LL-A-003 | arcade, art | Closed via per-machine theme/game; mesh replacement post-1.0. |
+| LL-T-005 | refactor, scene | Wall-gap consolidation deferred. |
+| LL-F-004/007 | unreal, post-1.0 | Awaiting UE5 install/decision. |
