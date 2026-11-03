@@ -54,6 +54,32 @@ namespace LaundryLegends.Editor
             }
         }
 
+        [MenuItem("Laundry Legends/Phase 16/Brighten Left Window")]
+        public static void BrightenLeftWindow()
+        {
+            Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            GameObject fill = GameObject.Find("MenuWindowFill");
+            if (fill == null)
+            {
+                fill = new GameObject("MenuWindowFill");
+            }
+
+            fill.transform.position = new Vector3(-3.4f, 2.1f, -5.1f);
+            Light light = fill.GetComponent<Light>();
+            if (light == null)
+            {
+                light = fill.AddComponent<Light>();
+            }
+
+            light.type = LightType.Point;
+            light.range = 6f;
+            light.intensity = 2.2f;
+            light.color = new Color(1f, 0.94f, 0.84f);
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            Debug.Log("[P16] Left storefront window fill light added.");
+        }
+
         [MenuItem("Laundry Legends/Phase 16/Fix Street Props")]
         public static void FixStreetProps()
         {
