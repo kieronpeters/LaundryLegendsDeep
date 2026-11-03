@@ -268,3 +268,11 @@ Wall-gap consolidation: `BackRoomGeometry` now owns the door width (1.6 m), half
 | LL-F-007 | Closed/deferred by design: decision 0016 scopes the post-1.0 Unreal vertical slice and marks it non-shipping. |
 
 **Open tickets after this pass: 0.**
+
+## Phase 17 release candidate smoke test (2026-11-03)
+
+- Menu loads with the isometric storefront and readable signage.
+- Start Game reaches the laundromat; HUD, stock 10/10/10, customer queue and machine wall render.
+- Empty machines show no clothes; pause overlay dims with Master/Music/Effects sliders.
+- Build 211 MB / 0 errors; version 1.0.0; manifest at `Build/release-manifest.json`.
+- No new blocking defects. Remaining machine brightness is accepted in `KNOWN_ISSUES.md`.
