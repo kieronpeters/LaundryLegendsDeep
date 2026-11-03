@@ -258,3 +258,13 @@ Follow-up fixed: LL-B-026 and LL-B-027 - the dark lower-left mesh was the open e
 | LL-F-004/007 | unreal, post-1.0 | Awaiting UE5 install/decision. |
 
 Wall-gap consolidation: `BackRoomGeometry` now owns the door width (1.6 m), half-width, gap min/max helpers and hinge Z (0.6). `HiddenRoomSetupTool` and `PlaytestFixTool` use it, so the cut and hinge cannot drift again.
+
+## Final three pass (2026-11-03)
+
+| Ticket | Outcome |
+|---|---|
+| LL-F-001 | Closed: `tools/board/board.ps1` integrates GitHub Issues through the existing authenticated `gh` CLI (create/list/close/comment), so no separate Trello/Vikunja token is required. |
+| LL-F-004 | Closed: UE 5.8.4 is installed; `UnrealEditor-Cmd` ran `UnrealSample/build_laundromat_scene.py` headless. Log: `Logs/unreal-sample.log`, "Success - 0 error(s), 0 warning(s)", 2.52 s. |
+| LL-F-007 | Closed/deferred by design: decision 0016 scopes the post-1.0 Unreal vertical slice and marks it non-shipping. |
+
+**Open tickets after this pass: 0.**
